@@ -2,45 +2,39 @@ import { Category } from "@/lib/types";
 
 export const categories: Category[] = [
   {
-    slug: "phones",
-    name: "Phones",
-    tagline: "Smartphones & iPhones",
-    icon: "phone"
-  },
-  {
-    slug: "power",
-    name: "Power Banks",
-    tagline: "Solar & fast-charge power",
-    icon: "battery"
+    slug: "laptops",
+    name: "Laptops",
+    tagline: "Laptops & computers",
+    icon: "laptop"
   },
   {
     slug: "chargers",
     name: "Chargers & Cables",
-    tagline: "Type-C, adapters & cables",
+    tagline: "Chargers, adapters & cables",
     icon: "bolt"
+  },
+  {
+    slug: "power",
+    name: "Power",
+    tagline: "Power banks & power packs",
+    icon: "battery"
+  },
+  {
+    slug: "storage",
+    name: "Storage",
+    tagline: "Flash disks, memory cards & drives",
+    icon: "storage"
   },
   {
     slug: "audio",
     name: "Audio",
-    tagline: "Headphones, buds & speakers",
+    tagline: "AirPods, earphones & headsets",
     icon: "headphones"
-  },
-  {
-    slug: "computing",
-    name: "Computing",
-    tagline: "Laptops, SSDs, RAM & drives",
-    icon: "laptop"
-  },
-  {
-    slug: "gaming",
-    name: "Gaming",
-    tagline: "Controllers & accessories",
-    icon: "gamepad"
   },
   {
     slug: "accessories",
     name: "Accessories",
-    tagline: "Mice, neckbands & more",
+    tagline: "Mouse, keyboards, watches & more",
     icon: "sparkles"
   }
 ];

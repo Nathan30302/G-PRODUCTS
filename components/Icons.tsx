@@ -50,6 +50,15 @@ export function Icon({ name, className }: { name: string; className?: string }) 
           <rect x="2" y="7" width="20" height="10" rx="5" />
         </svg>
       );
+    case "storage":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+          <rect x="3" y="4" width="18" height="7" rx="1.5" />
+          <rect x="3" y="13" width="18" height="7" rx="1.5" />
+          <line x1="7" y1="7.5" x2="7.01" y2="7.5" />
+          <line x1="7" y1="16.5" x2="7.01" y2="16.5" />
+        </svg>
+      );
     case "sparkles":
       return (
         <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
