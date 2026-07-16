@@ -13,11 +13,43 @@ body {
 }
 
 body {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Hide scrollbars on horizontal deal rows but keep scrolling */
+/* Smooth anchor scrolling, but respect reduced motion */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(246, 212, 0, 0.28);
+  color: #ffffff;
+}
+
+/* Accessible focus ring, brand-tinted */
+:focus-visible {
+  outline: 2px solid rgba(246, 212, 0, 0.7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Hide scrollbars on horizontal rails but keep scrolling */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -29,5 +61,57 @@ body {
 @layer utilities {
   .container-g {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Horizontal snap rail */
+  .snap-rail {
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 1rem;
+  }
+  .snap-item {
+    scroll-snap-align: start;
+  }
+
+  /* Section eyebrow label */
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.22em] text-brand/80;
+  }
+
+  /* Subtle top-lit panel used across cards/sections */
+  .panel {
+    @apply rounded-card border border-white/[0.06] bg-ink-850/80 shadow-card;
+  }
+}
+
+@layer components {
+  /* Shimmer skeleton */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.08),
+      transparent
+    );
+    animation: shimmer 1.6s infinite;
+  }
+
+  /* Primary / secondary buttons */
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 shadow-brand-glow transition-all duration-200 ease-out-expo hover:bg-brand-soft hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-ink-700 disabled:text-white/40 disabled:shadow-none;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-bold text-white transition-all duration-200 ease-out-expo hover:border-brand/40 hover:bg-white/[0.06] active:scale-[0.98];
+  }
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-semibold text-accent transition-all duration-200 ease-out-expo hover:bg-accent/20 active:scale-[0.98];
   }
 }

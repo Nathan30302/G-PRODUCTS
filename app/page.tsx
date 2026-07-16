@@ -1,51 +1,80 @@
 import { Hero } from "@/components/Hero";
 import { CategoryTile } from "@/components/CategoryTile";
-import { DealsRow } from "@/components/DealsRow";
+import { ProductRail } from "@/components/ProductRail";
 import { TrustBadges } from "@/components/TrustBadges";
-import { getAllCategories, getFeatured, getHotDeals } from "@/lib/queries";
+import { WhyGProducts } from "@/components/WhyGProducts";
+import { ContactBand } from "@/components/ContactBand";
+import { Stagger, StaggerItem, Reveal } from "@/components/Reveal";
+import {
+  getAllCategories,
+  getAllProducts,
+  getFeatured,
+  getHotDeals
+} from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [categories, hotDeals, featured] = await Promise.all([
+  const [categories, hotDeals, featured, all] = await Promise.all([
     getAllCategories(),
     getHotDeals(),
-    getFeatured()
+    getFeatured(),
+    getAllProducts()
   ]);
+
+  const newest = all.slice(0, 8);
 
   return (
     <>
       <Hero />
 
-      <section className="container-g mt-14">
-        <div className="mb-5">
-          <h2 className="text-xl font-extrabold text-white sm:text-2xl">
-            Shop by Category
+      <section className="container-g mt-16">
+        <Reveal className="mb-5">
+          <span className="eyebrow">Browse</span>
+          <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            Shop by category
           </h2>
           <p className="mt-1 text-sm text-white/50">
             Everything you need, all in one plug.
           </p>
-        </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
+        </Reveal>
+        <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {categories.map((c) => (
-            <CategoryTile key={c.slug} category={c} />
+            <StaggerItem key={c.slug}>
+              <CategoryTile category={c} />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
-      <DealsRow
+      <ProductRail
         title="Hot Deals of the Week"
         subtitle="Smart upgrades, bigger savings."
         products={hotDeals}
+        href="/search"
+        hrefLabel="See all deals"
+        accent="accent"
       />
 
-      <DealsRow
+      <ProductRail
         title="Handpicked for You"
         subtitle="Top picks from G-Products."
         products={featured}
+        href="/search"
       />
 
+      <ProductRail
+        title="Fresh Arrivals"
+        subtitle="The newest tech in stock."
+        products={newest}
+        href="/search"
+      />
+
+      <WhyGProducts />
+
       <TrustBadges />
+
+      <ContactBand />
     </>
   );
 }

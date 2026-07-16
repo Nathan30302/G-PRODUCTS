@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import {
   getProductBySlug,
@@ -10,7 +9,10 @@ import {
 import { formatPrice, discountPercent } from "@/lib/format";
 import { StockBadge } from "@/components/StockBadge";
 import { ProductActions } from "@/components/ProductActions";
-import { ProductCard } from "@/components/ProductCard";
+import { ProductGallery } from "@/components/ProductGallery";
+import { MobileBuyBar } from "@/components/MobileBuyBar";
+import { ProductRail } from "@/components/ProductRail";
+import { Icon } from "@/components/Icons";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +36,12 @@ export async function generateMetadata({
   };
 }
 
+const trust = [
+  { icon: "shield", label: "Genuine product" },
+  { icon: "wallet", label: "Mobile Money" },
+  { icon: "truck", label: "Fast delivery" }
+];
+
 export default async function ProductPage({
   params
 }: {
@@ -48,102 +56,133 @@ export default async function ProductPage({
     getProductsByCategory(product.categorySlug)
   ]);
   const off = discountPercent(product.price, product.compareAtPrice);
+  const saved = product.compareAtPrice
+    ? product.compareAtPrice - product.price
+    : 0;
   const related = categoryProducts
     .filter((p) => p.id !== product.id)
-    .slice(0, 4);
+    .slice(0, 8);
 
   return (
-    <div className="container-g py-10">
-      <nav className="text-sm text-white/40">
-        <Link href="/" className="hover:text-white">
-          Home
-        </Link>{" "}
-        /{" "}
-        {category && (
-          <>
-            <Link
-              href={`/category/${category.slug}`}
-              className="hover:text-white"
-            >
-              {category.name}
-            </Link>{" "}
-            /{" "}
-          </>
-        )}
-        <span className="text-white/70">{product.name}</span>
-      </nav>
-
-      <div className="mt-6 grid gap-10 lg:grid-cols-2">
-        <div>
-          <div className="relative aspect-square overflow-hidden rounded-card border border-ink-800 bg-ink-850">
-            <Image
-              src={product.images[0]?.url}
-              alt={product.images[0]?.alt ?? product.name}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
-              priority
-            />
-            {off && (
-              <span className="absolute left-4 top-4 rounded-pill bg-accent px-3 py-1 text-sm font-bold text-ink-950">
-                -{off}%
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div>
-          {product.brand && (
-            <span className="text-sm font-medium uppercase tracking-wide text-white/40">
-              {product.brand}
-            </span>
+    <div className="pb-24 md:pb-0">
+      <div className="container-g py-6 sm:py-10">
+        <nav className="flex flex-wrap items-center gap-1.5 text-sm text-white/40">
+          <Link href="/" className="transition-colors hover:text-white">
+            Home
+          </Link>
+          <Icon name="chevron-right" className="h-3.5 w-3.5" />
+          {category && (
+            <>
+              <Link
+                href={`/category/${category.slug}`}
+                className="transition-colors hover:text-white"
+              >
+                {category.name}
+              </Link>
+              <Icon name="chevron-right" className="h-3.5 w-3.5" />
+            </>
           )}
-          <h1 className="mt-1 text-3xl font-black text-white">{product.name}</h1>
+          <span className="truncate text-white/70">{product.name}</span>
+        </nav>
 
-          <div className="mt-3">
-            <StockBadge status={product.stock} />
-          </div>
+        <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
+          <ProductGallery
+            images={product.images}
+            name={product.name}
+            badge={off ? `-${off}%` : null}
+          />
 
-          <div className="mt-5 flex items-baseline gap-3">
-            <span className="text-3xl font-black text-white">
-              {formatPrice(product.price)}
-            </span>
-            {product.compareAtPrice && (
-              <span className="text-lg text-white/40 line-through">
-                {formatPrice(product.compareAtPrice)}
+          <div className="lg:py-2">
+            {product.brand && (
+              <span className="text-sm font-semibold uppercase tracking-wide text-brand/80">
+                {product.brand}
               </span>
             )}
-          </div>
+            <h1 className="mt-1.5 text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl">
+              {product.name}
+            </h1>
 
-          <p className="mt-5 text-white/70">{product.description}</p>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <StockBadge status={product.stock} />
+              {off && (
+                <span className="rounded-pill bg-accent/15 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/30">
+                  Save {formatPrice(saved)}
+                </span>
+              )}
+            </div>
 
-          <ul className="mt-5 space-y-2">
-            {product.shortSpecs.map((s) => (
-              <li key={s} className="flex items-center gap-2 text-sm text-white/70">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-                {s}
-              </li>
-            ))}
-          </ul>
+            <div className="mt-6 flex items-baseline gap-3">
+              <span className="text-4xl font-black tracking-tight text-white">
+                {formatPrice(product.price)}
+              </span>
+              {product.compareAtPrice && (
+                <span className="text-lg text-white/35 line-through">
+                  {formatPrice(product.compareAtPrice)}
+                </span>
+              )}
+            </div>
 
-          <div className="mt-8 max-w-sm">
-            <ProductActions product={product} />
+            <p className="mt-6 leading-relaxed text-white/65">
+              {product.description}
+            </p>
+
+            <div className="mt-8 hidden max-w-sm sm:block">
+              <ProductActions product={product} />
+            </div>
+
+            {/* trust row */}
+            <div className="mt-8 grid grid-cols-3 gap-3">
+              {trust.map((t) => (
+                <div
+                  key={t.label}
+                  className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-ink-850/60 p-3 text-center"
+                >
+                  <Icon name={t.icon} className="h-5 w-5 text-brand" />
+                  <span className="text-[11px] font-medium text-white/60">
+                    {t.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* specs table */}
+            {product.shortSpecs.length > 0 && (
+              <div className="mt-10">
+                <h2 className="text-lg font-bold text-white">Specifications</h2>
+                <dl className="mt-4 overflow-hidden rounded-card border border-white/[0.06]">
+                  {product.shortSpecs.map((s, i) => (
+                    <div
+                      key={s}
+                      className={`flex items-start gap-3 px-4 py-3 text-sm ${
+                        i % 2 === 0 ? "bg-ink-850/60" : "bg-transparent"
+                      }`}
+                    >
+                      <Icon
+                        name="check"
+                        className="mt-0.5 h-4 w-4 shrink-0 text-accent"
+                      />
+                      <span className="text-white/75">{s}</span>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {related.length > 0 && (
-        <section className="mt-16">
-          <h2 className="mb-5 text-xl font-extrabold text-white">
-            Similar Products
-          </h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {related.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        </section>
+        <ProductRail
+          title="Related products"
+          subtitle={`More from ${category?.name ?? "the shop"}.`}
+          products={related}
+          href={category ? `/category/${category.slug}` : "/search"}
+        />
       )}
+
+      <div className="h-16" />
+
+      <MobileBuyBar product={product} />
     </div>
   );
 }

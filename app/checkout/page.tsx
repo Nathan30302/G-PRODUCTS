@@ -133,19 +133,22 @@ export default function CheckoutPage() {
     const providerLabel = payOptions.find((p) => p.id === method)?.label;
 
     return (
-      <div className="container-g py-20 text-center">
-        <div className="mx-auto max-w-md rounded-card border border-ink-800 bg-ink-850 p-10">
+      <div className="container-g py-16 sm:py-20">
+        <div className="mx-auto max-w-md rounded-card border border-white/[0.06] bg-ink-850 p-8 text-center shadow-card sm:p-10">
           <div
             className={`mx-auto grid h-16 w-16 place-items-center rounded-full ${
               phase === "success"
-                ? "bg-accent/15 text-accent"
+                ? "bg-accent/15 text-accent shadow-accent-glow"
                 : "bg-brand/15 text-brand"
             }`}
           >
-            <Icon
-              name={phase === "success" ? "cart" : "whatsapp"}
-              className="h-8 w-8"
-            />
+            {phase === "success" ? (
+              <Icon name="check" className="h-8 w-8" />
+            ) : phase === "pending" ? (
+              <span className="h-8 w-8 animate-spin rounded-full border-[3px] border-brand border-t-transparent" />
+            ) : (
+              <Icon name="whatsapp" className="h-8 w-8" />
+            )}
           </div>
 
           <h1 className="mt-6 text-2xl font-black text-white">
@@ -157,7 +160,8 @@ export default function CheckoutPage() {
           </h1>
 
           <p className="mt-2 text-sm text-white/40">
-            Order <span className="font-mono text-white/70">{orderRef}</span>
+            Order{" "}
+            <span className="font-mono text-white/70">{orderRef}</span>
           </p>
 
           <p className="mt-3 text-white/60">
@@ -169,29 +173,20 @@ export default function CheckoutPage() {
               `Thank you, ${form.name || "friend"}. Send your ${providerLabel} payment and confirm on WhatsApp so we can prepare your order.`}
           </p>
 
-          {phase === "pending" && (
-            <div className="mt-6 flex justify-center">
-              <span className="h-6 w-6 animate-spin rounded-full border-2 border-brand border-t-transparent" />
-            </div>
-          )}
-
           {(phase === "manual" || phase === "pending") && (
             <a
               href={waFallback}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-semibold text-accent hover:bg-accent/20"
+              className="btn-whatsapp mt-6 w-full"
             >
               <Icon name="whatsapp" className="h-5 w-5" />
               Confirm on WhatsApp
             </a>
           )}
 
-          <Link
-            href="/"
-            className="mt-4 inline-block rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-soft"
-          >
-            Continue Shopping
+          <Link href="/" className="btn-brand mt-4 w-full">
+            Continue shopping
           </Link>
         </div>
       </div>
@@ -200,9 +195,16 @@ export default function CheckoutPage() {
 
   if (phase === "failed") {
     return (
-      <div className="container-g py-20 text-center">
-        <div className="mx-auto max-w-md rounded-card border border-ink-800 bg-ink-850 p-10">
-          <h1 className="text-2xl font-black text-white">Payment not completed</h1>
+      <div className="container-g py-16 sm:py-20">
+        <div className="mx-auto max-w-md rounded-card border border-white/[0.06] bg-ink-850 p-8 text-center shadow-card sm:p-10">
+          <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-red-500/15 text-red-400">
+            <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </div>
+          <h1 className="mt-6 text-2xl font-black text-white">
+            Payment not completed
+          </h1>
           <p className="mt-2 text-sm text-white/40">
             Order <span className="font-mono text-white/70">{orderRef}</span>
           </p>
@@ -214,16 +216,35 @@ export default function CheckoutPage() {
             href={`https://wa.me/${siteConfig.whatsappNumber}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-semibold text-accent hover:bg-accent/20"
+            className="btn-whatsapp mt-6 w-full"
           >
             <Icon name="whatsapp" className="h-5 w-5" />
             Chat with us
           </a>
-          <Link
-            href="/"
-            className="mt-4 inline-block rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-soft"
-          >
-            Continue Shopping
+          <Link href="/" className="btn-brand mt-4 w-full">
+            Continue shopping
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="container-g py-10">
+        <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+          Checkout
+        </h1>
+        <div className="mt-10 flex flex-col items-center rounded-card border border-white/[0.06] bg-ink-850/60 p-12 text-center">
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-white/[0.04] text-white/40">
+            <Icon name="cart" className="h-7 w-7" />
+          </span>
+          <p className="mt-5 text-lg font-semibold text-white">
+            Your cart is empty
+          </p>
+          <Link href="/search" className="btn-brand mt-6">
+            Start shopping
+            <Icon name="arrow-right" className="h-4 w-4" />
           </Link>
         </div>
       </div>
@@ -231,105 +252,122 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container-g py-10">
-      <h1 className="text-3xl font-black text-white">Checkout</h1>
+    <div className="container-g py-8 pb-28 sm:py-10 md:pb-10">
+      <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+        Checkout
+      </h1>
+      <p className="mt-1 text-sm text-white/50">
+        Delivery details, then pay with Mobile Money.
+      </p>
 
-      {items.length === 0 ? (
-        <div className="mt-10 rounded-card border border-ink-800 bg-ink-850 p-10 text-center">
-          <p className="text-white/60">Your cart is empty.</p>
-          <Link
-            href="/"
-            className="mt-6 inline-block rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-soft"
-          >
-            Start Shopping
-          </Link>
-        </div>
-      ) : (
-        <div className="mt-8 grid gap-8 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
-            <section className="rounded-card border border-ink-800 bg-ink-850 p-6">
-              <h2 className="text-lg font-bold text-white">Delivery Details</h2>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <label className="block">
-                  <span className="text-sm text-white/60">Full name</span>
-                  <input
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-3 text-white outline-none focus:border-brand"
-                    placeholder="Your name"
-                  />
-                </label>
-                <label className="block">
-                  <span className="text-sm text-white/60">Phone number</span>
-                  <input
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-3 text-white outline-none focus:border-brand"
-                    placeholder="09xx xxx xxx"
-                  />
-                </label>
-                <label className="block sm:col-span-2">
-                  <span className="text-sm text-white/60">
-                    Delivery address / area
+      <div className="mt-8 grid gap-8 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <section className="rounded-card border border-white/[0.06] bg-ink-850 p-6">
+            <div className="flex items-center gap-3">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
+                1
+              </span>
+              <h2 className="text-lg font-bold text-white">Delivery details</h2>
+            </div>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <label className="block">
+                <span className="text-sm text-white/60">Full name</span>
+                <input
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-3 text-white outline-none transition-colors focus:border-brand"
+                  placeholder="Your name"
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm text-white/60">Phone number</span>
+                <input
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  inputMode="tel"
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-3 text-white outline-none transition-colors focus:border-brand"
+                  placeholder="09xx xxx xxx"
+                />
+              </label>
+              <label className="block sm:col-span-2">
+                <span className="text-sm text-white/60">
+                  Delivery address / area
+                </span>
+                <input
+                  value={form.address}
+                  onChange={(e) =>
+                    setForm({ ...form, address: e.target.value })
+                  }
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-3 text-white outline-none transition-colors focus:border-brand"
+                  placeholder="e.g. Kabulonga, Lusaka"
+                />
+              </label>
+            </div>
+          </section>
+
+          <section className="rounded-card border border-white/[0.06] bg-ink-850 p-6">
+            <div className="flex items-center gap-3">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
+                2
+              </span>
+              <h2 className="text-lg font-bold text-white">Payment method</h2>
+            </div>
+            <p className="mt-1.5 pl-11 text-sm text-white/50">
+              Pay securely with Mobile Money.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {payOptions.map((opt) => (
+                <button
+                  key={opt.id}
+                  onClick={() => setMethod(opt.id)}
+                  className={`relative rounded-xl border p-4 text-left transition-all ${
+                    method === opt.id
+                      ? "border-brand bg-brand/10 shadow-brand-glow"
+                      : "border-white/10 bg-ink-900 hover:border-white/20"
+                  }`}
+                >
+                  {method === opt.id && (
+                    <span className="absolute right-3 top-3 grid h-5 w-5 place-items-center rounded-full bg-brand text-ink-950">
+                      <Icon name="check" className="h-3 w-3" />
+                    </span>
+                  )}
+                  <span className="block font-bold text-white">
+                    {opt.label}
                   </span>
-                  <input
-                    value={form.address}
-                    onChange={(e) =>
-                      setForm({ ...form, address: e.target.value })
-                    }
-                    className="mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-3 text-white outline-none focus:border-brand"
-                    placeholder="e.g. Kabulonga, Lusaka"
-                  />
-                </label>
-              </div>
-            </section>
+                  <span className="text-sm text-white/50">{opt.number}</span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-4 flex items-start gap-2 rounded-lg bg-ink-900 p-3 text-xs text-white/40">
+              <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-brand/70" />
+              Pay to {siteConfig.mobileMoney.mtn.accountName} (Kalingalinga
+              branch). When live Mobile Money is configured you&apos;ll get a
+              prompt on your phone; otherwise your order is confirmed on
+              WhatsApp.
+            </p>
+          </section>
+        </div>
 
-            <section className="rounded-card border border-ink-800 bg-ink-850 p-6">
-              <h2 className="text-lg font-bold text-white">Payment Method</h2>
-              <p className="mt-1 text-sm text-white/50">
-                Pay securely with Mobile Money.
-              </p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                {payOptions.map((opt) => (
-                  <button
-                    key={opt.id}
-                    onClick={() => setMethod(opt.id)}
-                    className={`rounded-xl border p-4 text-left transition-colors ${
-                      method === opt.id
-                        ? "border-brand bg-brand/10"
-                        : "border-ink-700 bg-ink-900 hover:border-ink-600"
-                    }`}
-                  >
-                    <span className="block font-bold text-white">{opt.label}</span>
-                    <span className="text-sm text-white/50">{opt.number}</span>
-                  </button>
-                ))}
-              </div>
-              <p className="mt-4 rounded-lg bg-ink-900 p-3 text-xs text-white/40">
-                Pay to {siteConfig.mobileMoney.mtn.accountName} (Kalingalinga
-                branch). When live Mobile Money is configured you&apos;ll get a
-                prompt on your phone; otherwise your order is confirmed on
-                WhatsApp.
-              </p>
-            </section>
-          </div>
-
-          <div className="h-fit rounded-card border border-ink-800 bg-ink-850 p-6">
-            <h2 className="text-lg font-bold text-white">Order Summary</h2>
-            <div className="mt-4 space-y-2">
+        <div className="h-fit lg:sticky lg:top-24">
+          <div className="rounded-card border border-white/[0.06] bg-ink-850 p-6">
+            <h2 className="text-lg font-bold text-white">Order summary</h2>
+            <div className="mt-4 space-y-2.5">
               {items.map((i) => (
                 <div
                   key={i.id}
-                  className="flex justify-between text-sm text-white/60"
+                  className="flex justify-between gap-2 text-sm text-white/60"
                 >
                   <span className="pr-2">
-                    {i.name} x{i.qty}
+                    {i.name}{" "}
+                    <span className="text-white/40">x{i.qty}</span>
                   </span>
-                  <span>{formatPrice(i.price * i.qty)}</span>
+                  <span className="shrink-0 text-white/80">
+                    {formatPrice(i.price * i.qty)}
+                  </span>
                 </div>
               ))}
             </div>
-            <div className="mt-4 border-t border-ink-800 pt-4 flex justify-between text-lg font-black text-white">
+            <div className="mt-4 flex justify-between border-t border-white/10 pt-4 text-lg font-black text-white">
               <span>Total</span>
               <span>{formatPrice(total)}</span>
             </div>
@@ -343,9 +381,16 @@ export default function CheckoutPage() {
             <button
               onClick={placeOrder}
               disabled={!canPlace || phase === "submitting"}
-              className="mt-6 w-full rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-soft disabled:cursor-not-allowed disabled:bg-ink-700 disabled:text-white/40"
+              className="btn-brand mt-6 w-full disabled:shadow-none"
             >
-              {phase === "submitting" ? "Placing order..." : "Place Order"}
+              {phase === "submitting" ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-ink-950/40 border-t-ink-950" />
+                  Placing order...
+                </>
+              ) : (
+                "Place order"
+              )}
             </button>
 
             <a
@@ -355,14 +400,33 @@ export default function CheckoutPage() {
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-semibold text-accent hover:bg-accent/20"
+              className="btn-whatsapp mt-3 w-full"
             >
               <Icon name="whatsapp" className="h-5 w-5" />
               Order on WhatsApp instead
             </a>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* mobile sticky place-order bar */}
+      <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+3.75rem)] z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg lg:hidden">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0">
+            <p className="text-[11px] text-white/45">Total</p>
+            <p className="text-lg font-extrabold text-white">
+              {formatPrice(total)}
+            </p>
+          </div>
+          <button
+            onClick={placeOrder}
+            disabled={!canPlace || phase === "submitting"}
+            className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98] disabled:bg-ink-700 disabled:text-white/40"
+          >
+            {phase === "submitting" ? "Placing..." : "Place order"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

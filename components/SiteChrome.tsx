@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { MobileNav } from "@/components/MobileNav";
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -14,8 +15,9 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   return (
     <>
       <Navbar />
-      <main className="min-h-[70vh]">{children}</main>
+      <main className="min-h-[70vh] pb-20 md:pb-0">{children}</main>
       <Footer />
+      <MobileNav />
     </>
   );
 }

@@ -5,10 +5,21 @@ export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Search" };
 
-export default async function SearchPage() {
-  const [products, categories] = await Promise.all([
+export default async function SearchPage({
+  searchParams
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const [{ q }, products, categories] = await Promise.all([
+    searchParams,
     getAllProducts(),
     getAllCategories()
   ]);
-  return <SearchClient products={products} categories={categories} />;
+  return (
+    <SearchClient
+      products={products}
+      categories={categories}
+      initialQuery={q ?? ""}
+    />
+  );
 }

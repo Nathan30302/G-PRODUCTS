@@ -4,17 +4,20 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Category, Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
+import { Icon } from "@/components/Icons";
 
-const trending = ["iPhone", "Power Bank", "Type-C", "Headphones", "SSD", "Speaker"];
+const trending = ["iPhone", "Power Bank", "Type-C", "Headphones", "SSD", "Laptop"];
 
 export function SearchClient({
   products,
-  categories
+  categories,
+  initialQuery = ""
 }: {
   products: Product[];
   categories: Category[];
+  initialQuery?: string;
 }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [cat, setCat] = useState<string>("all");
 
   const results = useMemo(() => {
@@ -31,27 +34,51 @@ export function SearchClient({
   }, [query, cat, products]);
 
   return (
-    <div className="container-g py-10">
-      <h1 className="text-3xl font-black text-white">Search</h1>
+    <div className="container-g py-8 sm:py-10">
+      <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+        Search
+      </h1>
+      <p className="mt-1 text-sm text-white/50">
+        Find genuine tech across {products.length} products.
+      </p>
 
-      <div className="mt-6">
+      <div className="relative mt-6">
+        <Icon
+          name="search"
+          className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40"
+        />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           autoFocus
           placeholder="Search chargers, phones, power banks..."
-          className="w-full rounded-pill border border-ink-700 bg-ink-900 px-6 py-4 text-white outline-none focus:border-brand"
+          className="w-full rounded-pill border border-white/10 bg-ink-900 py-4 pr-12 text-white outline-none transition-colors focus:border-brand"
+          style={{ paddingLeft: "3.25rem" }}
         />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            aria-label="Clear search"
+            className="absolute right-4 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full bg-white/[0.06] text-white/60 transition-colors hover:text-white"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {!query && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          <span className="text-sm text-white/40">Trending:</span>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="flex items-center gap-1.5 text-sm text-white/40">
+            <Icon name="spark" className="h-4 w-4 text-brand" />
+            Trending:
+          </span>
           {trending.map((t) => (
             <button
               key={t}
               onClick={() => setQuery(t)}
-              className="rounded-pill bg-ink-800 px-3 py-1 text-sm text-white/70 hover:text-white"
+              className="rounded-pill border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-sm text-white/70 transition-colors hover:border-brand/40 hover:text-white"
             >
               {t}
             </button>
@@ -59,13 +86,13 @@ export function SearchClient({
         </div>
       )}
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setCat("all")}
-          className={`rounded-pill px-4 py-1.5 text-sm font-medium ${
+          className={`shrink-0 rounded-pill px-4 py-1.5 text-sm font-medium transition-colors ${
             cat === "all"
               ? "bg-brand text-ink-950"
-              : "bg-ink-800 text-white/70 hover:text-white"
+              : "bg-white/[0.04] text-white/70 hover:text-white"
           }`}
         >
           All
@@ -74,10 +101,10 @@ export function SearchClient({
           <button
             key={c.slug}
             onClick={() => setCat(c.slug)}
-            className={`rounded-pill px-4 py-1.5 text-sm font-medium ${
+            className={`shrink-0 rounded-pill px-4 py-1.5 text-sm font-medium transition-colors ${
               cat === c.slug
                 ? "bg-brand text-ink-950"
-                : "bg-ink-800 text-white/70 hover:text-white"
+                : "bg-white/[0.04] text-white/70 hover:text-white"
             }`}
           >
             {c.name}
@@ -85,17 +112,28 @@ export function SearchClient({
         ))}
       </div>
 
-      <p className="mt-6 text-sm text-white/40">
+      <p className="mt-6 text-sm text-white/45">
         {results.length} result{results.length === 1 ? "" : "s"}
+        {query && (
+          <>
+            {" "}
+            for <span className="text-white/70">&ldquo;{query}&rdquo;</span>
+          </>
+        )}
       </p>
 
       {results.length === 0 ? (
-        <div className="mt-10 rounded-card border border-ink-800 bg-ink-850 p-10 text-center text-white/50">
-          Nothing found. Try another search or{" "}
-          <Link href="/" className="text-brand hover:underline">
-            browse the shop
+        <div className="mt-8 flex flex-col items-center rounded-card border border-white/[0.06] bg-ink-850/60 p-12 text-center">
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-white/[0.04] text-white/40">
+            <Icon name="search" className="h-6 w-6" />
+          </span>
+          <p className="mt-4 font-semibold text-white">Nothing found</p>
+          <p className="mt-1 text-sm text-white/50">
+            Try another search or browse the shop.
+          </p>
+          <Link href="/" className="btn-brand mt-5 px-5 py-2.5">
+            Browse the shop
           </Link>
-          .
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">

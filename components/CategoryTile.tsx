@@ -6,13 +6,15 @@ export function CategoryTile({ category }: { category: Category }) {
   return (
     <Link
       href={`/category/${category.slug}`}
-      className="group flex flex-col items-center gap-3 rounded-card border border-ink-800 bg-ink-850 p-5 text-center transition-colors hover:border-brand/40 hover:bg-ink-800"
+      className="group flex flex-col items-center gap-3 rounded-card border border-white/[0.06] bg-ink-850 p-5 text-center transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-brand/30 hover:bg-ink-800 hover:shadow-card-hover"
     >
-      <span className="grid h-14 w-14 place-items-center rounded-2xl bg-ink-800 text-brand ring-1 ring-ink-700 transition-colors group-hover:bg-brand group-hover:text-ink-950">
+      <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/[0.04] text-brand ring-1 ring-white/10 transition-all duration-300 group-hover:scale-105 group-hover:bg-brand group-hover:text-ink-950 group-hover:ring-brand">
         <Icon name={category.icon} />
       </span>
       <span className="text-sm font-semibold text-white">{category.name}</span>
-      <span className="text-xs text-white/40">{category.tagline}</span>
+      <span className="line-clamp-1 text-xs text-white/40">
+        {category.tagline}
+      </span>
     </Link>
   );
 }

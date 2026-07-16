@@ -21,6 +21,8 @@
     "@prisma/client": "^6.19.3",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
+    "framer-motion": "^12.42.2",
+    "geist": "^1.7.2",
     "jose": "^6.2.3",
     "next": "15.1.6",
     "prisma": "^6.19.3",
