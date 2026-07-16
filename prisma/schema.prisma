@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  STAFF
+}
+
+enum StockStatus {
+  in_stock
+  low_stock
+  sold_out
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(STAFF)
+  createdAt    DateTime @default(now())
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  tagline   String
+  icon      String
+  sortOrder Int       @default(0)
+  products  Product[]
+}
+
+model Product {
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  name           String
+  brand          String?
+  categoryId     String
+  category       Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  price          Int
+  compareAtPrice Int?
+  description    String
+  shortSpecs     String // JSON-encoded string[]
+  stock          StockStatus    @default(in_stock)
+  featured       Boolean        @default(false)
+  hotDeal        Boolean        @default(false)
+  images         ProductImage[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String
+  sortOrder Int     @default(0)
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  ref           String        @unique
+  customerName  String
+  customerPhone String
+  address       String?
+  total         Int
+  status        OrderStatus   @default(PENDING)
+  paymentMethod String // mtn | airtel | zamtel
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentRef    String? // provider transaction/reference id
+  note          String?
+  items         OrderItem[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  name      String
+  price     Int
+  qty       Int
+}

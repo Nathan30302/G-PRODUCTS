@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { SiteChrome } from "@/components/SiteChrome";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -27,9 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-ink-950 text-white antialiased">
         <CartProvider>
-          <Navbar />
-          <main className="min-h-[70vh]">{children}</main>
-          <Footer />
+          <SiteChrome>{children}</SiteChrome>
         </CartProvider>
       </body>
     </html>

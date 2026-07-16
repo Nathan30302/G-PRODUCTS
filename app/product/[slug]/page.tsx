@@ -2,16 +2,17 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getProduct, products, getProductsByCategory } from "@/lib/products";
-import { getCategory } from "@/lib/categories";
+import {
+  getProductBySlug,
+  getProductsByCategory,
+  getCategoryBySlug
+} from "@/lib/queries";
 import { formatPrice, discountPercent } from "@/lib/format";
 import { StockBadge } from "@/components/StockBadge";
 import { ProductActions } from "@/components/ProductActions";
 import { ProductCard } from "@/components/ProductCard";
 
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params
@@ -19,7 +20,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProductBySlug(slug);
   if (!product) return { title: "Product" };
   return {
     title: product.name,
@@ -39,12 +40,15 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const category = getCategory(product.categorySlug);
+  const [category, categoryProducts] = await Promise.all([
+    getCategoryBySlug(product.categorySlug),
+    getProductsByCategory(product.categorySlug)
+  ]);
   const off = discountPercent(product.price, product.compareAtPrice);
-  const related = getProductsByCategory(product.categorySlug)
+  const related = categoryProducts
     .filter((p) => p.id !== product.id)
     .slice(0, 4);
 

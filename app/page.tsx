@@ -2,12 +2,16 @@ import { Hero } from "@/components/Hero";
 import { CategoryTile } from "@/components/CategoryTile";
 import { DealsRow } from "@/components/DealsRow";
 import { TrustBadges } from "@/components/TrustBadges";
-import { categories } from "@/lib/categories";
-import { getFeatured, getHotDeals } from "@/lib/products";
+import { getAllCategories, getFeatured, getHotDeals } from "@/lib/queries";
 
-export default function HomePage() {
-  const hotDeals = getHotDeals();
-  const featured = getFeatured();
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const [categories, hotDeals, featured] = await Promise.all([
+    getAllCategories(),
+    getHotDeals(),
+    getFeatured()
+  ]);
 
   return (
     <>

@@ -1,12 +1,9 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { categories, getCategory } from "@/lib/categories";
-import { getProductsByCategory } from "@/lib/products";
+import { getCategoryBySlug, getProductsByCategory } from "@/lib/queries";
 import { ProductCard } from "@/components/ProductCard";
 
-export function generateStaticParams() {
-  return categories.map((c) => ({ slug: c.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params
@@ -14,7 +11,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const category = getCategory(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) return { title: "Category" };
   return {
     title: category.name,
@@ -28,10 +25,10 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const category = getCategory(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) notFound();
 
-  const items = getProductsByCategory(slug);
+  const items = await getProductsByCategory(slug);
 
   return (
     <div className="container-g py-10">
