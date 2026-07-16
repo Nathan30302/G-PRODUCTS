@@ -11,6 +11,8 @@ export const siteConfig = {
   currency: "ZMW",
   currencySymbol: "K",
   deliveryArea: "Lusaka & nationwide",
+  deliveryNote:
+    "Pickup at Kalingalinga, Lusaka — or delivery via Yango (Gift drives for Yango).",
   supportEmail: "hello@gproducts.zm",
   // Mobile Money accounts (Kalingalinga branch - deposits & withdrawals)
   mobileMoney: {
@@ -26,7 +28,7 @@ export const siteConfig = {
   trust: [
     { title: "Genuine Products", subtitle: "Quality you can trust" },
     { title: "Mobile Money", subtitle: "MTN, Airtel & Zamtel" },
-    { title: "Fast Delivery", subtitle: "Lusaka & nationwide" },
+    { title: "Yango Delivery", subtitle: "Or pickup at Kalingalinga" },
     { title: "Easy Returns", subtitle: "Hassle-free support" }
   ]
 };

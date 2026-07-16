@@ -1,0 +1,298 @@
+import { NextResponse } from "next/server";
+import { writeFile, mkdir } from "fs/promises";
+import path from "path";
+import { prisma } from "@/lib/db";
+import { initiatePayment, type PaymentProvider } from "@/lib/payments";
+import {
+  KEY_CUTTING_PRICE,
+  PRINT_PRICE_BW,
+  PRINT_PRICE_COLOR,
+  LOAN_MIN
+} from "@/lib/services";
+
+export const runtime = "nodejs";
+
+const PROVIDERS: PaymentProvider[] = ["mtn", "airtel", "zamtel"];
+
+function newRef(prefix: string): string {
+  return `${prefix}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+}
+
+async function saveUploads(files: File[]): Promise<string[]> {
+  if (files.length === 0) return [];
+  const dir = path.join(process.cwd(), "public", "uploads", "services");
+  await mkdir(dir, { recursive: true });
+  const urls: string[] = [];
+
+  for (const file of files) {
+    if (!file || file.size === 0) continue;
+    if (file.size > 12 * 1024 * 1024) {
+      throw new Error(`File ${file.name} is too large (max 12MB).`);
+    }
+    const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${safe}`;
+    const buf = Buffer.from(await file.arrayBuffer());
+    await writeFile(path.join(dir, filename), buf);
+    urls.push(`/uploads/services/${filename}`);
+  }
+  return urls;
+}
+
+export async function POST(req: Request) {
+  try {
+    const form = await req.formData();
+    const serviceType = String(form.get("serviceType") ?? "");
+    const customerName = String(form.get("customerName") ?? "").trim();
+    const customerPhone = String(form.get("customerPhone") ?? "").trim();
+    const deliveryMethod =
+      String(form.get("deliveryMethod") ?? "PICKUP") === "YANGO"
+        ? "YANGO"
+        : "PICKUP";
+    const address = String(form.get("address") ?? "").trim() || null;
+    const paymentMethod = (String(form.get("paymentMethod") ?? "mtn") ||
+      "mtn") as PaymentProvider;
+    const detailsRaw = String(form.get("details") ?? "{}");
+
+    if (!customerName || !customerPhone) {
+      return NextResponse.json(
+        { error: "Name and phone are required." },
+        { status: 400 }
+      );
+    }
+    if (deliveryMethod === "YANGO" && !address) {
+      return NextResponse.json(
+        { error: "Please enter a delivery address for Yango." },
+        { status: 400 }
+      );
+    }
+
+    let details: Record<string, unknown> = {};
+    try {
+      details = JSON.parse(detailsRaw);
+    } catch {
+      return NextResponse.json({ error: "Invalid details." }, { status: 400 });
+    }
+
+    // ---- G-Loans (request only, no payment) ----
+    if (serviceType === "G_LOANS") {
+      const amount = Math.round(Number(details.amount) || 0);
+      const weeks = Math.round(Number(details.weeks) || 1);
+      if (amount < LOAN_MIN) {
+        return NextResponse.json(
+          { error: `Minimum loan amount is K ${LOAN_MIN}.` },
+          { status: 400 }
+        );
+      }
+      const ref = newRef("GL");
+      const request = await prisma.serviceRequest.create({
+        data: {
+          ref,
+          serviceType: "G_LOANS",
+          customerName,
+          customerPhone,
+          deliveryMethod: "PICKUP",
+          address: null,
+          details: JSON.stringify({
+            ...details,
+            amount,
+            weeks,
+            collateral: details.collateral ?? "",
+            hasNrc: Boolean(details.hasNrc)
+          }),
+          amount,
+          status: "NEW",
+          paymentStatus: null
+        }
+      });
+      return NextResponse.json({
+        ref: request.ref,
+        mode: "request",
+        message: "Loan request received. We'll contact you on WhatsApp."
+      });
+    }
+
+    // ---- Key cutting ----
+    if (serviceType === "KEY_CUTTING") {
+      const keyType = String(details.keyType ?? "household");
+      const qty = Math.max(1, Math.round(Number(details.qty) || 1));
+      const total = KEY_CUTTING_PRICE * qty;
+      if (!PROVIDERS.includes(paymentMethod)) {
+        return NextResponse.json(
+          { error: "Invalid payment method." },
+          { status: 400 }
+        );
+      }
+
+      const ref = newRef("KC");
+      const order = await prisma.order.create({
+        data: {
+          ref,
+          customerName,
+          customerPhone,
+          address,
+          total,
+          status: "PENDING",
+          paymentMethod,
+          paymentStatus: "PENDING",
+          note: `Key cutting · ${keyType} · ${deliveryMethod}`,
+          items: {
+            create: [
+              {
+                name: `Key cutting (${keyType})`,
+                price: KEY_CUTTING_PRICE,
+                qty
+              }
+            ]
+          }
+        }
+      });
+
+      const payment = await initiatePayment({
+        provider: paymentMethod,
+        amount: total,
+        phone: customerPhone,
+        orderRef: ref,
+        description: `G-Products key cutting ${ref}`
+      });
+
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          paymentRef: payment.reference ?? null,
+          paymentStatus: payment.status,
+          note: payment.message ?? order.note
+        }
+      });
+
+      await prisma.serviceRequest.create({
+        data: {
+          ref,
+          serviceType: "KEY_CUTTING",
+          customerName,
+          customerPhone,
+          deliveryMethod,
+          address,
+          details: JSON.stringify({ keyType, qty, notes: details.notes ?? "" }),
+          amount: total,
+          status: "NEW",
+          paymentMethod,
+          paymentStatus: payment.status,
+          paymentRef: payment.reference ?? null,
+          orderId: order.id
+        }
+      });
+
+      return NextResponse.json({
+        ref,
+        mode: payment.mode,
+        paymentStatus: payment.status,
+        message: payment.message,
+        total
+      });
+    }
+
+    // ---- Printing ----
+    if (serviceType === "PRINTING") {
+      const colour = String(details.colour ?? "bw") === "color";
+      const pages = Math.max(1, Math.round(Number(details.pages) || 1));
+      const copies = Math.max(1, Math.round(Number(details.copies) || 1));
+      const perPage = colour ? PRINT_PRICE_COLOR : PRINT_PRICE_BW;
+      const total = perPage * pages * copies;
+
+      const uploadFiles = form
+        .getAll("files")
+        .filter((f): f is File => typeof f !== "string" && f instanceof File);
+      const fileUrls = await saveUploads(uploadFiles);
+      if (fileUrls.length === 0) {
+        return NextResponse.json(
+          { error: "Please upload at least one document to print." },
+          { status: 400 }
+        );
+      }
+      if (!PROVIDERS.includes(paymentMethod)) {
+        return NextResponse.json(
+          { error: "Invalid payment method." },
+          { status: 400 }
+        );
+      }
+
+      const ref = newRef("PR");
+      const order = await prisma.order.create({
+        data: {
+          ref,
+          customerName,
+          customerPhone,
+          address,
+          total,
+          status: "PENDING",
+          paymentMethod,
+          paymentStatus: "PENDING",
+          note: `Printing · ${colour ? "Colour" : "B&W"} · ${pages}p × ${copies} · ${deliveryMethod}`,
+          items: {
+            create: [
+              {
+                name: `Printing (${colour ? "Colour" : "B&W"}, ${pages} pages × ${copies})`,
+                price: total,
+                qty: 1
+              }
+            ]
+          }
+        }
+      });
+
+      const payment = await initiatePayment({
+        provider: paymentMethod,
+        amount: total,
+        phone: customerPhone,
+        orderRef: ref,
+        description: `G-Products printing ${ref}`
+      });
+
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          paymentRef: payment.reference ?? null,
+          paymentStatus: payment.status
+        }
+      });
+
+      await prisma.serviceRequest.create({
+        data: {
+          ref,
+          serviceType: "PRINTING",
+          customerName,
+          customerPhone,
+          deliveryMethod,
+          address,
+          details: JSON.stringify({
+            colour: colour ? "color" : "bw",
+            pages,
+            copies,
+            notes: details.notes ?? ""
+          }),
+          fileUrls: JSON.stringify(fileUrls),
+          amount: total,
+          status: "NEW",
+          paymentMethod,
+          paymentStatus: payment.status,
+          paymentRef: payment.reference ?? null,
+          orderId: order.id
+        }
+      });
+
+      return NextResponse.json({
+        ref,
+        mode: payment.mode,
+        paymentStatus: payment.status,
+        message: payment.message,
+        total,
+        files: fileUrls.length
+      });
+    }
+
+    return NextResponse.json({ error: "Unknown service." }, { status: 400 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Request failed.";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}

@@ -216,6 +216,29 @@ export function Icon({ name, className }: { name: string; className?: string }) 
           <path d="M12 7v5l3 2" />
         </svg>
       );
+    case "key":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="8" cy="15" r="4" />
+          <path d="M10.5 12.5 21 2l-3 1-2 3-3 1" />
+          <path d="m16 6 2 2" />
+        </svg>
+      );
+    case "printer":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M7 8V4h10v4" />
+          <rect x="5" y="12" width="14" height="8" rx="1.5" />
+          <path d="M5 14H3.5A1.5 1.5 0 0 1 2 12.5v-2A2.5 2.5 0 0 1 4.5 8h15A2.5 2.5 0 0 1 22 10.5v2a1.5 1.5 0 0 1-1.5 1.5H19" />
+          <path d="M8 16h8" />
+        </svg>
+      );
+    case "services":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+        </svg>
+      );
     default:
       return (
         <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>

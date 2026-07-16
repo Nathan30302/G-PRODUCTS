@@ -24,3 +24,10 @@ export function orderWhatsAppLink(
   const text = encodeURIComponent(`${header}\n${body}\n${footer}`);
   return `https://wa.me/${siteConfig.whatsappNumber}?text=${text}`;
 }
+
+export function serviceWhatsAppLink(lines: string[]): string {
+  const text = encodeURIComponent(
+    ["Hi G-Products, I'd like a service:", ...lines].join("\n")
+  );
+  return `https://wa.me/${siteConfig.whatsappNumber}?text=${text}`;
+}

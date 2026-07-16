@@ -3,6 +3,7 @@ import { CategoryTile } from "@/components/CategoryTile";
 import { ProductRail } from "@/components/ProductRail";
 import { TrustBadges } from "@/components/TrustBadges";
 import { WhyGProducts } from "@/components/WhyGProducts";
+import { ServicesBand } from "@/components/ServicesBand";
 import { ContactBand } from "@/components/ContactBand";
 import { Stagger, StaggerItem, Reveal } from "@/components/Reveal";
 import {
@@ -71,6 +72,8 @@ export default async function HomePage() {
       />
 
       <WhyGProducts />
+
+      <ServicesBand />
 
       <TrustBadges />
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { categories } from "@/lib/categories";
+import { services } from "@/lib/services";
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
@@ -7,7 +8,7 @@ import { Icon } from "@/components/Icons";
 export function Footer() {
   return (
     <footer className="mt-20 border-t border-white/10 bg-ink-900">
-      <div className="container-g grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="container-g grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-5">
         <div>
           <Logo />
           <p className="mt-4 text-sm font-semibold text-brand/90">
@@ -45,6 +46,27 @@ export function Footer() {
         </div>
 
         <div>
+          <h4 className="text-sm font-semibold text-white">Services</h4>
+          <ul className="mt-4 space-y-2.5 text-sm text-white/55">
+            {services.map((s) => (
+              <li key={s.slug}>
+                <Link
+                  href={`/services/${s.slug}`}
+                  className="transition-colors hover:text-brand"
+                >
+                  {s.name}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/services" className="transition-colors hover:text-brand">
+                All services
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
           <h4 className="flex items-center gap-2 text-sm font-semibold text-white">
             <Icon name="clock" className="h-4 w-4 text-brand" />
             Working Hours
@@ -66,7 +88,7 @@ export function Footer() {
         <div>
           <h4 className="text-sm font-semibold text-white">Get in touch</h4>
           <p className="mt-4 text-sm text-white/55">
-            Message us on WhatsApp for quick help with any product.
+            Message us on WhatsApp for products, key cutting, loans or printing.
           </p>
           <p className="mt-3 text-sm font-semibold text-white">
             {siteConfig.phoneDisplay}

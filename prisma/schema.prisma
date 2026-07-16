@@ -106,3 +106,44 @@ model OrderItem {
   price     Int
   qty       Int
 }
+
+enum ServiceType {
+  KEY_CUTTING
+  G_LOANS
+  PRINTING
+}
+
+enum DeliveryMethod {
+  PICKUP
+  YANGO
+}
+
+enum ServiceStatus {
+  NEW
+  CONFIRMED
+  IN_PROGRESS
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+model ServiceRequest {
+  id              String          @id @default(cuid())
+  ref             String          @unique
+  serviceType     ServiceType
+  customerName    String
+  customerPhone   String
+  deliveryMethod  DeliveryMethod  @default(PICKUP)
+  address         String?
+  details         String // JSON payload (key types, loan amount, print options, etc.)
+  fileUrls        String? // JSON string[] of uploaded file paths (printing)
+  amount          Int? // ZMW total when payable
+  status          ServiceStatus   @default(NEW)
+  paymentMethod   String? // mtn | airtel | zamtel
+  paymentStatus   PaymentStatus?
+  paymentRef      String?
+  orderId         String?
+  note            String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}

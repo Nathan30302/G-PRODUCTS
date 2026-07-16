@@ -74,7 +74,7 @@ export function Navbar() {
         </div>
 
         <nav className="hidden items-center gap-1 text-sm lg:flex">
-          {categories.slice(0, 6).map((c) => {
+          {categories.slice(0, 5).map((c) => {
             const active = pathname === `/category/${c.slug}`;
             return (
               <Link
@@ -90,6 +90,16 @@ export function Navbar() {
               </Link>
             );
           })}
+          <Link
+            href="/services"
+            className={`rounded-pill px-3 py-2 font-semibold transition-colors ${
+              pathname?.startsWith("/services")
+                ? "bg-brand/15 text-brand"
+                : "text-brand hover:bg-brand/10"
+            }`}
+          >
+            Services
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -149,6 +159,13 @@ export function Navbar() {
                   {c.name}
                 </Link>
               ))}
+              <Link
+                href="/services"
+                className="col-span-2 flex items-center gap-2 rounded-xl bg-brand/15 px-3 py-2.5 text-sm font-semibold text-brand transition-colors hover:bg-brand/25"
+              >
+                <Icon name="services" className="h-4 w-4" />
+                Services — Keys, Loans, Printing
+              </Link>
             </div>
           </motion.div>
         )}
