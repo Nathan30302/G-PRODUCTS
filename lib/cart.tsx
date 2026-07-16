@@ -8,12 +8,15 @@ import {
   useReducer,
   ReactNode
 } from "react";
-import { Product } from "@/lib/types";
+import { Product, ProductVariant } from "@/lib/types";
 
 export type CartItem = {
-  id: string;
+  id: string; // productId:variantId or productId
+  productId: string;
+  variantId?: string;
   slug: string;
   name: string;
+  variantName?: string;
   price: number;
   image: string;
   qty: number;
@@ -21,23 +24,37 @@ export type CartItem = {
 
 type CartState = { items: CartItem[] };
 
+type AddPayload = {
+  product: Product;
+  variant?: ProductVariant;
+};
+
 type CartAction =
-  | { type: "add"; product: Product }
+  | { type: "add"; payload: AddPayload }
   | { type: "remove"; id: string }
   | { type: "setQty"; id: string; qty: number }
   | { type: "clear" }
   | { type: "hydrate"; state: CartState };
 
-const STORAGE_KEY = "gproducts_cart";
+const STORAGE_KEY = "gproducts_cart_v2";
+
+function cartLineId(productId: string, variantId?: string) {
+  return variantId ? `${productId}:${variantId}` : productId;
+}
 
 function reducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "add": {
-      const existing = state.items.find((i) => i.id === action.product.id);
+      const { product, variant } = action.payload;
+      const id = cartLineId(product.id, variant?.id);
+      const displayName = variant
+        ? `${product.name} (${variant.name})`
+        : product.name;
+      const existing = state.items.find((i) => i.id === id);
       if (existing) {
         return {
           items: state.items.map((i) =>
-            i.id === action.product.id ? { ...i, qty: i.qty + 1 } : i
+            i.id === id ? { ...i, qty: i.qty + 1 } : i
           )
         };
       }
@@ -45,11 +62,14 @@ function reducer(state: CartState, action: CartAction): CartState {
         items: [
           ...state.items,
           {
-            id: action.product.id,
-            slug: action.product.slug,
-            name: action.product.name,
-            price: action.product.price,
-            image: action.product.images[0]?.url ?? "",
+            id,
+            productId: product.id,
+            variantId: variant?.id,
+            slug: product.slug,
+            name: displayName,
+            variantName: variant?.name,
+            price: product.price,
+            image: product.images[0]?.url ?? "",
             qty: 1
           }
         ]
@@ -76,7 +96,7 @@ type CartContextValue = {
   items: CartItem[];
   count: number;
   total: number;
-  add: (product: Product) => void;
+  add: (product: Product, variant?: ProductVariant) => void;
   remove: (id: string) => void;
   setQty: (id: string, qty: number) => void;
   clear: () => void;
@@ -92,7 +112,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) dispatch({ type: "hydrate", state: JSON.parse(raw) });
     } catch {
-      // ignore corrupt storage
+      // ignore
     }
   }, []);
 
@@ -100,7 +120,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
-      // ignore quota errors
+      // ignore
     }
   }, [state]);
 
@@ -111,7 +131,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items: state.items,
       count,
       total,
-      add: (product) => dispatch({ type: "add", product }),
+      add: (product, variant) =>
+        dispatch({ type: "add", payload: { product, variant } }),
       remove: (id) => dispatch({ type: "remove", id }),
       setQty: (id, qty) => dispatch({ type: "setQty", id, qty }),
       clear: () => dispatch({ type: "clear" })

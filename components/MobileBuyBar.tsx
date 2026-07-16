@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/components/Toast";
 import { productWhatsAppLink } from "@/lib/whatsapp";
@@ -11,14 +12,17 @@ export function MobileBuyBar({ product }: { product: Product }) {
   const { add } = useCart();
   const { toast } = useToast();
   const soldOut = product.stock === "sold_out";
+  const multi = product.variants.length > 1;
+  const first = product.variants.find((v) => v.available);
   const waLink = productWhatsAppLink(product);
 
   function handleAdd() {
-    if (soldOut) return;
-    add(product);
+    if (soldOut || !first) return;
+    if (multi) return; // use Choose colour link
+    add(product, first);
     toast({
       title: "Added to cart",
-      description: product.name,
+      description: `${product.name} · ${first.name}`,
       image: product.images[0]?.url,
       href: "/cart",
       hrefLabel: "View cart"
@@ -43,20 +47,29 @@ export function MobileBuyBar({ product }: { product: Product }) {
         >
           <Icon name="whatsapp" className="h-5 w-5" />
         </a>
-        <button
-          onClick={handleAdd}
-          disabled={soldOut}
-          className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98] disabled:bg-ink-700 disabled:text-white/40"
-        >
-          {soldOut ? (
-            "Sold Out"
-          ) : (
-            <>
-              <Icon name="cart" className="h-4 w-4" />
-              Add to Cart
-            </>
-          )}
-        </button>
+        {soldOut ? (
+          <Link
+            href="#buy"
+            className="flex flex-1 items-center justify-center rounded-pill border border-white/20 bg-white/[0.06] px-4 py-3 text-sm font-bold text-white/60"
+          >
+            Notify me
+          </Link>
+        ) : multi ? (
+          <Link
+            href="#buy"
+            className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950"
+          >
+            Choose colour
+          </Link>
+        ) : (
+          <button
+            onClick={handleAdd}
+            className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98]"
+          >
+            <Icon name="cart" className="h-4 w-4" />
+            Add to Cart
+          </button>
+        )}
       </div>
     </div>
   );

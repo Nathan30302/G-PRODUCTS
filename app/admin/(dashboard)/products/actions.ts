@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireUser, requireOwner } from "@/lib/auth";
+import { stockFromQuantity } from "@/lib/types";
 
 function slugify(input: string): string {
   return input
@@ -17,7 +18,6 @@ function slugify(input: string): string {
 async function uniqueSlug(base: string, ignoreId?: string): Promise<string> {
   let slug = base || "product";
   let n = 1;
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const existing = await prisma.product.findUnique({ where: { slug } });
     if (!existing || existing.id === ignoreId) return slug;
@@ -33,6 +33,24 @@ function toInt(value: FormDataEntryValue | null): number | null {
   return parseInt(s, 10);
 }
 
+type VariantInput = { name: string; colorHex?: string; quantity: number };
+
+function parseVariants(raw: string): VariantInput[] {
+  try {
+    const list = JSON.parse(raw) as VariantInput[];
+    if (!Array.isArray(list)) return [];
+    return list
+      .map((v) => ({
+        name: String(v.name ?? "").trim(),
+        colorHex: String(v.colorHex ?? "").trim() || undefined,
+        quantity: Math.max(0, Math.round(Number(v.quantity) || 0))
+      }))
+      .filter((v) => v.name);
+  } catch {
+    return [];
+  }
+}
+
 export async function saveProduct(formData: FormData): Promise<void> {
   await requireUser();
 
@@ -43,7 +61,6 @@ export async function saveProduct(formData: FormData): Promise<void> {
   const description = String(formData.get("description") ?? "").trim();
   const price = toInt(formData.get("price")) ?? 0;
   const compareAtPrice = toInt(formData.get("compareAtPrice"));
-  const stock = String(formData.get("stock") ?? "in_stock");
   const featured = formData.get("featured") === "on";
   const hotDeal = formData.get("hotDeal") === "on";
 
@@ -57,6 +74,11 @@ export async function saveProduct(formData: FormData): Promise<void> {
     .map((s) => s.trim())
     .filter(Boolean);
 
+  const variants = parseVariants(String(formData.get("variantsJson") ?? "[]"));
+  if (variants.length === 0) {
+    variants.push({ name: "Standard", quantity: 0 });
+  }
+
   if (!name || !categorySlug) {
     throw new Error("Name and category are required.");
   }
@@ -66,11 +88,8 @@ export async function saveProduct(formData: FormData): Promise<void> {
   });
   if (!category) throw new Error("Unknown category.");
 
-  const stockValue = (["in_stock", "low_stock", "sold_out"] as const).includes(
-    stock as never
-  )
-    ? (stock as "in_stock" | "low_stock" | "sold_out")
-    : "in_stock";
+  const totalQty = variants.reduce((n, v) => n + v.quantity, 0);
+  const stockValue = stockFromQuantity(totalQty);
 
   const data = {
     name,
@@ -97,7 +116,6 @@ export async function saveProduct(formData: FormData): Promise<void> {
     productId = created.id;
   }
 
-  // Replace images with the provided list
   if (imageUrls.length > 0) {
     await prisma.productImage.deleteMany({ where: { productId } });
     await prisma.productImage.createMany({
@@ -110,8 +128,21 @@ export async function saveProduct(formData: FormData): Promise<void> {
     });
   }
 
+  // Replace variants
+  await prisma.productVariant.deleteMany({ where: { productId } });
+  await prisma.productVariant.createMany({
+    data: variants.map((v, idx) => ({
+      productId,
+      name: v.name,
+      colorHex: v.colorHex ?? null,
+      quantity: v.quantity,
+      sortOrder: idx
+    }))
+  });
+
   revalidatePath("/admin/products");
   revalidatePath("/");
+  revalidatePath(`/product`);
   redirect("/admin/products");
 }
 

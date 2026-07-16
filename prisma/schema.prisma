@@ -53,22 +53,24 @@ model Category {
 }
 
 model Product {
-  id             String         @id @default(cuid())
-  slug           String         @unique
+  id             String          @id @default(cuid())
+  slug           String          @unique
   name           String
   brand          String?
   categoryId     String
-  category       Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category       Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   price          Int
   compareAtPrice Int?
   description    String
   shortSpecs     String // JSON-encoded string[]
-  stock          StockStatus    @default(in_stock)
-  featured       Boolean        @default(false)
-  hotDeal        Boolean        @default(false)
+  stock          StockStatus     @default(in_stock) // overall status (derived from variants when present)
+  featured       Boolean         @default(false)
+  hotDeal        Boolean         @default(false)
   images         ProductImage[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  variants       ProductVariant[]
+  stockNotifies  StockNotify[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model ProductImage {
@@ -78,6 +80,27 @@ model ProductImage {
   url       String
   alt       String
   sortOrder Int     @default(0)
+}
+
+/// Color / option variants with their own quantity
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String // e.g. Black, White, Blue
+  colorHex  String? // e.g. #111111 for swatch
+  quantity  Int     @default(0)
+  sortOrder Int     @default(0)
+}
+
+/// Customer asked to be notified when a sold-out item/variant is back
+model StockNotify {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variantId String?
+  contact   String // phone or email
+  createdAt DateTime @default(now())
 }
 
 model Order {

@@ -1,15 +1,35 @@
 import { prisma } from "@/lib/db";
-import { Category, Product } from "@/lib/types";
+import {
+  Category,
+  Product,
+  ProductVariant,
+  overallStock,
+  stockFromQuantity
+} from "@/lib/types";
 import type {
   Product as DbProduct,
   ProductImage as DbImage,
+  ProductVariant as DbVariant,
   Category as DbCategory
 } from "@prisma/client";
 
 type DbProductWithRelations = DbProduct & {
   images: DbImage[];
   category: DbCategory;
+  variants: DbVariant[];
 };
+
+function toVariants(rows: DbVariant[]): ProductVariant[] {
+  return rows
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((v) => ({
+      id: v.id,
+      name: v.name,
+      colorHex: v.colorHex ?? undefined,
+      quantity: v.quantity,
+      available: v.quantity > 0
+    }));
+}
 
 function toProduct(p: DbProductWithRelations): Product {
   let specs: string[] = [];
@@ -19,6 +39,11 @@ function toProduct(p: DbProductWithRelations): Product {
   } catch {
     specs = [];
   }
+
+  const variants = toVariants(p.variants);
+  const stock =
+    variants.length > 0 ? overallStock(variants) : p.stock;
+
   return {
     id: p.id,
     slug: p.slug,
@@ -32,9 +57,10 @@ function toProduct(p: DbProductWithRelations): Product {
       .map((i) => ({ url: i.url, alt: i.alt })),
     shortSpecs: specs,
     description: p.description,
-    stock: p.stock,
+    stock,
     featured: p.featured,
-    hotDeal: p.hotDeal
+    hotDeal: p.hotDeal,
+    variants
   };
 }
 
@@ -42,7 +68,11 @@ function toCategory(c: DbCategory): Category {
   return { slug: c.slug, name: c.name, tagline: c.tagline, icon: c.icon };
 }
 
-const withRelations = { images: true, category: true } as const;
+const withRelations = {
+  images: true,
+  category: true,
+  variants: true
+} as const;
 
 export async function getAllCategories(): Promise<Category[]> {
   const cats = await prisma.category.findMany({ orderBy: { sortOrder: "asc" } });
@@ -98,3 +128,5 @@ export async function getHotDeals(): Promise<Product[]> {
   });
   return items.map(toProduct);
 }
+
+export { stockFromQuantity };

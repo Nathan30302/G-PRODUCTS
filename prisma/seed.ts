@@ -97,9 +97,25 @@ async function main() {
           sortOrder: idx
         }))
       });
+
+      // Default colour variant from legacy stock status
+      const qty =
+        p.stock === "sold_out" ? 0 : p.stock === "low_stock" ? 3 : 12;
+      await prisma.productVariant.deleteMany({
+        where: { productId: created.id }
+      });
+      await prisma.productVariant.create({
+        data: {
+          productId: created.id,
+          name: "Standard",
+          colorHex: null,
+          quantity: qty,
+          sortOrder: 0
+        }
+      });
     }
   }
-  console.log(`Seeded ${products.length} products`);
+  console.log(`Seeded ${products.length} products (+ colour variants)`);
 
   // --- Service offerings (admin-editable) ---
   for (let i = 0; i < services.length; i++) {

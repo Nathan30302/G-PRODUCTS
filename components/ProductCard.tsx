@@ -63,8 +63,32 @@ export function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
+        {product.variants.length > 1 && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            {product.variants.slice(0, 5).map((v) => (
+              <span
+                key={v.id}
+                title={
+                  v.available
+                    ? `${v.name} · ${v.quantity} left`
+                    : `${v.name} · out of stock`
+                }
+                className={`h-3.5 w-3.5 rounded-full ring-1 ring-white/25 ${
+                  v.available ? "" : "opacity-35 grayscale"
+                }`}
+                style={{ backgroundColor: v.colorHex || "#6b7280" }}
+              />
+            ))}
+            {product.variants.length > 5 && (
+              <span className="text-[10px] text-white/35">
+                +{product.variants.length - 5}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="mt-4">
-          <AddToCartButton product={product} compact />
+          <AddToCartButton product={product} compact requireOptions />
         </div>
       </div>
     </div>

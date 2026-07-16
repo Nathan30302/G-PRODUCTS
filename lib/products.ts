@@ -1,5 +1,8 @@
 import { Product } from "@/lib/types";
 
+// Seed catalog only — colour variants are created in prisma/seed.ts.
+type SeedProduct = Omit<Product, "variants">;
+
 // G-Products real catalog, sourced from the seller's official price list and
 // product flyers (July 2026). Prices are in ZMW. Product data is loaded into
 // the database via the seed script and managed from the admin panel after that.
@@ -20,7 +23,7 @@ const IMG = {
     "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=900&q=80"
 };
 
-export const products: Product[] = [
+export const products: SeedProduct[] = [
   // ------------------------- Laptops -------------------------
   {
     id: "p-dell-3400",
@@ -768,18 +771,25 @@ export const products: Product[] = [
   }
 ];
 
+function withVariants(p: SeedProduct): Product {
+  return { ...p, variants: [] };
+}
+
 export function getProduct(slug: string): Product | undefined {
-  return products.find((p) => p.slug === slug);
+  const p = products.find((x) => x.slug === slug);
+  return p ? withVariants(p) : undefined;
 }
 
 export function getProductsByCategory(categorySlug: string): Product[] {
-  return products.filter((p) => p.categorySlug === categorySlug);
+  return products
+    .filter((p) => p.categorySlug === categorySlug)
+    .map(withVariants);
 }
 
 export function getFeatured(): Product[] {
-  return products.filter((p) => p.featured);
+  return products.filter((p) => p.featured).map(withVariants);
 }
 
 export function getHotDeals(): Product[] {
-  return products.filter((p) => p.hotDeal);
+  return products.filter((p) => p.hotDeal).map(withVariants);
 }

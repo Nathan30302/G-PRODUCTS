@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { saveProduct, deleteProduct } from "@/app/admin/(dashboard)/products/actions";
+import { VariantEditor, type VariantRow } from "@/components/admin/VariantEditor";
 
 type Category = { slug: string; name: string };
 
@@ -12,10 +13,10 @@ type ProductFormData = {
   compareAtPrice: number | null;
   description: string;
   shortSpecs: string[];
-  stock: string;
   featured: boolean;
   hotDeal: boolean;
   imageUrls: string[];
+  variants: VariantRow[];
 };
 
 const field =
@@ -55,7 +56,7 @@ export function ProductForm({
             defaultValue={product?.name}
             required
             className={field}
-            placeholder="e.g. iPhone 13 128GB"
+            placeholder="e.g. Wireless Mouse"
           />
         </div>
 
@@ -66,7 +67,7 @@ export function ProductForm({
               name="brand"
               defaultValue={product?.brand}
               className={field}
-              placeholder="e.g. Apple"
+              placeholder="e.g. Oraimo"
             />
           </div>
           <div>
@@ -95,7 +96,7 @@ export function ProductForm({
               defaultValue={product?.price}
               required
               className={field}
-              placeholder="e.g. 12500"
+              placeholder="e.g. 75"
             />
           </div>
           <div>
@@ -111,18 +112,13 @@ export function ProductForm({
           </div>
         </div>
 
-        <div>
-          <label className={label}>Stock status</label>
-          <select
-            name="stock"
-            defaultValue={product?.stock ?? "in_stock"}
-            className={field}
-          >
-            <option value="in_stock">In Stock</option>
-            <option value="low_stock">Low Stock</option>
-            <option value="sold_out">Sold Out</option>
-          </select>
-        </div>
+        <VariantEditor
+          initial={
+            product?.variants?.length
+              ? product.variants
+              : [{ name: "Black", colorHex: "#111111", quantity: 5 }]
+          }
+        />
 
         <div>
           <label className={label}>Description</label>
@@ -142,7 +138,7 @@ export function ProductForm({
             defaultValue={product?.shortSpecs.join("\n")}
             rows={3}
             className={field}
-            placeholder={"128GB storage\n6.1-inch OLED\nDual camera"}
+            placeholder={"Wireless\nLong battery\nPlug & play"}
           />
         </div>
 
@@ -155,10 +151,6 @@ export function ProductForm({
             className={field}
             placeholder="https://... (paste photo links)"
           />
-          <p className="mt-1 text-xs text-white/40">
-            Paste image links. Direct file uploads come with cloud image
-            hosting.
-          </p>
         </div>
 
         <div className="flex flex-wrap gap-6">
@@ -199,7 +191,10 @@ export function ProductForm({
       </form>
 
       {isEdit && canDelete && (
-        <form action={deleteProduct} className="mt-10 max-w-2xl border-t border-ink-800 pt-6">
+        <form
+          action={deleteProduct}
+          className="mt-10 max-w-2xl border-t border-ink-800 pt-6"
+        >
           <input type="hidden" name="id" value={product!.id} />
           <button
             type="submit"
@@ -207,9 +202,6 @@ export function ProductForm({
           >
             Delete product
           </button>
-          <p className="mt-2 text-xs text-white/40">
-            This permanently removes the product and its images.
-          </p>
         </form>
       )}
     </div>
