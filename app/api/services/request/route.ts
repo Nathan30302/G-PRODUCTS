@@ -3,12 +3,7 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/db";
 import { initiatePayment, type PaymentProvider } from "@/lib/payments";
-import {
-  KEY_CUTTING_PRICE,
-  PRINT_PRICE_BW,
-  PRINT_PRICE_COLOR,
-  LOAN_MIN
-} from "@/lib/services";
+import { DEFAULT_SETTINGS, parseSettings } from "@/lib/services";
 
 export const runtime = "nodejs";
 
@@ -16,6 +11,11 @@ const PROVIDERS: PaymentProvider[] = ["mtn", "airtel", "zamtel"];
 
 function newRef(prefix: string): string {
   return `${prefix}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+}
+
+async function loadSettings(slug: string) {
+  const offer = await prisma.serviceOffer.findUnique({ where: { slug } });
+  return offer ? parseSettings(offer.settings) : { ...DEFAULT_SETTINGS };
 }
 
 async function saveUploads(files: File[]): Promise<string[]> {
@@ -75,11 +75,12 @@ export async function POST(req: Request) {
 
     // ---- G-Loans (request only, no payment) ----
     if (serviceType === "G_LOANS") {
+      const settings = await loadSettings("g-loans");
       const amount = Math.round(Number(details.amount) || 0);
       const weeks = Math.round(Number(details.weeks) || 1);
-      if (amount < LOAN_MIN) {
+      if (amount < settings.loanMin) {
         return NextResponse.json(
-          { error: `Minimum loan amount is K ${LOAN_MIN}.` },
+          { error: `Minimum loan amount is K ${settings.loanMin}.` },
           { status: 400 }
         );
       }
@@ -113,15 +114,55 @@ export async function POST(req: Request) {
 
     // ---- Key cutting ----
     if (serviceType === "KEY_CUTTING") {
+      const settings = await loadSettings("key-cutting");
       const keyType = String(details.keyType ?? "household");
       const qty = Math.max(1, Math.round(Number(details.qty) || 1));
-      const total = KEY_CUTTING_PRICE * qty;
+      const flow =
+        String(details.flow ?? "") === "YANGO_ROUNDTRIP"
+          ? "YANGO_ROUNDTRIP"
+          : "IN_STORE";
+      const cutFee = settings.keyCuttingPrice * qty;
+      const yangoToStore =
+        flow === "YANGO_ROUNDTRIP" ? settings.yangoLegFee : 0;
+      const yangoReturn =
+        flow === "YANGO_ROUNDTRIP" ? settings.yangoLegFee : 0;
+      const total = cutFee + yangoToStore + yangoReturn;
+      const method = flow === "YANGO_ROUNDTRIP" ? "YANGO" : "PICKUP";
+
+      if (flow === "YANGO_ROUNDTRIP" && !address) {
+        return NextResponse.json(
+          { error: "Please enter your address for Yango pickup and return." },
+          { status: 400 }
+        );
+      }
       if (!PROVIDERS.includes(paymentMethod)) {
         return NextResponse.json(
           { error: "Invalid payment method." },
           { status: 400 }
         );
       }
+
+      const lineItems = [
+        {
+          name: `Key cutting (${keyType})`,
+          price: settings.keyCuttingPrice,
+          qty
+        },
+        ...(flow === "YANGO_ROUNDTRIP"
+          ? [
+              {
+                name: "Yango to G-Products (collect key)",
+                price: settings.yangoLegFee,
+                qty: 1
+              },
+              {
+                name: "Yango return (original + new key)",
+                price: settings.yangoLegFee,
+                qty: 1
+              }
+            ]
+          : [])
+      ];
 
       const ref = newRef("KC");
       const order = await prisma.order.create({
@@ -134,16 +175,8 @@ export async function POST(req: Request) {
           status: "PENDING",
           paymentMethod,
           paymentStatus: "PENDING",
-          note: `Key cutting · ${keyType} · ${deliveryMethod}`,
-          items: {
-            create: [
-              {
-                name: `Key cutting (${keyType})`,
-                price: KEY_CUTTING_PRICE,
-                qty
-              }
-            ]
-          }
+          note: `Key cutting · ${keyType} · ${flow}`,
+          items: { create: lineItems }
         }
       });
 
@@ -170,9 +203,17 @@ export async function POST(req: Request) {
           serviceType: "KEY_CUTTING",
           customerName,
           customerPhone,
-          deliveryMethod,
+          deliveryMethod: method,
           address,
-          details: JSON.stringify({ keyType, qty, notes: details.notes ?? "" }),
+          details: JSON.stringify({
+            keyType,
+            qty,
+            notes: details.notes ?? "",
+            flow,
+            cutFee,
+            yangoToStore,
+            yangoReturn
+          }),
           amount: total,
           status: "NEW",
           paymentMethod,
@@ -193,10 +234,11 @@ export async function POST(req: Request) {
 
     // ---- Printing ----
     if (serviceType === "PRINTING") {
+      const settings = await loadSettings("printing");
       const colour = String(details.colour ?? "bw") === "color";
       const pages = Math.max(1, Math.round(Number(details.pages) || 1));
       const copies = Math.max(1, Math.round(Number(details.copies) || 1));
-      const perPage = colour ? PRINT_PRICE_COLOR : PRINT_PRICE_BW;
+      const perPage = colour ? settings.printColor : settings.printBw;
       const total = perPage * pages * copies;
 
       const uploadFiles = form

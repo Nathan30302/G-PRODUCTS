@@ -1,14 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { LOAN_MIN, LOAN_RATES } from "@/lib/services";
+import type { ServiceSettings } from "@/lib/services";
 import { formatPrice } from "@/lib/format";
 import { ServiceResult } from "@/components/services/ServiceResult";
 
 const field =
   "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
 
-export function GLoansForm() {
+export function GLoansForm({ settings }: { settings: ServiceSettings }) {
+  const LOAN_MIN = settings.loanMin;
+  const LOAN_RATES = settings.loanRates;
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState(LOAN_MIN);

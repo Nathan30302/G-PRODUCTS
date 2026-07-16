@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { services } from "@/lib/services";
+import { getAllServiceOffers } from "@/lib/service-queries";
 import { ServiceTile } from "@/components/ServiceTile";
 import { siteConfig } from "@/config/site";
 
@@ -10,7 +10,9 @@ export const metadata = {
     "Key cutting, G-Loans, and printing services from G-Products — pickup at Kalingalinga or Yango delivery."
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getAllServiceOffers();
+
   return (
     <div className="container-g py-10">
       <nav className="text-sm text-white/40">

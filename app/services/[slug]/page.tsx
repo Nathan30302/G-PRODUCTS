@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getService, services } from "@/lib/services";
+import { getServiceOffer, getAllServiceOffers } from "@/lib/service-queries";
 import { Icon } from "@/components/Icons";
 import { KeyCuttingForm } from "@/components/services/KeyCuttingForm";
 import { GLoansForm } from "@/components/services/GLoansForm";
@@ -10,7 +10,8 @@ import { PrintingForm } from "@/components/services/PrintingForm";
 
 export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const services = await getAllServiceOffers();
   return services.map((s) => ({ slug: s.slug }));
 }
 
@@ -20,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getServiceOffer(slug);
   if (!service) return { title: "Service" };
   return {
     title: service.name,
@@ -34,7 +35,7 @@ export default async function ServiceDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getServiceOffer(slug);
   if (!service) notFound();
 
   return (
@@ -86,13 +87,17 @@ export default async function ServiceDetailPage({
           </h2>
           <p className="mt-1 text-sm text-white/50">
             {service.payable
-              ? "Fill in the details, pay with Mobile Money, then pickup or Yango delivery."
+              ? "Fill in the details, pay with Mobile Money, then pickup or Yango."
               : "We'll review your request and contact you on WhatsApp."}
           </p>
           <div className="mt-6">
-            {slug === "key-cutting" && <KeyCuttingForm />}
-            {slug === "g-loans" && <GLoansForm />}
-            {slug === "printing" && <PrintingForm />}
+            {slug === "key-cutting" && (
+              <KeyCuttingForm settings={service.settings} />
+            )}
+            {slug === "g-loans" && <GLoansForm settings={service.settings} />}
+            {slug === "printing" && (
+              <PrintingForm settings={service.settings} />
+            )}
           </div>
         </div>
       </div>

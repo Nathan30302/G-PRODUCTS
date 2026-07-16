@@ -147,3 +147,23 @@ model ServiceRequest {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 }
+
+/// Editable service offerings shown on /services (admin can change photos, copy, prices)
+model ServiceOffer {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  serviceType ServiceType
+  name        String
+  tagline     String
+  description String
+  icon        String
+  imageUrl    String
+  priceLabel  String?
+  payable     Boolean  @default(true)
+  enabled     Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  /// JSON: keyCuttingPrice, yangoLegFee, printBw, printColor, loanMin, loanRates
+  settings    String   @default("{}")
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}

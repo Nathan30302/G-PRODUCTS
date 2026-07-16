@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { PRINT_PRICE_BW, PRINT_PRICE_COLOR } from "@/lib/services";
+import type { ServiceSettings } from "@/lib/services";
 import { formatPrice } from "@/lib/format";
 import {
   DeliveryPicker,
@@ -18,7 +18,9 @@ const field =
 
 type Phase = "form" | "submitting" | "done" | "pending";
 
-export function PrintingForm() {
+export function PrintingForm({ settings }: { settings: ServiceSettings }) {
+  const PRINT_PRICE_BW = settings.printBw;
+  const PRINT_PRICE_COLOR = settings.printColor;
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [colour, setColour] = useState<"bw" | "color">("bw");

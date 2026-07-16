@@ -1,33 +1,35 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  KEY_CUTTING_PRICE,
-  KEY_TYPES
+  KEY_TYPES,
+  type ServiceSettings,
+  type KeyFlow
 } from "@/lib/services";
 import { formatPrice } from "@/lib/format";
-import {
-  DeliveryPicker,
-  type DeliveryMethod
-} from "@/components/services/DeliveryPicker";
 import {
   PaymentPicker,
   type PayMethod
 } from "@/components/services/PaymentPicker";
 import { ServiceResult } from "@/components/services/ServiceResult";
+import { siteConfig } from "@/config/site";
 
 const field =
   "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
 
 type Phase = "form" | "submitting" | "done" | "pending";
 
-export function KeyCuttingForm() {
+export function KeyCuttingForm({
+  settings
+}: {
+  settings: ServiceSettings;
+}) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [keyType, setKeyType] = useState("household");
   const [qty, setQty] = useState(1);
   const [notes, setNotes] = useState("");
-  const [delivery, setDelivery] = useState<DeliveryMethod>("PICKUP");
+  const [flow, setFlow] = useState<KeyFlow>("IN_STORE");
   const [address, setAddress] = useState("");
   const [pay, setPay] = useState<PayMethod>("mtn");
   const [phase, setPhase] = useState<Phase>("form");
@@ -43,22 +45,35 @@ export function KeyCuttingForm() {
     };
   }, []);
 
-  const estimate = KEY_CUTTING_PRICE * qty;
+  const cutFee = settings.keyCuttingPrice * qty;
+  const yangoToStore = flow === "YANGO_ROUNDTRIP" ? settings.yangoLegFee : 0;
+  const yangoReturn = flow === "YANGO_ROUNDTRIP" ? settings.yangoLegFee : 0;
+  const estimate = useMemo(
+    () => cutFee + yangoToStore + yangoReturn,
+    [cutFee, yangoToStore, yangoReturn]
+  );
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (flow === "YANGO_ROUNDTRIP" && !address.trim()) {
+      setError("Enter your address so Yango can collect and return your key.");
+      return;
+    }
     setPhase("submitting");
     const form = new FormData();
     form.set("serviceType", "KEY_CUTTING");
     form.set("customerName", name);
     form.set("customerPhone", phone);
-    form.set("deliveryMethod", delivery);
+    form.set(
+      "deliveryMethod",
+      flow === "YANGO_ROUNDTRIP" ? "YANGO" : "PICKUP"
+    );
     form.set("address", address);
     form.set("paymentMethod", pay);
     form.set(
       "details",
-      JSON.stringify({ keyType, qty, notes })
+      JSON.stringify({ keyType, qty, notes, flow })
     );
 
     try {
@@ -75,9 +90,13 @@ export function KeyCuttingForm() {
       setRefCode(data.ref);
       setTotal(data.total ?? estimate);
       setMessage(
-        data.mode === "manual"
-          ? "Order received. Pay with Mobile Money and confirm on WhatsApp — we'll cut your key and arrange pickup or Yango delivery."
-          : "Approve the payment on your phone. We'll prepare your key once payment confirms."
+        flow === "IN_STORE"
+          ? data.mode === "manual"
+            ? `Order received. Bring your key to ${siteConfig.branch}, pay if you haven't already, and we'll cut it for you.`
+            : "Approve payment on your phone, then bring your key to the store for cutting."
+          : data.mode === "manual"
+            ? "Order received. Pay for the key cut + both Yango trips, then we'll arrange Yango to collect your key, cut a copy, and send original + new key back."
+            : "Approve payment on your phone (key cut + 2 Yango trips). We'll then arrange collection and return."
       );
       if (data.mode === "live" && data.paymentStatus === "PENDING") {
         setPhase("pending");
@@ -94,7 +113,9 @@ export function KeyCuttingForm() {
               setPhase("done");
               if (j.paymentStatus === "SUCCESS") {
                 setMessage(
-                  "Payment confirmed! We'll cut your key and notify you for pickup or Yango delivery."
+                  flow === "IN_STORE"
+                    ? "Payment confirmed! Bring your key to the store and we'll cut it."
+                    : "Payment confirmed! We'll arrange Yango to collect your key, cut a copy, and return both keys to you."
                 );
               }
             }
@@ -122,10 +143,18 @@ export function KeyCuttingForm() {
         pending={phase === "pending"}
         waLines={[
           `*Key Cutting* — ${refCode}`,
-          `Type: ${keyType}`,
-          `Qty: ${qty}`,
-          `Total: ${formatPrice(total)}`,
-          `Delivery: ${delivery === "YANGO" ? `Yango — ${address}` : "Pickup at Kalingalinga"}`
+          `Type: ${keyType} × ${qty}`,
+          flow === "IN_STORE"
+            ? `Flow: In-store (I'll bring my key to ${siteConfig.branch})`
+            : `Flow: Yango round-trip — collect from ${address}, cut, return`,
+          `Key cut: ${formatPrice(cutFee)}`,
+          ...(flow === "YANGO_ROUNDTRIP"
+            ? [
+                `Yango to store: ${formatPrice(yangoToStore)}`,
+                `Yango return: ${formatPrice(yangoReturn)}`
+              ]
+            : []),
+          `Total: ${formatPrice(total)}`
         ]}
       />
     );
@@ -133,6 +162,23 @@ export function KeyCuttingForm() {
 
   return (
     <form onSubmit={submit} className="space-y-6">
+      <div className="rounded-card border border-ink-800 bg-ink-900 p-4 text-sm text-white/60">
+        <p className="font-semibold text-white">How key cutting works</p>
+        <ol className="mt-2 list-decimal space-y-1.5 pl-5">
+          <li>
+            <span className="text-white/80">At the store:</span> bring the key
+            you want copied to {siteConfig.branch} — we cut it while you wait
+            (or after you order online).
+          </li>
+          <li>
+            <span className="text-white/80">From home (e.g. Kamwala):</span>{" "}
+            order online → Yango collects your key → we cut a copy → Yango
+            returns your original + the new key. You pay for{" "}
+            <span className="text-brand">the cut + both Yango trips</span>.
+          </li>
+        </ol>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="text-sm text-white/60">Full name</span>
@@ -188,6 +234,65 @@ export function KeyCuttingForm() {
         />
       </label>
 
+      <div>
+        <p className="text-sm font-semibold text-white">How will you get it done?</p>
+        <div className="mt-3 grid gap-3">
+          <button
+            type="button"
+            onClick={() => setFlow("IN_STORE")}
+            className={`rounded-xl border p-4 text-left transition-colors ${
+              flow === "IN_STORE"
+                ? "border-brand bg-brand/10"
+                : "border-ink-700 bg-ink-900 hover:border-ink-600"
+            }`}
+          >
+            <span className="block font-bold text-white">
+              I&apos;ll bring my key to the store
+            </span>
+            <span className="mt-1 block text-sm text-white/50">
+              Come to {siteConfig.branch} with the key. You only pay for the
+              key cut ({formatPrice(settings.keyCuttingPrice)} each).
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setFlow("YANGO_ROUNDTRIP")}
+            className={`rounded-xl border p-4 text-left transition-colors ${
+              flow === "YANGO_ROUNDTRIP"
+                ? "border-brand bg-brand/10"
+                : "border-ink-700 bg-ink-900 hover:border-ink-600"
+            }`}
+          >
+            <span className="block font-bold text-white">
+              Send my key by Yango (round trip)
+            </span>
+            <span className="mt-1 block text-sm text-white/50">
+              Yango collects your key → we cut a copy → Yango brings original +
+              new key back. You pay key cut + 2 Yango trips (
+              {formatPrice(settings.yangoLegFee)} each way).
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {flow === "YANGO_ROUNDTRIP" && (
+        <label className="block">
+          <span className="text-sm text-white/60">
+            Your address (Yango pickup & return)
+          </span>
+          <input
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className={field}
+            placeholder="e.g. Kamwala, Lusaka — near the market"
+            required
+          />
+          <p className="mt-1 text-xs text-white/40">
+            Gift drives for Yango — we arrange both trips for you.
+          </p>
+        </label>
+      )}
+
       <label className="block">
         <span className="text-sm text-white/60">Notes (optional)</span>
         <textarea
@@ -199,22 +304,37 @@ export function KeyCuttingForm() {
         />
       </label>
 
-      <DeliveryPicker
-        method={delivery}
-        address={address}
-        onMethod={setDelivery}
-        onAddress={setAddress}
-      />
-
       <PaymentPicker method={pay} onChange={setPay} />
 
-      <div className="flex items-center justify-between rounded-xl border border-ink-800 bg-ink-900 px-4 py-3">
-        <span className="text-sm text-white/60">
-          {formatPrice(KEY_CUTTING_PRICE)} × {qty}
-        </span>
-        <span className="text-lg font-black text-white">
-          {formatPrice(estimate)}
-        </span>
+      <div className="space-y-2 rounded-xl border border-ink-800 bg-ink-900 px-4 py-3 text-sm">
+        <div className="flex justify-between text-white/60">
+          <span>
+            Key cut ({formatPrice(settings.keyCuttingPrice)} × {qty})
+          </span>
+          <span className="text-white">{formatPrice(cutFee)}</span>
+        </div>
+        {flow === "YANGO_ROUNDTRIP" && (
+          <>
+            <div className="flex justify-between text-white/60">
+              <span>Yango to G-Products</span>
+              <span className="text-white">{formatPrice(yangoToStore)}</span>
+            </div>
+            <div className="flex justify-between text-white/60">
+              <span>Yango return to you</span>
+              <span className="text-white">{formatPrice(yangoReturn)}</span>
+            </div>
+          </>
+        )}
+        <div className="flex justify-between border-t border-ink-800 pt-2 text-lg font-black text-white">
+          <span>Total</span>
+          <span>{formatPrice(estimate)}</span>
+        </div>
+        {flow === "YANGO_ROUNDTRIP" && (
+          <p className="text-xs text-white/40">
+            Yango fees are estimates for Lusaka; if the fare differs for your
+            area we&apos;ll confirm on WhatsApp before confirming.
+          </p>
+        )}
       </div>
 
       {error && (

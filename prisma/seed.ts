@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { categories } from "../lib/categories";
 import { products } from "../lib/products";
+import { services, DEFAULT_SETTINGS } from "../lib/services";
 
 const prisma = new PrismaClient();
 
@@ -99,6 +100,42 @@ async function main() {
     }
   }
   console.log(`Seeded ${products.length} products`);
+
+  // --- Service offerings (admin-editable) ---
+  for (let i = 0; i < services.length; i++) {
+    const s = services[i];
+    await prisma.serviceOffer.upsert({
+      where: { slug: s.slug },
+      update: {
+        name: s.name,
+        tagline: s.tagline,
+        description: s.description,
+        icon: s.icon,
+        imageUrl: s.image,
+        priceLabel: s.priceLabel ?? null,
+        payable: s.payable,
+        enabled: true,
+        sortOrder: i,
+        serviceType: s.type,
+        settings: JSON.stringify(DEFAULT_SETTINGS)
+      },
+      create: {
+        slug: s.slug,
+        serviceType: s.type,
+        name: s.name,
+        tagline: s.tagline,
+        description: s.description,
+        icon: s.icon,
+        imageUrl: s.image,
+        priceLabel: s.priceLabel ?? null,
+        payable: s.payable,
+        enabled: true,
+        sortOrder: i,
+        settings: JSON.stringify(DEFAULT_SETTINGS)
+      }
+    });
+  }
+  console.log(`Seeded ${services.length} service offerings`);
 }
 
 main()

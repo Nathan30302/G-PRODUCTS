@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { services } from "@/lib/services";
+import { getAllServiceOffers } from "@/lib/service-queries";
 import { ServiceTile } from "@/components/ServiceTile";
 import { Icon } from "@/components/Icons";
 
-export function ServicesBand() {
+export async function ServicesBand() {
+  const services = await getAllServiceOffers();
+
   return (
     <section className="container-g mt-16">
       <div className="mb-6 flex items-end justify-between gap-4">

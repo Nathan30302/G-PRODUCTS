@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { categories } from "@/lib/categories";
-import { services } from "@/lib/services";
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
+
+const serviceLinks = [
+  { slug: "key-cutting", name: "Key Cutting" },
+  { slug: "g-loans", name: "G-Loans" },
+  { slug: "printing", name: "Printing" }
+];
 
 export function Footer() {
   return (
@@ -48,7 +53,7 @@ export function Footer() {
         <div>
           <h4 className="text-sm font-semibold text-white">Services</h4>
           <ul className="mt-4 space-y-2.5 text-sm text-white/55">
-            {services.map((s) => (
+            {serviceLinks.map((s) => (
               <li key={s.slug}>
                 <Link
                   href={`/services/${s.slug}`}
