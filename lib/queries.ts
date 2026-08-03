@@ -129,4 +129,13 @@ export async function getHotDeals(): Promise<Product[]> {
   return items.map(toProduct);
 }
 
+export async function getNewest(limit = 8): Promise<Product[]> {
+  const items = await prisma.product.findMany({
+    include: withRelations,
+    orderBy: { createdAt: "desc" },
+    take: limit
+  });
+  return items.map(toProduct);
+}
+
 export { stockFromQuantity };

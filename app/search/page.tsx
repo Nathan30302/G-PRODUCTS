@@ -1,7 +1,7 @@
 import { getAllProducts, getAllCategories } from "@/lib/queries";
 import { SearchClient } from "@/components/SearchClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = { title: "Search" };
 

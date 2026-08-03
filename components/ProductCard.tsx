@@ -5,12 +5,18 @@ import { formatPrice, discountPercent } from "@/lib/format";
 import { StockBadge } from "@/components/StockBadge";
 import { AddToCartButton } from "@/components/AddToCartButton";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  priority = false
+}: {
+  product: Product;
+  priority?: boolean;
+}) {
   const off = discountPercent(product.price, product.compareAtPrice);
   const soldOut = product.stock === "sold_out";
 
   return (
-    <div className="group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 shadow-card backdrop-blur-sm transition-all duration-300 ease-out-expo hover:-translate-y-1.5 hover:border-brand/25 hover:shadow-brand-glow">
+    <div className="group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/80 shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-1.5 hover:border-brand/25 hover:shadow-brand-glow">
       <Link
         href={`/product/${product.slug}`}
         className="relative block overflow-hidden"
@@ -20,6 +26,8 @@ export function ProductCard({ product }: { product: Product }) {
             src={product.images[0]?.url}
             alt={product.images[0]?.alt ?? product.name}
             fill
+            priority={priority}
+            quality={70}
             sizes="(max-width: 640px) 62vw, (max-width: 1024px) 33vw, 19rem"
             className={`object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.06] ${
               soldOut ? "opacity-60 saturate-50" : ""

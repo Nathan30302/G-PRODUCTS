@@ -8,7 +8,7 @@ import { KeyCuttingForm } from "@/components/services/KeyCuttingForm";
 import { GLoansForm } from "@/components/services/GLoansForm";
 import { PrintingForm } from "@/components/services/PrintingForm";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const services = await getAllServiceOffers();

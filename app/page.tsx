@@ -8,22 +8,20 @@ import { ContactBand } from "@/components/ContactBand";
 import { Stagger, StaggerItem, Reveal } from "@/components/Reveal";
 import {
   getAllCategories,
-  getAllProducts,
   getFeatured,
-  getHotDeals
+  getHotDeals,
+  getNewest
 } from "@/lib/queries";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function HomePage() {
-  const [categories, hotDeals, featured, all] = await Promise.all([
+  const [categories, hotDeals, featured, newest] = await Promise.all([
     getAllCategories(),
     getHotDeals(),
     getFeatured(),
-    getAllProducts()
+    getNewest(8)
   ]);
-
-  const newest = all.slice(0, 8);
 
   return (
     <>

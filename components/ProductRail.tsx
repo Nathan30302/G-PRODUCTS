@@ -104,12 +104,12 @@ export function ProductRail({
         ref={scroller}
         className="no-scrollbar snap-rail -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0"
       >
-        {products.map((p) => (
+        {products.map((p, i) => (
           <div
             key={p.id}
             className="snap-item w-[62vw] shrink-0 sm:w-64 lg:w-[19rem]"
           >
-            <ProductCard product={p} />
+            <ProductCard product={p} priority={i < 2} />
           </div>
         ))}
       </div>

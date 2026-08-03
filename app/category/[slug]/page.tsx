@@ -1,11 +1,16 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getCategoryBySlug, getProductsByCategory } from "@/lib/queries";
+import { getCategoryBySlug, getProductsByCategory, getAllCategories } from "@/lib/queries";
 import { CategoryBrowser } from "@/components/CategoryBrowser";
 import { Icon } from "@/components/Icons";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const categories = await getAllCategories();
+  return categories.map((c) => ({ slug: c.slug }));
+}
 
 export async function generateMetadata({
   params

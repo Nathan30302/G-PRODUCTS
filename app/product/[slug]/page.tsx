@@ -4,7 +4,8 @@ import Link from "next/link";
 import {
   getProductBySlug,
   getProductsByCategory,
-  getCategoryBySlug
+  getCategoryBySlug,
+  getAllProducts
 } from "@/lib/queries";
 import { formatPrice, discountPercent } from "@/lib/format";
 import { StockBadge } from "@/components/StockBadge";
@@ -14,7 +15,12 @@ import { MobileBuyBar } from "@/components/MobileBuyBar";
 import { ProductRail } from "@/components/ProductRail";
 import { Icon } from "@/components/Icons";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const products = await getAllProducts();
+  return products.map((p) => ({ slug: p.slug }));
+}
 
 export async function generateMetadata({
   params

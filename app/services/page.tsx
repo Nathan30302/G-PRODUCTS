@@ -3,7 +3,7 @@ import { getAllServiceOffers } from "@/lib/service-queries";
 import { ServiceTile } from "@/components/ServiceTile";
 import { siteConfig } from "@/config/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 export const metadata = {
   title: "Services",
   description:

@@ -7,7 +7,7 @@ export function ServiceTile({ service }: { service: ServiceDef }) {
   return (
     <Link
       href={`/services/${service.slug}`}
-      className="group overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 shadow-card backdrop-blur-sm transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-brand/30 hover:shadow-brand-glow"
+      className="group overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/80 shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-brand/30 hover:shadow-brand-glow"
     >
       <div className="relative aspect-[16/10] bg-ink-950">
         {service.image ? (
