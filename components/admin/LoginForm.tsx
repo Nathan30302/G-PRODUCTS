@@ -43,7 +43,7 @@ export function LoginForm() {
 
       <div className="relative w-full max-w-md animate-fade-up">
         <div className="mb-8 flex flex-col items-center text-center">
-          <Logo />
+          <Logo size="lg" priority />
           <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
             Provider access
           </p>

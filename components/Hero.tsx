@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Icon } from "@/components/Icons";
+import { Logo } from "@/components/Logo";
 
 export function Hero() {
   return (
@@ -12,13 +13,12 @@ export function Hero() {
 
       <div className="container-g relative flex min-h-[78vh] flex-col justify-center py-16 sm:min-h-[72vh] sm:py-20 lg:py-24">
         <div className="max-w-3xl animate-fade-up">
-          <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
+          <Logo size="hero" priority className="rounded-[1.75rem] shadow-brand-glow sm:rounded-[2rem]" />
+
+          <p className="mt-7 text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
             {siteConfig.tagline}
           </p>
-          <h1 className="mt-4 text-5xl font-black leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            G-Products
-          </h1>
-          <p className="mt-5 max-w-xl text-lg font-medium leading-snug text-white/80 sm:text-xl">
+          <p className="mt-4 max-w-xl text-lg font-medium leading-snug text-white/80 sm:text-xl">
             Everything you need — one shop.
           </p>
           <p className="mt-3 max-w-lg text-base leading-relaxed text-white/50 sm:text-lg">

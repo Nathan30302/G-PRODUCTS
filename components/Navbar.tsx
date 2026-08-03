@@ -71,7 +71,7 @@ export function Navbar() {
             </svg>
           </button>
           <Link href="/" aria-label="G-Products home">
-            <Logo />
+            <Logo size="md" priority />
           </Link>
         </div>
 

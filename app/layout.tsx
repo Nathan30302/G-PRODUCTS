@@ -14,10 +14,15 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`
   },
   description: siteConfig.description,
+  icons: {
+    icon: [{ url: siteConfig.logoMark, type: "image/png" }],
+    apple: [{ url: siteConfig.logo, type: "image/png" }]
+  },
   openGraph: {
     title: `${siteConfig.name} - ${siteConfig.tagline}`,
     description: siteConfig.description,
-    type: "website"
+    type: "website",
+    images: [{ url: siteConfig.logo, width: 768, height: 768, alt: siteConfig.legalName }]
   }
 };
 

@@ -1,37 +1,47 @@
+import Image from "next/image";
+
+const LOGO_SRC = "/brand/g-products-logo.png";
+const MARK_SRC = "/brand/g-products-mark.png";
+
+const sizes = {
+  sm: 40,
+  md: 48,
+  lg: 120,
+  hero: 220
+} as const;
+
 export function Logo({
   withText = true,
-  className = ""
+  size = "md",
+  className = "",
+  priority = false
 }: {
+  /** When false, shows only the G mark (still from the official logo). */
   withText?: boolean;
+  size?: keyof typeof sizes;
   className?: string;
+  priority?: boolean;
 }) {
+  const px = sizes[size];
+  const src = withText ? LOGO_SRC : MARK_SRC;
+  const alt = withText
+    ? "G-Products and Services"
+    : "G-Products";
+
   return (
-    <span className={`flex items-center gap-2.5 ${className}`}>
-      <span className="grid h-10 w-10 place-items-center rounded-full bg-brand shadow-[0_0_22px_rgba(246,212,0,0.35)]">
-        <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6 text-ink-950"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2.6}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M20.5 8.2A8 8 0 1 0 21 15.4" />
-          <path d="M21 12h-4.6" />
-        </svg>
-      </span>
-      {withText && (
-        <span className="flex flex-col leading-none">
-          <span className="text-base font-extrabold tracking-tight text-white">
-            G-Products
-          </span>
-          <span className="mt-1 text-[8px] font-bold uppercase tracking-[0.28em] text-brand">
-            and Services
-          </span>
-        </span>
-      )}
+    <span
+      className={`relative inline-flex shrink-0 overflow-hidden rounded-2xl ${className}`}
+      style={{ width: px, height: px }}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        width={px}
+        height={px}
+        priority={priority}
+        quality={90}
+        className="h-full w-full object-cover"
+      />
     </span>
   );
 }
