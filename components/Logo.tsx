@@ -39,7 +39,8 @@ export function Logo({
         width={px}
         height={px}
         priority={priority}
-        quality={90}
+        quality={100}
+        unoptimized
         className="h-full w-full object-cover"
       />
     </span>
