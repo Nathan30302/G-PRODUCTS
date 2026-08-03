@@ -3,22 +3,39 @@ export const siteConfig = {
   legalName: "G-Products and Services",
   tagline: "Heart Gladdening Products",
   description:
-    "G-Products and Services - powering your devices and perfecting your prints, all in one place. Shop chargers, power banks, headphones, phones, laptops and more. Pay with Mobile Money, delivered in Zambia.",
-  whatsappNumber: "260972500209", // international format, no + or spaces
+    "G-Products and Services — quality printing, electronics, stationery, accessories and essential services at affordable prices. Free delivery within school.",
+  whatsappNumber: "260972500209",
   phoneDisplay: "+260 972 500 209",
+  phones: ["0972500209", "0761671466", "+260 95 1418342"],
+  whatsappCatalogue:
+    "https://wa.me/p/25113541318260054/260972500209",
+  /** Internal / admin only — do not show on the public storefront */
   owner: "Gift Mbumwae",
-  branch: "Kalingalinga, Lusaka",
+  locations: [
+    "UNZA – Kafue Small Gate (Opposite School of Engineering)",
+    "UNZA Ridgeway – A Block Room 7",
+    "Kalingalinga – Along Sikwazi Road",
+    "Balastone – Eden University"
+  ],
+  branch: "Kalingalinga – Along Sikwazi Road",
   currency: "ZMW",
   currencySymbol: "K",
   deliveryArea: "Lusaka & nationwide",
   deliveryNote:
-    "Pickup at Kalingalinga, Lusaka — or delivery via Yango (Gift drives for Yango).",
+    "Quick & FREE delivery within school. Pickup at UNZA, Kalingalinga or Balastone — or Yango / nationwide delivery.",
   supportEmail: "hello@gproducts.zm",
-  // Mobile Money accounts (Kalingalinga branch - deposits & withdrawals)
   mobileMoney: {
-    mtn: { label: "MTN MoMo", number: "0765812843", accountName: "Gift Mbumwae" },
-    airtel: { label: "Airtel Money", number: "20106681", accountName: "Gift Mbumwae" },
-    zamtel: { label: "Zamtel Money", number: "820724", accountName: "Gift Mbumwae" }
+    mtn: { label: "MTN MoMo", number: "0765812843", accountName: "G-Products" },
+    airtel: {
+      label: "Airtel Money",
+      number: "20106681",
+      accountName: "G-Products"
+    },
+    zamtel: {
+      label: "Zamtel Money",
+      number: "820724",
+      accountName: "G-Products"
+    }
   },
   hours: [
     { days: "Sunday - Thursday", time: "06:00 - 24:00" },
@@ -28,8 +45,8 @@ export const siteConfig = {
   trust: [
     { title: "Genuine Products", subtitle: "Quality you can trust" },
     { title: "Mobile Money", subtitle: "MTN, Airtel & Zamtel" },
-    { title: "Yango Delivery", subtitle: "Or pickup at Kalingalinga" },
-    { title: "Easy Returns", subtitle: "Hassle-free support" }
+    { title: "Free school delivery", subtitle: "Quick within campus" },
+    { title: "4 locations", subtitle: "UNZA · Kalingalinga · Balastone" }
   ]
 };
 

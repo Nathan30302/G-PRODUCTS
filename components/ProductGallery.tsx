@@ -20,7 +20,7 @@ export function ProductGallery({
 
   return (
     <div className="lg:sticky lg:top-24">
-      <div className="relative aspect-square overflow-hidden rounded-card border border-white/[0.06] bg-ink-850 shadow-card">
+      <div className="relative aspect-square overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 shadow-card">
         <AnimatePresence mode="wait">
           <motion.div
             key={active}

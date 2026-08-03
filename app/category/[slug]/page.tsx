@@ -43,20 +43,23 @@ export default async function CategoryPage({
       </nav>
 
       <header className="mt-5 flex items-start gap-4">
-        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
+        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20 shadow-[0_0_24px_rgba(246,212,0,0.12)]">
           <Icon name={category.icon} className="h-7 w-7" />
         </span>
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+            Category
+          </p>
+          <h1 className="mt-1 text-3xl font-black tracking-tight text-white sm:text-4xl">
             {category.name}
           </h1>
-          <p className="mt-1 text-white/50">{category.tagline}</p>
+          <p className="mt-1.5 text-white/50">{category.tagline}</p>
         </div>
       </header>
 
       {items.length === 0 ? (
-        <div className="mt-10 flex flex-col items-center rounded-card border border-white/[0.06] bg-ink-850/60 p-12 text-center">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-white/[0.04] text-white/40">
+        <div className="mt-10 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
             <Icon name={category.icon} className="h-6 w-6" />
           </span>
           <p className="mt-4 font-semibold text-white">

@@ -104,7 +104,7 @@ export function KeyCuttingForm({
         pollRef.current = setInterval(async () => {
           tries += 1;
           try {
-            const s = await fetch(`/api/orders/${data.ref}/status`, {
+            const s = await fetch(`/api/services/${data.ref}/status`, {
               cache: "no-store"
             });
             const j = await s.json();

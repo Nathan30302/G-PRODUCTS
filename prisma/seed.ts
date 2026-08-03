@@ -117,6 +117,20 @@ async function main() {
   }
   console.log(`Seeded ${products.length} products (+ colour variants)`);
 
+  // Remove products / categories no longer in the official catalog
+  const keepSlugs = products.map((p) => p.slug);
+  const removed = await prisma.product.deleteMany({
+    where: { slug: { notIn: keepSlugs } }
+  });
+  if (removed.count) console.log(`Removed ${removed.count} old products`);
+
+  const keepCats = categories.map((c) => c.slug);
+  const removedCats = await prisma.category.deleteMany({
+    where: { slug: { notIn: keepCats } }
+  });
+  if (removedCats.count)
+    console.log(`Removed ${removedCats.count} old categories`);
+
   // --- Service offerings (admin-editable) ---
   for (let i = 0; i < services.length; i++) {
     const s = services[i];

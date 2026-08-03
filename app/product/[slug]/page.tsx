@@ -126,7 +126,7 @@ export default async function ProductPage({
               {product.description}
             </p>
 
-            <div className="mt-8 hidden max-w-sm sm:block">
+            <div className="mt-8 max-w-sm">
               <ProductActions product={product} />
             </div>
 

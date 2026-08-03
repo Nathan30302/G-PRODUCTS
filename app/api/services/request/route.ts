@@ -235,19 +235,37 @@ export async function POST(req: Request) {
     // ---- Printing ----
     if (serviceType === "PRINTING") {
       const settings = await loadSettings("printing");
-      const colour = String(details.colour ?? "bw") === "color";
+      const jobId = String(details.jobId ?? "");
+      const menuItem = settings.printMenu?.find((m) => m.id === jobId);
       const pages = Math.max(1, Math.round(Number(details.pages) || 1));
       const copies = Math.max(1, Math.round(Number(details.copies) || 1));
-      const perPage = colour ? settings.printColor : settings.printBw;
-      const total = perPage * pages * copies;
+      const unit =
+        menuItem?.price ??
+        (String(details.colour ?? "bw") === "color"
+          ? settings.printColor
+          : settings.printBw);
+      const jobName =
+        menuItem?.name ??
+        (String(details.colour ?? "bw") === "color"
+          ? "Colour Printing"
+          : "Printing (B&W)");
+      const total = Math.max(1, Math.round(unit * pages * copies));
 
       const uploadFiles = form
         .getAll("files")
         .filter((f): f is File => typeof f !== "string" && f instanceof File);
       const fileUrls = await saveUploads(uploadFiles);
-      if (fileUrls.length === 0) {
+      const needsFile = [
+        "bw-copy",
+        "color-copy",
+        "bw-print",
+        "color-print",
+        "nrc-copy",
+        "certificate"
+      ].includes(jobId);
+      if (needsFile && fileUrls.length === 0) {
         return NextResponse.json(
-          { error: "Please upload at least one document to print." },
+          { error: "Please upload at least one document." },
           { status: 400 }
         );
       }
@@ -269,11 +287,11 @@ export async function POST(req: Request) {
           status: "PENDING",
           paymentMethod,
           paymentStatus: "PENDING",
-          note: `Printing · ${colour ? "Colour" : "B&W"} · ${pages}p × ${copies} · ${deliveryMethod}`,
+          note: `Printing · ${jobName} · ${pages} × ${copies} · ${deliveryMethod}`,
           items: {
             create: [
               {
-                name: `Printing (${colour ? "Colour" : "B&W"}, ${pages} pages × ${copies})`,
+                name: `${jobName} (${pages} × ${copies})`,
                 price: total,
                 qty: 1
               }
@@ -307,7 +325,9 @@ export async function POST(req: Request) {
           deliveryMethod,
           address,
           details: JSON.stringify({
-            colour: colour ? "color" : "bw",
+            jobId,
+            jobName,
+            unitPrice: unit,
             pages,
             copies,
             notes: details.notes ?? ""

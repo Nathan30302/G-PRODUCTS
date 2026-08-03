@@ -21,7 +21,7 @@ export function ServiceResult({
   pending?: boolean;
 }) {
   return (
-    <div className="mx-auto max-w-md rounded-card border border-ink-800 bg-ink-850 p-8 text-center">
+    <div className="mx-auto max-w-md rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-8 text-center">
       <div
         className={`mx-auto grid h-16 w-16 place-items-center rounded-full ${
           pending ? "bg-brand/15 text-brand" : "bg-accent/15 text-accent"

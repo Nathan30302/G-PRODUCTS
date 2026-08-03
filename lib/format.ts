@@ -1,9 +1,10 @@
 import { siteConfig } from "@/config/site";
 
 export function formatPrice(amount: number): string {
+  const whole = Number.isInteger(amount);
   const formatted = new Intl.NumberFormat("en-ZM", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    minimumFractionDigits: whole ? 0 : 1,
+    maximumFractionDigits: 1
   }).format(amount);
   return `${siteConfig.currencySymbol} ${formatted}`;
 }

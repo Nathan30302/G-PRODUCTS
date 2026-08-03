@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ServiceSettings } from "@/lib/services";
 import { formatPrice } from "@/lib/format";
+import { siteConfig } from "@/config/site";
 import {
   DeliveryPicker,
   type DeliveryMethod
@@ -18,12 +19,26 @@ const field =
 
 type Phase = "form" | "submitting" | "done" | "pending";
 
+const NEEDS_FILE = new Set([
+  "bw-copy",
+  "color-copy",
+  "bw-print",
+  "color-print",
+  "nrc-copy",
+  "certificate"
+]);
+
 export function PrintingForm({ settings }: { settings: ServiceSettings }) {
-  const PRINT_PRICE_BW = settings.printBw;
-  const PRINT_PRICE_COLOR = settings.printColor;
+  const menu = settings.printMenu?.length
+    ? settings.printMenu
+    : [
+        { id: "bw-print", name: "Printing (B&W)", price: settings.printBw },
+        { id: "color-print", name: "Colour Printing", price: settings.printColor }
+      ];
+  const [jobId, setJobId] = useState(menu[0]?.id ?? "bw-print");
+  const job = menu.find((m) => m.id === jobId) ?? menu[0];
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [colour, setColour] = useState<"bw" | "color">("bw");
   const [pages, setPages] = useState(1);
   const [copies, setCopies] = useState(1);
   const [notes, setNotes] = useState("");
@@ -44,15 +59,17 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
     };
   }, []);
 
-  const estimate = useMemo(() => {
-    const rate = colour === "color" ? PRINT_PRICE_COLOR : PRINT_PRICE_BW;
-    return rate * pages * copies;
-  }, [colour, pages, copies]);
+  const perUnit = job?.price ?? settings.printBw;
+  const estimate = useMemo(
+    () => Math.round(perUnit * pages * copies * 10) / 10,
+    [perUnit, pages, copies]
+  );
+  const needsFile = NEEDS_FILE.has(jobId);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!files || files.length === 0) {
+    if (needsFile && (!files || files.length === 0)) {
       setError("Please upload at least one document.");
       return;
     }
@@ -67,9 +84,16 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
     form.set("paymentMethod", pay);
     form.set(
       "details",
-      JSON.stringify({ colour, pages, copies, notes })
+      JSON.stringify({
+        jobId,
+        jobName: job?.name,
+        unitPrice: perUnit,
+        pages,
+        copies,
+        notes
+      })
     );
-    Array.from(files).forEach((f) => form.append("files", f));
+    if (files) Array.from(files).forEach((f) => form.append("files", f));
 
     try {
       const res = await fetch("/api/services/request", {
@@ -86,8 +110,8 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       setTotal(data.total ?? estimate);
       setMessage(
         data.mode === "manual"
-          ? "Print order received. Pay with Mobile Money and confirm on WhatsApp — we'll download your files, print, then ready for pickup or Yango delivery."
-          : "Approve the payment on your phone. Once paid, we'll print your documents."
+          ? "Print order received. Pay with Mobile Money and confirm on WhatsApp — we'll prepare your job for pickup or Yango delivery."
+          : "Approve the payment on your phone. Once paid, we'll process your job."
       );
       if (data.mode === "live" && data.paymentStatus === "PENDING") {
         setPhase("pending");
@@ -95,17 +119,18 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         pollRef.current = setInterval(async () => {
           tries += 1;
           try {
-            const s = await fetch(`/api/orders/${data.ref}/status`, {
+            const s = await fetch(`/api/services/${data.ref}/status`, {
               cache: "no-store"
             });
             const j = await s.json();
             if (j.paymentStatus === "SUCCESS" || j.paymentStatus === "FAILED") {
               if (pollRef.current) clearInterval(pollRef.current);
-              setPhase("done");
               if (j.paymentStatus === "SUCCESS") {
-                setMessage(
-                  "Payment confirmed! We'll print your documents and notify you for pickup or Yango delivery."
-                );
+                setPhase("done");
+                setMessage("Payment received. We'll prepare your print job.");
+              } else {
+                setError("Payment failed. You can try again.");
+                setPhase("form");
               }
             }
           } catch {
@@ -132,10 +157,13 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         pending={phase === "pending"}
         waLines={[
           `*Printing* — ${refCode}`,
-          `${colour === "color" ? "Colour" : "Black & white"} · ${pages} pages × ${copies} copies`,
+          `${job?.name ?? "Print"} · ${pages} × ${copies}`,
           `Total: ${formatPrice(total)}`,
-          `Delivery: ${delivery === "YANGO" ? `Yango — ${address}` : "Pickup at Kalingalinga"}`,
-          "Files were uploaded with this order."
+          `Delivery: ${
+            delivery === "YANGO"
+              ? `Yango — ${address}`
+              : `Pickup (${siteConfig.locations[0]})`
+          }`
         ]}
       />
     );
@@ -165,9 +193,33 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         </label>
       </div>
 
+      <div>
+        <p className="text-sm font-semibold text-white">Service</p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {menu.map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => setJobId(m.id)}
+              className={`rounded-xl border p-3 text-left ${
+                jobId === m.id
+                  ? "border-brand bg-brand/10"
+                  : "border-ink-700 bg-ink-900"
+              }`}
+            >
+              <span className="block text-sm font-bold text-white">{m.name}</span>
+              <span className="text-xs text-white/50">
+                {formatPrice(m.price)} / unit
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <label className="block">
         <span className="text-sm text-white/60">
           Upload documents (PDF, Word, images — max 12MB each)
+          {needsFile ? "" : " — optional for this service"}
         </span>
         <input
           type="file"
@@ -175,7 +227,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
           accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp"
           onChange={(e) => setFiles(e.target.files)}
           className="mt-1 block w-full text-sm text-white/70 file:mr-4 file:rounded-pill file:border-0 file:bg-brand file:px-4 file:py-2 file:text-sm file:font-bold file:text-ink-950"
-          required
+          required={needsFile}
         />
         {files && files.length > 0 && (
           <p className="mt-2 text-xs text-white/40">
@@ -184,43 +236,9 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         )}
       </label>
 
-      <div>
-        <p className="text-sm font-semibold text-white">Print colour</p>
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => setColour("bw")}
-            className={`rounded-xl border p-3 text-left ${
-              colour === "bw"
-                ? "border-brand bg-brand/10"
-                : "border-ink-700 bg-ink-900"
-            }`}
-          >
-            <span className="block font-bold text-white">Black & white</span>
-            <span className="text-sm text-white/50">
-              {formatPrice(PRINT_PRICE_BW)} / page
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setColour("color")}
-            className={`rounded-xl border p-3 text-left ${
-              colour === "color"
-                ? "border-brand bg-brand/10"
-                : "border-ink-700 bg-ink-900"
-            }`}
-          >
-            <span className="block font-bold text-white">Colour</span>
-            <span className="text-sm text-white/50">
-              {formatPrice(PRINT_PRICE_COLOR)} / page
-            </span>
-          </button>
-        </div>
-      </div>
-
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-sm text-white/60">Pages (estimate)</span>
+          <span className="text-sm text-white/60">Quantity / pages</span>
           <input
             type="number"
             min={1}
@@ -270,8 +288,8 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         </span>
       </div>
       <p className="text-xs text-white/40">
-        Final page count may be adjusted after we open your files — we&apos;ll
-        confirm on WhatsApp before printing if it changes.
+        We&apos;ll confirm on WhatsApp if the final count changes after we check
+        your files.
       </p>
 
       {error && (
@@ -285,7 +303,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         disabled={phase === "submitting"}
         className="w-full rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-soft disabled:opacity-60"
       >
-        {phase === "submitting" ? "Uploading & placing order..." : "Order printing"}
+        {phase === "submitting" ? "Placing order..." : "Place print order"}
       </button>
     </form>
   );

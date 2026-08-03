@@ -6,7 +6,14 @@ import { Category, Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { Icon } from "@/components/Icons";
 
-const trending = ["iPhone", "Power Bank", "Type-C", "Headphones", "SSD", "Laptop"];
+const trending = [
+  "Exercise Book",
+  "Memory Card",
+  "AirPods",
+  "Oraimo",
+  "Mouse",
+  "Printing"
+];
 
 export function SearchClient({
   products,
@@ -35,14 +42,17 @@ export function SearchClient({
 
   return (
     <div className="container-g py-8 sm:py-10">
-      <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
-        Search
+      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+        Catalogue
+      </p>
+      <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
+        Shop
       </h1>
-      <p className="mt-1 text-sm text-white/50">
-        Find genuine tech across {products.length} products.
+      <p className="mt-2 text-sm text-white/50">
+        Find genuine products across {products.length} items.
       </p>
 
-      <div className="relative mt-6">
+      <div className="relative mt-7">
         <Icon
           name="search"
           className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40"
@@ -51,8 +61,8 @@ export function SearchClient({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           autoFocus
-          placeholder="Search chargers, phones, power banks..."
-          className="w-full rounded-pill border border-white/10 bg-ink-900 py-4 pr-12 text-white outline-none transition-colors focus:border-brand"
+          placeholder="Search stationery, chargers, AirPods…"
+          className="w-full rounded-pill border border-white/10 bg-ink-900/70 py-4 pr-12 text-white shadow-card outline-none transition-colors focus:border-brand/50"
           style={{ paddingLeft: "3.25rem" }}
         />
         {query && (
@@ -123,7 +133,7 @@ export function SearchClient({
       </p>
 
       {results.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center rounded-card border border-white/[0.06] bg-ink-850/60 p-12 text-center">
+        <div className="mt-8 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
           <span className="grid h-14 w-14 place-items-center rounded-full bg-white/[0.04] text-white/40">
             <Icon name="search" className="h-6 w-6" />
           </span>

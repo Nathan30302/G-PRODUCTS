@@ -13,18 +13,21 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="container-g py-10">
-        <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
-          Your Cart
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+          Bag
+        </p>
+        <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
+          Your cart
         </h1>
-        <div className="mt-10 flex flex-col items-center rounded-card border border-white/[0.06] bg-ink-850/60 p-12 text-center">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-white/[0.04] text-white/40">
+        <div className="mt-10 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
+          <span className="grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
             <Icon name="cart" className="h-7 w-7" />
           </span>
           <p className="mt-5 text-lg font-semibold text-white">
             Your cart is empty
           </p>
           <p className="mt-1 text-sm text-white/50">
-            Add some genuine tech and it&apos;ll show up here.
+            Add products and they&apos;ll show up here.
           </p>
           <Link href="/search" className="btn-brand mt-6">
             Start shopping
@@ -37,11 +40,14 @@ export default function CartPage() {
 
   return (
     <div className="container-g py-8 pb-28 sm:py-10 md:pb-10">
-      <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
-        Your Cart
+      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+        Bag
+      </p>
+      <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
+        Your cart
       </h1>
-      <p className="mt-1 text-sm text-white/50">
-        {count} item{count === 1 ? "" : "s"}
+      <p className="mt-2 text-sm text-white/50">
+        {count} item{count === 1 ? "" : "s"} ready to checkout
       </p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
@@ -55,7 +61,7 @@ export default function CartPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="flex gap-4 rounded-card border border-white/[0.06] bg-ink-850 p-4"
+                className="flex gap-4 rounded-[1.25rem] border border-white/[0.07] bg-ink-900/50 p-4 shadow-card"
               >
                 <Link
                   href={`/product/${item.slug}`}
@@ -129,8 +135,8 @@ export default function CartPage() {
         </div>
 
         <div className="h-fit lg:sticky lg:top-24">
-          <div className="rounded-card border border-white/[0.06] bg-ink-850 p-6">
-            <h2 className="text-lg font-bold text-white">Order Summary</h2>
+          <div className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6 shadow-card backdrop-blur-sm">
+            <h2 className="text-lg font-bold text-white">Order summary</h2>
             <div className="mt-4 flex justify-between text-sm text-white/60">
               <span>Subtotal</span>
               <span className="font-medium text-white/90">

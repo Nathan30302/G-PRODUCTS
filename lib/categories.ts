@@ -2,40 +2,58 @@ import { Category } from "@/lib/types";
 
 export const categories: Category[] = [
   {
-    slug: "laptops",
-    name: "Laptops",
-    tagline: "Laptops & computers",
+    slug: "stationery",
+    name: "Stationery",
+    tagline: "Pens, books, paper & office supplies",
+    icon: "sparkles"
+  },
+  {
+    slug: "storage",
+    name: "Storage",
+    tagline: "Memory cards, flash disks & hard drives",
+    icon: "storage"
+  },
+  {
+    slug: "computers",
+    name: "Computers",
+    tagline: "Mice, keyboards & drive casings",
     icon: "laptop"
   },
   {
     slug: "chargers",
     name: "Chargers & Cables",
-    tagline: "Chargers, adapters & cables",
+    tagline: "Phone chargers, cables & tape",
     icon: "bolt"
   },
   {
     slug: "power",
     name: "Power",
-    tagline: "Power banks & power packs",
+    tagline: "Laptop chargers & extension cables",
     icon: "battery"
-  },
-  {
-    slug: "storage",
-    name: "Storage",
-    tagline: "Flash disks, memory cards & drives",
-    icon: "storage"
   },
   {
     slug: "audio",
     name: "Audio",
-    tagline: "AirPods, earphones & headsets",
+    tagline: "AirPods, headsets & speakers",
     icon: "headphones"
   },
   {
-    slug: "accessories",
-    name: "Accessories",
-    tagline: "Mouse, keyboards, watches & more",
+    slug: "phone-accessories",
+    name: "Phone Accessories",
+    tagline: "Stands, protectors & pouches",
     icon: "sparkles"
+  },
+  {
+    slug: "watches",
+    name: "Smart Watches",
+    tagline: "T900, KT8 and more",
+    icon: "sparkles"
+  },
+  {
+    slug: "locks",
+    name: "Locks & Security",
+    tagline: "Mortice locks & key holders",
+    icon: "key"
   }
 ];
 

@@ -14,9 +14,12 @@ export function productWhatsAppLink(product: Product, url?: string): string {
 
 export function orderWhatsAppLink(
   items: { name: string; qty: number; price: number }[],
-  total: number
+  total: number,
+  orderRef?: string
 ): string {
-  const header = "Hi G-Products, I'd like to order:";
+  const header = orderRef
+    ? `Hi G-Products, I've placed order *${orderRef}* and paid / will pay:`
+    : "Hi G-Products, I'd like to order:";
   const body = items
     .map((i) => `- ${i.name} x${i.qty} (${formatPrice(i.price * i.qty)})`)
     .join("\n");

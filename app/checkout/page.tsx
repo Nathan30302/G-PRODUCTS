@@ -128,50 +128,114 @@ export default function CheckoutPage() {
 
   if (phase === "manual" || phase === "success" || phase === "pending") {
     const waFallback = snapshot
-      ? orderWhatsAppLink(snapshot.items, snapshot.total)
+      ? orderWhatsAppLink(snapshot.items, snapshot.total, orderRef)
       : `https://wa.me/${siteConfig.whatsappNumber}`;
-    const providerLabel = payOptions.find((p) => p.id === method)?.label;
+    const payOpt = payOptions.find((p) => p.id === method);
+    const providerLabel = payOpt?.label;
+    const momo = siteConfig.mobileMoney[method];
 
     return (
-      <div className="container-g py-16 sm:py-20">
-        <div className="mx-auto max-w-md rounded-card border border-white/[0.06] bg-ink-850 p-8 text-center shadow-card sm:p-10">
-          <div
-            className={`mx-auto grid h-16 w-16 place-items-center rounded-full ${
-              phase === "success"
-                ? "bg-accent/15 text-accent shadow-accent-glow"
-                : "bg-brand/15 text-brand"
-            }`}
-          >
-            {phase === "success" ? (
-              <Icon name="check" className="h-8 w-8" />
-            ) : phase === "pending" ? (
-              <span className="h-8 w-8 animate-spin rounded-full border-[3px] border-brand border-t-transparent" />
-            ) : (
-              <Icon name="whatsapp" className="h-8 w-8" />
-            )}
+      <div className="container-g py-12 sm:py-16">
+        <div className="mx-auto max-w-lg rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6 text-left shadow-card sm:p-8">
+          <div className="text-center">
+            <div
+              className={`mx-auto grid h-16 w-16 place-items-center rounded-full ${
+                phase === "success"
+                  ? "bg-accent/15 text-accent shadow-accent-glow"
+                  : "bg-brand/15 text-brand"
+              }`}
+            >
+              {phase === "success" ? (
+                <Icon name="check" className="h-8 w-8" />
+              ) : phase === "pending" ? (
+                <span className="h-8 w-8 animate-spin rounded-full border-[3px] border-brand border-t-transparent" />
+              ) : (
+                <Icon name="wallet" className="h-8 w-8" />
+              )}
+            </div>
+
+            <h1 className="mt-6 text-2xl font-black text-white">
+              {phase === "success"
+                ? "Payment confirmed!"
+                : phase === "pending"
+                  ? "Approve the payment"
+                  : "Order received — pay now"}
+            </h1>
+
+            <p className="mt-2 text-sm text-white/40">
+              Order{" "}
+              <span className="font-mono text-white/70">{orderRef}</span>
+            </p>
           </div>
 
-          <h1 className="mt-6 text-2xl font-black text-white">
-            {phase === "success"
-              ? "Payment confirmed!"
-              : phase === "pending"
-                ? "Approve the payment"
-                : "Order received!"}
-          </h1>
-
-          <p className="mt-2 text-sm text-white/40">
-            Order{" "}
-            <span className="font-mono text-white/70">{orderRef}</span>
-          </p>
-
-          <p className="mt-3 text-white/60">
+          <p className="mt-4 text-center text-white/60">
             {phase === "success" &&
               `Thank you, ${form.name || "friend"}. Your ${providerLabel} payment was received. We'll prepare your order right away.`}
             {phase === "pending" &&
               `Check your phone and enter your ${providerLabel} PIN to approve the payment. This page updates automatically.`}
             {phase === "manual" &&
-              `Thank you, ${form.name || "friend"}. Send your ${providerLabel} payment and confirm on WhatsApp so we can prepare your order.`}
+              `Thank you, ${form.name || "friend"}. Send ${providerLabel} to the number below, then confirm on WhatsApp so we can prepare your order.`}
           </p>
+
+          {snapshot && (
+            <div className="mt-5 rounded-xl border border-white/10 bg-ink-900/80 p-4 text-sm">
+              <p className="font-semibold text-white">Order summary</p>
+              <ul className="mt-2 space-y-1.5 text-white/65">
+                {snapshot.items.map((i) => (
+                  <li key={i.name} className="flex justify-between gap-3">
+                    <span>
+                      {i.name} ×{i.qty}
+                    </span>
+                    <span className="shrink-0 text-white/80">
+                      {formatPrice(i.price * i.qty)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 flex justify-between border-t border-white/10 pt-3 font-bold text-white">
+                <span>Total to pay</span>
+                <span className="text-brand">{formatPrice(snapshot.total)}</span>
+              </p>
+            </div>
+          )}
+
+          {phase === "manual" && momo && (
+            <div className="mt-4 rounded-xl border border-brand/30 bg-brand/10 p-4 text-sm">
+              <p className="font-semibold text-brand">Pay with {momo.label}</p>
+              <p className="mt-2 text-white/80">
+                Send{" "}
+                <strong className="text-white">
+                  {snapshot ? formatPrice(snapshot.total) : "the total"}
+                </strong>{" "}
+                to:
+              </p>
+              <p className="mt-2 font-mono text-lg font-bold tracking-wide text-white">
+                {momo.number}
+              </p>
+              <p className="mt-1 text-white/50">
+                Account name: {momo.accountName}
+              </p>
+              <p className="mt-3 text-xs text-white/45">
+                Use order {orderRef} as the payment reference / note if your
+                phone asks for one.
+              </p>
+            </div>
+          )}
+
+          {(phase === "success" || phase === "manual") && (
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/60">
+              <p className="font-semibold text-white">What happens next</p>
+              <ol className="mt-2 list-decimal space-y-1 pl-4">
+                <li>We confirm your payment</li>
+                <li>Order is prepared at our shop</li>
+                <li>
+                  Pickup at {siteConfig.locations[0]} or{" "}
+                  {siteConfig.locations[1]} — or Yango delivery. We update you
+                  on WhatsApp
+                </li>
+              </ol>
+            </div>
+          )}
 
           {(phase === "manual" || phase === "pending") && (
             <a
@@ -196,7 +260,7 @@ export default function CheckoutPage() {
   if (phase === "failed") {
     return (
       <div className="container-g py-16 sm:py-20">
-        <div className="mx-auto max-w-md rounded-card border border-white/[0.06] bg-ink-850 p-8 text-center shadow-card sm:p-10">
+        <div className="mx-auto max-w-md rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-8 text-center shadow-card sm:p-10">
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-red-500/15 text-red-400">
             <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round">
               <path d="M18 6 6 18M6 6l12 12" />
@@ -232,11 +296,14 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="container-g py-10">
-        <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+          Secure checkout
+        </p>
+        <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
           Checkout
         </h1>
-        <div className="mt-10 flex flex-col items-center rounded-card border border-white/[0.06] bg-ink-850/60 p-12 text-center">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-white/[0.04] text-white/40">
+        <div className="mt-10 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
+          <span className="grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
             <Icon name="cart" className="h-7 w-7" />
           </span>
           <p className="mt-5 text-lg font-semibold text-white">
@@ -253,16 +320,19 @@ export default function CheckoutPage() {
 
   return (
     <div className="container-g py-8 pb-28 sm:py-10 md:pb-10">
-      <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+        Secure checkout
+      </p>
+      <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
         Checkout
       </h1>
-      <p className="mt-1 text-sm text-white/50">
+      <p className="mt-2 text-sm text-white/50">
         Delivery details, then pay with Mobile Money.
       </p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <section className="rounded-card border border-white/[0.06] bg-ink-850 p-6">
+          <section className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6">
             <div className="flex items-center gap-3">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
                 1
@@ -305,7 +375,7 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          <section className="rounded-card border border-white/[0.06] bg-ink-850 p-6">
+          <section className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6">
             <div className="flex items-center gap-3">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
                 2
@@ -340,16 +410,15 @@ export default function CheckoutPage() {
             </div>
             <p className="mt-4 flex items-start gap-2 rounded-lg bg-ink-900 p-3 text-xs text-white/40">
               <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-brand/70" />
-              Pay to {siteConfig.mobileMoney.mtn.accountName} (Kalingalinga
-              branch). When live Mobile Money is configured you&apos;ll get a
-              prompt on your phone; otherwise your order is confirmed on
-              WhatsApp.
+              Pay to {siteConfig.mobileMoney.mtn.accountName}. When live Mobile
+              Money is configured you&apos;ll get a prompt on your phone;
+              otherwise your order is confirmed on WhatsApp.
             </p>
           </section>
         </div>
 
         <div className="h-fit lg:sticky lg:top-24">
-          <div className="rounded-card border border-white/[0.06] bg-ink-850 p-6">
+          <div className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6">
             <h2 className="text-lg font-bold text-white">Order summary</h2>
             <div className="mt-4 space-y-2.5">
               {items.map((i) => (

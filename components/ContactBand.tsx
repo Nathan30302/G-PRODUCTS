@@ -4,29 +4,43 @@ import { siteConfig } from "@/config/site";
 
 export function ContactBand() {
   return (
-    <section className="container-g mt-16">
+    <section className="container-g mt-20">
       <Reveal>
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-accent/20 bg-gradient-to-br from-ink-850 via-ink-900 to-ink-950 px-6 py-12 shadow-card sm:px-12">
-          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/15 blur-[90px]" />
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-white/[0.07] bg-gradient-to-br from-ink-850/90 via-ink-900/90 to-ink-950 px-6 py-12 shadow-card sm:px-12">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-accent/15 blur-[100px]" />
+          <div className="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-brand/10 blur-[90px]" />
           <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
             <div className="max-w-xl">
-              <span className="inline-flex items-center gap-2 rounded-pill bg-accent/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-accent ring-1 ring-accent/30">
-                <Icon name="whatsapp" className="h-3.5 w-3.5" />
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
                 Talk to us
-              </span>
-              <h2 className="mt-4 text-2xl font-black tracking-tight text-white sm:text-3xl">
-                Need help choosing the right tech?
-              </h2>
-              <p className="mt-2 text-sm text-white/60 sm:text-base">
-                Message the G-Products team on WhatsApp for quick advice, live
-                stock and prices. We reply fast.
               </p>
-              <p className="mt-4 flex items-center gap-2 text-sm text-white/50">
-                <Icon name="map-pin" className="h-4 w-4 text-brand" />
-                {siteConfig.branch}
-                <span className="mx-1 text-white/20">|</span>
-                <span className="font-semibold text-white/80">
-                  {siteConfig.phoneDisplay}
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">
+                Need help choosing?
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-white/55 sm:text-base">
+                Message us on WhatsApp for quick advice, live stock and prices.
+                We reply fast.
+              </p>
+              <p className="mt-5 space-y-2 text-sm text-white/45">
+                <span className="flex items-start gap-2">
+                  <Icon
+                    name="map-pin"
+                    className="mt-0.5 h-4 w-4 shrink-0 text-brand"
+                  />
+                  <span className="leading-relaxed">
+                    {siteConfig.locations.join(" · ")}
+                  </span>
+                </span>
+                <span className="flex flex-wrap gap-x-3 gap-y-1 pl-6 font-semibold text-white/80">
+                  {siteConfig.phones.map((ph) => (
+                    <a
+                      key={ph}
+                      href={`tel:${ph.replace(/\s/g, "")}`}
+                      className="transition-colors hover:text-brand"
+                    >
+                      {ph}
+                    </a>
+                  ))}
                 </span>
               </p>
             </div>
@@ -43,7 +57,7 @@ export function ContactBand() {
               </a>
               <a
                 href={`tel:${siteConfig.phoneDisplay.replace(/\s/g, "")}`}
-                className="inline-flex items-center justify-center gap-2 rounded-pill border border-white/10 bg-white/[0.03] px-7 py-3.5 text-sm font-bold text-white transition-all duration-200 hover:border-white/20"
+                className="btn-ghost px-7 py-3.5"
               >
                 <Icon name="phone" className="h-5 w-5" />
                 Call us

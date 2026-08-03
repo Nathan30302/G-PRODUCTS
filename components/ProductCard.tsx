@@ -10,22 +10,22 @@ export function ProductCard({ product }: { product: Product }) {
   const soldOut = product.stock === "sold_out";
 
   return (
-    <div className="group flex h-full flex-col overflow-hidden rounded-card border border-white/[0.06] bg-ink-850 shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-1.5 hover:border-white/10 hover:shadow-card-hover">
+    <div className="group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 shadow-card backdrop-blur-sm transition-all duration-300 ease-out-expo hover:-translate-y-1.5 hover:border-brand/25 hover:shadow-brand-glow">
       <Link
         href={`/product/${product.slug}`}
         className="relative block overflow-hidden"
       >
-        <div className="relative aspect-square bg-ink-900">
+        <div className="relative aspect-square bg-ink-950">
           <Image
             src={product.images[0]?.url}
             alt={product.images[0]?.alt ?? product.name}
             fill
             sizes="(max-width: 640px) 62vw, (max-width: 1024px) 33vw, 19rem"
-            className={`object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.07] ${
+            className={`object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.06] ${
               soldOut ? "opacity-60 saturate-50" : ""
             }`}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/50 via-transparent to-transparent opacity-70" />
         </div>
 
         <div className="absolute left-3 top-3 flex flex-col gap-1.5">
@@ -42,7 +42,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-1 flex-col p-4">
         {product.brand && (
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-white/40">
+          <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/35">
             {product.brand}
           </span>
         )}

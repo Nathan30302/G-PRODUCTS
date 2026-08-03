@@ -21,7 +21,22 @@ export type ServiceSettings = {
   printColor: number;
   loanMin: number;
   loanRates: { weeks: number; rate: number }[];
+  /** Full print / office menu (price per unit) */
+  printMenu: { id: string; name: string; price: number }[];
 };
+
+export const DEFAULT_PRINT_MENU = [
+  { id: "bw-copy", name: "Black & White Photocopying", price: 1.5 },
+  { id: "color-copy", name: "Colour Photocopying", price: 5 },
+  { id: "bw-print", name: "Printing (B&W)", price: 2 },
+  { id: "color-print", name: "Colour Printing", price: 5 },
+  { id: "nrc-copy", name: "NRC Photocopying", price: 3 },
+  { id: "scan", name: "Scanning", price: 3 },
+  { id: "typing", name: "Typing", price: 5 },
+  { id: "laminate", name: "Lamination", price: 10 },
+  { id: "binding", name: "Binding", price: 15 },
+  { id: "certificate", name: "Certificates Printing", price: 15 }
+];
 
 export const DEFAULT_SETTINGS: ServiceSettings = {
   keyCuttingPrice: 50,
@@ -34,7 +49,8 @@ export const DEFAULT_SETTINGS: ServiceSettings = {
     { weeks: 2, rate: 20 },
     { weeks: 3, rate: 25 },
     { weeks: 4, rate: 30 }
-  ]
+  ],
+  printMenu: DEFAULT_PRINT_MENU
 };
 
 /** Fallback / seed catalog — high-quality Unsplash photos */
@@ -45,7 +61,7 @@ export const services: ServiceDef[] = [
     name: "Key Cutting",
     tagline: "Vehicle, household & mortise keys",
     description:
-      "Bring your key to our Kalingalinga store, or order online: send your key by Yango, we cut a copy, then we send the original and new key back by Yango.",
+      "Bring your key to any G-Products shop (UNZA, Kalingalinga or Balastone), or order online: send your key by Yango, we cut a copy, then we return original + new key.",
     icon: "key",
     image:
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80",
@@ -73,11 +89,11 @@ export const services: ServiceDef[] = [
     name: "Printing",
     tagline: "Upload documents, pay & print",
     description:
-      "Upload your documents, choose colour or black & white, pay with Mobile Money, then pick up at Kalingalinga or get them delivered by Yango.",
+      "Upload your documents or choose a service (photocopy, print, scan, laminate, bind). Pay with Mobile Money, then pick up at UNZA / Kalingalinga / Balastone or get Yango delivery.",
     icon: "printer",
     image:
       "https://images.unsplash.com/photo-1562564055-71e051d33c19?auto=format&fit=crop&w=1200&q=80",
-    priceLabel: "From K 2 / page",
+    priceLabel: "From K 1.5",
     payable: true,
     settings: { ...DEFAULT_SETTINGS }
   }
@@ -99,10 +115,13 @@ export function parseSettings(raw: string | null | undefined): ServiceSettings {
       loanMin: Number(parsed.loanMin) || DEFAULT_SETTINGS.loanMin,
       loanRates: Array.isArray(parsed.loanRates)
         ? parsed.loanRates
-        : DEFAULT_SETTINGS.loanRates
+        : DEFAULT_SETTINGS.loanRates,
+      printMenu: Array.isArray(parsed.printMenu) && parsed.printMenu.length
+        ? parsed.printMenu
+        : DEFAULT_SETTINGS.printMenu
     };
   } catch {
-    return { ...DEFAULT_SETTINGS };
+    return { ...DEFAULT_SETTINGS, printMenu: [...DEFAULT_PRINT_MENU] };
   }
 }
 

@@ -43,7 +43,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
 
   return (
     <>
-      <div className="sticky top-16 z-30 -mx-4 mt-6 border-y border-white/[0.06] bg-ink-950/85 px-4 py-3 backdrop-blur-lg sm:mx-0 sm:rounded-card sm:border">
+      <div className="sticky top-16 z-30 -mx-4 mt-6 border-y border-white/[0.06] bg-ink-950/85 px-4 py-3 backdrop-blur-xl sm:mx-0 sm:rounded-[1.25rem] sm:border sm:border-white/[0.07]">
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="mr-1 hidden items-center gap-1.5 text-sm font-semibold text-white/60 sm:flex">
             <Icon name="sliders" className="h-4 w-4" />
@@ -116,7 +116,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
       </p>
 
       {results.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center rounded-card border border-white/[0.06] bg-ink-850/60 p-12 text-center">
+        <div className="mt-8 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
           <span className="grid h-14 w-14 place-items-center rounded-full bg-white/[0.04] text-white/40">
             <Icon name="search" className="h-6 w-6" />
           </span>
