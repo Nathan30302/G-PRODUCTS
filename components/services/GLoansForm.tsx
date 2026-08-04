@@ -6,7 +6,7 @@ import { formatPrice } from "@/lib/format";
 import { ServiceResult } from "@/components/services/ServiceResult";
 
 const field =
-  "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
+  "mt-1 w-full rounded-xl border border-ink-950/10 bg-[#f7f8f9] px-4 py-2.5 text-ink-950 outline-none focus:border-brand";
 
 export function GLoansForm({ settings }: { settings: ServiceSettings }) {
   const LOAN_MIN = settings.loanMin;
@@ -97,9 +97,9 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
 
   return (
     <form onSubmit={submit} className="space-y-6">
-      <div className="rounded-card border border-ink-800 bg-ink-900 p-5">
-        <h3 className="font-bold text-white">Requirements</h3>
-        <ul className="mt-3 space-y-2 text-sm text-white/60">
+      <div className="rounded-card border border-ink-950/10 bg-white p-5">
+        <h3 className="font-bold text-ink-950">Requirements</h3>
+        <ul className="mt-3 space-y-2 text-sm text-ink-950/50">
           <li>• Collateral more valuable than the money borrowed</li>
           <li>• Copy of original NRC</li>
           <li>• Least amount: {formatPrice(LOAN_MIN)}</li>
@@ -108,9 +108,9 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
           {LOAN_RATES.map((r) => (
             <div
               key={r.weeks}
-              className="rounded-xl border border-ink-700 bg-ink-850 px-3 py-2 text-center"
+              className="rounded-xl border border-ink-700 bg-white px-3 py-2 text-center"
             >
-              <p className="text-xs text-white/40">{r.weeks} week</p>
+              <p className="text-xs text-ink-950/40">{r.weeks} week</p>
               <p className="text-lg font-black text-brand">{r.rate}%</p>
             </div>
           ))}
@@ -119,7 +119,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-sm text-white/60">Full name</span>
+          <span className="text-sm text-ink-950/50">Full name</span>
           <input
             required
             value={name}
@@ -128,7 +128,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
           />
         </label>
         <label className="block">
-          <span className="text-sm text-white/60">Phone (WhatsApp)</span>
+          <span className="text-sm text-ink-950/50">Phone (WhatsApp)</span>
           <input
             required
             value={phone}
@@ -141,7 +141,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-sm text-white/60">Amount needed (ZMW)</span>
+          <span className="text-sm text-ink-950/50">Amount needed (ZMW)</span>
           <input
             type="number"
             min={LOAN_MIN}
@@ -155,7 +155,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
           />
         </label>
         <label className="block">
-          <span className="text-sm text-white/60">Term</span>
+          <span className="text-sm text-ink-950/50">Term</span>
           <select
             value={weeks}
             onChange={(e) => setWeeks(Number(e.target.value))}
@@ -170,13 +170,13 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         </label>
       </div>
 
-      <div className="rounded-xl border border-ink-800 bg-ink-900 px-4 py-3 text-sm text-white/60">
+      <div className="rounded-xl border border-ink-950/10 bg-white px-4 py-3 text-sm text-ink-950/50">
         Est. interest {formatPrice(interest)} · Est. repay{" "}
-        <span className="font-bold text-white">{formatPrice(repay)}</span>
+        <span className="font-bold text-ink-950">{formatPrice(repay)}</span>
       </div>
 
       <label className="block">
-        <span className="text-sm text-white/60">
+        <span className="text-sm text-ink-950/50">
           Collateral (must be worth more than the loan)
         </span>
         <textarea
@@ -189,7 +189,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         />
       </label>
 
-      <label className="flex items-start gap-3 text-sm text-white/70">
+      <label className="flex items-start gap-3 text-sm text-ink-950/70">
         <input
           type="checkbox"
           checked={hasNrc}
@@ -200,7 +200,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
       </label>
 
       <label className="block">
-        <span className="text-sm text-white/60">Notes (optional)</span>
+        <span className="text-sm text-ink-950/50">Notes (optional)</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}

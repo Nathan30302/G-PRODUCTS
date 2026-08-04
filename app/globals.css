@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
 body {
-  background-color: #06181c;
-  color: #f5f5f7;
+  background-color: #f7f8f9;
+  color: #06181c;
 }
 
 body {
@@ -38,13 +38,13 @@ html {
 
 /* Selection */
 ::selection {
-  background-color: rgba(246, 212, 0, 0.28);
-  color: #ffffff;
+  background-color: rgba(246, 212, 0, 0.35);
+  color: #06181c;
 }
 
 /* Accessible focus ring, brand-tinted */
 :focus-visible {
-  outline: 2px solid rgba(246, 212, 0, 0.7);
+  outline: 2px solid rgba(246, 212, 0, 0.85);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -109,24 +109,24 @@ html {
 
   /* Section eyebrow label */
   .eyebrow {
-    @apply text-[11px] font-bold uppercase tracking-[0.22em] text-brand/80;
+    @apply text-[11px] font-bold uppercase tracking-[0.22em] text-[#b89000];
   }
 
   .display {
-    @apply font-display font-extrabold tracking-tight text-white;
+    @apply font-display font-extrabold tracking-tight text-ink-950;
   }
 
-  /* Subtle top-lit panel used across cards/sections */
+  /* Light surface panel */
   .panel {
-    @apply rounded-[1.35rem] border border-white/[0.07] bg-ink-900/70 shadow-card;
+    @apply rounded-[1.35rem] border border-ink-950/8 bg-white shadow-[0_4px_24px_rgba(6,24,28,0.06)];
   }
 
   .field {
-    @apply mt-2 w-full rounded-2xl border border-white/10 bg-ink-950/70 px-4 py-3.5 text-white outline-none transition-all placeholder:text-white/30 focus:border-brand/60 focus:bg-ink-950 focus:shadow-[0_0_0_3px_rgba(246,212,0,0.12)];
+    @apply mt-2 w-full rounded-2xl border border-ink-950/10 bg-white px-4 py-3.5 text-ink-950 outline-none transition-all placeholder:text-ink-950/30 focus:border-brand focus:shadow-[0_0_0_3px_rgba(246,212,0,0.18)];
   }
 
   .field-label {
-    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45;
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-950/45;
   }
 }
 
@@ -135,7 +135,7 @@ html {
   .skeleton {
     position: relative;
     overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(6, 24, 28, 0.06);
   }
   .skeleton::after {
     content: "";
@@ -145,7 +145,7 @@ html {
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.08),
+      rgba(6, 24, 28, 0.06),
       transparent
     );
     animation: shimmer 1.6s infinite;
@@ -156,9 +156,12 @@ html {
     @apply inline-flex items-center justify-center gap-2 rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 shadow-brand-glow transition-all duration-200 ease-out-expo hover:bg-brand-soft hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-ink-700 disabled:text-white/40 disabled:shadow-none;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-bold text-white transition-all duration-200 ease-out-expo hover:border-brand/40 hover:bg-white/[0.06] active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-ink-950/12 bg-white px-6 py-3 text-sm font-bold text-ink-950 transition-all duration-200 ease-out-expo hover:border-ink-950/25 hover:bg-[#f7f8f9] active:scale-[0.98];
+  }
+  .btn-ghost-dark {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-white/15 bg-white/[0.06] px-6 py-3 text-sm font-bold text-white transition-all duration-200 ease-out-expo hover:border-brand/40 hover:bg-white/[0.1] active:scale-[0.98];
   }
   .btn-whatsapp {
-    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-semibold text-accent transition-all duration-200 ease-out-expo hover:bg-accent/20 active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-semibold text-accent-dark transition-all duration-200 ease-out-expo hover:bg-accent/20 active:scale-[0.98];
   }
 }

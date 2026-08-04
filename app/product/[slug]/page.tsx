@@ -66,8 +66,8 @@ export default async function ProductPage({
   return (
     <div className="pb-24 md:pb-0">
       <div className="container-g py-6 sm:py-10">
-        <nav className="flex flex-wrap items-center gap-1.5 text-sm text-white/40">
-          <Link href="/" className="transition-colors hover:text-white">
+        <nav className="flex flex-wrap items-center gap-1.5 text-sm text-ink-950/40">
+          <Link href="/" className="transition-colors hover:text-ink-950">
             Home
           </Link>
           <Icon name="chevron-right" className="h-3.5 w-3.5" />
@@ -75,14 +75,14 @@ export default async function ProductPage({
             <>
               <Link
                 href={`/category/${category.slug}`}
-                className="transition-colors hover:text-white"
+                className="transition-colors hover:text-ink-950"
               >
                 {category.name}
               </Link>
               <Icon name="chevron-right" className="h-3.5 w-3.5" />
             </>
           )}
-          <span className="truncate text-white/70">{product.name}</span>
+          <span className="truncate text-ink-950/70">{product.name}</span>
         </nav>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
@@ -98,7 +98,7 @@ export default async function ProductPage({
                 {product.brand}
               </span>
             )}
-            <h1 className="mt-1.5 text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl">
+            <h1 className="mt-1.5 text-3xl font-black leading-tight tracking-tight text-ink-950 sm:text-4xl">
               {product.name}
             </h1>
 
@@ -112,17 +112,17 @@ export default async function ProductPage({
             </div>
 
             <div className="mt-6 flex items-baseline gap-3">
-              <span className="text-4xl font-black tracking-tight text-white">
+              <span className="text-4xl font-black tracking-tight text-ink-950">
                 {formatPrice(product.price)}
               </span>
               {product.compareAtPrice && (
-                <span className="text-lg text-white/35 line-through">
+                <span className="text-lg text-ink-950/30 line-through">
                   {formatPrice(product.compareAtPrice)}
                 </span>
               )}
             </div>
 
-            <p className="mt-6 leading-relaxed text-white/65">
+            <p className="mt-6 leading-relaxed text-ink-950/60">
               {product.description}
             </p>
 
@@ -135,10 +135,10 @@ export default async function ProductPage({
               {trust.map((t) => (
                 <div
                   key={t.label}
-                  className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-ink-850/60 p-3 text-center"
+                  className="flex flex-col items-center gap-2 rounded-xl border border-ink-950/8 bg-[#f0f2f3] p-3 text-center"
                 >
                   <Icon name={t.icon} className="h-5 w-5 text-brand" />
-                  <span className="text-[11px] font-medium text-white/60">
+                  <span className="text-[11px] font-medium text-ink-950/50">
                     {t.label}
                   </span>
                 </div>
@@ -148,20 +148,20 @@ export default async function ProductPage({
             {/* specs table */}
             {product.shortSpecs.length > 0 && (
               <div className="mt-10">
-                <h2 className="text-lg font-bold text-white">Specifications</h2>
-                <dl className="mt-4 overflow-hidden rounded-card border border-white/[0.06]">
+                <h2 className="text-lg font-bold text-ink-950">Specifications</h2>
+                <dl className="mt-4 overflow-hidden rounded-card border border-ink-950/8">
                   {product.shortSpecs.map((s, i) => (
                     <div
                       key={s}
                       className={`flex items-start gap-3 px-4 py-3 text-sm ${
-                        i % 2 === 0 ? "bg-ink-850/60" : "bg-transparent"
+                        i % 2 === 0 ? "bg-[#f0f2f3]" : "bg-transparent"
                       }`}
                     >
                       <Icon
                         name="check"
                         className="mt-0.5 h-4 w-4 shrink-0 text-accent"
                       />
-                      <span className="text-white/75">{s}</span>
+                      <span className="text-ink-950/70">{s}</span>
                     </div>
                   ))}
                 </dl>

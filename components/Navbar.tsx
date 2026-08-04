@@ -35,18 +35,21 @@ export function Navbar() {
     );
   }
 
+  const isHome = pathname === "/";
+
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
-        scrolled
-          ? "border-white/[0.07] bg-ink-950/90 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl"
-          : "border-transparent bg-transparent"
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled || !isHome
+          ? "border-b border-ink-950/6 bg-white/90 shadow-[0_8px_30px_rgba(6,24,28,0.06)] backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
       }`}
     >
       <div className="container-g flex h-14 items-center justify-between gap-2.5 sm:h-16 sm:gap-3">
-        <div className="flex items-center gap-2">
+        {/* Mobile: Plug-style icon row with centered logo */}
+        <div className="flex w-10 items-center lg:hidden">
           <button
-            className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:h-11 sm:w-11 sm:rounded-2xl lg:hidden"
+            className="grid h-10 w-10 place-items-center rounded-full text-ink-950/70 transition-colors hover:bg-ink-950/5 hover:text-ink-950"
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
             aria-expanded={open}
@@ -70,22 +73,23 @@ export function Navbar() {
               )}
             </svg>
           </button>
-          <Link
-            href="/"
-            aria-label="G-Products home"
-            className="transition-transform duration-300 ease-out-expo hover:scale-[1.03]"
-          >
-            <Logo size="md" priority />
-          </Link>
         </div>
+
+        <Link
+          href="/"
+          aria-label="G-Products home"
+          className="absolute left-1/2 -translate-x-1/2 transition-transform duration-300 ease-out-expo hover:scale-[1.02] lg:static lg:translate-x-0"
+        >
+          <Logo size="md" priority />
+        </Link>
 
         <nav className="hidden items-center gap-0.5 text-sm lg:flex">
           <Link
             href="/search"
             className={`rounded-pill px-3.5 py-2 font-semibold transition-colors ${
               pathname === "/search"
-                ? "bg-brand/15 text-brand"
-                : "text-white/65 hover:bg-white/[0.04] hover:text-white"
+                ? "bg-ink-950 text-white"
+                : "text-ink-950/55 hover:bg-ink-950/5 hover:text-ink-950"
             }`}
           >
             Shop
@@ -98,8 +102,8 @@ export function Navbar() {
                 href={`/category/${c.slug}`}
                 className={`rounded-pill px-3.5 py-2 font-medium transition-colors ${
                   active
-                    ? "bg-white/[0.06] text-white"
-                    : "text-white/55 hover:bg-white/[0.04] hover:text-white"
+                    ? "bg-ink-950/8 text-ink-950"
+                    : "text-ink-950/50 hover:bg-ink-950/5 hover:text-ink-950"
                 }`}
               >
                 {c.name}
@@ -111,30 +115,30 @@ export function Navbar() {
             className={`rounded-pill px-3.5 py-2 font-semibold transition-colors ${
               pathname?.startsWith("/services")
                 ? "bg-brand text-ink-950 shadow-brand-glow"
-                : "text-brand hover:bg-brand/10"
+                : "text-[#c9a000] hover:bg-brand/15"
             }`}
           >
             Services
           </Link>
         </nav>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-1.5">
           <form
             onSubmit={submitSearch}
-            className="hidden items-center rounded-pill border border-white/10 bg-white/[0.03] pl-3.5 pr-1 transition-colors focus-within:border-brand/40 focus-within:bg-white/[0.05] md:flex"
+            className="hidden items-center rounded-pill border border-ink-950/10 bg-white pl-3.5 pr-1 transition-colors focus-within:border-brand focus-within:shadow-[0_0_0_3px_rgba(246,212,0,0.2)] md:flex"
           >
-            <Icon name="search" className="h-4 w-4 text-white/40" />
+            <Icon name="search" className="h-4 w-4 text-ink-950/35" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search products…"
-              className="w-36 bg-transparent px-2 py-2.5 text-sm text-white outline-none placeholder:text-white/35 lg:w-44"
+              placeholder="What are you looking for?"
+              className="w-44 bg-transparent px-2 py-2.5 text-sm text-ink-950 outline-none placeholder:text-ink-950/35 lg:w-52"
             />
           </form>
 
           <Link
             href="/search"
-            className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:rounded-2xl md:hidden"
+            className="grid h-10 w-10 place-items-center rounded-full text-ink-950/70 transition-colors hover:bg-ink-950/5 hover:text-ink-950 md:hidden"
             aria-label="Search"
           >
             <Icon name="search" className="h-5 w-5" />
@@ -142,12 +146,12 @@ export function Navbar() {
 
           <Link
             href="/cart"
-            className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:rounded-2xl"
+            className="relative hidden h-10 w-10 place-items-center rounded-full text-ink-950/70 transition-colors hover:bg-ink-950/5 hover:text-ink-950 sm:grid"
             aria-label="Cart"
           >
             <Icon name="cart" className="h-5 w-5" />
             {count > 0 && (
-              <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-xs font-bold text-ink-950 shadow-brand-glow">
+              <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-xs font-bold text-ink-950">
                 {count}
               </span>
             )}
@@ -155,7 +159,7 @@ export function Navbar() {
         </div>
       </div>
 
-      <div className="hidden border-t border-white/[0.04] lg:block">
+      <div className="hidden border-t border-ink-950/5 lg:block">
         <div className="container-g no-scrollbar flex gap-1 overflow-x-auto py-2">
           {categories.map((c) => {
             const active = pathname === `/category/${c.slug}`;
@@ -165,8 +169,8 @@ export function Navbar() {
                 href={`/category/${c.slug}`}
                 className={`shrink-0 rounded-pill px-3.5 py-1.5 text-xs font-semibold transition-all ${
                   active
-                    ? "bg-brand text-ink-950 shadow-brand-glow"
-                    : "text-white/45 hover:bg-white/[0.05] hover:text-white"
+                    ? "bg-ink-950 text-white"
+                    : "text-ink-950/45 hover:bg-ink-950/5 hover:text-ink-950"
                 }`}
               >
                 {c.name}
@@ -183,38 +187,35 @@ export function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden border-t border-white/[0.07] bg-gradient-to-b from-ink-850 to-ink-950 lg:hidden"
+            className="overflow-hidden border-t border-ink-950/8 bg-white lg:hidden"
           >
             <div className="container-g space-y-4 py-5">
               <form onSubmit={submitSearch} className="flex gap-2">
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search products…"
-                  className="flex-1 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none focus:border-brand/40"
+                  placeholder="What are you looking for?"
+                  className="flex-1 rounded-2xl border border-ink-950/10 bg-[#f7f8f9] px-4 py-3 text-sm text-ink-950 outline-none focus:border-brand"
                 />
                 <button type="submit" className="btn-brand px-5 py-3 text-sm">
                   Go
                 </button>
               </form>
               <div className="grid grid-cols-2 gap-2.5">
-                {categories.map((c, idx) => (
+                {categories.map((c) => (
                   <Link
                     key={c.slug}
                     href={`/category/${c.slug}`}
-                    className="flex items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3 text-sm font-semibold text-white/85 transition-colors hover:border-brand/30"
+                    className="rounded-2xl border border-ink-950/8 bg-[#f7f8f9] px-3.5 py-3 text-sm font-semibold text-ink-950 transition-colors hover:border-brand/50"
                   >
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-brand/10 text-[10px] font-black text-brand">
-                      {String(idx + 1).padStart(2, "0")}
-                    </span>
-                    <span className="truncate">{c.name}</span>
+                    {c.name}
                   </Link>
                 ))}
                 <Link
                   href="/services"
-                  className="col-span-2 flex items-center gap-2.5 rounded-2xl border border-brand/40 bg-brand/10 px-3.5 py-3.5 text-sm font-bold text-brand"
+                  className="col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-ink-950 px-3.5 py-3.5 text-sm font-bold text-white"
                 >
-                  <Icon name="services" className="h-4 w-4" />
+                  <Icon name="services" className="h-4 w-4 text-brand" />
                   Services — Keys, Loans, Printing
                 </Link>
               </div>

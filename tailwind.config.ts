@@ -41,9 +41,9 @@ const config: Config = {
         pill: "999px"
       },
       boxShadow: {
-        card: "0 8px 30px rgba(0,0,0,0.35)",
+        card: "0 4px 24px rgba(6,24,28,0.08)",
         "card-hover":
-          "0 18px 50px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04)",
+          "0 16px 40px -12px rgba(6,24,28,0.14), 0 0 0 1px rgba(6,24,28,0.04)",
         glow: "0 0 0 1px rgba(246,212,0,0.35), 0 10px 40px rgba(246,212,0,0.18)",
         "accent-glow": "0 10px 40px -8px rgba(34,201,138,0.45)",
         "brand-glow": "0 10px 40px -8px rgba(246,212,0,0.4)"

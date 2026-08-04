@@ -15,7 +15,7 @@ import {
 import { ServiceResult } from "@/components/services/ServiceResult";
 
 const field =
-  "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
+  "mt-1 w-full rounded-xl border border-ink-950/10 bg-[#f7f8f9] px-4 py-2.5 text-ink-950 outline-none focus:border-brand";
 
 type Phase = "form" | "submitting" | "done" | "pending";
 
@@ -173,7 +173,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
     <form onSubmit={submit} className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-sm text-white/60">Full name</span>
+          <span className="text-sm text-ink-950/50">Full name</span>
           <input
             required
             value={name}
@@ -182,7 +182,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
           />
         </label>
         <label className="block">
-          <span className="text-sm text-white/60">Phone (WhatsApp)</span>
+          <span className="text-sm text-ink-950/50">Phone (WhatsApp)</span>
           <input
             required
             value={phone}
@@ -194,7 +194,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-white">Service</p>
+        <p className="text-sm font-semibold text-ink-950">Service</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {menu.map((m) => (
             <button
@@ -204,11 +204,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
               className={`rounded-xl border p-3 text-left ${
                 jobId === m.id
                   ? "border-brand bg-brand/10"
-                  : "border-ink-700 bg-ink-900"
+                  : "border-ink-700 bg-white"
               }`}
             >
-              <span className="block text-sm font-bold text-white">{m.name}</span>
-              <span className="text-xs text-white/50">
+              <span className="block text-sm font-bold text-ink-950">{m.name}</span>
+              <span className="text-xs text-ink-950/45">
                 {formatPrice(m.price)} / unit
               </span>
             </button>
@@ -217,7 +217,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       </div>
 
       <label className="block">
-        <span className="text-sm text-white/60">
+        <span className="text-sm text-ink-950/50">
           Upload documents (PDF, Word, images — max 12MB each)
           {needsFile ? "" : " — optional for this service"}
         </span>
@@ -226,11 +226,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
           multiple
           accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp"
           onChange={(e) => setFiles(e.target.files)}
-          className="mt-1 block w-full text-sm text-white/70 file:mr-4 file:rounded-pill file:border-0 file:bg-brand file:px-4 file:py-2 file:text-sm file:font-bold file:text-ink-950"
+          className="mt-1 block w-full text-sm text-ink-950/70 file:mr-4 file:rounded-pill file:border-0 file:bg-brand file:px-4 file:py-2 file:text-sm file:font-bold file:text-ink-950"
           required={needsFile}
         />
         {files && files.length > 0 && (
-          <p className="mt-2 text-xs text-white/40">
+          <p className="mt-2 text-xs text-ink-950/40">
             {files.length} file{files.length === 1 ? "" : "s"} selected
           </p>
         )}
@@ -238,7 +238,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-sm text-white/60">Quantity / pages</span>
+          <span className="text-sm text-ink-950/50">Quantity / pages</span>
           <input
             type="number"
             min={1}
@@ -248,7 +248,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
           />
         </label>
         <label className="block">
-          <span className="text-sm text-white/60">Copies</span>
+          <span className="text-sm text-ink-950/50">Copies</span>
           <input
             type="number"
             min={1}
@@ -262,7 +262,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       </div>
 
       <label className="block">
-        <span className="text-sm text-white/60">Notes (optional)</span>
+        <span className="text-sm text-ink-950/50">Notes (optional)</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -281,13 +281,13 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
 
       <PaymentPicker method={pay} onChange={setPay} />
 
-      <div className="flex items-center justify-between rounded-xl border border-ink-800 bg-ink-900 px-4 py-3">
-        <span className="text-sm text-white/60">Estimated total</span>
-        <span className="text-lg font-black text-white">
+      <div className="flex items-center justify-between rounded-xl border border-ink-950/10 bg-white px-4 py-3">
+        <span className="text-sm text-ink-950/50">Estimated total</span>
+        <span className="text-lg font-black text-ink-950">
           {formatPrice(estimate)}
         </span>
       </div>
-      <p className="text-xs text-white/40">
+      <p className="text-xs text-ink-950/40">
         We&apos;ll confirm on WhatsApp if the final count changes after we check
         your files.
       </p>

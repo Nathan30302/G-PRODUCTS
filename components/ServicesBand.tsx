@@ -7,21 +7,21 @@ export async function ServicesBand() {
   const services = await getAllServiceOffers();
 
   return (
-    <section className="container-g mt-24">
+    <section className="container-g mt-16 sm:mt-20">
       <div className="mb-7 flex items-end justify-between gap-4">
         <div>
           <p className="eyebrow">And services</p>
           <h2 className="display mt-2 text-2xl sm:text-3xl">
             Need more than gadgets?
           </h2>
-          <p className="mt-2 max-w-xl text-sm text-white/50">
+          <p className="mt-2 max-w-xl text-sm text-ink-950/45">
             Key cutting, G-Loans, and printing — order online, pick up at UNZA,
             Kalingalinga or Balastone — or get it delivered by Yango.
           </p>
         </div>
         <Link
           href="/services"
-          className="hidden items-center gap-1 rounded-pill border border-white/10 bg-white/[0.02] px-4 py-2 text-sm font-semibold text-brand sm:inline-flex"
+          className="hidden items-center gap-1 rounded-pill border border-ink-950/10 bg-white px-4 py-2 text-sm font-semibold text-[#b89000] sm:inline-flex"
         >
           View all
           <Icon name="arrow-right" className="h-4 w-4" />

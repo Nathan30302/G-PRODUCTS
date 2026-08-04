@@ -47,10 +47,10 @@ export function ProductActions({ product }: { product: Product }) {
     <div id="buy" className="scroll-mt-28 space-y-4">
       {showVariants && (
         <div>
-          <p className="text-sm font-semibold text-white">
+          <p className="text-sm font-semibold text-ink-950">
             Colour
             {selected && (
-              <span className="ml-2 font-normal text-white/50">
+              <span className="ml-2 font-normal text-ink-950/45">
                 {selected.name}
                 {selected.available
                   ? ` · ${selected.quantity} in stock`
@@ -74,10 +74,10 @@ export function ProductActions({ product }: { product: Product }) {
                   }
                   className={`relative flex items-center gap-2 rounded-pill border px-3 py-2 text-sm font-medium transition-colors ${
                     out
-                      ? "cursor-pointer border-white/10 bg-white/[0.03] text-white/35"
+                      ? "cursor-pointer border-ink-950/10 bg-ink-950/5 text-ink-950/30"
                       : active
-                        ? "border-brand bg-brand/15 text-white"
-                        : "border-ink-700 bg-ink-900 text-white/70 hover:border-ink-600"
+                        ? "border-brand bg-brand/15 text-ink-950"
+                        : "border-ink-700 bg-white text-ink-950/70 hover:border-ink-600"
                   }`}
                 >
                   <span

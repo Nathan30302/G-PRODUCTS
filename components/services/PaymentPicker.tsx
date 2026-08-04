@@ -31,7 +31,7 @@ export function PaymentPicker({
 }) {
   return (
     <div>
-      <p className="text-sm font-semibold text-white">Pay with Mobile Money</p>
+      <p className="text-sm font-semibold text-ink-950">Pay with Mobile Money</p>
       <div className="mt-3 grid gap-3 sm:grid-cols-3">
         {options.map((opt) => (
           <button
@@ -41,11 +41,11 @@ export function PaymentPicker({
             className={`rounded-xl border p-3 text-left transition-colors ${
               method === opt.id
                 ? "border-brand bg-brand/10"
-                : "border-ink-700 bg-ink-900 hover:border-ink-600"
+                : "border-ink-700 bg-white hover:border-ink-600"
             }`}
           >
-            <span className="block text-sm font-bold text-white">{opt.label}</span>
-            <span className="text-xs text-white/50">{opt.number}</span>
+            <span className="block text-sm font-bold text-ink-950">{opt.label}</span>
+            <span className="text-xs text-ink-950/45">{opt.number}</span>
           </button>
         ))}
       </div>

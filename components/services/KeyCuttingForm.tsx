@@ -15,7 +15,7 @@ import { ServiceResult } from "@/components/services/ServiceResult";
 import { siteConfig } from "@/config/site";
 
 const field =
-  "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
+  "mt-1 w-full rounded-xl border border-ink-950/10 bg-[#f7f8f9] px-4 py-2.5 text-ink-950 outline-none focus:border-brand";
 
 type Phase = "form" | "submitting" | "done" | "pending";
 
@@ -162,16 +162,16 @@ export function KeyCuttingForm({
 
   return (
     <form onSubmit={submit} className="space-y-6">
-      <div className="rounded-card border border-ink-800 bg-ink-900 p-4 text-sm text-white/60">
-        <p className="font-semibold text-white">How key cutting works</p>
+      <div className="rounded-card border border-ink-950/10 bg-white p-4 text-sm text-ink-950/50">
+        <p className="font-semibold text-ink-950">How key cutting works</p>
         <ol className="mt-2 list-decimal space-y-1.5 pl-5">
           <li>
-            <span className="text-white/80">At the store:</span> bring the key
+            <span className="text-ink-950/75">At the store:</span> bring the key
             you want copied to {siteConfig.branch} — we cut it while you wait
             (or after you order online).
           </li>
           <li>
-            <span className="text-white/80">From home (e.g. Kamwala):</span>{" "}
+            <span className="text-ink-950/75">From home (e.g. Kamwala):</span>{" "}
             order online → Yango collects your key → we cut a copy → Yango
             returns your original + the new key. You pay for{" "}
             <span className="text-brand">the cut + both Yango trips</span>.
@@ -181,7 +181,7 @@ export function KeyCuttingForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-sm text-white/60">Full name</span>
+          <span className="text-sm text-ink-950/50">Full name</span>
           <input
             required
             value={name}
@@ -191,7 +191,7 @@ export function KeyCuttingForm({
           />
         </label>
         <label className="block">
-          <span className="text-sm text-white/60">Phone (WhatsApp)</span>
+          <span className="text-sm text-ink-950/50">Phone (WhatsApp)</span>
           <input
             required
             value={phone}
@@ -203,7 +203,7 @@ export function KeyCuttingForm({
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-white">What do you need cut?</p>
+        <p className="text-sm font-semibold text-ink-950">What do you need cut?</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           {KEY_TYPES.map((k) => (
             <button
@@ -212,8 +212,8 @@ export function KeyCuttingForm({
               onClick={() => setKeyType(k.id)}
               className={`rounded-xl border p-3 text-left text-sm font-semibold ${
                 keyType === k.id
-                  ? "border-brand bg-brand/10 text-white"
-                  : "border-ink-700 bg-ink-900 text-white/70"
+                  ? "border-brand bg-brand/10 text-ink-950"
+                  : "border-ink-950/10 bg-[#f7f8f9] text-ink-950/70"
               }`}
             >
               {k.label}
@@ -223,7 +223,7 @@ export function KeyCuttingForm({
       </div>
 
       <label className="block max-w-[10rem]">
-        <span className="text-sm text-white/60">How many keys?</span>
+        <span className="text-sm text-ink-950/50">How many keys?</span>
         <input
           type="number"
           min={1}
@@ -235,7 +235,7 @@ export function KeyCuttingForm({
       </label>
 
       <div>
-        <p className="text-sm font-semibold text-white">How will you get it done?</p>
+        <p className="text-sm font-semibold text-ink-950">How will you get it done?</p>
         <div className="mt-3 grid gap-3">
           <button
             type="button"
@@ -243,13 +243,13 @@ export function KeyCuttingForm({
             className={`rounded-xl border p-4 text-left transition-colors ${
               flow === "IN_STORE"
                 ? "border-brand bg-brand/10"
-                : "border-ink-700 bg-ink-900 hover:border-ink-600"
+                : "border-ink-700 bg-white hover:border-ink-600"
             }`}
           >
-            <span className="block font-bold text-white">
+            <span className="block font-bold text-ink-950">
               I&apos;ll bring my key to the store
             </span>
-            <span className="mt-1 block text-sm text-white/50">
+            <span className="mt-1 block text-sm text-ink-950/45">
               Come to {siteConfig.branch} with the key. You only pay for the
               key cut ({formatPrice(settings.keyCuttingPrice)} each).
             </span>
@@ -260,13 +260,13 @@ export function KeyCuttingForm({
             className={`rounded-xl border p-4 text-left transition-colors ${
               flow === "YANGO_ROUNDTRIP"
                 ? "border-brand bg-brand/10"
-                : "border-ink-700 bg-ink-900 hover:border-ink-600"
+                : "border-ink-700 bg-white hover:border-ink-600"
             }`}
           >
-            <span className="block font-bold text-white">
+            <span className="block font-bold text-ink-950">
               Send my key by Yango (round trip)
             </span>
-            <span className="mt-1 block text-sm text-white/50">
+            <span className="mt-1 block text-sm text-ink-950/45">
               Yango collects your key → we cut a copy → Yango brings original +
               new key back. You pay key cut + 2 Yango trips (
               {formatPrice(settings.yangoLegFee)} each way).
@@ -277,7 +277,7 @@ export function KeyCuttingForm({
 
       {flow === "YANGO_ROUNDTRIP" && (
         <label className="block">
-          <span className="text-sm text-white/60">
+          <span className="text-sm text-ink-950/50">
             Your address (Yango pickup & return)
           </span>
           <input
@@ -287,14 +287,14 @@ export function KeyCuttingForm({
             placeholder="e.g. Kamwala, Lusaka — near the market"
             required
           />
-          <p className="mt-1 text-xs text-white/40">
+          <p className="mt-1 text-xs text-ink-950/40">
             Gift drives for Yango — we arrange both trips for you.
           </p>
         </label>
       )}
 
       <label className="block">
-        <span className="text-sm text-white/60">Notes (optional)</span>
+        <span className="text-sm text-ink-950/50">Notes (optional)</span>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -306,31 +306,31 @@ export function KeyCuttingForm({
 
       <PaymentPicker method={pay} onChange={setPay} />
 
-      <div className="space-y-2 rounded-xl border border-ink-800 bg-ink-900 px-4 py-3 text-sm">
-        <div className="flex justify-between text-white/60">
+      <div className="space-y-2 rounded-xl border border-ink-950/10 bg-white px-4 py-3 text-sm">
+        <div className="flex justify-between text-ink-950/50">
           <span>
             Key cut ({formatPrice(settings.keyCuttingPrice)} × {qty})
           </span>
-          <span className="text-white">{formatPrice(cutFee)}</span>
+          <span className="text-ink-950">{formatPrice(cutFee)}</span>
         </div>
         {flow === "YANGO_ROUNDTRIP" && (
           <>
-            <div className="flex justify-between text-white/60">
+            <div className="flex justify-between text-ink-950/50">
               <span>Yango to G-Products</span>
-              <span className="text-white">{formatPrice(yangoToStore)}</span>
+              <span className="text-ink-950">{formatPrice(yangoToStore)}</span>
             </div>
-            <div className="flex justify-between text-white/60">
+            <div className="flex justify-between text-ink-950/50">
               <span>Yango return to you</span>
-              <span className="text-white">{formatPrice(yangoReturn)}</span>
+              <span className="text-ink-950">{formatPrice(yangoReturn)}</span>
             </div>
           </>
         )}
-        <div className="flex justify-between border-t border-ink-800 pt-2 text-lg font-black text-white">
+        <div className="flex justify-between border-t border-ink-950/10 pt-2 text-lg font-black text-ink-950">
           <span>Total</span>
           <span>{formatPrice(estimate)}</span>
         </div>
         {flow === "YANGO_ROUNDTRIP" && (
-          <p className="text-xs text-white/40">
+          <p className="text-xs text-ink-950/40">
             Yango fees are estimates for Lusaka; if the fare differs for your
             area we&apos;ll confirm on WhatsApp before confirming.
           </p>
