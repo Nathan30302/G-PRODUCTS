@@ -479,7 +479,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* mobile sticky place-order bar */}
-      <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg lg:hidden">
+      <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+3.75rem)] z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg lg:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0">
             <p className="text-[11px] text-white/45">Total</p>
