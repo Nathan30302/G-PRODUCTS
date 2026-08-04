@@ -7,7 +7,7 @@ const sizes = {
   sm: 40,
   md: 44,
   lg: 112,
-  hero: 288
+  hero: 304
 } as const;
 
 export function Logo({
@@ -28,7 +28,7 @@ export function Logo({
   if (size === "hero") {
     return (
       <span
-        className={`relative block aspect-square w-[min(72vw,17.5rem)] overflow-hidden sm:w-[18rem] lg:w-[20rem] ${className}`}
+        className={`relative block aspect-square w-[min(76vw,19rem)] overflow-hidden sm:w-[19.5rem] lg:w-[21rem] ${className}`}
       >
         <Image
           src={src}
