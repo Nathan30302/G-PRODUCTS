@@ -19,7 +19,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.05),_transparent_45%)]" />
       </div>
       <Navbar />
-      <main className="min-h-[70vh] pb-22 md:pb-0">{children}</main>
+      <main className="min-h-[70vh] pb-20 md:pb-0">{children}</main>
       <Footer />
       <MobileNav />
     </div>
