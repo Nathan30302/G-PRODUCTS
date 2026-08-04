@@ -52,24 +52,49 @@ export function ProductRail({
 
   if (products.length === 0) return null;
 
-  void accent;
+  const eye = accent === "accent" ? "text-accent" : "text-brand/80";
 
   return (
-    <section className="container-g mt-20 sm:mt-24">
-      <div className="mb-6 flex flex-col items-center text-center">
-        <h2 className="display text-2xl sm:text-3xl">{title}</h2>
-        {subtitle ? (
-          <p className="mt-2 max-w-md text-sm text-white/45">{subtitle}</p>
-        ) : null}
-        {href ? (
-          <Link
-            href={href}
-            className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-white/45 transition-colors hover:text-brand"
-          >
-            {hrefLabel}
-            <Icon name="chevron-right" className="h-4 w-4" />
-          </Link>
-        ) : null}
+    <section className="container-g mt-24">
+      <div className="mb-7 flex items-end justify-between gap-4">
+        <div>
+          <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${eye}`}>
+            {accent === "accent" ? "Deals" : "Shop"}
+          </p>
+          <h2 className="display mt-2 text-2xl sm:text-3xl">{title}</h2>
+          {subtitle ? (
+            <p className="mt-2 max-w-md text-sm text-white/50">{subtitle}</p>
+          ) : null}
+        </div>
+        <div className="flex items-center gap-2">
+          {href ? (
+            <Link
+              href={href}
+              className="hidden shrink-0 items-center gap-1 rounded-pill border border-white/10 bg-white/[0.02] px-4 py-2 text-sm font-semibold text-white/80 transition-all hover:border-brand/40 hover:text-brand sm:inline-flex"
+            >
+              {hrefLabel}
+              <Icon name="arrow-right" className="h-4 w-4" />
+            </Link>
+          ) : null}
+          <div className="hidden items-center gap-2 lg:flex">
+            <button
+              onClick={() => scrollBy(-1)}
+              disabled={atStart}
+              aria-label="Scroll left"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-white/80 transition-all hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              <Icon name="chevron-left" className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => scrollBy(1)}
+              disabled={atEnd}
+              aria-label="Scroll right"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.03] text-white/80 transition-all hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              <Icon name="chevron-right" className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="relative">
@@ -83,24 +108,6 @@ export function ProductRail({
             atEnd ? "opacity-0" : "opacity-100"
           }`}
         />
-        <div className="absolute -top-12 right-0 hidden items-center gap-2 lg:flex">
-          <button
-            onClick={() => scrollBy(-1)}
-            disabled={atStart}
-            aria-label="Scroll left"
-            className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-white/70 transition-all hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            <Icon name="chevron-left" className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => scrollBy(1)}
-            disabled={atEnd}
-            aria-label="Scroll right"
-            className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-white/70 transition-all hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            <Icon name="chevron-right" className="h-4 w-4" />
-          </button>
-        </div>
         <div
           ref={scroller}
           className="no-scrollbar snap-rail -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0"
@@ -108,13 +115,25 @@ export function ProductRail({
           {products.map((p, i) => (
             <div
               key={p.id}
-              className="snap-item w-[68vw] shrink-0 sm:w-64 lg:w-[19rem]"
+              className="snap-item w-[62vw] shrink-0 sm:w-64 lg:w-[19rem]"
             >
               <ProductCard product={p} priority={i < 2} />
             </div>
           ))}
         </div>
       </div>
+
+      {href ? (
+        <div className="mt-5 sm:hidden">
+          <Link
+            href={href}
+            className="flex items-center justify-center gap-1 rounded-pill border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-semibold text-white/80"
+          >
+            {hrefLabel}
+            <Icon name="arrow-right" className="h-4 w-4" />
+          </Link>
+        </div>
+      ) : null}
     </section>
   );
 }
