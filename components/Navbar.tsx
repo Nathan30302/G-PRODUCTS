@@ -75,7 +75,8 @@ export function Navbar() {
             aria-label="G-Products home"
             className="transition-transform duration-300 ease-out-expo hover:scale-[1.03]"
           >
-            <Logo size="md" priority />
+            <Logo size="sm" priority className="rounded-xl sm:hidden" />
+            <Logo size="md" priority className="hidden rounded-xl sm:inline-flex" />
           </Link>
         </div>
 
