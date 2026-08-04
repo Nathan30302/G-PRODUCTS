@@ -109,12 +109,24 @@ html {
 
   /* Section eyebrow label */
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.22em] text-brand/80;
+    @apply text-[11px] font-bold uppercase tracking-[0.22em] text-brand/80;
+  }
+
+  .display {
+    @apply font-display font-extrabold tracking-tight text-white;
   }
 
   /* Subtle top-lit panel used across cards/sections */
   .panel {
-    @apply rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 shadow-card backdrop-blur-sm;
+    @apply rounded-[1.35rem] border border-white/[0.07] bg-ink-900/70 shadow-card;
+  }
+
+  .field {
+    @apply mt-2 w-full rounded-2xl border border-white/10 bg-ink-950/70 px-4 py-3.5 text-white outline-none transition-all placeholder:text-white/30 focus:border-brand/60 focus:bg-ink-950 focus:shadow-[0_0_0_3px_rgba(246,212,0,0.12)];
+  }
+
+  .field-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45;
   }
 }
 

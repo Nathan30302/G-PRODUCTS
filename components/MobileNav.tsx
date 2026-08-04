@@ -19,8 +19,8 @@ export function MobileNav() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.07] bg-ink-950/90 backdrop-blur-xl md:hidden">
-      <div className="mx-auto grid max-w-md grid-cols-4 px-2 pb-[env(safe-area-inset-bottom)] pt-1">
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.06] bg-ink-950/92 backdrop-blur-xl md:hidden">
+      <div className="mx-auto grid max-w-md grid-cols-4 px-2 pb-[env(safe-area-inset-bottom)] pt-1.5">
         {items.map((it) => {
           const active =
             it.href === "/"
@@ -30,15 +30,15 @@ export function MobileNav() {
             <Link
               key={it.href}
               href={it.href}
-              className={`relative flex flex-col items-center gap-1 rounded-2xl py-2.5 text-[10px] font-bold tracking-wide transition-colors ${
-                active ? "text-brand" : "text-white/45"
+              className={`relative flex flex-col items-center gap-1 rounded-2xl py-2 text-[10px] font-bold tracking-wide transition-colors ${
+                active ? "text-brand" : "text-white/40"
               }`}
             >
               <span
                 className={`relative grid h-9 w-9 place-items-center rounded-xl transition-all ${
                   active
-                    ? "bg-brand/15 text-brand shadow-[0_0_20px_rgba(246,212,0,0.15)]"
-                    : "text-white/50"
+                    ? "bg-brand/15 text-brand"
+                    : "text-white/45"
                 }`}
               >
                 <Icon name={it.icon} className="h-5 w-5" />

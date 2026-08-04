@@ -37,7 +37,7 @@ export function Hero() {
             {siteConfig.tagline}
           </p>
 
-          <h1 className="hero-rise hero-rise-delay-2 mt-4 max-w-[16ch] text-[1.85rem] font-black leading-[1.08] tracking-tight text-white sm:max-w-none sm:text-4xl lg:text-5xl">
+          <h1 className="hero-rise hero-rise-delay-2 display mt-4 max-w-[16ch] text-[1.85rem] leading-[1.08] sm:max-w-none sm:text-4xl lg:text-5xl">
             Everything you need — one shop.
           </h1>
 

@@ -7,13 +7,11 @@ export async function ServicesBand() {
   const services = await getAllServiceOffers();
 
   return (
-    <section className="container-g mt-20">
+    <section className="container-g mt-24">
       <div className="mb-7 flex items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
-            And services
-          </p>
-          <h2 className="mt-1.5 text-2xl font-black tracking-tight text-white sm:text-3xl">
+          <p className="eyebrow">And services</p>
+          <h2 className="display mt-2 text-2xl sm:text-3xl">
             Need more than gadgets?
           </h2>
           <p className="mt-2 max-w-xl text-sm text-white/50">

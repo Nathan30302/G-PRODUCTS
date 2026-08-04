@@ -9,7 +9,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"]
+        display: ["var(--font-syne)", "var(--font-geist-sans)", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "monospace"]
       },
       colors: {
         // G-Products palette - dark teal/petrol base from the logo banner
