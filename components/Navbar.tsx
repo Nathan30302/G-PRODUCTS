@@ -39,14 +39,14 @@ export function Navbar() {
     <header
       className={`sticky top-0 z-50 border-b transition-all duration-300 ${
         scrolled
-          ? "border-white/[0.07] bg-ink-950/85 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl"
-          : "border-transparent bg-ink-950/50 backdrop-blur-md"
+          ? "border-white/[0.07] bg-ink-950/90 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+          : "border-transparent bg-transparent"
       }`}
     >
-      <div className="container-g flex h-14 items-center justify-between gap-3 sm:h-16">
+      <div className="container-g flex h-14 items-center justify-between gap-2.5 sm:h-16 sm:gap-3">
         <div className="flex items-center gap-2">
           <button
-            className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/80 transition-colors hover:border-brand/40 hover:text-brand lg:hidden"
+            className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:h-11 sm:w-11 sm:rounded-2xl lg:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
             aria-expanded={open}
@@ -70,7 +70,11 @@ export function Navbar() {
               )}
             </svg>
           </button>
-          <Link href="/" aria-label="G-Products home">
+          <Link
+            href="/"
+            aria-label="G-Products home"
+            className="transition-transform duration-300 ease-out-expo hover:scale-[1.03]"
+          >
             <Logo size="md" priority />
           </Link>
         </div>
@@ -130,7 +134,7 @@ export function Navbar() {
 
           <Link
             href="/search"
-            className="grid h-10 w-10 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/80 transition-colors hover:border-brand/40 hover:text-brand md:hidden"
+            className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:rounded-2xl md:hidden"
             aria-label="Search"
           >
             <Icon name="search" className="h-5 w-5" />
@@ -138,7 +142,7 @@ export function Navbar() {
 
           <Link
             href="/cart"
-            className="relative grid h-10 w-10 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/80 transition-colors hover:border-brand/40 hover:text-brand"
+            className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:rounded-2xl"
             aria-label="Cart"
           >
             <Icon name="cart" className="h-5 w-5" />

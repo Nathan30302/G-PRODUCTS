@@ -58,6 +58,41 @@ html {
   scrollbar-width: none;
 }
 
+/* Hero entrance stagger */
+.hero-rise {
+  animation: hero-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero-rise-delay-1 {
+  animation-delay: 0.08s;
+}
+.hero-rise-delay-2 {
+  animation-delay: 0.16s;
+}
+.hero-rise-delay-3 {
+  animation-delay: 0.24s;
+}
+.hero-rise-delay-4 {
+  animation-delay: 0.32s;
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise,
+  .animate-glow-breathe {
+    animation: none !important;
+  }
+}
+
 @layer utilities {
   .container-g {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
