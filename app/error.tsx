@@ -20,10 +20,10 @@ export default function Error({
       <span className="grid h-16 w-16 place-items-center rounded-full bg-red-500/15 text-red-400">
         <Icon name="refresh" className="h-7 w-7" />
       </span>
-      <h1 className="mt-5 text-2xl font-black text-ink-950">
+      <h1 className="mt-5 text-2xl font-black text-white">
         Something went wrong
       </h1>
-      <p className="mt-2 max-w-sm text-sm text-ink-950/45">
+      <p className="mt-2 max-w-sm text-sm text-white/50">
         We hit a snag loading this page. Please try again in a moment.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">

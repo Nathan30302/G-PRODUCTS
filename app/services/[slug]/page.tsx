@@ -40,20 +40,20 @@ export default async function ServiceDetailPage({
 
   return (
     <div className="container-g py-10">
-      <nav className="text-sm text-ink-950/40">
-        <Link href="/" className="hover:text-ink-950">
+      <nav className="text-sm text-white/40">
+        <Link href="/" className="hover:text-white">
           Home
         </Link>{" "}
         /{" "}
-        <Link href="/services" className="hover:text-ink-950">
+        <Link href="/services" className="hover:text-white">
           Services
         </Link>{" "}
-        / <span className="text-ink-950/70">{service.name}</span>
+        / <span className="text-white/70">{service.name}</span>
       </nav>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2">
         <div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-card border border-ink-950/10 bg-white">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-card border border-ink-800 bg-ink-850">
             {service.image ? (
               <Image
                 src={service.image}
@@ -71,21 +71,21 @@ export default async function ServiceDetailPage({
               </div>
             )}
           </div>
-          <h1 className="mt-6 text-3xl font-black text-ink-950">{service.name}</h1>
+          <h1 className="mt-6 text-3xl font-black text-white">{service.name}</h1>
           <p className="mt-2 text-brand">{service.tagline}</p>
-          <p className="mt-4 text-ink-950/50">{service.description}</p>
+          <p className="mt-4 text-white/60">{service.description}</p>
           {service.priceLabel && (
-            <p className="mt-4 text-sm font-semibold text-ink-950/75">
+            <p className="mt-4 text-sm font-semibold text-white/80">
               {service.priceLabel}
             </p>
           )}
         </div>
 
-        <div className="rounded-card border border-ink-950/10 bg-white p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-ink-950">
+        <div className="rounded-card border border-ink-800 bg-ink-850 p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-white">
             {service.payable ? "Place your order" : "Submit a request"}
           </h2>
-          <p className="mt-1 text-sm text-ink-950/45">
+          <p className="mt-1 text-sm text-white/50">
             {service.payable
               ? "Fill in the details, pay with Mobile Money, then pickup or Yango."
               : "We'll review your request and contact you on WhatsApp."}

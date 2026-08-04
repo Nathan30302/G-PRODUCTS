@@ -15,21 +15,21 @@ export default async function ServicesPage() {
 
   return (
     <div className="container-g py-10">
-      <nav className="text-sm text-ink-950/40">
-        <Link href="/" className="transition-colors hover:text-ink-950">
+      <nav className="text-sm text-white/40">
+        <Link href="/" className="transition-colors hover:text-white">
           Home
         </Link>{" "}
-        / <span className="text-ink-950/70">Services</span>
+        / <span className="text-white/70">Services</span>
       </nav>
 
       <header className="mt-5 max-w-2xl">
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
           Heart-gladdening help
         </p>
-        <h1 className="mt-1.5 text-3xl font-black tracking-tight text-ink-950 sm:text-4xl">
+        <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
           Services
         </h1>
-        <p className="mt-3 text-base leading-relaxed text-ink-950/45">
+        <p className="mt-3 text-base leading-relaxed text-white/55">
           Key cutting, collateral-based loans, and document printing — order
           online, pay with Mobile Money, then pick up at {siteConfig.branch} or
           get delivery via Yango.

@@ -20,7 +20,7 @@ export function ProductGallery({
 
   return (
     <div className="lg:sticky lg:top-24">
-      <div className="relative aspect-square overflow-hidden rounded-[1.35rem] border border-ink-950/8 bg-white shadow-card">
+      <div className="relative aspect-square overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 shadow-card">
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
@@ -59,7 +59,7 @@ export function ProductGallery({
               className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border transition-all ${
                 i === active
                   ? "border-brand ring-2 ring-brand/30"
-                  : "border-ink-950/10 opacity-70 hover:opacity-100"
+                  : "border-white/10 opacity-70 hover:opacity-100"
               }`}
             >
               {img.url && (

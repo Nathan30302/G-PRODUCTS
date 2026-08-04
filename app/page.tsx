@@ -1,10 +1,10 @@
 import { Hero } from "@/components/Hero";
-import { CategoryShowcase } from "@/components/CategoryShowcase";
+import { CategoryTile } from "@/components/CategoryTile";
 import { ProductRail } from "@/components/ProductRail";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { ServicesBand } from "@/components/ServicesBand";
 import { ContactBand } from "@/components/ContactBand";
-import { Reveal } from "@/components/Reveal";
+import { Stagger, StaggerItem, Reveal } from "@/components/Reveal";
 import {
   getAllCategories,
   getAllProducts,
@@ -28,19 +28,23 @@ export default async function HomePage() {
     <>
       <Hero />
 
-      <section className="container-g mt-12 sm:mt-16">
-        <Reveal className="mb-6 text-center sm:mb-8">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-950/40">
-            Trusted by many, loved by all.
-          </p>
-          <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-ink-950 sm:text-3xl">
-            Explore our Top Tech.
+      <section className="container-g mt-16 sm:mt-20">
+        <Reveal className="mb-8">
+          <p className="eyebrow">Browse</p>
+          <h2 className="display mt-2 text-2xl sm:text-3xl">
+            Shop by category
           </h2>
-          <p className="mt-2 text-sm text-ink-950/45">
+          <p className="mt-2 text-sm text-white/50">
             Stationery, storage, chargers, audio and more.
           </p>
         </Reveal>
-        <CategoryShowcase categories={categories} />
+        <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+          {categories.map((c) => (
+            <StaggerItem key={c.slug}>
+              <CategoryTile category={c} />
+            </StaggerItem>
+          ))}
+        </Stagger>
       </section>
 
       <ProductRail
@@ -53,7 +57,7 @@ export default async function HomePage() {
       />
 
       <ProductRail
-        title="Our Bestsellers"
+        title="Handpicked for You"
         subtitle="Popular items from G-Products."
         products={featured}
         href="/search"

@@ -4,9 +4,9 @@ import { siteConfig } from "@/config/site";
 
 export function ContactBand() {
   return (
-    <section id="contact" className="container-g mt-16 mb-8 scroll-mt-24 sm:mt-20">
+    <section id="contact" className="container-g mt-24 mb-8 scroll-mt-24">
       <Reveal>
-        <div className="relative overflow-hidden rounded-[2rem] bg-ink-950 px-6 py-12 sm:px-10 sm:py-14 lg:px-14">
+        <div className="relative overflow-hidden rounded-[2rem] border border-white/[0.07] bg-[#0a2429] px-6 py-12 sm:px-10 sm:py-14 lg:px-14">
           <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-accent/20 blur-[110px]" />
           <div className="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-brand/15 blur-[100px]" />
           <div
@@ -23,7 +23,7 @@ export function ContactBand() {
               <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent">
                 Talk to us
               </p>
-              <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              <h2 className="display mt-3 text-3xl sm:text-4xl">
                 Need help choosing?
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-white/55 sm:text-base">
@@ -66,7 +66,7 @@ export function ContactBand() {
               </a>
               <a
                 href={`tel:${siteConfig.phoneDisplay.replace(/\s/g, "")}`}
-                className="btn-ghost-dark px-8 py-3.5"
+                className="btn-ghost px-8 py-3.5"
               >
                 <Icon name="phone" className="h-5 w-5" />
                 Call us

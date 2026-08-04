@@ -43,9 +43,9 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
 
   return (
     <>
-      <div className="sticky top-14 z-30 -mx-4 mt-6 border-y border-ink-950/6 bg-white/90 px-4 py-3 backdrop-blur-xl sm:top-16 sm:mx-0 sm:rounded-[1.25rem] sm:border sm:border-ink-950/8">
+      <div className="sticky top-16 z-30 -mx-4 mt-6 border-y border-white/[0.06] bg-ink-950/85 px-4 py-3 backdrop-blur-xl sm:mx-0 sm:rounded-[1.25rem] sm:border sm:border-white/[0.07]">
         <div className="flex flex-wrap items-center gap-2.5">
-          <span className="mr-1 hidden items-center gap-1.5 text-sm font-semibold text-ink-950/50 sm:flex">
+          <span className="mr-1 hidden items-center gap-1.5 text-sm font-semibold text-white/60 sm:flex">
             <Icon name="sliders" className="h-4 w-4" />
             Filter
           </span>
@@ -54,8 +54,8 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
             onClick={() => setInStockOnly((v) => !v)}
             className={`rounded-pill px-3.5 py-1.5 text-sm font-medium transition-colors ${
               inStockOnly
-                ? "bg-accent/15 text-accent-dark ring-1 ring-accent/40"
-                : "bg-ink-950/5 text-ink-950/65 hover:text-ink-950"
+                ? "bg-accent/15 text-accent ring-1 ring-accent/40"
+                : "bg-white/[0.04] text-white/70 hover:text-white"
             }`}
           >
             In stock
@@ -71,8 +71,8 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
                   onClick={() => setMaxPrice(activeCap ? null : cap)}
                   className={`rounded-pill px-3.5 py-1.5 text-sm font-medium transition-colors ${
                     activeCap
-                      ? "bg-brand/25 text-[#9a7800] ring-1 ring-brand/50"
-                      : "bg-ink-950/5 text-ink-950/65 hover:text-ink-950"
+                      ? "bg-brand/20 text-brand ring-1 ring-brand/40"
+                      : "bg-white/[0.04] text-white/70 hover:text-white"
                   }`}
                 >
                   Under K{cap.toLocaleString()}
@@ -84,7 +84,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
             {hasFilters && (
               <button
                 onClick={reset}
-                className="text-sm text-ink-950/40 transition-colors hover:text-ink-950"
+                className="text-sm text-white/45 transition-colors hover:text-white"
               >
                 Clear
               </button>
@@ -94,34 +94,34 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
                 value={sort}
                 onChange={(e) => setSort(e.target.value as Sort)}
                 aria-label="Sort products"
-                className="appearance-none rounded-pill border border-ink-950/10 bg-white py-1.5 pl-4 pr-9 text-sm font-medium text-ink-950 outline-none transition-colors focus:border-brand"
+                className="appearance-none rounded-pill border border-white/10 bg-white/[0.04] py-1.5 pl-4 pr-9 text-sm font-medium text-white outline-none transition-colors focus:border-brand/40"
               >
                 {(Object.keys(sortLabels) as Sort[]).map((s) => (
-                  <option key={s} value={s}>
+                  <option key={s} value={s} className="bg-ink-900">
                     {sortLabels[s]}
                   </option>
                 ))}
               </select>
               <Icon
                 name="chevron-down"
-                className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-950/40"
+                className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50"
               />
             </div>
           </div>
         </div>
       </div>
 
-      <p className="mt-5 text-sm text-ink-950/40">
+      <p className="mt-5 text-sm text-white/45">
         {results.length} product{results.length === 1 ? "" : "s"}
       </p>
 
       {results.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center rounded-[1.35rem] border border-ink-950/8 bg-white p-12 text-center shadow-[0_4px_24px_rgba(6,24,28,0.06)]">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-ink-950/5 text-ink-950/35">
+        <div className="mt-8 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-white/[0.04] text-white/40">
             <Icon name="search" className="h-6 w-6" />
           </span>
-          <p className="mt-4 font-semibold text-ink-950">No products match</p>
-          <p className="mt-1 text-sm text-ink-950/45">
+          <p className="mt-4 font-semibold text-white">No products match</p>
+          <p className="mt-1 text-sm text-white/50">
             Try clearing your filters or browse the whole shop.
           </p>
           <div className="mt-5 flex gap-3">
@@ -136,7 +136,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
           </div>
         </div>
       ) : (
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {results.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

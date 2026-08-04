@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f8f9",
+  themeColor: "#06181c",
   width: "device-width",
   initialScale: 1
 };
@@ -53,7 +53,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${syne.variable}`}>
-      <body className="min-h-screen bg-[#f7f8f9] font-sans text-ink-950 antialiased">
+      <body className="min-h-screen bg-ink-950 font-sans text-white antialiased">
         <CartProvider>
           <ToastProvider>
             <SiteChrome>{children}</SiteChrome>

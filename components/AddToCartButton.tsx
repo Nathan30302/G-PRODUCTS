@@ -31,7 +31,7 @@ export function AddToCartButton({
     return (
       <Link
         href={`/product/${product.slug}`}
-        className={`flex w-full items-center justify-center rounded-pill border border-ink-950/12 bg-ink-950/5 font-semibold text-ink-950/40 ${
+        className={`flex w-full items-center justify-center rounded-pill border border-white/15 bg-white/[0.04] font-semibold text-white/50 ${
           compact ? "px-4 py-2 text-sm" : "px-4 py-3"
         }`}
       >

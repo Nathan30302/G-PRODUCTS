@@ -12,9 +12,9 @@ const serviceLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-16 bg-ink-950 text-white sm:mt-20">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
-      <div className="container-g grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-5">
+    <footer className="relative mt-24 border-t border-white/[0.06] bg-ink-950/80">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
+      <div className="container-g grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-5">
         <div>
           <Logo size="lg" />
           <p className="mt-4 text-sm font-semibold text-brand/90">
@@ -122,11 +122,21 @@ export function Footer() {
             href={`https://wa.me/${siteConfig.whatsappNumber}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-whatsapp mt-4 !text-accent"
+            className="btn-whatsapp mt-4"
           >
             <Icon name="whatsapp" className="h-4 w-4" />
             Chat on WhatsApp
           </a>
+          {siteConfig.whatsappCatalogue && (
+            <a
+              href={siteConfig.whatsappCatalogue}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 block text-sm text-brand hover:underline"
+            >
+              WhatsApp catalogue
+            </a>
+          )}
         </div>
       </div>
 
