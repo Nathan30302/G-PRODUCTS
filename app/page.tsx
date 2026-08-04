@@ -49,25 +49,24 @@ export default async function HomePage() {
 
       <ProductRail
         title="Hot Deals of the Week"
-        subtitle="Smart picks at better prices."
         products={hotDeals}
         href="/search"
-        hrefLabel="See all deals"
+        hrefLabel="View all"
         accent="accent"
       />
 
       <ProductRail
-        title="Handpicked for You"
-        subtitle="Popular items from G-Products."
+        title="Our Bestsellers"
         products={featured}
         href="/search"
+        hrefLabel="View all"
       />
 
       <ProductRail
         title="Fresh Arrivals"
-        subtitle="Browse the latest from our catalogue."
         products={newest}
         href="/search"
+        hrefLabel="View all"
       />
 
       <WhyGProducts />

@@ -1,5 +1,6 @@
 import { Icon } from "@/components/Icons";
 import { Reveal } from "@/components/Reveal";
+import { SmokeBackdrop } from "@/components/SmokeBackdrop";
 import { siteConfig } from "@/config/site";
 
 export function ContactBand() {
@@ -7,6 +8,7 @@ export function ContactBand() {
     <section id="contact" className="container-g mt-24 mb-8 scroll-mt-24">
       <Reveal>
         <div className="relative overflow-hidden rounded-[2rem] border border-white/[0.07] bg-[#0a2429] px-6 py-12 sm:px-10 sm:py-14 lg:px-14">
+          <SmokeBackdrop />
           <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-accent/20 blur-[110px]" />
           <div className="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-brand/15 blur-[100px]" />
           <div
