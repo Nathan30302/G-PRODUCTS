@@ -41,7 +41,7 @@ export function PaymentPicker({
             className={`rounded-xl border p-3 text-left transition-colors ${
               method === opt.id
                 ? "border-brand bg-brand/10"
-                : "border-ink-700 bg-white hover:border-ink-600"
+                : "border-ink-950/10 bg-white hover:border-ink-950/25"
             }`}
           >
             <span className="block text-sm font-bold text-ink-950">{opt.label}</span>

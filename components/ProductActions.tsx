@@ -77,7 +77,7 @@ export function ProductActions({ product }: { product: Product }) {
                       ? "cursor-pointer border-ink-950/10 bg-ink-950/5 text-ink-950/30"
                       : active
                         ? "border-brand bg-brand/15 text-ink-950"
-                        : "border-ink-700 bg-white text-ink-950/70 hover:border-ink-600"
+                        : "border-ink-950/10 bg-white text-ink-950/70 hover:border-ink-950/25"
                   }`}
                 >
                   <span
