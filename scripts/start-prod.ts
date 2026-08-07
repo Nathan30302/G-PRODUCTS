@@ -1,6 +1,7 @@
 /**
  * Production start for Railway (and similar hosts).
- * Ensures the SQLite file exists, syncs schema, seeds when empty, then boots Next.
+ * Ensures the SQLite file exists, syncs schema, guarantees the owner desk
+ * login from Railway Variables, seeds when empty, then boots Next.
  */
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
@@ -20,9 +21,61 @@ function run(cmd: string, args: string[]) {
   });
 }
 
+/**
+ * Always make sure Gift's desk login exists from OWNER_* env vars.
+ * Catalog seed is skipped when products already exist — that used to skip
+ * creating the owner too, which broke Profile sign-in.
+ */
+async function ensureOwnerAccount() {
+  const { PrismaClient } = await import("@prisma/client");
+  const bcrypt = await import("bcryptjs");
+  const prisma = new PrismaClient();
+
+  const email = (process.env.OWNER_EMAIL ?? "gift@gproducts.zm")
+    .trim()
+    .toLowerCase();
+  const name = (process.env.OWNER_NAME ?? "Gift Mbumwae").trim();
+  const password = process.env.OWNER_PASSWORD ?? "changeme123";
+  const syncPassword = process.env.OWNER_SYNC_PASSWORD === "1";
+
+  try {
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (!existing) {
+      const passwordHash = await bcrypt.hash(password, 10);
+      await prisma.user.create({
+        data: {
+          email,
+          name,
+          passwordHash,
+          role: "OWNER"
+        }
+      });
+      console.log(`[start] created owner desk login: ${email}`);
+    } else {
+      const data: {
+        name: string;
+        role: "OWNER";
+        passwordHash?: string;
+      } = { name, role: "OWNER" };
+
+      if (syncPassword) {
+        data.passwordHash = await bcrypt.hash(password, 10);
+      }
+
+      await prisma.user.update({ where: { email }, data });
+      console.log(
+        `[start] owner desk login ready: ${email}${
+          syncPassword ? " (password synced from OWNER_PASSWORD)" : ""
+        }`
+      );
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function main() {
   if (!process.env.DATABASE_URL) {
-    // Persist under /data when a Railway volume is mounted there; otherwise local prisma/
     const dataDir = existsSync("/data") ? "/data" : path.join(process.cwd(), "prisma");
     mkdirSync(dataDir, { recursive: true });
     process.env.DATABASE_URL = `file:${path.join(dataDir, "gproducts.db")}`;
@@ -43,7 +96,13 @@ async function main() {
   console.log("[start] prisma db push");
   await run("npx", ["prisma", "db", "push", "--skip-generate"]);
 
-  // Seed only when the catalog is empty (first boot)
+  try {
+    await ensureOwnerAccount();
+  } catch (err) {
+    console.warn("[start] ensure owner failed, continuing:", err);
+  }
+
+  // Seed catalog only when empty (first boot)
   try {
     const { PrismaClient } = await import("@prisma/client");
     const prisma = new PrismaClient();
@@ -53,7 +112,7 @@ async function main() {
       console.log("[start] empty catalog — running seed");
       await run("npx", ["tsx", "prisma/seed.ts"]);
     } else {
-      console.log(`[start] catalog has ${count} products — skip seed`);
+      console.log(`[start] catalog has ${count} products — skip catalog seed`);
     }
   } catch (err) {
     console.warn("[start] seed check failed, continuing:", err);

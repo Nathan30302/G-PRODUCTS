@@ -159,6 +159,13 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
             ? "Sign in with your phone or email — we’ll take you to the right place."
             : "One account for the shop. Phone is required; email is optional."}
         </p>
+        {mode === "signin" ? (
+          <p className="mt-3 max-w-sm text-[11px] leading-relaxed text-white/30">
+            Desk owner: use the email from Railway{" "}
+            <span className="text-white/45">OWNER_EMAIL</span> (e.g. gift@gproducts.zm)
+            and <span className="text-white/45">OWNER_PASSWORD</span>.
+          </p>
+        ) : null}
       </div>
 
       <div className="relative overflow-hidden rounded-[1.85rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-1.5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
