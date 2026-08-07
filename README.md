@@ -74,6 +74,32 @@ scaffolding. Checkout (`/api/checkout`) creates an order and initiates payment:
 - **Manual mode** (credentials blank): the order is recorded and confirmed over
   WhatsApp.
 
+## Deploy on Railway
+
+The image build was failing because Railway installs with `NODE_ENV=production`,
+which skips `devDependencies` — and this app needs **Tailwind / PostCSS /
+TypeScript** at build time. Those packages are now in `dependencies`, and
+`railway.toml` / `Dockerfile` are included.
+
+### Steps
+
+1. In [Railway](https://railway.app), **New Project → Deploy from GitHub** and
+   select `Nathan30302/G-PRODUCTS` (use the branch that contains this fix, then
+   merge to `main` when ready).
+2. Open the service → **Variables** and set at least:
+   - `AUTH_SECRET` — long random string
+   - `NEXT_PUBLIC_BASE_URL` — your Railway public URL (e.g. `https://….up.railway.app`)
+   - `OWNER_EMAIL` / `OWNER_NAME` / `OWNER_PASSWORD` — first admin account (seed)
+3. **Optional but recommended:** add a **Volume** mounted at `/data`, then set:
+   - `DATABASE_URL=file:/data/gproducts.db`  
+   Without a volume, SQLite lives on the container disk and is wiped on redeploy.
+4. Settings → Deploy:
+   - Start command should be `npm run start:prod` (already in `railway.toml`)
+   - Or set Builder to **Dockerfile** if Nixpacks still fails
+5. Redeploy. First boot runs `prisma db push` and seeds the catalog if empty.
+
+Admin: `https://YOUR-DOMAIN/admin` with the owner credentials above.
+
 ## Useful scripts
 
 ```bash
@@ -81,6 +107,7 @@ npm run db:push       # sync schema to the database
 npm run db:seed       # seed categories, products, owner
 npm run db:reset      # wipe + reseed (destroys local data)
 npm run build         # prisma generate + next build
+npm run start:prod    # production start (db push + optional seed + next start)
 ```
 
 ## Not yet done (future phases)

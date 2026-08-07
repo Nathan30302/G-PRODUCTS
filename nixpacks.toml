@@ -1,0 +1,14 @@
+# Ensure Tailwind/PostCSS/TypeScript are available during `next build`
+# even when the host sets NODE_ENV=production at install time.
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm run start:prod"
+
+[variables]
+NPM_CONFIG_PRODUCTION = "false"
+NODE_ENV = "production"

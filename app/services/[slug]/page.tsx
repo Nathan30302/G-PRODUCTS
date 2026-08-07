@@ -2,18 +2,13 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getServiceOffer, getAllServiceOffers } from "@/lib/service-queries";
+import { getServiceOffer } from "@/lib/service-queries";
 import { Icon } from "@/components/Icons";
 import { KeyCuttingForm } from "@/components/services/KeyCuttingForm";
 import { GLoansForm } from "@/components/services/GLoansForm";
 import { PrintingForm } from "@/components/services/PrintingForm";
 
 export const dynamic = "force-dynamic";
-
-export async function generateStaticParams() {
-  const services = await getAllServiceOffers();
-  return services.map((s) => ({ slug: s.slug }));
-}
 
 export async function generateMetadata({
   params
