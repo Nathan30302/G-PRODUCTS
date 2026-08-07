@@ -16,10 +16,16 @@ export default async function ProfilePage({
 }: {
   searchParams?: Promise<{ mode?: string }>;
 }) {
-  const [customer, provider] = await Promise.all([
-    getCustomerSession(),
-    getSession()
-  ]);
+  let customer = null;
+  let provider = null;
+  try {
+    [customer, provider] = await Promise.all([
+      getCustomerSession(),
+      getSession()
+    ]);
+  } catch (err) {
+    console.error("[profile] session read failed:", err);
+  }
 
   if (provider) redirect(siteConfig.apps.provider.home);
   if (customer) redirect(siteConfig.apps.customer.home);

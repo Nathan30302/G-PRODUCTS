@@ -7,6 +7,7 @@ import { hashPassword, verifyPassword } from "@/lib/auth";
 const COOKIE = "gp_customer";
 const ALG = "HS256";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
+const FALLBACK_SECRET = "change-me-in-railway-variables";
 
 export type CustomerSession = {
   id: string;
@@ -16,10 +17,8 @@ export type CustomerSession = {
 };
 
 function secret(): Uint8Array {
-  const s = process.env.AUTH_SECRET;
-  if (!s || s.length < 16) {
-    throw new Error("AUTH_SECRET is missing or too short");
-  }
+  const raw = process.env.AUTH_SECRET?.trim();
+  const s = raw && raw.length >= 16 ? raw : FALLBACK_SECRET;
   return new TextEncoder().encode(s);
 }
 

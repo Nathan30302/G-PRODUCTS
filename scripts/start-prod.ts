@@ -1,7 +1,7 @@
 /**
  * Production start for Railway (and similar hosts).
- * Ensures the SQLite file exists, syncs schema, guarantees the owner desk
- * login from Railway Variables, seeds when empty, then boots Next.
+ * Ensures DB, guarantees Gift's desk login (gift@gproducts.zm), seeds catalog
+ * when empty, then boots Next.
  */
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
@@ -22,9 +22,9 @@ function run(cmd: string, args: string[]) {
 }
 
 /**
- * Always make sure Gift's desk login exists from OWNER_* env vars.
- * Catalog seed is skipped when products already exist — that used to skip
- * creating the owner too, which broke Profile sign-in.
+ * Exactly one provider (OWNER). Created as gift@gproducts.zm / changeme123
+ * (overridable via OWNER_*). Password is synced from OWNER_PASSWORD on boot
+ * unless OWNER_SYNC_PASSWORD=0 (so in-app password changes can stick).
  */
 async function ensureOwnerAccount() {
   const { PrismaClient } = await import("@prisma/client");
@@ -36,12 +36,16 @@ async function ensureOwnerAccount() {
     .toLowerCase();
   const name = (process.env.OWNER_NAME ?? "Gift Mbumwae").trim();
   const password = process.env.OWNER_PASSWORD ?? "changeme123";
-  const syncPassword = process.env.OWNER_SYNC_PASSWORD === "1";
+  // Default: keep Railway password in sync so Gift can always sign in.
+  // Set OWNER_SYNC_PASSWORD=0 after changing password in the desk if you
+  // don't want redeploys to reset it.
+  const syncPassword = process.env.OWNER_SYNC_PASSWORD !== "0";
 
   try {
+    const passwordHash = await bcrypt.hash(password, 10);
     const existing = await prisma.user.findUnique({ where: { email } });
+
     if (!existing) {
-      const passwordHash = await bcrypt.hash(password, 10);
       await prisma.user.create({
         data: {
           email,
@@ -50,23 +54,31 @@ async function ensureOwnerAccount() {
           role: "OWNER"
         }
       });
-      console.log(`[start] created owner desk login: ${email}`);
+      console.log(`[start] created provider login: ${email}`);
     } else {
-      const data: {
-        name: string;
-        role: "OWNER";
-        passwordHash?: string;
-      } = { name, role: "OWNER" };
-
-      if (syncPassword) {
-        data.passwordHash = await bcrypt.hash(password, 10);
-      }
-
-      await prisma.user.update({ where: { email }, data });
+      await prisma.user.update({
+        where: { email },
+        data: {
+          name,
+          role: "OWNER",
+          ...(syncPassword ? { passwordHash } : {})
+        }
+      });
       console.log(
-        `[start] owner desk login ready: ${email}${
-          syncPassword ? " (password synced from OWNER_PASSWORD)" : ""
+        `[start] provider login ready: ${email}${
+          syncPassword ? " (password from OWNER_PASSWORD)" : ""
         }`
+      );
+    }
+
+    // Demote any other OWNER so there is only one provider
+    const demoted = await prisma.user.updateMany({
+      where: { role: "OWNER", NOT: { email } },
+      data: { role: "STAFF" }
+    });
+    if (demoted.count > 0) {
+      console.log(
+        `[start] demoted ${demoted.count} extra OWNER account(s) to STAFF`
       );
     }
   } finally {
@@ -76,18 +88,19 @@ async function ensureOwnerAccount() {
 
 async function main() {
   if (!process.env.DATABASE_URL) {
-    const dataDir = existsSync("/data") ? "/data" : path.join(process.cwd(), "prisma");
+    const dataDir = existsSync("/data")
+      ? "/data"
+      : path.join(process.cwd(), "prisma");
     mkdirSync(dataDir, { recursive: true });
     process.env.DATABASE_URL = `file:${path.join(dataDir, "gproducts.db")}`;
     console.log(`[start] DATABASE_URL not set — using ${process.env.DATABASE_URL}`);
   }
 
-  if (!process.env.AUTH_SECRET) {
+  if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 16) {
     console.warn(
-      "[start] AUTH_SECRET is not set. Admin login sessions will be insecure. Set it in Railway Variables."
+      "[start] AUTH_SECRET missing or short — using a fallback. Set a long AUTH_SECRET in Railway."
     );
-    process.env.AUTH_SECRET =
-      process.env.AUTH_SECRET || "change-me-in-railway-variables";
+    process.env.AUTH_SECRET = "change-me-in-railway-variables";
   }
 
   console.log("[start] prisma generate");
@@ -99,10 +112,9 @@ async function main() {
   try {
     await ensureOwnerAccount();
   } catch (err) {
-    console.warn("[start] ensure owner failed, continuing:", err);
+    console.error("[start] ensure owner FAILED:", err);
   }
 
-  // Seed catalog only when empty (first boot)
   try {
     const { PrismaClient } = await import("@prisma/client");
     const prisma = new PrismaClient();

@@ -29,6 +29,19 @@ export async function addStaff(
   const pwErr = passwordError(password);
   if (pwErr) return { error: pwErr };
 
+  // Only one provider (OWNER). Extra people are always STAFF unless demoting.
+  let nextRole: "OWNER" | "STAFF" = role;
+  if (role === "OWNER") {
+    const owners = await prisma.user.count({ where: { role: "OWNER" } });
+    if (owners > 0) {
+      return {
+        error:
+          "There can only be one provider. Add this person as Staff instead."
+      };
+    }
+    nextRole = "OWNER";
+  }
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return { error: "A user with that email already exists." };
@@ -40,7 +53,7 @@ export async function addStaff(
       name,
       phone,
       passwordHash: await hashPassword(password),
-      role
+      role: nextRole
     }
   });
 

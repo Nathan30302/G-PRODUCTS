@@ -161,9 +161,11 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
         </p>
         {mode === "signin" ? (
           <p className="mt-3 max-w-sm text-[11px] leading-relaxed text-white/30">
-            Desk owner: use the email from Railway{" "}
-            <span className="text-white/45">OWNER_EMAIL</span> (e.g. gift@gproducts.zm)
-            and <span className="text-white/45">OWNER_PASSWORD</span>.
+            Provider desk:{" "}
+            <span className="text-white/50">gift@gproducts.zm</span> · password
+            from Railway <span className="text-white/45">OWNER_PASSWORD</span>{" "}
+            (default <span className="text-white/50">changeme123</span>). Staff
+            use the email + password the owner shared.
           </p>
         ) : null}
       </div>

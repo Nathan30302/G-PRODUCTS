@@ -75,12 +75,13 @@ export function AddStaffForm() {
           <span className="field-label">Phone (optional)</span>
           <input name="phone" type="tel" className="field" placeholder="0972…" />
         </label>
-        <label className="block">
+        <label className="block sm:col-span-2">
           <span className="field-label">Role</span>
-          <select name="role" defaultValue="STAFF" className="field">
-            <option value="STAFF">Staff</option>
-            <option value="OWNER">Owner</option>
-          </select>
+          <input type="hidden" name="role" value="STAFF" />
+          <p className="mt-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm text-white/50">
+            Staff — they sign in on Profile with this email + password and open
+            the Provider desk. There is only one provider (owner).
+          </p>
         </label>
       </div>
 
