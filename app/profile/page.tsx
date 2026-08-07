@@ -1,19 +1,35 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getCustomerSession } from "@/lib/customer-auth";
 import { getSession } from "@/lib/auth";
-import { ProfileHub } from "@/components/profile/ProfileViews";
+import { AuthPanel } from "@/components/profile/AuthPanel";
+import { siteConfig } from "@/config/site";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Profile",
-  description: "Sign in as a customer or open the Provider desk."
+  title: "Sign in",
+  description: "Sign in or create your G-Products account."
 };
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
   const [customer, provider] = await Promise.all([
     getCustomerSession(),
     getSession()
   ]);
 
-  return <ProfileHub customer={customer} provider={provider} />;
+  if (provider) redirect(siteConfig.apps.provider.home);
+  if (customer) redirect(siteConfig.apps.customer.home);
+
+  const params = searchParams ? await searchParams : {};
+  const initialMode = params.mode === "signup" ? "signup" : "signin";
+
+  return (
+    <div className="container-g relative overflow-hidden py-12 sm:py-16">
+      <AuthPanel initialMode={initialMode} />
+    </div>
+  );
 }

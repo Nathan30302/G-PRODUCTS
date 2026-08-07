@@ -51,20 +51,19 @@ export const siteConfig = {
     { title: "Free school delivery", subtitle: "Quick within campus" },
     { title: "4 locations", subtitle: "UNZA · Kalingalinga · Balastone" }
   ],
-  /** In-app destinations for Profile → Customer / Provider */
+  /**
+   * Emails that may create a Provider desk account via public signup.
+   * Everyone else who signs up becomes a shop customer.
+   * Staff never self-register — the owner adds them in /admin/staff.
+   */
+  providerSignupEmails: ["gift@gproducts.zm"],
+  /** In-app destinations after auth */
   apps: {
     customer: {
-      label: "Customer",
-      tagline: "Shop, track orders & services",
-      home: "/profile/customer",
-      login: "/profile/customer/login",
-      signup: "/profile/customer/signup"
+      home: "/profile/account"
     },
     provider: {
-      label: "Provider",
-      tagline: "Orders, stock & the live desk",
-      home: "/admin",
-      login: "/admin/login"
+      home: "/admin"
     }
   }
 };

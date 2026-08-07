@@ -10,9 +10,9 @@ const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 export type CustomerSession = {
   id: string;
-  email: string;
+  email: string | null;
   name: string;
-  phone: string | null;
+  phone: string;
 };
 
 function secret(): Uint8Array {
@@ -64,9 +64,9 @@ export async function getCustomerSession(): Promise<CustomerSession | null> {
     if (payload.kind !== "customer") return null;
     return {
       id: String(payload.sub),
-      email: String(payload.email),
+      email: payload.email ? String(payload.email) : null,
       name: String(payload.name),
-      phone: payload.phone ? String(payload.phone) : null
+      phone: String(payload.phone ?? "")
     };
   } catch {
     return null;
@@ -75,6 +75,6 @@ export async function getCustomerSession(): Promise<CustomerSession | null> {
 
 export async function requireCustomer(): Promise<CustomerSession> {
   const customer = await getCustomerSession();
-  if (!customer) redirect("/profile/customer/login");
+  if (!customer) redirect("/profile");
   return customer;
 }

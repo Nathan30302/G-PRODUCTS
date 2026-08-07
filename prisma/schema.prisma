@@ -37,6 +37,7 @@ model User {
   id           String   @id @default(cuid())
   email        String   @unique
   name         String
+  phone        String?
   passwordHash String
   role         Role     @default(STAFF)
   createdAt    DateTime @default(now())
@@ -45,8 +46,8 @@ model User {
 /// Storefront customer accounts (separate from staff User / Provider desk)
 model Customer {
   id           String   @id @default(cuid())
-  email        String   @unique
-  phone        String?
+  email        String?  @unique
+  phone        String   @unique
   name         String
   passwordHash String
   createdAt    DateTime @default(now())

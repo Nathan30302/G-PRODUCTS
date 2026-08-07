@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Icon } from "@/components/Icons";
-import { customerLogoutAction } from "@/app/profile/actions";
+import { unifiedLogoutAction } from "@/app/profile/actions";
 import type { CustomerSession } from "@/lib/customer-auth";
-import type { SessionUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
 
 type OrderRow = {
@@ -22,133 +21,7 @@ type ServiceRow = {
   createdAt: Date;
 };
 
-function whatsappProviderAccess() {
-  const text = encodeURIComponent(
-    `Hi ${siteConfig.name} — I'd like a Provider desk staff account.`
-  );
-  return `https://wa.me/${siteConfig.whatsappNumber}?text=${text}`;
-}
-
-export function ProfileHub({
-  customer,
-  provider
-}: {
-  customer: CustomerSession | null;
-  provider: SessionUser | null;
-}) {
-  return (
-    <div className="container-g relative py-10 sm:py-14">
-      <div className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-brand/10 blur-[100px]" />
-      <div className="pointer-events-none absolute -right-16 top-24 h-56 w-56 rounded-full bg-accent/10 blur-[90px]" />
-
-      <header className="relative mx-auto max-w-2xl text-center">
-        <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
-          Profile
-        </p>
-        <h1 className="display mt-3 text-4xl sm:text-5xl">Who are you?</h1>
-        <p className="mx-auto mt-3 max-w-md text-sm text-white/50 sm:text-base">
-          Sign in to the Customer shop or the Provider desk — each opens its own
-          app.
-        </p>
-      </header>
-
-      <div className="relative mx-auto mt-10 grid max-w-3xl gap-5 sm:mt-12 sm:grid-cols-2 sm:gap-6">
-        {/* Customer door */}
-        <section className="group relative overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-gradient-to-b from-white/[0.06] to-transparent p-6 transition-colors hover:border-brand/35 sm:p-7">
-          <div className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-brand/15 text-brand">
-            <Icon name="user" className="h-6 w-6" />
-          </div>
-          <h2 className="display text-2xl">{siteConfig.apps.customer.label}</h2>
-          <p className="mt-2 text-sm text-white/45">
-            {siteConfig.apps.customer.tagline}
-          </p>
-
-          {customer ? (
-            <div className="mt-6 space-y-3">
-              <p className="text-sm text-white/70">
-                Signed in as{" "}
-                <span className="font-semibold text-white">{customer.name}</span>
-              </p>
-              <Link
-                href={siteConfig.apps.customer.home}
-                className="btn-brand flex w-full items-center justify-center gap-2 py-3.5 text-sm"
-              >
-                Open Customer app
-                <Icon name="arrow-right" className="h-4 w-4" />
-              </Link>
-            </div>
-          ) : (
-            <div className="mt-6 flex flex-col gap-2.5">
-              <Link
-                href={siteConfig.apps.customer.login}
-                className="btn-brand flex w-full items-center justify-center gap-2 py-3.5 text-sm"
-              >
-                Log in
-              </Link>
-              <Link
-                href={siteConfig.apps.customer.signup}
-                className="flex w-full items-center justify-center rounded-pill border border-white/15 bg-white/[0.03] py-3.5 text-sm font-bold text-white/85 transition-colors hover:border-brand/40 hover:text-brand"
-              >
-                Sign up
-              </Link>
-            </div>
-          )}
-        </section>
-
-        {/* Provider door */}
-        <section className="group relative overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-gradient-to-b from-white/[0.06] to-transparent p-6 transition-colors hover:border-accent/40 sm:p-7">
-          <div className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-accent/15 text-accent">
-            <Icon name="shield" className="h-6 w-6" />
-          </div>
-          <h2 className="display text-2xl">{siteConfig.apps.provider.label}</h2>
-          <p className="mt-2 text-sm text-white/45">
-            {siteConfig.apps.provider.tagline}
-          </p>
-
-          {provider ? (
-            <div className="mt-6 space-y-3">
-              <p className="text-sm text-white/70">
-                Desk session:{" "}
-                <span className="font-semibold text-white">{provider.name}</span>
-              </p>
-              <Link
-                href={siteConfig.apps.provider.home}
-                className="flex w-full items-center justify-center gap-2 rounded-pill bg-accent px-6 py-3.5 text-sm font-bold text-ink-950 transition-transform hover:-translate-y-0.5"
-              >
-                Open Provider desk
-                <Icon name="arrow-right" className="h-4 w-4" />
-              </Link>
-            </div>
-          ) : (
-            <div className="mt-6 flex flex-col gap-2.5">
-              <Link
-                href={siteConfig.apps.provider.login}
-                className="flex w-full items-center justify-center gap-2 rounded-pill bg-accent px-6 py-3.5 text-sm font-bold text-ink-950 transition-transform hover:-translate-y-0.5"
-              >
-                Log in
-              </Link>
-              <a
-                href={whatsappProviderAccess()}
-                target="_blank"
-                rel="noreferrer"
-                className="flex w-full items-center justify-center rounded-pill border border-white/15 bg-white/[0.03] py-3.5 text-sm font-bold text-white/85 transition-colors hover:border-accent/40 hover:text-accent"
-              >
-                Request staff access
-              </a>
-            </div>
-          )}
-        </section>
-      </div>
-
-      <p className="relative mx-auto mt-10 max-w-md text-center text-xs text-white/30">
-        Customer accounts stay in the shop. Provider accounts open the desk for
-        orders, stock and services.
-      </p>
-    </div>
-  );
-}
-
-export function CustomerAppHome({
+export function AccountHome({
   customer,
   orders,
   services
@@ -157,19 +30,22 @@ export function CustomerAppHome({
   orders: OrderRow[];
   services: ServiceRow[];
 }) {
+  const firstName = customer.name.split(" ")[0] || customer.name;
+
   return (
     <div className="container-g py-10 sm:py-14">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
-            Customer app
+            Account
           </p>
-          <h1 className="display mt-2 text-3xl sm:text-4xl">
-            Hi, {customer.name.split(" ")[0]}
-          </h1>
-          <p className="mt-2 text-sm text-white/45">{customer.email}</p>
+          <h1 className="display mt-2 text-3xl sm:text-4xl">Hi, {firstName}</h1>
+          <p className="mt-2 text-sm text-white/45">
+            {customer.phone}
+            {customer.email ? ` · ${customer.email}` : null}
+          </p>
         </div>
-        <form action={customerLogoutAction}>
+        <form action={unifiedLogoutAction}>
           <button
             type="submit"
             className="rounded-pill border border-white/15 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white/55 transition-colors hover:border-white/30 hover:text-white"
@@ -210,8 +86,8 @@ export function CustomerAppHome({
         <h2 className="display text-xl">Recent orders</h2>
         {orders.length === 0 ? (
           <p className="mt-4 text-sm text-white/40">
-            No orders linked to your phone yet. Place an order with the same
-            number you used at signup.
+            No orders on this phone yet. Shop with the same number and they’ll
+            show up here.
           </p>
         ) : (
           <ul className="mt-4 divide-y divide-white/[0.06] rounded-2xl border border-white/[0.08]">
@@ -245,9 +121,7 @@ export function CustomerAppHome({
       <section className="mt-10">
         <h2 className="display text-xl">Service requests</h2>
         {services.length === 0 ? (
-          <p className="mt-4 text-sm text-white/40">
-            No service jobs on your phone yet.
-          </p>
+          <p className="mt-4 text-sm text-white/40">No service jobs yet.</p>
         ) : (
           <ul className="mt-4 divide-y divide-white/[0.06] rounded-2xl border border-white/[0.08]">
             {services.map((s) => (
@@ -271,9 +145,11 @@ export function CustomerAppHome({
       </section>
 
       <p className="mt-10 text-center text-sm text-white/35">
-        <Link href="/profile" className="hover:text-white/60">
-          ← Profile hub
+        <Link href="/" className="hover:text-white/60">
+          ← Back to shop
         </Link>
+        <span className="mx-2 text-white/15">·</span>
+        <span className="text-white/25">{siteConfig.name}</span>
       </p>
     </div>
   );
