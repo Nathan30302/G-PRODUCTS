@@ -152,6 +152,18 @@ export function Navbar() {
               </span>
             )}
           </Link>
+
+          <Link
+            href="/profile"
+            className={`grid h-10 w-10 place-items-center rounded-xl border bg-white/[0.03] transition-colors sm:rounded-2xl ${
+              pathname?.startsWith("/profile")
+                ? "border-brand/40 text-brand"
+                : "border-white/[0.08] text-white/75 hover:border-brand/35 hover:text-brand"
+            }`}
+            aria-label="Profile"
+          >
+            <Icon name="user" className="h-5 w-5" />
+          </Link>
         </div>
       </div>
 

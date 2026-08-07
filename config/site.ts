@@ -50,7 +50,23 @@ export const siteConfig = {
     { title: "Mobile Money", subtitle: "MTN, Airtel & Zamtel" },
     { title: "Free school delivery", subtitle: "Quick within campus" },
     { title: "4 locations", subtitle: "UNZA · Kalingalinga · Balastone" }
-  ]
+  ],
+  /** In-app destinations for Profile → Customer / Provider */
+  apps: {
+    customer: {
+      label: "Customer",
+      tagline: "Shop, track orders & services",
+      home: "/profile/customer",
+      login: "/profile/customer/login",
+      signup: "/profile/customer/signup"
+    },
+    provider: {
+      label: "Provider",
+      tagline: "Orders, stock & the live desk",
+      home: "/admin",
+      login: "/admin/login"
+    }
+  }
 };
 
 export type SiteConfig = typeof siteConfig;
