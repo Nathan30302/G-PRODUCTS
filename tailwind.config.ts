@@ -9,7 +9,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"]
+        display: ["var(--font-syne)", "var(--font-geist-sans)", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "monospace"]
       },
       colors: {
         // G-Products palette - dark teal/petrol base from the logo banner
@@ -61,11 +62,21 @@ const config: Config = {
         "toast-in": {
           "0%": { opacity: "0", transform: "translateY(16px) scale(0.96)" },
           "100%": { opacity: "1", transform: "translateY(0) scale(1)" }
+        },
+        "glow-breathe": {
+          "0%, 100%": { opacity: "0.55", transform: "translate(-50%, 0) scale(1)" },
+          "50%": { opacity: "0.9", transform: "translate(-50%, 0) scale(1.08)" }
+        },
+        "hero-rise": {
+          "0%": { opacity: "0", transform: "translateY(18px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" }
         }
       },
       animation: {
         "fade-up": "fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
-        "toast-in": "toast-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both"
+        "toast-in": "toast-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "glow-breathe": "glow-breathe 5.5s ease-in-out infinite",
+        "hero-rise": "hero-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both"
       }
     }
   },

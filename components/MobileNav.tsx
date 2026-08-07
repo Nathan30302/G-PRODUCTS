@@ -9,7 +9,8 @@ const items = [
   { href: "/", label: "Home", icon: "home" as const },
   { href: "/search", label: "Shop", icon: "search" as const },
   { href: "/services", label: "Services", icon: "services" as const },
-  { href: "/cart", label: "Cart", icon: "cart" as const }
+  { href: "/cart", label: "Cart", icon: "cart" as const },
+  { href: "/#contact", label: "Profile", icon: "user" as const }
 ];
 
 export function MobileNav() {
@@ -19,31 +20,29 @@ export function MobileNav() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.07] bg-ink-950/90 backdrop-blur-xl md:hidden">
-      <div className="mx-auto grid max-w-md grid-cols-4 px-2 pb-[env(safe-area-inset-bottom)] pt-1">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-12 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
+      {/* Plug-sized compact floating pill */}
+      <div className="pointer-events-auto flex items-center gap-0 rounded-pill border border-white/10 bg-ink-950/92 px-1 py-0.5 shadow-[0_8px_28px_rgba(0,0,0,0.5)] backdrop-blur-xl">
         {items.map((it) => {
           const active =
             it.href === "/"
               ? pathname === "/"
-              : pathname?.startsWith(it.href);
+              : it.href.startsWith("/#")
+                ? false
+                : pathname?.startsWith(it.href);
+
           return (
             <Link
               key={it.href}
               href={it.href}
-              className={`relative flex flex-col items-center gap-1 rounded-2xl py-2.5 text-[10px] font-bold tracking-wide transition-colors ${
-                active ? "text-brand" : "text-white/45"
+              className={`relative flex w-[2.85rem] flex-col items-center gap-px rounded-pill px-0.5 py-1.5 text-[7.5px] font-bold tracking-wide transition-colors ${
+                active ? "text-brand" : "text-white/40"
               }`}
             >
-              <span
-                className={`relative grid h-9 w-9 place-items-center rounded-xl transition-all ${
-                  active
-                    ? "bg-brand/15 text-brand shadow-[0_0_20px_rgba(246,212,0,0.15)]"
-                    : "text-white/50"
-                }`}
-              >
-                <Icon name={it.icon} className="h-5 w-5" />
+              <span className="relative grid h-[1.1rem] w-[1.1rem] place-items-center">
+                <Icon name={it.icon} className="h-3.5 w-3.5" />
                 {it.href === "/cart" && count > 0 && (
-                  <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-brand px-1 text-[9px] font-bold text-ink-950">
+                  <span className="absolute -right-2 -top-1.5 grid h-3 min-w-3 place-items-center rounded-full bg-brand px-0.5 text-[7px] font-bold leading-none text-ink-950">
                     {count}
                   </span>
                 )}

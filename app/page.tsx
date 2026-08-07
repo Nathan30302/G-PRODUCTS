@@ -1,7 +1,6 @@
 import { Hero } from "@/components/Hero";
 import { CategoryTile } from "@/components/CategoryTile";
 import { ProductRail } from "@/components/ProductRail";
-import { TrustBadges } from "@/components/TrustBadges";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { ServicesBand } from "@/components/ServicesBand";
 import { ContactBand } from "@/components/ContactBand";
@@ -30,18 +29,16 @@ export default async function HomePage() {
       <Hero />
 
       <section className="container-g mt-16 sm:mt-20">
-        <Reveal className="mb-7">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
-            Browse
-          </p>
-          <h2 className="mt-1.5 text-2xl font-black tracking-tight text-white sm:text-3xl">
+        <Reveal className="mb-8">
+          <p className="eyebrow">Browse</p>
+          <h2 className="display mt-2 text-2xl sm:text-3xl">
             Shop by category
           </h2>
           <p className="mt-2 text-sm text-white/50">
             Stationery, storage, chargers, audio and more.
           </p>
         </Reveal>
-        <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5">
+        <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
           {categories.map((c) => (
             <StaggerItem key={c.slug}>
               <CategoryTile category={c} />
@@ -54,16 +51,17 @@ export default async function HomePage() {
         title="Hot Deals of the Week"
         subtitle="Smart picks at better prices."
         products={hotDeals}
-        href="/search?q="
-        hrefLabel="See all deals"
+        href="/search"
+        hrefLabel="View all"
         accent="accent"
       />
 
       <ProductRail
-        title="Handpicked for You"
+        title="Our Bestsellers"
         subtitle="Popular items from G-Products."
         products={featured}
         href="/search"
+        hrefLabel="View all"
       />
 
       <ProductRail
@@ -71,13 +69,12 @@ export default async function HomePage() {
         subtitle="Browse the latest from our catalogue."
         products={newest}
         href="/search"
+        hrefLabel="View all"
       />
 
       <WhyGProducts />
 
       <ServicesBand />
-
-      <TrustBadges />
 
       <ContactBand />
     </>

@@ -16,7 +16,7 @@ export function Footer() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
       <div className="container-g grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-5">
         <div>
-          <Logo />
+          <Logo size="lg" />
           <p className="mt-4 text-sm font-semibold text-brand/90">
             {siteConfig.tagline}
           </p>

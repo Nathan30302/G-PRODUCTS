@@ -58,6 +58,152 @@ html {
   scrollbar-width: none;
 }
 
+/* Hero entrance stagger */
+.hero-rise {
+  animation: hero-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero-rise-delay-1 {
+  animation-delay: 0.08s;
+}
+.hero-rise-delay-2 {
+  animation-delay: 0.16s;
+}
+.hero-rise-delay-3 {
+  animation-delay: 0.24s;
+}
+.hero-rise-delay-4 {
+  animation-delay: 0.32s;
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise,
+  .animate-glow-breathe,
+  .smoke-layer {
+    animation: none !important;
+  }
+}
+
+/* Live smoke / nebula drift */
+.smoke-layer {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+  opacity: 0.55;
+  will-change: transform;
+}
+.smoke-a {
+  top: -10%;
+  left: -15%;
+  width: 70vw;
+  height: 55vh;
+  max-width: 34rem;
+  max-height: 34rem;
+  background: radial-gradient(
+    circle,
+    rgba(246, 212, 0, 0.35) 0%,
+    rgba(246, 212, 0, 0) 70%
+  );
+  animation: smoke-drift-a 18s ease-in-out infinite;
+}
+.smoke-b {
+  top: 20%;
+  right: -20%;
+  width: 65vw;
+  height: 50vh;
+  max-width: 30rem;
+  max-height: 30rem;
+  background: radial-gradient(
+    circle,
+    rgba(34, 201, 138, 0.28) 0%,
+    rgba(34, 201, 138, 0) 70%
+  );
+  animation: smoke-drift-b 22s ease-in-out infinite;
+}
+.smoke-c {
+  bottom: -5%;
+  left: 20%;
+  width: 55vw;
+  height: 45vh;
+  max-width: 26rem;
+  max-height: 26rem;
+  background: radial-gradient(
+    circle,
+    rgba(18, 59, 67, 0.9) 0%,
+    rgba(6, 24, 28, 0) 70%
+  );
+  animation: smoke-drift-c 26s ease-in-out infinite;
+}
+.smoke-d {
+  top: 35%;
+  left: 35%;
+  width: 40vw;
+  height: 35vh;
+  max-width: 18rem;
+  max-height: 18rem;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 70%
+  );
+  animation: smoke-drift-d 16s ease-in-out infinite;
+}
+
+@keyframes smoke-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(12%, 8%) scale(1.12);
+  }
+  66% {
+    transform: translate(-8%, 14%) scale(0.94);
+  }
+}
+@keyframes smoke-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.05);
+  }
+  40% {
+    transform: translate(-14%, -10%) scale(1.18);
+  }
+  70% {
+    transform: translate(-6%, 12%) scale(0.9);
+  }
+}
+@keyframes smoke-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(10%, -16%) scale(1.2);
+  }
+}
+@keyframes smoke-drift-d {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(-12%, 8%) scale(1.35);
+    opacity: 0.7;
+  }
+}
+
 @layer utilities {
   .container-g {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
@@ -74,12 +220,24 @@ html {
 
   /* Section eyebrow label */
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.22em] text-brand/80;
+    @apply text-[11px] font-bold uppercase tracking-[0.22em] text-brand/80;
+  }
+
+  .display {
+    @apply font-display font-extrabold tracking-tight text-white;
   }
 
   /* Subtle top-lit panel used across cards/sections */
   .panel {
-    @apply rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 shadow-card backdrop-blur-sm;
+    @apply rounded-[1.35rem] border border-white/[0.07] bg-ink-900/70 shadow-card;
+  }
+
+  .field {
+    @apply mt-2 w-full rounded-2xl border border-white/10 bg-ink-950/70 px-4 py-3.5 text-white outline-none transition-all placeholder:text-white/30 focus:border-brand/60 focus:bg-ink-950 focus:shadow-[0_0_0_3px_rgba(246,212,0,0.12)];
+  }
+
+  .field-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45;
   }
 }
 

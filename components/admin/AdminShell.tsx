@@ -14,35 +14,27 @@ type NavItem = {
 };
 
 const nav: NavItem[] = [
-  {
-    href: "/admin",
-    label: "Command centre",
-    hint: "Overview of your business"
-  },
+  { href: "/admin", label: "Overview", hint: "Business pulse" },
   {
     href: "/admin/products",
     label: "Products",
-    hint: "Catalogue, colours & stock"
+    hint: "Catalogue & stock"
   },
-  {
-    href: "/admin/orders",
-    label: "Orders",
-    hint: "Customer purchases"
-  },
+  { href: "/admin/orders", label: "Orders", hint: "Purchases" },
   {
     href: "/admin/stock-notify",
     label: "Stock alerts",
-    hint: "Waitlist notifications"
+    hint: "Waitlist"
   },
   {
     href: "/admin/services",
     label: "Service orders",
-    hint: "Print, keys & loans"
+    hint: "Print, keys, loans"
   },
   {
     href: "/admin/service-pages",
     label: "Service pages",
-    hint: "Public service content"
+    hint: "Public content"
   },
   {
     href: "/admin/staff",
@@ -62,7 +54,6 @@ export function AdminShell({
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const items = nav.filter((i) => !i.ownerOnly || user.role === "OWNER");
-  const isHome = pathname === "/admin";
 
   function isActive(href: string) {
     if (href === "/admin") return pathname === "/admin";
@@ -70,7 +61,7 @@ export function AdminShell({
   }
 
   const current =
-    items.find((i) => isActive(i.href))?.label ?? "Provider console";
+    items.find((i) => isActive(i.href))?.label ?? "Provider desk";
 
   useEffect(() => {
     setMenuOpen(false);
@@ -89,29 +80,27 @@ export function AdminShell({
     };
   }, [menuOpen]);
 
+  const initials = user.name
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-ink-950 text-white">
-      {/* Atmospheric background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.07),_transparent_55%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.05),_transparent_45%)]" />
-        <div
-          className="absolute inset-0 opacity-[0.035]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.7) 1px, transparent 1px)",
-            backgroundSize: "56px 56px"
-          }}
-        />
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
+      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/80 transition-colors hover:border-brand/40 hover:text-brand lg:hidden"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/40 hover:text-brand lg:hidden"
               aria-label="Open menu"
             >
               <svg
@@ -128,22 +117,29 @@ export function AdminShell({
               </svg>
             </button>
             <Link href="/admin" className="shrink-0">
-              <Logo />
+              <Logo size="md" priority />
             </Link>
             <div className="hidden min-w-0 sm:block">
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand/80">
-                Provider console
+                Provider desk
               </p>
               <p className="truncate text-sm text-white/45">{current}</p>
             </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <div className="hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 text-right md:block">
-              <p className="text-sm font-semibold text-white">{user.name}</p>
-              <p className="text-[10px] uppercase tracking-wider text-white/35">
-                {user.role === "OWNER" ? "Owner" : "Staff"}
-              </p>
+            <div className="hidden items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] py-1.5 pl-1.5 pr-3 md:flex">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-[11px] font-black text-brand">
+                {initials}
+              </span>
+              <span className="text-right">
+                <span className="block text-sm font-semibold text-white">
+                  {user.name}
+                </span>
+                <span className="block text-[10px] uppercase tracking-wider text-white/35">
+                  {user.role === "OWNER" ? "Owner" : "Staff"}
+                </span>
+              </span>
             </div>
             <Link
               href="/"
@@ -165,15 +161,7 @@ export function AdminShell({
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:flex-row lg:py-10">
         <aside className="hidden lg:block lg:w-64 lg:shrink-0">
-          <div className="sticky top-28 overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-gradient-to-b from-ink-850/90 to-ink-900/90 p-3 shadow-card backdrop-blur">
-            <div className="mb-3 rounded-2xl border border-brand/20 bg-brand/[0.07] px-3 py-3">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand">
-                G-Products
-              </p>
-              <p className="mt-1 text-sm font-semibold text-white">
-                Business desk
-              </p>
-            </div>
+          <div className="sticky top-24 overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-3 shadow-card">
             <nav className="space-y-1">
               {items.map((i) => {
                 const active = isActive(i.href);
@@ -181,56 +169,34 @@ export function AdminShell({
                   <Link
                     key={i.href}
                     href={i.href}
-                    className={`block rounded-2xl px-3.5 py-3 transition-all duration-300 ease-out-expo ${
+                    className={`relative block rounded-2xl px-3.5 py-3 transition-all duration-300 ease-out-expo ${
                       active
                         ? "bg-brand text-ink-950 shadow-brand-glow"
                         : "text-white/70 hover:bg-white/[0.04] hover:text-white"
                     }`}
                   >
+                    {active ? (
+                      <span className="absolute left-1.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-ink-950/40" />
+                    ) : null}
                     <span className="block text-sm font-bold">{i.label}</span>
-                    {!active && (
-                      <span className="mt-0.5 block text-[11px] text-white/35">
-                        {i.hint}
-                      </span>
-                    )}
+                    <span
+                      className={`mt-0.5 block text-[11px] ${
+                        active ? "text-ink-950/60" : "text-white/35"
+                      }`}
+                    >
+                      {i.hint}
+                    </span>
                   </Link>
                 );
               })}
             </nav>
-            <div className="mt-4 border-t border-white/[0.06] px-3 pt-4">
-              <p className="text-sm font-semibold text-white">{user.name}</p>
-              <p className="text-xs text-white/40">
-                {user.role === "OWNER" ? "Owner access" : "Staff access"}
-              </p>
-              <form action={logoutAction} className="mt-3">
-                <button
-                  type="submit"
-                  className="text-xs font-medium text-white/40 hover:text-red-400"
-                >
-                  Sign out securely
-                </button>
-              </form>
-            </div>
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 animate-fade-up pb-12">
-          {!isHome && (
-            <Link
-              href="/admin"
-              className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-brand/90 transition-colors hover:text-brand lg:hidden"
-            >
-              <span className="grid h-7 w-7 place-items-center rounded-full border border-brand/30 bg-brand/10 text-xs">
-                ←
-              </span>
-              Command centre
-            </Link>
-          )}
-          {children}
-        </main>
+        <main className="min-w-0 flex-1 animate-fade-up pb-12">{children}</main>
       </div>
 
-      {menuOpen && (
+      {menuOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
@@ -238,16 +204,14 @@ export function AdminShell({
             aria-label="Close menu"
             onClick={() => setMenuOpen(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 max-h-[90vh] overflow-y-auto rounded-t-[1.75rem] border border-white/10 bg-gradient-to-b from-ink-850 to-ink-950 p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_60px_rgba(0,0,0,0.5)]">
+          <div className="absolute inset-x-0 bottom-0 max-h-[90vh] overflow-y-auto rounded-t-[1.75rem] border border-white/10 bg-gradient-to-b from-ink-850 to-ink-950 p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] animate-fade-up">
             <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-white/15" />
             <div className="mb-5 flex items-start justify-between gap-3">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand">
                   Provider menu
                 </p>
-                <p className="mt-1 text-xl font-black tracking-tight text-white">
-                  Where to next?
-                </p>
+                <p className="display mt-1 text-xl">Where to next?</p>
               </div>
               <button
                 type="button"
@@ -259,35 +223,24 @@ export function AdminShell({
               </button>
             </div>
 
-            <div className="grid gap-2.5">
-              {items.map((i, idx) => {
+            <div className="grid gap-2">
+              {items.map((i) => {
                 const active = isActive(i.href);
                 return (
                   <Link
                     key={i.href}
                     href={i.href}
-                    className={`flex items-start gap-3 rounded-2xl border px-4 py-4 transition-all ${
+                    className={`rounded-2xl border px-4 py-4 transition-all ${
                       active
                         ? "border-brand/50 bg-brand/10"
-                        : "border-white/[0.06] bg-white/[0.02] hover:border-white/15"
+                        : "border-white/[0.06] bg-white/[0.02]"
                     }`}
                   >
-                    <span
-                      className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-xl text-xs font-black ${
-                        active
-                          ? "bg-brand text-ink-950"
-                          : "bg-white/[0.05] text-brand"
-                      }`}
-                    >
-                      {String(idx + 1).padStart(2, "0")}
+                    <span className="block text-base font-bold text-white">
+                      {i.label}
                     </span>
-                    <span>
-                      <span className="block text-base font-bold text-white">
-                        {i.label}
-                      </span>
-                      <span className="mt-0.5 block text-sm text-white/45">
-                        {i.hint}
-                      </span>
+                    <span className="mt-0.5 block text-sm text-white/45">
+                      {i.hint}
                     </span>
                   </Link>
                 );
@@ -312,7 +265,7 @@ export function AdminShell({
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

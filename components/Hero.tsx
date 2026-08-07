@@ -1,44 +1,50 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Icon } from "@/components/Icons";
+import { SmokeBackdrop } from "@/components/SmokeBackdrop";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-brand/15 blur-[130px]" />
-        <div className="absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-accent/10 blur-[110px]" />
+    <section className="relative isolate overflow-hidden">
+      <SmokeBackdrop className="-z-10" />
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(246,212,0,0.12),transparent_55%)]" />
       </div>
 
-      <div className="container-g relative flex min-h-[78vh] flex-col justify-center py-16 sm:min-h-[72vh] sm:py-20 lg:py-24">
-        <div className="max-w-3xl animate-fade-up">
-          <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
+      <div className="container-g relative flex min-h-[calc(100svh-3.5rem)] flex-col justify-center py-14 sm:min-h-[calc(100svh-4rem)] sm:py-16 lg:py-20">
+        <div className="mx-auto flex w-full max-w-2xl flex-col items-center text-center">
+          <h1 className="hero-rise display max-w-[12ch] text-[2.6rem] leading-[1.02] text-brand sm:max-w-none sm:text-5xl lg:text-[3.5rem]">
             {siteConfig.tagline}
-          </p>
-          <h1 className="mt-4 text-5xl font-black leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            G-Products
           </h1>
-          <p className="mt-5 max-w-xl text-lg font-medium leading-snug text-white/80 sm:text-xl">
+
+          <p className="hero-rise hero-rise-delay-1 mt-5 text-base font-semibold leading-snug text-white/85 sm:text-lg lg:text-xl">
             Everything you need — one shop.
           </p>
-          <p className="mt-3 max-w-lg text-base leading-relaxed text-white/50 sm:text-lg">
+
+          <p className="hero-rise hero-rise-delay-2 mt-3 max-w-sm text-sm leading-relaxed text-white/45 sm:max-w-md">
             Printing, electronics, stationery and services at prices that feel
             fair. Free delivery within school.
           </p>
 
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link href="/search" className="btn-brand px-8 py-3.5 text-base">
+          <div className="hero-rise hero-rise-delay-3 mt-9 flex w-full max-w-xs flex-col gap-3 sm:max-w-none sm:w-auto sm:flex-row sm:justify-center">
+            <Link
+              href="/search"
+              className="btn-brand w-full px-8 py-3.5 text-sm sm:w-auto sm:text-base"
+            >
               Shop now
               <Icon name="arrow-right" className="h-4 w-4" />
             </Link>
-            <Link href="/services" className="btn-ghost px-8 py-3.5 text-base">
-              Printing & services
+            <Link
+              href="/services"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-pill bg-white px-8 py-3.5 text-sm font-bold text-ink-950 transition-all duration-200 ease-out-expo hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto sm:text-base"
+            >
+              Learn more
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
     </section>
   );
 }
