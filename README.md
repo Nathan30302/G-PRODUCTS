@@ -87,9 +87,11 @@ TypeScript** at build time. Those packages are now in `dependencies`, and
    select `Nathan30302/G-PRODUCTS` (use the branch that contains this fix, then
    merge to `main` when ready).
 2. Open the service → **Variables** and set at least:
-   - `AUTH_SECRET` — long random string
+   - `AUTH_SECRET` — long random string (`openssl rand -base64 32`)
    - `NEXT_PUBLIC_BASE_URL` — your Railway public URL (e.g. `https://….up.railway.app`)
    - `OWNER_EMAIL` / `OWNER_NAME` / `OWNER_PASSWORD` — first admin account (seed)
+   - Optional: `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` — same `openssl rand -base64 32`
+     value, kept stable across redeploys (avoids Server Action ID mismatches)
 3. **Optional but recommended:** add a **Volume** mounted at `/data`, then set:
    - `DATABASE_URL=file:/data/gproducts.db`  
    Without a volume, SQLite lives on the container disk and is wiped on redeploy.
@@ -99,6 +101,14 @@ TypeScript** at build time. Those packages are now in `dependencies`, and
 5. Redeploy. First boot runs `prisma db push` and seeds the catalog if empty.
 
 Admin: `https://YOUR-DOMAIN/admin` with the owner credentials above.
+
+### Log notes
+
+- `Ready` then `SIGTERM` / `Stopping Container` usually means Railway stopped the
+  old instance for a new deploy — not an app crash.
+- `Server Reference ID … Received "y"` (or other 1–2 letter IDs) is almost always
+  internet scanners probing for Next.js CVEs. Middleware rejects those POSTs;
+  they do not mean your admin forms are broken.
 
 ## Useful scripts
 

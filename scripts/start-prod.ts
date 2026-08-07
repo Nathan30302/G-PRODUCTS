@@ -1,8 +1,9 @@
 /**
  * Production start for Railway (and similar hosts).
- * Ensures the SQLite file exists, syncs schema, seeds when empty, then boots Next.
+ * Ensures the SQLite file exists, syncs schema, seeds when empty, then boots Next
+ * as a child with signal forwarding (so redeploys shut down cleanly).
  */
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
@@ -16,6 +17,55 @@ function run(cmd: string, args: string[]) {
     child.on("exit", (code) => {
       if (code === 0) resolve();
       else reject(new Error(`${cmd} ${args.join(" ")} exited with ${code}`));
+    });
+  });
+}
+
+function resolveNextBin() {
+  // Prefer the installed package binary (no npx wrapper / nested SIGTERM)
+  const candidates = [
+    path.join(process.cwd(), "node_modules", "next", "dist", "bin", "next"),
+    path.join(process.cwd(), "node_modules", "next", "dist", "bin", "next.js")
+  ];
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) return candidate;
+  }
+  throw new Error("Could not find next binary under node_modules/next");
+}
+
+function startNext(port: string): Promise<never> {
+  const nextBin = resolveNextBin();
+  const args = ["start", "-H", "0.0.0.0", "-p", port];
+
+  console.log(`[start] node ${nextBin} ${args.join(" ")}`);
+
+  const child: ChildProcess = spawn(process.execPath, [nextBin, ...args], {
+    stdio: "inherit",
+    env: process.env
+  });
+
+  const forward = (signal: NodeJS.Signals) => {
+    if (child.pid && !child.killed) {
+      try {
+        child.kill(signal);
+      } catch {
+        // ignore — child may already be gone
+      }
+    }
+  };
+
+  process.on("SIGTERM", () => forward("SIGTERM"));
+  process.on("SIGINT", () => forward("SIGINT"));
+
+  return new Promise((_, reject) => {
+    child.on("error", reject);
+    child.on("exit", (code, signal) => {
+      if (signal) {
+        // Re-raise so the container exit matches the shutdown signal
+        process.kill(process.pid, signal);
+        return;
+      }
+      process.exit(code ?? 1);
     });
   });
 }
@@ -60,8 +110,7 @@ async function main() {
   }
 
   const port = process.env.PORT || "3000";
-  console.log(`[start] next start -H 0.0.0.0 -p ${port}`);
-  await run("npx", ["next", "start", "-H", "0.0.0.0", "-p", port]);
+  await startNext(port);
 }
 
 main().catch((err) => {
