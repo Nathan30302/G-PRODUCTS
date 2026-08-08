@@ -12,10 +12,14 @@ const ALLOWED = new Set([
   "image/gif"
 ]);
 
-/** Persist under Railway volume when present so photos survive redeploys. */
+/**
+ * Prefer Railway volume (/data). Fall back to a writable runtime folder
+ * outside `public/` — Next production often won't pick up files added to
+ * `public/` after `next start` has already booted.
+ */
 export function uploadsRoot(): string {
   if (existsSync("/data")) return path.join("/data", "uploads");
-  return path.join(process.cwd(), "public", "uploads");
+  return path.join(process.cwd(), ".uploads");
 }
 
 export function ensureUploadsDir(...segments: string[]): string {
@@ -24,14 +28,10 @@ export function ensureUploadsDir(...segments: string[]): string {
   return dir;
 }
 
-/** Public URL used in <Image src> and stored in the DB. */
+/** Public URL stored in DB and used by next/image + <img>. */
 export function publicUploadUrl(relativePath: string): string {
   const clean = relativePath.replace(/^\/+/, "");
-  // /data is outside public/ — serve through the media API
-  if (uploadsRoot().startsWith("/data")) {
-    return `/api/media/${clean}`;
-  }
-  return `/uploads/${clean}`;
+  return `/api/media/${clean}`;
 }
 
 export function resolveUploadPath(relativePath: string): string {
@@ -70,4 +70,9 @@ export async function saveImageUpload(
 
   const relativePath = `${folder}/${filename}`;
   return { url: publicUploadUrl(relativePath), relativePath };
+}
+
+export function isUploadUrl(url: string | undefined | null): boolean {
+  if (!url) return false;
+  return url.startsWith("/api/media/") || url.startsWith("/uploads/");
 }

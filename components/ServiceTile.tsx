@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ServiceDef } from "@/lib/services";
 import { Icon } from "@/components/Icons";
+import { SafeImage } from "@/components/SafeImage";
 
 export function ServiceTile({ service }: { service: ServiceDef }) {
   return (
@@ -11,7 +11,7 @@ export function ServiceTile({ service }: { service: ServiceDef }) {
     >
       <div className="relative aspect-[16/10] bg-ink-950">
         {service.image ? (
-          <Image
+          <SafeImage
             src={service.image}
             alt={service.name}
             fill

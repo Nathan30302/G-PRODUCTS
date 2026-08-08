@@ -115,7 +115,7 @@ async function main() {
     console.error("[start] ensure owner FAILED:", err);
   }
 
-  // Photo uploads (products / services) — prefer Railway volume at /data
+  // Photo uploads — always via /api/media (survives next start + Railway /data)
   try {
     const { ensureUploadsDir } = await import("../lib/uploads");
     ensureUploadsDir("products");

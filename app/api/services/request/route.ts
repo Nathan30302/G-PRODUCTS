@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile } from "fs/promises";
 import path from "path";
+import { randomBytes } from "crypto";
 import { prisma } from "@/lib/db";
 import { initiatePayment, type PaymentProvider } from "@/lib/payments";
 import { DEFAULT_SETTINGS, parseSettings } from "@/lib/services";
+import { ensureUploadsDir, publicUploadUrl } from "@/lib/uploads";
 
 export const runtime = "nodejs";
 
@@ -20,8 +22,7 @@ async function loadSettings(slug: string) {
 
 async function saveUploads(files: File[]): Promise<string[]> {
   if (files.length === 0) return [];
-  const dir = path.join(process.cwd(), "public", "uploads", "services");
-  await mkdir(dir, { recursive: true });
+  const dir = ensureUploadsDir("services");
   const urls: string[] = [];
 
   for (const file of files) {
@@ -30,10 +31,10 @@ async function saveUploads(files: File[]): Promise<string[]> {
       throw new Error(`File ${file.name} is too large (max 12MB).`);
     }
     const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${safe}`;
+    const filename = `${Date.now()}-${randomBytes(3).toString("hex")}-${safe}`;
     const buf = Buffer.from(await file.arrayBuffer());
     await writeFile(path.join(dir, filename), buf);
-    urls.push(`/uploads/services/${filename}`);
+    urls.push(publicUploadUrl(`services/${filename}`));
   }
   return urls;
 }

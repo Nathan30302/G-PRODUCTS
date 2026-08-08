@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { prisma } from "@/lib/db";
 import { formatPrice } from "@/lib/format";
+import { SafeImage } from "@/components/SafeImage";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Products" };
@@ -72,15 +72,14 @@ export default async function AdminProducts() {
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
                           <div className="relative h-11 w-11 overflow-hidden rounded-xl bg-ink-800 ring-1 ring-white/10">
-                            {p.images[0] && (
-                              <Image
-                                src={p.images[0].url}
-                                alt={p.name}
-                                fill
-                                sizes="44px"
-                                className="object-cover"
-                              />
-                            )}
+                            <SafeImage
+                              src={p.images[0]?.url}
+                              alt={p.name}
+                              fill
+                              sizes="44px"
+                              className="object-cover"
+                              fallbackClassName="grid h-full w-full place-items-center text-[8px] font-bold uppercase tracking-wide text-white/25"
+                            />
                           </div>
                           <span className="font-semibold text-white">
                             {p.name}
