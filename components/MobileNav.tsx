@@ -10,7 +10,7 @@ const items = [
   { href: "/search", label: "Shop", icon: "search" as const },
   { href: "/services", label: "Services", icon: "services" as const },
   { href: "/cart", label: "Cart", icon: "cart" as const },
-  { href: "/#contact", label: "Profile", icon: "user" as const }
+  { href: "/profile", label: "Profile", icon: "user" as const }
 ];
 
 export function MobileNav() {
@@ -27,9 +27,7 @@ export function MobileNav() {
           const active =
             it.href === "/"
               ? pathname === "/"
-              : it.href.startsWith("/#")
-                ? false
-                : pathname?.startsWith(it.href);
+              : pathname?.startsWith(it.href);
 
           return (
             <Link

@@ -96,8 +96,12 @@ export function LoginForm() {
         </div>
 
         <p className="mt-7 text-center text-sm text-white/40">
-          <Link href="/" className="font-medium text-brand hover:underline">
-            ← Return to the live shop
+          <Link href="/profile" className="font-medium text-brand hover:underline">
+            ← Back to Profile
+          </Link>
+          <span className="mx-2 text-white/20">·</span>
+          <Link href="/" className="font-medium text-white/50 hover:text-white/80">
+            Live shop
           </Link>
         </p>
       </div>

@@ -41,7 +41,7 @@ export async function saveServiceOffer(formData: FormData): Promise<void> {
       name,
       tagline,
       description,
-      imageUrl,
+      ...(imageUrl ? { imageUrl } : {}),
       priceLabel,
       enabled,
       settings: JSON.stringify(settings)

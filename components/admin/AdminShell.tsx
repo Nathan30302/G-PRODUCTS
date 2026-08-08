@@ -41,6 +41,11 @@ const nav: NavItem[] = [
     label: "Staff",
     hint: "Team access",
     ownerOnly: true
+  },
+  {
+    href: "/admin/account",
+    label: "Account",
+    hint: "Password"
   }
 ];
 

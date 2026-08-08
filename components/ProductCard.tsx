@@ -1,9 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Product } from "@/lib/types";
 import { formatPrice, discountPercent } from "@/lib/format";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { Icon } from "@/components/Icons";
+import { SafeImage } from "@/components/SafeImage";
 
 export function ProductCard({
   product,
@@ -26,7 +26,7 @@ export function ProductCard({
         className="relative block overflow-hidden"
       >
         <div className="relative aspect-square bg-[radial-gradient(ellipse_at_center,_#123b43_0%,_#06181c_70%)]">
-          <Image
+          <SafeImage
             src={product.images[0]?.url}
             alt={product.images[0]?.alt ?? product.name}
             fill

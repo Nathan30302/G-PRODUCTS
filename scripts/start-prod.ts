@@ -1,7 +1,12 @@
 /**
  * Production start for Railway (and similar hosts).
+<<<<<<< HEAD
  * Ensures the SQLite file exists, syncs schema, seeds when empty, then boots Next
  * as a child with signal forwarding (so redeploys shut down cleanly).
+=======
+ * Ensures DB, guarantees Gift's desk login (gift@gproducts.zm), seeds catalog
+ * when empty, then boots Next.
+>>>>>>> origin/main
  */
 import { spawn, type ChildProcess } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
@@ -21,6 +26,7 @@ function run(cmd: string, args: string[]) {
   });
 }
 
+<<<<<<< HEAD
 function resolveNextBin() {
   // Prefer the installed package binary (no npx wrapper / nested SIGTERM)
   const candidates = [
@@ -68,23 +74,88 @@ function startNext(port: string): Promise<never> {
       process.exit(code ?? 1);
     });
   });
+=======
+/**
+ * Exactly one provider (OWNER). Created as gift@gproducts.zm / changeme123
+ * (overridable via OWNER_*). Password is synced from OWNER_PASSWORD on boot
+ * unless OWNER_SYNC_PASSWORD=0 (so in-app password changes can stick).
+ */
+async function ensureOwnerAccount() {
+  const { PrismaClient } = await import("@prisma/client");
+  const bcrypt = await import("bcryptjs");
+  const prisma = new PrismaClient();
+
+  const email = (process.env.OWNER_EMAIL ?? "gift@gproducts.zm")
+    .trim()
+    .toLowerCase();
+  const name = (process.env.OWNER_NAME ?? "Gift Mbumwae").trim();
+  const password = process.env.OWNER_PASSWORD ?? "changeme123";
+  // Default: keep Railway password in sync so Gift can always sign in.
+  // Set OWNER_SYNC_PASSWORD=0 after changing password in the desk if you
+  // don't want redeploys to reset it.
+  const syncPassword = process.env.OWNER_SYNC_PASSWORD !== "0";
+
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
+    const existing = await prisma.user.findUnique({ where: { email } });
+
+    if (!existing) {
+      await prisma.user.create({
+        data: {
+          email,
+          name,
+          passwordHash,
+          role: "OWNER"
+        }
+      });
+      console.log(`[start] created provider login: ${email}`);
+    } else {
+      await prisma.user.update({
+        where: { email },
+        data: {
+          name,
+          role: "OWNER",
+          ...(syncPassword ? { passwordHash } : {})
+        }
+      });
+      console.log(
+        `[start] provider login ready: ${email}${
+          syncPassword ? " (password from OWNER_PASSWORD)" : ""
+        }`
+      );
+    }
+
+    // Demote any other OWNER so there is only one provider
+    const demoted = await prisma.user.updateMany({
+      where: { role: "OWNER", NOT: { email } },
+      data: { role: "STAFF" }
+    });
+    if (demoted.count > 0) {
+      console.log(
+        `[start] demoted ${demoted.count} extra OWNER account(s) to STAFF`
+      );
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+>>>>>>> origin/main
 }
 
 async function main() {
   if (!process.env.DATABASE_URL) {
-    // Persist under /data when a Railway volume is mounted there; otherwise local prisma/
-    const dataDir = existsSync("/data") ? "/data" : path.join(process.cwd(), "prisma");
+    const dataDir = existsSync("/data")
+      ? "/data"
+      : path.join(process.cwd(), "prisma");
     mkdirSync(dataDir, { recursive: true });
     process.env.DATABASE_URL = `file:${path.join(dataDir, "gproducts.db")}`;
     console.log(`[start] DATABASE_URL not set — using ${process.env.DATABASE_URL}`);
   }
 
-  if (!process.env.AUTH_SECRET) {
+  if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 16) {
     console.warn(
-      "[start] AUTH_SECRET is not set. Admin login sessions will be insecure. Set it in Railway Variables."
+      "[start] AUTH_SECRET missing or short — using a fallback. Set a long AUTH_SECRET in Railway."
     );
-    process.env.AUTH_SECRET =
-      process.env.AUTH_SECRET || "change-me-in-railway-variables";
+    process.env.AUTH_SECRET = "change-me-in-railway-variables";
   }
 
   console.log("[start] prisma generate");
@@ -93,7 +164,22 @@ async function main() {
   console.log("[start] prisma db push");
   await run("npx", ["prisma", "db", "push", "--skip-generate"]);
 
-  // Seed only when the catalog is empty (first boot)
+  try {
+    await ensureOwnerAccount();
+  } catch (err) {
+    console.error("[start] ensure owner FAILED:", err);
+  }
+
+  // Photo uploads — always via /api/media (survives next start + Railway /data)
+  try {
+    const { ensureUploadsDir } = await import("../lib/uploads");
+    ensureUploadsDir("products");
+    ensureUploadsDir("services");
+    console.log("[start] upload folders ready");
+  } catch (err) {
+    console.warn("[start] upload folders:", err);
+  }
+
   try {
     const { PrismaClient } = await import("@prisma/client");
     const prisma = new PrismaClient();
@@ -103,7 +189,7 @@ async function main() {
       console.log("[start] empty catalog — running seed");
       await run("npx", ["tsx", "prisma/seed.ts"]);
     } else {
-      console.log(`[start] catalog has ${count} products — skip seed`);
+      console.log(`[start] catalog has ${count} products — skip catalog seed`);
     }
   } catch (err) {
     console.warn("[start] seed check failed, continuing:", err);

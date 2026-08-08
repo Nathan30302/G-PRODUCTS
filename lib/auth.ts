@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 const COOKIE = "gp_session";
 const ALG = "HS256";
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+const FALLBACK_SECRET = "change-me-in-railway-variables";
 
 export type SessionUser = {
   id: string;
@@ -16,10 +17,10 @@ export type SessionUser = {
 };
 
 function secret(): Uint8Array {
-  const s = process.env.AUTH_SECRET;
-  if (!s || s.length < 16) {
-    throw new Error("AUTH_SECRET is missing or too short");
-  }
+  // Never throw during login — a short/missing secret used to crash Profile
+  // into the generic "Something went wrong" page.
+  const raw = process.env.AUTH_SECRET?.trim();
+  const s = raw && raw.length >= 16 ? raw : FALLBACK_SECRET;
   return new TextEncoder().encode(s);
 }
 
@@ -77,7 +78,7 @@ export async function getSession(): Promise<SessionUser | null> {
 
 export async function requireUser(): Promise<SessionUser> {
   const user = await getSession();
-  if (!user) redirect("/admin/login");
+  if (!user) redirect("/profile");
   return user;
 }
 

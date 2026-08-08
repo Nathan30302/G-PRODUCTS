@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { ProductImage } from "@/lib/types";
+import { SafeImage } from "@/components/SafeImage";
 
 export function ProductGallery({
   images,
@@ -30,16 +30,14 @@ export function ProductGallery({
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="absolute inset-0"
           >
-            {current.url && (
-              <Image
-                src={current.url}
-                alt={current.alt ?? name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-                priority
-              />
-            )}
+            <SafeImage
+              src={current.url || null}
+              alt={current.alt ?? name}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+              priority
+            />
           </motion.div>
         </AnimatePresence>
         {badge && (
@@ -62,15 +60,13 @@ export function ProductGallery({
                   : "border-white/10 opacity-70 hover:opacity-100"
               }`}
             >
-              {img.url && (
-                <Image
-                  src={img.url}
-                  alt={img.alt ?? `${name} ${i + 1}`}
-                  fill
-                  sizes="80px"
-                  className="object-cover"
-                />
-              )}
+              <SafeImage
+                src={img.url || null}
+                alt={img.alt ?? `${name} ${i + 1}`}
+                fill
+                sizes="80px"
+                className="object-cover"
+              />
             </button>
           ))}
         </div>

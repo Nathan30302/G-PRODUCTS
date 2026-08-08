@@ -22,7 +22,8 @@ export default async function StaffPage() {
           Staff
         </h1>
         <p className="mt-2 text-sm text-white/50">
-          Give your team their own logins to help run the desk.
+          Add teammates with an email + password, then share those details.
+          They sign in on Profile — they can’t create desk accounts themselves.
         </p>
       </div>
 

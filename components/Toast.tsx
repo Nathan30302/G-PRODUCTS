@@ -10,9 +10,9 @@ import {
   ReactNode
 } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@/components/Icons";
+import { SafeImage } from "@/components/SafeImage";
 
 type Toast = {
   id: number;
@@ -68,7 +68,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
                 {t.image ? (
                   <span className="relative h-10 w-10 overflow-hidden rounded-full">
-                    <Image
+                    <SafeImage
                       src={t.image}
                       alt=""
                       fill

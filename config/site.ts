@@ -50,7 +50,22 @@ export const siteConfig = {
     { title: "Mobile Money", subtitle: "MTN, Airtel & Zamtel" },
     { title: "Free school delivery", subtitle: "Quick within campus" },
     { title: "4 locations", subtitle: "UNZA · Kalingalinga · Balastone" }
-  ]
+  ],
+  /**
+   * Emails that may create a Provider desk account via public signup.
+   * Everyone else who signs up becomes a shop customer.
+   * Staff never self-register — the owner adds them in /admin/staff.
+   */
+  providerSignupEmails: ["gift@gproducts.zm"],
+  /** In-app destinations after auth */
+  apps: {
+    customer: {
+      home: "/profile/account"
+    },
+    provider: {
+      home: "/admin"
+    }
+  }
 };
 
 export type SiteConfig = typeof siteConfig;

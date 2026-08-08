@@ -1,6 +1,15 @@
+"use client";
+
 import Link from "next/link";
-import { saveProduct, deleteProduct } from "@/app/admin/(dashboard)/products/actions";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import {
+  saveProduct,
+  deleteProduct,
+  type ProductFormState
+} from "@/app/admin/(dashboard)/products/actions";
 import { VariantEditor, type VariantRow } from "@/components/admin/VariantEditor";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 
 type Category = { slug: string; name: string };
 
@@ -23,6 +32,19 @@ const field =
   "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
 const label = "text-sm text-white/60";
 
+function SubmitButton({ isEdit }: { isEdit: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="rounded-pill bg-brand px-6 py-2.5 text-sm font-bold text-ink-950 hover:bg-brand-soft disabled:opacity-60"
+    >
+      {pending ? "Saving…" : isEdit ? "Save changes" : "Create product"}
+    </button>
+  );
+}
+
 export function ProductForm({
   categories,
   product,
@@ -33,6 +55,10 @@ export function ProductForm({
   canDelete?: boolean;
 }) {
   const isEdit = Boolean(product?.id);
+  const [state, action] = useActionState<ProductFormState | undefined, FormData>(
+    saveProduct,
+    undefined
+  );
 
   return (
     <div>
@@ -46,7 +72,13 @@ export function ProductForm({
         </span>
       </div>
 
-      <form action={saveProduct} className="max-w-2xl space-y-5">
+      {categories.length === 0 ? (
+        <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          No categories found. Redeploy so the catalog can seed, then try again.
+        </p>
+      ) : null}
+
+      <form action={action} className="max-w-2xl space-y-5">
         {isEdit && <input type="hidden" name="id" value={product!.id} />}
 
         <div>
@@ -76,6 +108,7 @@ export function ProductForm({
               name="categorySlug"
               defaultValue={product?.categorySlug ?? categories[0]?.slug}
               className={field}
+              required
             >
               {categories.map((c) => (
                 <option key={c.slug} value={c.slug}>
@@ -92,7 +125,7 @@ export function ProductForm({
             <input
               name="price"
               type="number"
-              min={0}
+              min={1}
               defaultValue={product?.price}
               required
               className={field}
@@ -142,16 +175,13 @@ export function ProductForm({
           />
         </div>
 
-        <div>
-          <label className={label}>Image URLs (one per line)</label>
-          <textarea
-            name="imageUrls"
-            defaultValue={product?.imageUrls.join("\n")}
-            rows={3}
-            className={field}
-            placeholder="https://... (paste photo links)"
-          />
-        </div>
+        <ImageUploader
+          name="imageUrls"
+          folder="products"
+          multiple
+          label="Photos"
+          initialUrls={product?.imageUrls ?? []}
+        />
 
         <div className="flex flex-wrap gap-6">
           <label className="flex items-center gap-2 text-sm text-white/70">
@@ -174,13 +204,14 @@ export function ProductForm({
           </label>
         </div>
 
+        {state?.error ? (
+          <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            {state.error}
+          </p>
+        ) : null}
+
         <div className="flex items-center gap-3 pt-2">
-          <button
-            type="submit"
-            className="rounded-pill bg-brand px-6 py-2.5 text-sm font-bold text-ink-950 hover:bg-brand-soft"
-          >
-            {isEdit ? "Save changes" : "Create product"}
-          </button>
+          <SubmitButton isEdit={isEdit} />
           <Link
             href="/admin/products"
             className="rounded-pill border border-ink-700 px-6 py-2.5 text-sm font-semibold text-white/70 hover:text-white"
