@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { saveProduct, deleteProduct } from "@/app/admin/(dashboard)/products/actions";
 import { VariantEditor, type VariantRow } from "@/components/admin/VariantEditor";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 
 type Category = { slug: string; name: string };
 
@@ -142,16 +143,13 @@ export function ProductForm({
           />
         </div>
 
-        <div>
-          <label className={label}>Image URLs (one per line)</label>
-          <textarea
-            name="imageUrls"
-            defaultValue={product?.imageUrls.join("\n")}
-            rows={3}
-            className={field}
-            placeholder="https://... (paste photo links)"
-          />
-        </div>
+        <ImageUploader
+          name="imageUrls"
+          folder="products"
+          multiple
+          label="Photos"
+          initialUrls={product?.imageUrls ?? []}
+        />
 
         <div className="flex flex-wrap gap-6">
           <label className="flex items-center gap-2 text-sm text-white/70">

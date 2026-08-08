@@ -126,6 +126,9 @@ export async function saveProduct(formData: FormData): Promise<void> {
         sortOrder: idx
       }))
     });
+  } else if (id) {
+    // Explicitly cleared in the uploader
+    await prisma.productImage.deleteMany({ where: { productId } });
   }
 
   // Replace variants

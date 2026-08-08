@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { parseSettings } from "@/lib/services";
 import { saveServiceOffer } from "@/app/admin/(dashboard)/service-pages/actions";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Edit service" };
@@ -63,17 +64,16 @@ export default async function EditServicePage({
           />
         </div>
         <div>
-          <label className={label}>Photo URL</label>
-          <input
+          <ImageUploader
             name="imageUrl"
-            defaultValue={offer.imageUrl}
-            required
-            className={field}
-            placeholder="https://... or /services/your-photo.jpg"
+            folder="services"
+            multiple={false}
+            label="Photo"
+            initialUrls={offer.imageUrl ? [offer.imageUrl] : []}
           />
-          <p className="mt-1 text-xs text-white/40">
-            Paste a high-quality image link (or upload elsewhere and paste the
-            URL). Use real photos of the shop when you have them.
+          <p className="mt-2 text-xs text-white/40">
+            Upload a clear photo of this service — it shows on the public
+            services pages.
           </p>
         </div>
         <div>

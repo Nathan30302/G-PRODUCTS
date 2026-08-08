@@ -115,6 +115,16 @@ async function main() {
     console.error("[start] ensure owner FAILED:", err);
   }
 
+  // Photo uploads (products / services) — prefer Railway volume at /data
+  try {
+    const { ensureUploadsDir } = await import("../lib/uploads");
+    ensureUploadsDir("products");
+    ensureUploadsDir("services");
+    console.log("[start] upload folders ready");
+  } catch (err) {
+    console.warn("[start] upload folders:", err);
+  }
+
   try {
     const { PrismaClient } = await import("@prisma/client");
     const prisma = new PrismaClient();
