@@ -22,6 +22,35 @@ function run(cmd: string, args: string[]) {
 }
 
 /**
+ * Prisma resolves relative SQLite paths against the schema directory (prisma/),
+ * which is easy to get wrong across Docker/Nixpacks. Always use an absolute file: URL.
+ */
+function resolveDatabaseUrl() {
+  let url = process.env.DATABASE_URL?.trim();
+
+  if (!url) {
+    const dataDir = existsSync("/data")
+      ? "/data"
+      : path.join(process.cwd(), "prisma");
+    mkdirSync(dataDir, { recursive: true });
+    url = `file:${path.join(dataDir, "gproducts.db")}`;
+    console.log(`[start] DATABASE_URL not set — using ${url}`);
+  } else if (url.startsWith("file:")) {
+    let filePath = url.slice("file:".length).split("?")[0];
+    // file:///abs → /abs
+    if (filePath.startsWith("///")) filePath = filePath.slice(2);
+    const abs = path.isAbsolute(filePath)
+      ? filePath
+      : path.resolve(path.join(process.cwd(), "prisma"), filePath);
+    mkdirSync(path.dirname(abs), { recursive: true });
+    url = `file:${abs}`;
+    console.log(`[start] DATABASE_URL → ${url}`);
+  }
+
+  process.env.DATABASE_URL = url;
+}
+
+/**
  * Exactly one provider (OWNER). Created as gift@gproducts.zm / changeme123
  * (overridable via OWNER_*). Password is synced from OWNER_PASSWORD on boot
  * unless OWNER_SYNC_PASSWORD=0 (so in-app password changes can stick).
@@ -86,15 +115,54 @@ async function ensureOwnerAccount() {
   }
 }
 
-async function main() {
-  if (!process.env.DATABASE_URL) {
-    const dataDir = existsSync("/data")
-      ? "/data"
-      : path.join(process.cwd(), "prisma");
-    mkdirSync(dataDir, { recursive: true });
-    process.env.DATABASE_URL = `file:${path.join(dataDir, "gproducts.db")}`;
-    console.log(`[start] DATABASE_URL not set — using ${process.env.DATABASE_URL}`);
+async function ensureCatalog() {
+  const { PrismaClient } = await import("@prisma/client");
+  const { catalogNeedsSeed, MIN_PRODUCTS } = await import(
+    "../lib/ensure-catalog"
+  );
+  const force = process.env.FORCE_SEED === "1";
+
+  const prisma = new PrismaClient();
+  try {
+    const status = await catalogNeedsSeed(prisma);
+    console.log(
+      `[start] catalog status: ${status.products} products, ${status.categories} categories (min products ${MIN_PRODUCTS})`
+    );
+
+    if (!force && !status.needs) {
+      console.log("[start] catalog OK — skip seed");
+      return;
+    }
+
+    console.log(
+      force
+        ? "[start] FORCE_SEED=1 — running seed"
+        : "[start] catalog incomplete — running seed"
+    );
+  } finally {
+    await prisma.$disconnect();
   }
+
+  await run("npx", ["tsx", "prisma/seed.ts"]);
+
+  const verify = new PrismaClient();
+  try {
+    const after = await catalogNeedsSeed(verify);
+    console.log(
+      `[start] catalog after seed: ${after.products} products, ${after.categories} categories`
+    );
+    if (after.needs) {
+      throw new Error(
+        `Seed finished but catalog still incomplete (${after.products} products). Check seed logs.`
+      );
+    }
+  } finally {
+    await verify.$disconnect();
+  }
+}
+
+async function main() {
+  resolveDatabaseUrl();
 
   if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 16) {
     console.warn(
@@ -126,18 +194,19 @@ async function main() {
   }
 
   try {
-    const { PrismaClient } = await import("@prisma/client");
-    const prisma = new PrismaClient();
-    const count = await prisma.product.count();
-    await prisma.$disconnect();
-    if (count === 0) {
-      console.log("[start] empty catalog — running seed");
-      await run("npx", ["tsx", "prisma/seed.ts"]);
-    } else {
-      console.log(`[start] catalog has ${count} products — skip catalog seed`);
-    }
+    await ensureCatalog();
   } catch (err) {
-    console.warn("[start] seed check failed, continuing:", err);
+    console.error("[start] catalog seed FAILED:", err);
+    // Retry once — transient volume / lock issues on Railway
+    try {
+      console.log("[start] retrying catalog seed once…");
+      await ensureCatalog();
+    } catch (err2) {
+      console.error(
+        "[start] catalog seed FAILED again — storefront may have no products:",
+        err2
+      );
+    }
   }
 
   const port = process.env.PORT || "3000";

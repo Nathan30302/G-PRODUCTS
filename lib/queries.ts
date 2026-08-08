@@ -75,58 +75,95 @@ const withRelations = {
 } as const;
 
 export async function getAllCategories(): Promise<Category[]> {
-  const cats = await prisma.category.findMany({ orderBy: { sortOrder: "asc" } });
-  return cats.map(toCategory);
+  try {
+    const cats = await prisma.category.findMany({
+      orderBy: { sortOrder: "asc" }
+    });
+    return cats.map(toCategory);
+  } catch (err) {
+    console.error("[queries] getAllCategories failed:", err);
+    return [];
+  }
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const c = await prisma.category.findUnique({ where: { slug } });
-  return c ? toCategory(c) : null;
+  try {
+    const c = await prisma.category.findUnique({ where: { slug } });
+    return c ? toCategory(c) : null;
+  } catch (err) {
+    console.error("[queries] getCategoryBySlug failed:", err);
+    return null;
+  }
 }
 
 export async function getAllProducts(): Promise<Product[]> {
-  const items = await prisma.product.findMany({
-    include: withRelations,
-    orderBy: { createdAt: "desc" }
-  });
-  return items.map(toProduct);
+  try {
+    const items = await prisma.product.findMany({
+      include: withRelations,
+      orderBy: { createdAt: "desc" }
+    });
+    return items.map(toProduct);
+  } catch (err) {
+    console.error("[queries] getAllProducts failed:", err);
+    return [];
+  }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const p = await prisma.product.findUnique({
-    where: { slug },
-    include: withRelations
-  });
-  return p ? toProduct(p) : null;
+  try {
+    const p = await prisma.product.findUnique({
+      where: { slug },
+      include: withRelations
+    });
+    return p ? toProduct(p) : null;
+  } catch (err) {
+    console.error("[queries] getProductBySlug failed:", err);
+    return null;
+  }
 }
 
 export async function getProductsByCategory(
   categorySlug: string
 ): Promise<Product[]> {
-  const items = await prisma.product.findMany({
-    where: { category: { slug: categorySlug } },
-    include: withRelations,
-    orderBy: { createdAt: "desc" }
-  });
-  return items.map(toProduct);
+  try {
+    const items = await prisma.product.findMany({
+      where: { category: { slug: categorySlug } },
+      include: withRelations,
+      orderBy: { createdAt: "desc" }
+    });
+    return items.map(toProduct);
+  } catch (err) {
+    console.error("[queries] getProductsByCategory failed:", err);
+    return [];
+  }
 }
 
 export async function getFeatured(): Promise<Product[]> {
-  const items = await prisma.product.findMany({
-    where: { featured: true },
-    include: withRelations,
-    orderBy: { createdAt: "desc" }
-  });
-  return items.map(toProduct);
+  try {
+    const items = await prisma.product.findMany({
+      where: { featured: true },
+      include: withRelations,
+      orderBy: { createdAt: "desc" }
+    });
+    return items.map(toProduct);
+  } catch (err) {
+    console.error("[queries] getFeatured failed:", err);
+    return [];
+  }
 }
 
 export async function getHotDeals(): Promise<Product[]> {
-  const items = await prisma.product.findMany({
-    where: { hotDeal: true },
-    include: withRelations,
-    orderBy: { createdAt: "desc" }
-  });
-  return items.map(toProduct);
+  try {
+    const items = await prisma.product.findMany({
+      where: { hotDeal: true },
+      include: withRelations,
+      orderBy: { createdAt: "desc" }
+    });
+    return items.map(toProduct);
+  } catch (err) {
+    console.error("[queries] getHotDeals failed:", err);
+    return [];
+  }
 }
 
 export { stockFromQuantity };

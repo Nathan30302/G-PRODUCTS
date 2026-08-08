@@ -117,19 +117,24 @@ async function main() {
   }
   console.log(`Seeded ${products.length} products (+ colour variants)`);
 
-  // Remove products / categories no longer in the official catalog
+  // Remove products / categories no longer in the official catalog.
+  // Guard empty notIn — Prisma/SQL treats NOT IN () as matching everything.
   const keepSlugs = products.map((p) => p.slug);
-  const removed = await prisma.product.deleteMany({
-    where: { slug: { notIn: keepSlugs } }
-  });
-  if (removed.count) console.log(`Removed ${removed.count} old products`);
+  if (keepSlugs.length > 0) {
+    const removed = await prisma.product.deleteMany({
+      where: { slug: { notIn: keepSlugs } }
+    });
+    if (removed.count) console.log(`Removed ${removed.count} old products`);
+  }
 
   const keepCats = categories.map((c) => c.slug);
-  const removedCats = await prisma.category.deleteMany({
-    where: { slug: { notIn: keepCats } }
-  });
-  if (removedCats.count)
-    console.log(`Removed ${removedCats.count} old categories`);
+  if (keepCats.length > 0) {
+    const removedCats = await prisma.category.deleteMany({
+      where: { slug: { notIn: keepCats } }
+    });
+    if (removedCats.count)
+      console.log(`Removed ${removedCats.count} old categories`);
+  }
 
   // --- Service offerings (admin-editable) ---
   for (let i = 0; i < services.length; i++) {

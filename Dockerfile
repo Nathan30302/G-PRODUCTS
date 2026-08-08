@@ -35,6 +35,9 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/scripts ./scripts
+# Seed + start-prod import these at runtime (tsx) — must ship with the image
+COPY --from=builder /app/lib ./lib
+COPY --from=builder /app/config ./config
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/tsconfig.json ./
 

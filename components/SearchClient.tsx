@@ -35,7 +35,7 @@ export function SearchClient({
         !q ||
         p.name.toLowerCase().includes(q) ||
         (p.brand?.toLowerCase().includes(q) ?? false) ||
-        p.shortSpecs.some((s) => s.toLowerCase().includes(q));
+        (p.shortSpecs ?? []).some((s) => s.toLowerCase().includes(q));
       return matchesCat && matchesQuery;
     });
   }, [query, cat, products]);
