@@ -1,10 +1,15 @@
 /**
  * Boot-time catalog repair. Used by scripts/start-prod.ts when the product
- * table is empty (or nearly empty) so the storefront is never blank after deploy.
+ * table is empty so the storefront is never blank after deploy.
+ *
+ * Only reseeds when there are zero products (or zero categories). A small
+ * hand-curated catalog must not be wiped on every Railway restart — set
+ * FORCE_SEED=1 to reload the official list intentionally.
  */
 import { PrismaClient } from "@prisma/client";
 
-const MIN_PRODUCTS = 10;
+/** Health endpoint treats fewer than this as "catalog looks empty". */
+const MIN_PRODUCTS = 1;
 
 export async function catalogNeedsSeed(
   prisma: PrismaClient
@@ -14,7 +19,7 @@ export async function catalogNeedsSeed(
     prisma.category.count()
   ]);
   return {
-    needs: products < MIN_PRODUCTS || categories === 0,
+    needs: products === 0 || categories === 0,
     products,
     categories
   };
