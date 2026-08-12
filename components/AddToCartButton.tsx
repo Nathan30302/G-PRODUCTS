@@ -75,6 +75,7 @@ export function AddToCartButton({
 
   return (
     <button
+      type="button"
       onClick={handleAdd}
       aria-label={`Add ${product.name} to cart`}
       className={`flex w-full items-center justify-center gap-2 rounded-pill font-semibold transition-all duration-200 ease-out-expo active:scale-[0.97] ${

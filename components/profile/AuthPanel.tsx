@@ -3,6 +3,7 @@
 import { useActionState, useMemo, useState, type ChangeEvent } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   unifiedLoginAction,
   unifiedSignupAction,
@@ -121,6 +122,7 @@ function PasswordInput({
 }
 
 export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>(initialMode);
   const [password, setPassword] = useState("");
 
@@ -135,6 +137,14 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
   >(unifiedSignupAction, undefined);
 
   const state = mode === "signin" ? loginState : signupState;
+
+  function switchMode(next: Mode) {
+    setMode(next);
+    setPassword("");
+    router.replace(next === "signup" ? "/profile?mode=signup" : "/profile", {
+      scroll: false
+    });
+  }
 
   return (
     <div className="relative mx-auto w-full max-w-md">
@@ -165,7 +175,7 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
         <div className="grid grid-cols-2 gap-1 rounded-[1.35rem] bg-ink-950/60 p-1">
           <button
             type="button"
-            onClick={() => setMode("signin")}
+            onClick={() => switchMode("signin")}
             className={`rounded-pill py-2.5 text-sm font-bold transition-all ${
               mode === "signin"
                 ? "bg-brand text-ink-950 shadow-brand-glow"
@@ -176,7 +186,7 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
           </button>
           <button
             type="button"
-            onClick={() => setMode("signup")}
+            onClick={() => switchMode("signup")}
             className={`rounded-pill py-2.5 text-sm font-bold transition-all ${
               mode === "signup"
                 ? "bg-brand text-ink-950 shadow-brand-glow"

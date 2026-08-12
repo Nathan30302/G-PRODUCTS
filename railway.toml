@@ -8,6 +8,9 @@ buildCommand = "npm ci && npm run build"
 
 [deploy]
 startCommand = "npm run start:prod"
+# Give prisma generate / db push / seed time before health checks
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5
 

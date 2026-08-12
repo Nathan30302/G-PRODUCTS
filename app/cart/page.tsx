@@ -99,16 +99,18 @@ export default function CartPage() {
                   <div className="mt-auto flex items-center justify-between pt-2">
                     <div className="flex items-center gap-1 rounded-pill border border-white/10 bg-ink-900 p-1">
                       <button
+                        type="button"
                         onClick={() => setQty(item.id, item.qty - 1)}
                         aria-label="Decrease quantity"
                         className="grid h-8 w-8 place-items-center rounded-full text-white/80 transition-colors hover:bg-white/[0.08]"
                       >
                         <Icon name="minus" className="h-4 w-4" />
                       </button>
-                      <span className="w-8 text-center text-sm font-bold">
+                      <span className="w-8 text-center text-sm font-bold tabular-nums">
                         {item.qty}
                       </span>
                       <button
+                        type="button"
                         onClick={() => setQty(item.id, item.qty + 1)}
                         aria-label="Increase quantity"
                         className="grid h-8 w-8 place-items-center rounded-full text-white/80 transition-colors hover:bg-white/[0.08]"

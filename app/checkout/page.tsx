@@ -343,6 +343,8 @@ export default function CheckoutPage() {
               <label className="block">
                 <span className="text-sm text-white/60">Full name</span>
                 <input
+                  name="name"
+                  autoComplete="name"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-3 text-white outline-none transition-colors focus:border-brand"
@@ -352,6 +354,8 @@ export default function CheckoutPage() {
               <label className="block">
                 <span className="text-sm text-white/60">Phone number</span>
                 <input
+                  name="phone"
+                  autoComplete="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   inputMode="tel"
@@ -364,6 +368,8 @@ export default function CheckoutPage() {
                   Delivery address / area
                 </span>
                 <input
+                  name="address"
+                  autoComplete="street-address"
                   value={form.address}
                   onChange={(e) =>
                     setForm({ ...form, address: e.target.value })
@@ -389,6 +395,7 @@ export default function CheckoutPage() {
               {payOptions.map((opt) => (
                 <button
                   key={opt.id}
+                  type="button"
                   onClick={() => setMethod(opt.id)}
                   className={`relative rounded-xl border p-4 text-left transition-all ${
                     method === opt.id
@@ -448,6 +455,7 @@ export default function CheckoutPage() {
             )}
 
             <button
+              type="button"
               onClick={placeOrder}
               disabled={!canPlace || phase === "submitting"}
               className="btn-brand mt-6 w-full disabled:shadow-none"
@@ -488,6 +496,7 @@ export default function CheckoutPage() {
             </p>
           </div>
           <button
+            type="button"
             onClick={placeOrder}
             disabled={!canPlace || phase === "submitting"}
             className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98] disabled:bg-ink-700 disabled:text-white/40"

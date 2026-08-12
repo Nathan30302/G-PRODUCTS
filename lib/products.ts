@@ -9,8 +9,8 @@ const U = (id: string) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&q=80`;
 
 const IMG = {
-  stationery: U("photo-1452860606245-482548ac56cd"),
-  pens: U("photo-1583485088034-697b5bc36b56"),
+  stationery: U("photo-1586075010923-2dd4570fb338"),
+  pens: U("photo-1517842645767-c639042777db"),
   paper: U("photo-1586281380349-632531db7ed4"),
   calculator: U("photo-1611532736597-de2d4265fba3"),
   storage: "/products/memory-flash.png",

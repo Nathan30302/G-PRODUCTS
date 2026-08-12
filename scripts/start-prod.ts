@@ -1,9 +1,9 @@
 /**
  * Production start for Railway (and similar hosts).
- * Ensures DB, guarantees Gift's desk login (gift@gproducts.zm), seeds catalog
- * when empty, then boots Next.
+ * Ensures DB, guarantees Gift's desk login, seeds catalog when empty,
+ * then boots Next with clean SIGTERM forwarding for redeploys.
  */
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
@@ -48,6 +48,54 @@ function resolveDatabaseUrl() {
   }
 
   process.env.DATABASE_URL = url;
+}
+
+function resolveNextBin() {
+  const candidates = [
+    path.join(process.cwd(), "node_modules", "next", "dist", "bin", "next"),
+    path.join(process.cwd(), "node_modules", "next", "dist", "bin", "next.js")
+  ];
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) return candidate;
+  }
+  throw new Error("Could not find next binary under node_modules/next");
+}
+
+/** Boot Next without nested npx, and forward stop signals for clean Railway redeploys. */
+function startNext(port: string): Promise<never> {
+  const nextBin = resolveNextBin();
+  const args = ["start", "-H", "0.0.0.0", "-p", port];
+
+  console.log(`[start] node ${nextBin} ${args.join(" ")}`);
+
+  const child: ChildProcess = spawn(process.execPath, [nextBin, ...args], {
+    stdio: "inherit",
+    env: process.env
+  });
+
+  const forward = (signal: NodeJS.Signals) => {
+    if (child.pid && !child.killed) {
+      try {
+        child.kill(signal);
+      } catch {
+        // child may already be gone
+      }
+    }
+  };
+
+  process.on("SIGTERM", () => forward("SIGTERM"));
+  process.on("SIGINT", () => forward("SIGINT"));
+
+  return new Promise((_, reject) => {
+    child.on("error", reject);
+    child.on("exit", (code, signal) => {
+      if (signal) {
+        process.kill(process.pid, signal);
+        return;
+      }
+      process.exit(code ?? 1);
+    });
+  });
 }
 
 /**
@@ -109,6 +157,43 @@ async function ensureOwnerAccount() {
       console.log(
         `[start] demoted ${demoted.count} extra OWNER account(s) to STAFF`
       );
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function repairBrokenCatalogImages() {
+  const { PrismaClient } = await import("@prisma/client");
+  const prisma = new PrismaClient();
+  // Unsplash sometimes retires photo IDs — rewrite known-dead URLs in place.
+  const replacements: [string, string][] = [
+    [
+      "photo-1452860606245-482548ac56cd",
+      "photo-1586075010923-2dd4570fb338"
+    ],
+    [
+      "photo-1583485088034-697b5bc36b56",
+      "photo-1517842645767-c639042777db"
+    ]
+  ];
+
+  try {
+    let fixed = 0;
+    for (const [from, to] of replacements) {
+      const rows = await prisma.productImage.findMany({
+        where: { url: { contains: from } }
+      });
+      for (const row of rows) {
+        await prisma.productImage.update({
+          where: { id: row.id },
+          data: { url: row.url.replace(from, to) }
+        });
+        fixed += 1;
+      }
+    }
+    if (fixed > 0) {
+      console.log(`[start] repaired ${fixed} broken catalog image URL(s)`);
     }
   } finally {
     await prisma.$disconnect();
@@ -209,9 +294,14 @@ async function main() {
     }
   }
 
+  try {
+    await repairBrokenCatalogImages();
+  } catch (err) {
+    console.warn("[start] image URL repair:", err);
+  }
+
   const port = process.env.PORT || "3000";
-  console.log(`[start] next start -H 0.0.0.0 -p ${port}`);
-  await run("npx", ["next", "start", "-H", "0.0.0.0", "-p", port]);
+  await startNext(port);
 }
 
 main().catch((err) => {

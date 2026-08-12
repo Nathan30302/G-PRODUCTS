@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useState,
   ReactNode
 } from "react";
 import { Product, ProductVariant } from "@/lib/types";
@@ -106,23 +107,32 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { items: [] });
+  // Don't persist the empty initial state over a saved cart before hydrate runs.
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) dispatch({ type: "hydrate", state: JSON.parse(raw) });
+      if (raw) {
+        const parsed = JSON.parse(raw) as CartState;
+        if (parsed && Array.isArray(parsed.items)) {
+          dispatch({ type: "hydrate", state: parsed });
+        }
+      }
     } catch {
-      // ignore
+      // ignore corrupt storage
     }
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
       // ignore
     }
-  }, [state]);
+  }, [state, hydrated]);
 
   const value = useMemo<CartContextValue>(() => {
     const count = state.items.reduce((n, i) => n + i.qty, 0);
