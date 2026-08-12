@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, formatDateTime } from "@/lib/format";
 import { getSession } from "@/lib/auth";
+import { getAdminAnalytics } from "@/lib/admin-analytics";
 
 export const dynamic = "force-dynamic";
 
@@ -48,31 +49,25 @@ function Stat({
 
 export default async function AdminDashboard() {
   const session = await getSession();
-  const [
-    products,
-    orders,
-    pending,
-    paidAgg,
-    recent,
-    servicePending,
-    stockAlerts
-  ] = await Promise.all([
-    prisma.product.count(),
-    prisma.order.count(),
-    prisma.order.count({ where: { status: "PENDING" } }),
-    prisma.order.aggregate({
-      _sum: { total: true },
-      where: { paymentStatus: "SUCCESS" }
-    }),
-    prisma.order.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 6
-    }),
-    prisma.serviceRequest.count({
-      where: { status: { in: ["NEW", "CONFIRMED"] } }
-    }),
-    prisma.stockNotify.count()
-  ]);
+  const [analytics, products, orders, pending, paidAgg, recent, servicePending, stockAlerts] =
+    await Promise.all([
+      getAdminAnalytics(),
+      prisma.product.count(),
+      prisma.order.count(),
+      prisma.order.count({ where: { status: "PENDING" } }),
+      prisma.order.aggregate({
+        _sum: { total: true },
+        where: { paymentStatus: "SUCCESS" }
+      }),
+      prisma.order.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 6
+      }),
+      prisma.serviceRequest.count({
+        where: { status: { in: ["NEW", "CONFIRMED"] } }
+      }),
+      prisma.stockNotify.count()
+    ]);
 
   const revenue = paidAgg._sum.total ?? 0;
   const firstName = session?.name?.split(" ")[0];
@@ -117,6 +112,17 @@ export default async function AdminDashboard() {
         <h2 className="display mt-1 text-xl">Pulse</h2>
         <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Stat
+            label="Shop customers"
+            value={analytics.customerCount}
+            href="/admin/customers"
+            tone="good"
+          />
+          <Stat
+            label="Desk users"
+            value={analytics.deskUserCount}
+            href="/admin/staff"
+          />
+          <Stat
             label="Pending orders"
             value={pending}
             href="/admin/orders"
@@ -126,15 +132,85 @@ export default async function AdminDashboard() {
             label="Service queue"
             value={servicePending}
             href="/admin/services"
-            tone="good"
-          />
-          <Stat
-            label="Stock alerts"
-            value={stockAlerts}
-            href="/admin/stock-notify"
             tone="brand"
           />
-          <Stat label="Paid revenue" value={formatPrice(revenue)} />
+        </div>
+      </section>
+
+      <section>
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/35">
+          Insights
+        </p>
+        <h2 className="display mt-1 text-xl">What sells & who buys</h2>
+        <div className="mt-4 grid gap-6 lg:grid-cols-2">
+          <div className="overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 shadow-card">
+            <div className="border-b border-white/[0.06] px-5 py-3.5">
+              <p className="text-sm font-bold text-white">Top products</p>
+              <p className="text-xs text-white/40">By units ordered</p>
+            </div>
+            <ul className="divide-y divide-white/[0.05]">
+              {analytics.topProducts.length === 0 ? (
+                <li className="px-5 py-8 text-center text-sm text-white/40">
+                  No sales data yet.
+                </li>
+              ) : (
+                analytics.topProducts.map((p) => (
+                  <li
+                    key={p.name}
+                    className="flex items-center justify-between gap-3 px-5 py-3"
+                  >
+                    <span className="truncate text-sm text-white/80">
+                      {p.name}
+                    </span>
+                    <span className="shrink-0 text-sm font-semibold text-brand">
+                      {p.qty} sold
+                    </span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+
+          <div className="overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 shadow-card">
+            <div className="border-b border-white/[0.06] px-5 py-3.5">
+              <p className="text-sm font-bold text-white">Best customers</p>
+              <p className="text-xs text-white/40">Most orders</p>
+            </div>
+            <ul className="divide-y divide-white/[0.05]">
+              {analytics.topCustomers.length === 0 ? (
+                <li className="px-5 py-8 text-center text-sm text-white/40">
+                  No buyers yet.
+                </li>
+              ) : (
+                analytics.topCustomers.slice(0, 5).map((c) => (
+                  <li
+                    key={`${c.phone}-${c.name}`}
+                    className="flex items-center justify-between gap-3 px-5 py-3"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-white">
+                        {c.name}
+                      </p>
+                      <p className="truncate text-xs text-white/40">
+                        {c.location}
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-sm font-semibold text-accent">
+                      {c.orders} orders
+                    </span>
+                  </li>
+                ))
+              )}
+            </ul>
+            <div className="border-t border-white/[0.06] px-5 py-3 text-right">
+              <Link
+                href="/admin/customers"
+                className="text-sm font-semibold text-brand hover:underline"
+              >
+                All customers
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -143,9 +219,15 @@ export default async function AdminDashboard() {
           Catalogue
         </p>
         <h2 className="display mt-1 text-xl">At a glance</h2>
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Stat label="Products" value={products} href="/admin/products" />
           <Stat label="Orders" value={orders} href="/admin/orders" />
+          <Stat
+            label="Stock alerts"
+            value={stockAlerts}
+            href="/admin/stock-notify"
+          />
+          <Stat label="Paid revenue" value={formatPrice(revenue)} />
         </div>
       </section>
 
@@ -171,6 +253,7 @@ export default async function AdminDashboard() {
                 <tr>
                   <th className="px-5 py-3.5 font-semibold">Ref</th>
                   <th className="px-5 py-3.5 font-semibold">Customer</th>
+                  <th className="px-5 py-3.5 font-semibold">Placed</th>
                   <th className="px-5 py-3.5 font-semibold">Total</th>
                   <th className="px-5 py-3.5 font-semibold">Status</th>
                   <th className="px-5 py-3.5 font-semibold" />
@@ -180,7 +263,7 @@ export default async function AdminDashboard() {
                 {recent.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={6}
                       className="px-5 py-12 text-center text-white/40"
                     >
                       No orders yet — your desk is ready when they arrive.
@@ -197,6 +280,9 @@ export default async function AdminDashboard() {
                       </td>
                       <td className="px-5 py-3.5 text-white/80">
                         {o.customerName}
+                      </td>
+                      <td className="px-5 py-3.5 text-xs text-white/45">
+                        {formatDateTime(o.createdAt)}
                       </td>
                       <td className="px-5 py-3.5 font-semibold text-white">
                         {formatPrice(o.total)}

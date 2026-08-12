@@ -22,6 +22,11 @@ const nav: NavItem[] = [
   },
   { href: "/admin/orders", label: "Orders", hint: "Purchases" },
   {
+    href: "/admin/customers",
+    label: "Customers",
+    hint: "Shop users & buyers"
+  },
+  {
     href: "/admin/stock-notify",
     label: "Stock alerts",
     hint: "Waitlist"

@@ -47,13 +47,20 @@ model User {
 
 /// Storefront customer accounts (separate from staff User / Provider desk)
 model Customer {
-  id           String   @id @default(cuid())
-  email        String?  @unique
-  phone        String   @unique
-  name         String
-  passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String   @id @default(cuid())
+  email           String   @unique
+  phone           String   @unique
+  firstName       String
+  lastName        String
+  /// Display name (first + last) — kept for orders and legacy reads
+  name            String
+  passwordHash    String
+  /// Saved delivery spot, e.g. "Kalingalinga Block A Room 12" or home address
+  defaultLocation String?
+  locationLabel   String?
+  orders          Order[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Category {
@@ -120,6 +127,8 @@ model StockNotify {
 model Order {
   id            String        @id @default(cuid())
   ref           String        @unique
+  customerId    String?
+  customer      Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
   customerName  String
   customerPhone String
   address       String?

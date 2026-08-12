@@ -13,3 +13,26 @@ export function discountPercent(price: number, compareAt?: number): number | nul
   if (!compareAt || compareAt <= price) return null;
   return Math.round(((compareAt - price) / compareAt) * 100);
 }
+
+const dt = new Intl.DateTimeFormat("en-ZM", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true
+});
+
+export function formatDateTime(value: Date | string): string {
+  const d = typeof value === "string" ? new Date(value) : value;
+  return dt.format(d);
+}
+
+export function formatDate(value: Date | string): string {
+  const d = typeof value === "string" ? new Date(value) : value;
+  return d.toLocaleDateString("en-ZM", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+}

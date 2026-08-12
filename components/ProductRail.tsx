@@ -12,7 +12,8 @@ export function ProductRail({
   products,
   href,
   hrefLabel = "View all",
-  accent = "brand"
+  accent = "brand",
+  className = ""
 }: {
   title: string;
   subtitle?: string;
@@ -20,6 +21,7 @@ export function ProductRail({
   href?: string;
   hrefLabel?: string;
   accent?: "brand" | "accent";
+  className?: string;
 }) {
   const scroller = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
@@ -55,7 +57,7 @@ export function ProductRail({
   const eye = accent === "accent" ? "text-accent" : "text-brand/80";
 
   return (
-    <section className="container-g mt-24">
+    <section className={`container-g mt-24 ${className}`}>
       <div className="mb-7 flex items-end justify-between gap-4">
         <div>
           <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${eye}`}>
