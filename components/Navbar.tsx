@@ -81,6 +81,16 @@ export function Navbar() {
 
         <nav className="hidden items-center gap-0.5 text-sm lg:flex">
           <Link
+            href="/"
+            className={`rounded-pill px-3.5 py-2 font-semibold transition-colors ${
+              pathname === "/"
+                ? "bg-brand/15 text-brand"
+                : "text-white/65 hover:bg-white/[0.04] hover:text-white"
+            }`}
+          >
+            Home
+          </Link>
+          <Link
             href="/search"
             className={`rounded-pill px-3.5 py-2 font-semibold transition-colors ${
               pathname === "/search"

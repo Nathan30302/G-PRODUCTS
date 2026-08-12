@@ -118,7 +118,7 @@ export function ImageUploader({
         >
           {multiple ? "Upload photos" : "Upload photo"}
         </button>
-        <span className="text-xs text-white/35">JPG, PNG or WebP · max 8MB</span>
+        <span className="text-xs text-white/35">JPG, PNG or WebP · max 15MB each</span>
       </div>
 
       <input

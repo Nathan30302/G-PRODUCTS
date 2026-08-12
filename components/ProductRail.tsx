@@ -13,7 +13,8 @@ export function ProductRail({
   href,
   hrefLabel = "View all",
   accent = "brand",
-  className = ""
+  className = "",
+  embedded = false
 }: {
   title: string;
   subtitle?: string;
@@ -22,6 +23,8 @@ export function ProductRail({
   hrefLabel?: string;
   accent?: "brand" | "accent";
   className?: string;
+  /** Skip outer container padding when nested in homepage grid */
+  embedded?: boolean;
 }) {
   const scroller = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
@@ -57,7 +60,9 @@ export function ProductRail({
   const eye = accent === "accent" ? "text-accent" : "text-brand/80";
 
   return (
-    <section className={`container-g mt-24 ${className}`}>
+    <section
+      className={`${embedded ? "w-full" : "container-g"} mt-24 ${className}`}
+    >
       <div className="mb-7 flex items-end justify-between gap-4">
         <div>
           <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${eye}`}>

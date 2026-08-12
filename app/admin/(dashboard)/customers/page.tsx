@@ -18,10 +18,11 @@ export default async function AdminCustomersPage() {
           Customers
         </h1>
         <p className="mt-2 text-sm text-white/50">
-          {data.customerCount} registered account
+          {data.customerCount} registered shop account
           {data.customerCount === 1 ? "" : "s"} ·{" "}
           {data.registeredWithOrders} with orders · {data.deskUserCount} desk
-          user{data.deskUserCount === 1 ? "" : "s"} (staff + owner)
+          login{data.deskUserCount === 1 ? "" : "s"} (staff + owner). Shop
+          accounts are separate from provider desk logins.
         </p>
       </div>
 
@@ -131,7 +132,7 @@ export default async function AdminCustomersPage() {
                         {c.defaultLocation ?? "—"}
                       </td>
                       <td className="px-5 py-3.5 text-white/80">
-                        {c._count.orders}
+                        {c.totalOrders}
                       </td>
                       <td className="px-5 py-3.5 text-white/50">
                         {formatDate(c.createdAt)}

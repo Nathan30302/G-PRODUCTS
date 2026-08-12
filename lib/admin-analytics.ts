@@ -18,7 +18,6 @@ export async function getAdminAnalytics() {
     prisma.user.count({ where: { role: "OWNER" } }),
     prisma.customer.findMany({
       orderBy: { createdAt: "desc" },
-      take: 50,
       select: {
         id: true,
         firstName: true,
@@ -161,6 +160,15 @@ export async function getAdminAnalytics() {
     allBuyers.has(c.phone.replace(/\D/g, ""))
   ).length;
 
+  // Enrich order counts from phone-matched guest orders when customerId isn't set
+  const customersWithOrders = customers.map((c) => {
+    const key = c.phone.replace(/\D/g, "");
+    const guest = allBuyers.get(key);
+    const linked = c._count.orders;
+    const totalOrders = Math.max(linked, guest?.orders ?? 0);
+    return { ...c, totalOrders };
+  });
+
   return {
     customerCount,
     staffCount,
@@ -170,7 +178,7 @@ export async function getAdminAnalytics() {
     registeredWithOrders,
     topProducts,
     topCustomers,
-    customers,
+    customers: customersWithOrders,
     staff,
     recentOrders,
     formatPrice
