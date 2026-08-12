@@ -25,8 +25,9 @@ export default async function AccountPage() {
       <div className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-5 shadow-card sm:p-7">
         <h2 className="text-lg font-bold text-white">Change password</h2>
         <p className="mt-1 text-sm text-white/45">
-          Use a strong password. Staff and the provider all sign in from the
-          same Profile screen on the shop.
+          Use a strong password. After you change it here, sign in with the{" "}
+          <strong className="text-white/70">new</strong> password on Profile.
+          Deploys will not reset it unless OWNER_SYNC_PASSWORD=1 in Railway.
         </p>
         <div className="mt-6">
           <ChangePasswordForm />

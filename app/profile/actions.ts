@@ -15,31 +15,11 @@ import {
 } from "@/lib/customer-auth";
 import { passwordError } from "@/lib/password";
 import { normalizePhone, phoneVariants } from "@/lib/phone";
+import { findCustomerByIdentifier } from "@/lib/customer-lookup";
 import { isProviderSignupEmail } from "@/lib/provider-emails";
 import { siteConfig } from "@/config/site";
 
 export type AuthFormState = { error?: string };
-
-async function findCustomerByIdentifier(identifier: string) {
-  const email = identifier.includes("@")
-    ? identifier.trim().toLowerCase()
-    : null;
-  const phone = normalizePhone(identifier);
-
-  if (email) {
-    const byEmail = await prisma.customer.findUnique({ where: { email } });
-    if (byEmail) return byEmail;
-  }
-
-  if (phone) {
-    const variants = phoneVariants(phone);
-    return prisma.customer.findFirst({
-      where: { phone: { in: variants } }
-    });
-  }
-
-  return null;
-}
 
 export async function unifiedLoginAction(
   _prev: AuthFormState | undefined,
@@ -53,7 +33,7 @@ export async function unifiedLoginAction(
       return { error: "Enter your phone or email, and your password." };
     }
 
-    // Desk users (provider + staff) — email
+    // Desk users (provider + staff) — email only
     if (identifier.includes("@")) {
       const email = identifier.toLowerCase();
       const user = await prisma.user.findUnique({ where: { email } });
@@ -70,9 +50,10 @@ export async function unifiedLoginAction(
       if (user) {
         return { error: "Wrong password. Try again." };
       }
+      // Not a desk account — fall through to shop customer email lookup below
     }
 
-    // Shop customers — phone or email
+    // Shop customers — phone or email (same as signup)
     const customer = await findCustomerByIdentifier(identifier);
     if (customer && (await verifyPassword(password, customer.passwordHash))) {
       await destroySession().catch(() => undefined);
