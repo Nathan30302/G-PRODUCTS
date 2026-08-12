@@ -2,17 +2,25 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Category, Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { Icon } from "@/components/Icons";
 
-const trending = [
-  "Exercise Book",
-  "Memory Card",
-  "AirPods",
-  "Oraimo",
-  "Mouse",
-  "Printing"
+type TrendChip = {
+  label: string;
+  query?: string;
+  category?: string;
+  href?: string;
+};
+
+const trending: TrendChip[] = [
+  { label: "Exercise Book", query: "exercise" },
+  { label: "Memory Card", query: "memory", category: "storage" },
+  { label: "AirPods", query: "airpods", category: "audio" },
+  { label: "Oraimo", query: "oraimo", category: "chargers" },
+  { label: "Mouse", query: "mouse", category: "computers" },
+  { label: "Printing", href: "/services/printing" }
 ];
 
 export function SearchClient({
@@ -24,6 +32,7 @@ export function SearchClient({
   categories: Category[];
   initialQuery?: string;
 }) {
+  const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
   const [cat, setCat] = useState<string>("all");
 
@@ -39,6 +48,16 @@ export function SearchClient({
       return matchesCat && matchesQuery;
     });
   }, [query, cat, products]);
+
+  function applyTrend(chip: TrendChip) {
+    if (chip.href) {
+      router.push(chip.href);
+      return;
+    }
+    setQuery(chip.query ?? chip.label);
+    if (chip.category) setCat(chip.category);
+    else setCat("all");
+  }
 
   return (
     <div className="container-g py-8 sm:py-10">
@@ -67,6 +86,7 @@ export function SearchClient({
         />
         {query && (
           <button
+            type="button"
             onClick={() => setQuery("")}
             aria-label="Clear search"
             className="absolute right-4 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full bg-white/[0.06] text-white/60 transition-colors hover:text-white"
@@ -86,18 +106,20 @@ export function SearchClient({
           </span>
           {trending.map((t) => (
             <button
-              key={t}
-              onClick={() => setQuery(t)}
+              key={t.label}
+              type="button"
+              onClick={() => applyTrend(t)}
               className="rounded-pill border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-sm text-white/70 transition-colors hover:border-brand/40 hover:text-white"
             >
-              {t}
+              {t.label}
             </button>
           ))}
         </div>
       )}
 
-      <div className="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-1">
+      <div className="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible">
         <button
+          type="button"
           onClick={() => setCat("all")}
           className={`shrink-0 rounded-pill px-4 py-1.5 text-sm font-medium transition-colors ${
             cat === "all"
@@ -110,6 +132,7 @@ export function SearchClient({
         {categories.map((c) => (
           <button
             key={c.slug}
+            type="button"
             onClick={() => setCat(c.slug)}
             className={`shrink-0 rounded-pill px-4 py-1.5 text-sm font-medium transition-colors ${
               cat === c.slug
@@ -146,7 +169,7 @@ export function SearchClient({
           </Link>
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {results.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

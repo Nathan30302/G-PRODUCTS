@@ -5,19 +5,19 @@ import { SmokeBackdrop } from "@/components/SmokeBackdrop";
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate overflow-hidden lg:hidden">
       <SmokeBackdrop className="-z-10" />
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(246,212,0,0.12),transparent_55%)]" />
       </div>
 
-      <div className="container-g relative flex min-h-[calc(100svh-3.5rem)] flex-col justify-center py-14 sm:min-h-[calc(100svh-4rem)] sm:py-16 lg:py-20">
+      <div className="container-g relative flex min-h-[calc(100svh-3.5rem)] flex-col justify-center py-14 sm:min-h-[calc(100svh-4rem)] sm:py-16">
         <div className="mx-auto flex w-full max-w-2xl flex-col items-center text-center">
-          <h1 className="hero-rise display max-w-[12ch] text-[2.6rem] leading-[1.02] text-brand sm:max-w-none sm:text-5xl lg:text-[3.5rem]">
+          <h1 className="hero-rise display max-w-[12ch] text-[2.6rem] leading-[1.02] text-brand sm:max-w-none sm:text-5xl">
             {siteConfig.tagline}
           </h1>
 
-          <p className="hero-rise hero-rise-delay-1 mt-5 text-base font-semibold leading-snug text-white/85 sm:text-lg lg:text-xl">
+          <p className="hero-rise hero-rise-delay-1 mt-5 text-base font-semibold leading-snug text-white/85 sm:text-lg">
             Everything you need — one shop.
           </p>
 

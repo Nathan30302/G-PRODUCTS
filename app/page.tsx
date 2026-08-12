@@ -1,82 +1,67 @@
 import { Hero } from "@/components/Hero";
-import { CategoryTile } from "@/components/CategoryTile";
-import { ProductRail } from "@/components/ProductRail";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { ServicesBand } from "@/components/ServicesBand";
 import { ContactBand } from "@/components/ContactBand";
-import { Stagger, StaggerItem, Reveal } from "@/components/Reveal";
+import {
+  HomeDesktop,
+  HomeMobileSections
+} from "@/components/home/HomeLayouts";
 import {
   getAllCategories,
   getAllProducts,
   getFeatured,
   getHotDeals
 } from "@/lib/queries";
+import { getAllServiceOffers } from "@/lib/service-queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [categories, hotDeals, featured, all] = await Promise.all([
+  const [categories, hotDeals, featured, all, services] = await Promise.all([
     getAllCategories(),
     getHotDeals(),
     getFeatured(),
-    getAllProducts()
+    getAllProducts(),
+    getAllServiceOffers()
   ]);
 
   const newest = all.slice(0, 8);
+  const serviceLinks = services.map((s) => ({
+    slug: s.slug,
+    name: s.name,
+    tagline: s.tagline
+  }));
 
   return (
     <>
       <Hero />
 
-      <section className="container-g mt-16 sm:mt-20">
-        <Reveal className="mb-8">
-          <p className="eyebrow">Browse</p>
-          <h2 className="display mt-2 text-2xl sm:text-3xl">
-            Shop by category
-          </h2>
-          <p className="mt-2 text-sm text-white/50">
-            Stationery, storage, chargers, audio and more.
-          </p>
-        </Reveal>
-        <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
-          {categories.map((c) => (
-            <StaggerItem key={c.slug}>
-              <CategoryTile category={c} />
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </section>
-
-      <ProductRail
-        title="Hot Deals of the Week"
-        subtitle="Smart picks at better prices."
-        products={hotDeals}
-        href="/search"
-        hrefLabel="View all"
-        accent="accent"
+      <HomeDesktop
+        categories={categories}
+        hotDeals={hotDeals}
+        featured={featured}
+        newest={newest}
+        services={serviceLinks}
       />
 
-      <ProductRail
-        title="Our Bestsellers"
-        subtitle="Popular items from G-Products."
-        products={featured}
-        href="/search"
-        hrefLabel="View all"
+      <HomeMobileSections
+        categories={categories}
+        hotDeals={hotDeals}
+        featured={featured}
+        newest={newest}
       />
 
-      <ProductRail
-        title="Fresh Arrivals"
-        subtitle="Browse the latest from our catalogue."
-        products={newest}
-        href="/search"
-        hrefLabel="View all"
-      />
+      <div className="lg:hidden">
+        <WhyGProducts />
+        <ServicesBand />
+        <ContactBand />
+      </div>
 
-      <WhyGProducts />
-
-      <ServicesBand />
-
-      <ContactBand />
+      {/* Desktop: trust strip only — services already in hero + /services link */}
+      <div className="hidden lg:block">
+        <WhyGProducts />
+        <ContactBand />
+      </div>
     </>
   );
 }

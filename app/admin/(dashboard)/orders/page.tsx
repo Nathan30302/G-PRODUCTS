@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, formatDateTime } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Orders" };
@@ -42,6 +42,7 @@ export default async function AdminOrders() {
               <tr>
                 <th className="px-5 py-3.5 font-semibold">Ref</th>
                 <th className="px-5 py-3.5 font-semibold">Customer</th>
+                <th className="px-5 py-3.5 font-semibold">Placed</th>
                 <th className="px-5 py-3.5 font-semibold">Items</th>
                 <th className="px-5 py-3.5 font-semibold">Total</th>
                 <th className="px-5 py-3.5 font-semibold">Payment</th>
@@ -53,7 +54,7 @@ export default async function AdminOrders() {
               {orders.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="px-5 py-12 text-center text-white/40"
                   >
                     No orders yet — they&apos;ll appear here instantly.
@@ -73,6 +74,9 @@ export default async function AdminOrders() {
                       <span className="block text-xs text-white/40">
                         {o.customerPhone}
                       </span>
+                    </td>
+                    <td className="px-5 py-3.5 text-xs text-white/45">
+                      {formatDateTime(o.createdAt)}
                     </td>
                     <td className="px-5 py-3.5 text-white/60">
                       {o.items.reduce((n, i) => n + i.qty, 0)}

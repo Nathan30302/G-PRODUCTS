@@ -106,7 +106,8 @@ export async function unifiedSignupAction(
   formData: FormData
 ): Promise<AuthFormState> {
   try {
-    const name = String(formData.get("name") ?? "").trim();
+    const firstName = String(formData.get("firstName") ?? "").trim();
+    const lastName = String(formData.get("lastName") ?? "").trim();
     const phoneRaw = String(formData.get("phone") ?? "").trim();
     const emailRaw = String(formData.get("email") ?? "")
       .trim()
@@ -114,17 +115,23 @@ export async function unifiedSignupAction(
     const password = String(formData.get("password") ?? "");
     const confirm = String(formData.get("confirmPassword") ?? "");
 
-    if (!name) return { error: "Please enter your name." };
+    if (!firstName) return { error: "Please enter your first name." };
+    if (!lastName) return { error: "Please enter your last name." };
+
+    const name = `${firstName} ${lastName}`.trim();
 
     const phone = normalizePhone(phoneRaw);
     if (!phone) {
-      return { error: "Enter a valid phone number (required)." };
+      return { error: "Enter a valid phone number." };
     }
 
-    const email = emailRaw || null;
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!emailRaw) {
+      return { error: "Email is required." };
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
       return { error: "That email doesn’t look valid." };
     }
+    const email = emailRaw;
 
     const pwErr = passwordError(password);
     if (pwErr) return { error: pwErr };
@@ -151,19 +158,17 @@ export async function unifiedSignupAction(
       };
     }
 
-    if (email) {
-      const emailTaken = await prisma.customer.findUnique({ where: { email } });
-      if (emailTaken) {
-        return {
-          error: "An account with that email already exists. Sign in instead."
-        };
-      }
+    const emailTaken = await prisma.customer.findUnique({ where: { email } });
+    if (emailTaken) {
+      return {
+        error: "An account with that email already exists. Sign in instead."
+      };
     }
 
     const passwordHash = await hashPassword(password);
 
     // Only ONE provider. Allowlisted email may claim it if none exists yet.
-    if (email && isProviderSignupEmail(email)) {
+    if (isProviderSignupEmail(email)) {
       const ownerCount = await prisma.user.count({ where: { role: "OWNER" } });
       if (ownerCount > 0) {
         return {
@@ -192,7 +197,7 @@ export async function unifiedSignupAction(
       redirect(siteConfig.apps.provider.home);
     }
 
-    if (email && email.endsWith("@gproducts.zm")) {
+    if (email.endsWith("@gproducts.zm")) {
       return {
         error:
           "Desk staff can’t create their own account. Ask the owner to add you, then Sign in."
@@ -201,6 +206,8 @@ export async function unifiedSignupAction(
 
     const customer = await prisma.customer.create({
       data: {
+        firstName,
+        lastName,
         name,
         email,
         phone,

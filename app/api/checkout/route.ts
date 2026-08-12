@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { initiatePayment, type PaymentProvider } from "@/lib/payments";
+import { getCustomerSession } from "@/lib/customer-auth";
+import { normalizePhone, phoneVariants } from "@/lib/phone";
 
 type IncomingItem = {
   productId?: string;
@@ -64,10 +66,24 @@ export async function POST(req: Request) {
 
   const total = lineItems.reduce((sum, i) => sum + i.price * i.qty, 0);
 
+  const session = await getCustomerSession();
+  let customerId: string | null = session?.id ?? null;
+  if (!customerId && phone) {
+    const normalized = normalizePhone(phone);
+    if (normalized) {
+      const match = await prisma.customer.findFirst({
+        where: { phone: { in: phoneVariants(normalized) } },
+        select: { id: true }
+      });
+      customerId = match?.id ?? null;
+    }
+  }
+
   const ref = newRef();
   const order = await prisma.order.create({
     data: {
       ref,
+      customerId,
       customerName: name,
       customerPhone: phone,
       address,

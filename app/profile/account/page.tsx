@@ -35,7 +35,21 @@ export default async function AccountPage() {
     ]);
   }
 
+  const record = await prisma.customer.findUnique({
+    where: { id: customer.id },
+    select: {
+      defaultLocation: true,
+      locationLabel: true
+    }
+  });
+
   return (
-    <AccountHome customer={customer} orders={orders} services={services} />
+    <AccountHome
+      customer={customer}
+      orders={orders}
+      services={services}
+      defaultLocation={record?.defaultLocation ?? ""}
+      locationLabel={record?.locationLabel ?? ""}
+    />
   );
 }

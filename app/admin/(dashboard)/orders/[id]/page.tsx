@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, formatDateTime } from "@/lib/format";
 import { OrderStatusForm } from "@/components/admin/OrderStatusForm";
 
 export const dynamic = "force-dynamic";
@@ -31,12 +31,16 @@ export default async function OrderDetail({
 
   return (
     <div>
-      <div className="mb-6 flex items-center gap-2 text-sm text-white/40">
+      <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-white/40">
         <Link href="/admin/orders" className="hover:text-white">
           Orders
         </Link>
         <span>/</span>
         <span className="font-mono text-white/70">{order.ref}</span>
+        <span className="text-white/25">·</span>
+        <span className="text-white/55">
+          Placed {formatDateTime(order.createdAt)}
+        </span>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

@@ -3,7 +3,8 @@ import { siteConfig } from "@/config/site";
 import { Icon } from "@/components/Icons";
 import { unifiedLogoutAction } from "@/app/profile/actions";
 import type { CustomerSession } from "@/lib/customer-auth";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, formatDateTime } from "@/lib/format";
+import { LocationForm } from "@/components/profile/LocationForm";
 
 type OrderRow = {
   id: string;
@@ -24,13 +25,18 @@ type ServiceRow = {
 export function AccountHome({
   customer,
   orders,
-  services
+  services,
+  defaultLocation = "",
+  locationLabel = ""
 }: {
   customer: CustomerSession;
   orders: OrderRow[];
   services: ServiceRow[];
+  defaultLocation?: string;
+  locationLabel?: string;
 }) {
-  const firstName = customer.name.split(" ")[0] || customer.name;
+  const firstName =
+    customer.name.split(" ")[0] || customer.name || "there";
 
   return (
     <div className="container-g py-10 sm:py-14">
@@ -82,6 +88,18 @@ export function AccountHome({
         </Link>
       </div>
 
+      <section className="mt-12 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6">
+        <h2 className="display text-xl">Delivery location</h2>
+        <p className="mt-2 text-sm text-white/45">
+          Save your UNZA room or home address — checkout fills this in
+          automatically.
+        </p>
+        <LocationForm
+          locationLabel={locationLabel}
+          defaultLocation={defaultLocation}
+        />
+      </section>
+
       <section className="mt-12">
         <h2 className="display text-xl">Recent orders</h2>
         {orders.length === 0 ? (
@@ -99,11 +117,7 @@ export function AccountHome({
                 <div>
                   <p className="font-semibold">{o.ref}</p>
                   <p className="text-xs text-white/40">
-                    {o.createdAt.toLocaleDateString("en-ZM", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric"
-                    })}
+                    {formatDateTime(o.createdAt)}
                   </p>
                 </div>
                 <div className="text-right">

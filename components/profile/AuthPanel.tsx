@@ -167,7 +167,7 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
         <p className="mt-2 max-w-xs text-sm text-white/45">
           {mode === "signin"
             ? "Sign in with your phone or email — we’ll take you to the right place."
-            : "One account for the shop. Phone is required; email is optional."}
+            : "One account for the shop. All fields are required."}
         </p>
       </div>
 
@@ -232,22 +232,33 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
               key="signup"
               onChange={() => undefined}
             >
-              <label className="block">
-                <span className="field-label">Full name</span>
-                <input
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  className="field"
-                  placeholder="Your name"
-                />
-              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className="field-label">First name</span>
+                  <input
+                    name="firstName"
+                    type="text"
+                    autoComplete="given-name"
+                    required
+                    className="field"
+                    placeholder="Gift"
+                  />
+                </label>
+                <label className="block">
+                  <span className="field-label">Last name</span>
+                  <input
+                    name="lastName"
+                    type="text"
+                    autoComplete="family-name"
+                    required
+                    className="field"
+                    placeholder="Mbumwae"
+                  />
+                </label>
+              </div>
 
               <label className="block">
-                <span className="field-label">
-                  Phone <span className="text-brand">*</span>
-                </span>
+                <span className="field-label">Phone</span>
                 <input
                   name="phone"
                   type="tel"
@@ -262,11 +273,12 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
               </label>
 
               <label className="block">
-                <span className="field-label">Email (optional)</span>
+                <span className="field-label">Email</span>
                 <input
                   name="email"
                   type="email"
                   autoComplete="email"
+                  required
                   className="field"
                   placeholder="you@email.com"
                 />

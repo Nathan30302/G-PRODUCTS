@@ -259,8 +259,24 @@ async function main() {
   console.log("[start] prisma generate");
   await run("npx", ["prisma", "generate"]);
 
+  try {
+    const { prepareCustomerSchemaForPush } = await import(
+      "../lib/migrate-customers"
+    );
+    prepareCustomerSchemaForPush();
+  } catch (err) {
+    console.warn("[start] customer pre-migration:", err);
+  }
+
   console.log("[start] prisma db push");
   await run("npx", ["prisma", "db", "push", "--skip-generate"]);
+
+  try {
+    const { linkOrdersToCustomers } = await import("../lib/migrate-customers");
+    await linkOrdersToCustomers();
+  } catch (err) {
+    console.warn("[start] link orders to customers:", err);
+  }
 
   try {
     await ensureOwnerAccount();
