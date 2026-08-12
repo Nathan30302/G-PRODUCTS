@@ -3,7 +3,7 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 
-const MAX_BYTES = 8 * 1024 * 1024; // 8MB
+const MAX_BYTES = 15 * 1024 * 1024; // 15MB
 const ALLOWED = new Set([
   "image/jpeg",
   "image/jpg",
@@ -47,7 +47,7 @@ export async function saveImageUpload(
     throw new Error("No file received.");
   }
   if (file.size > MAX_BYTES) {
-    throw new Error("Photo is too large (max 8MB).");
+    throw new Error("Photo is too large (max 15MB).");
   }
   const type = (file.type || "").toLowerCase();
   if (!ALLOWED.has(type)) {

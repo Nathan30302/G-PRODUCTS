@@ -40,7 +40,7 @@ export function LocationForm({
           name="locationLabel"
           defaultValue={locationLabel}
           className="field mt-2"
-          placeholder="e.g. UNZA room, Home"
+          placeholder="e.g. Campus room, Home"
         />
         <span className="mt-1.5 block text-[11px] text-white/30">
           Helps you pick the right spot at checkout.
@@ -55,7 +55,7 @@ export function LocationForm({
           required
           rows={3}
           className="field mt-2 min-h-[5rem] resize-y"
-          placeholder="e.g. Kalingalinga Block A Room 12, UNZA"
+          placeholder="e.g. Kalingalinga Block A Room 12"
         />
       </label>
 

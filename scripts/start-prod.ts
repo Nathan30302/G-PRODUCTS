@@ -4,7 +4,7 @@
  * then boots Next with clean SIGTERM forwarding for redeploys.
  */
 import { spawn, type ChildProcess } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, cpSync, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 function run(cmd: string, args: string[]) {
@@ -23,31 +23,73 @@ function run(cmd: string, args: string[]) {
 
 /**
  * Prisma resolves relative SQLite paths against the schema directory (prisma/),
- * which is easy to get wrong across Docker/Nixpacks. Always use an absolute file: URL.
+ * which is easy to get wrong across Docker/Nixpacks. On Railway, always store
+ * the database on the /data volume so redeploys keep products, customers, and orders.
  */
 function resolveDatabaseUrl() {
-  let url = process.env.DATABASE_URL?.trim();
+  const hasDataVolume = existsSync("/data");
+  const persistentDb = hasDataVolume
+    ? path.join("/data", "gproducts.db")
+    : path.join(process.cwd(), "prisma", "gproducts.db");
 
-  if (!url) {
-    const dataDir = existsSync("/data")
-      ? "/data"
-      : path.join(process.cwd(), "prisma");
-    mkdirSync(dataDir, { recursive: true });
-    url = `file:${path.join(dataDir, "gproducts.db")}`;
-    console.log(`[start] DATABASE_URL not set — using ${url}`);
-  } else if (url.startsWith("file:")) {
+  let url = process.env.DATABASE_URL?.trim();
+  let configuredAbs: string | null = null;
+
+  if (url?.startsWith("file:")) {
     let filePath = url.slice("file:".length).split("?")[0];
-    // file:///abs → /abs
     if (filePath.startsWith("///")) filePath = filePath.slice(2);
-    const abs = path.isAbsolute(filePath)
+    configuredAbs = path.isAbsolute(filePath)
       ? filePath
       : path.resolve(path.join(process.cwd(), "prisma"), filePath);
-    mkdirSync(path.dirname(abs), { recursive: true });
-    url = `file:${abs}`;
-    console.log(`[start] DATABASE_URL → ${url}`);
+  }
+
+  mkdirSync(path.dirname(persistentDb), { recursive: true });
+
+  if (hasDataVolume) {
+    if (
+      !existsSync(persistentDb) &&
+      configuredAbs &&
+      existsSync(configuredAbs) &&
+      configuredAbs !== persistentDb
+    ) {
+      copyFileSync(configuredAbs, persistentDb);
+      console.log(`[start] copied existing DB → ${persistentDb}`);
+    }
+    url = `file:${persistentDb}`;
+    if (configuredAbs && configuredAbs !== persistentDb) {
+      console.log(
+        `[start] using persistent DB on volume (was ${configuredAbs})`
+      );
+    }
+  } else if (!url) {
+    url = `file:${persistentDb}`;
+    console.log(`[start] DATABASE_URL not set — using ${url}`);
+  } else if (configuredAbs) {
+    mkdirSync(path.dirname(configuredAbs), { recursive: true });
+    url = `file:${configuredAbs}`;
   }
 
   process.env.DATABASE_URL = url;
+  console.log(`[start] DATABASE_URL → ${url}`);
+}
+
+/** Move legacy runtime uploads onto /data so product photos survive redeploys. */
+function migrateUploadsToVolume() {
+  if (!existsSync("/data")) return;
+
+  const target = path.join("/data", "uploads");
+  const legacy = path.join(process.cwd(), ".uploads");
+
+  mkdirSync(target, { recursive: true });
+
+  if (existsSync(legacy)) {
+    try {
+      cpSync(legacy, target, { recursive: true, force: false });
+      console.log("[start] merged legacy uploads into /data/uploads");
+    } catch {
+      // target may already contain files — that's fine
+    }
+  }
 }
 
 function resolveNextBin() {
@@ -286,6 +328,7 @@ async function main() {
 
   // Photo uploads — always via /api/media (survives next start + Railway /data)
   try {
+    migrateUploadsToVolume();
     const { ensureUploadsDir } = await import("../lib/uploads");
     ensureUploadsDir("products");
     ensureUploadsDir("services");

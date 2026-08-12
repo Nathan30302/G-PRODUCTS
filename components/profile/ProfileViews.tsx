@@ -91,7 +91,7 @@ export function AccountHome({
       <section className="mt-12 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6">
         <h2 className="display text-xl">Delivery location</h2>
         <p className="mt-2 text-sm text-white/45">
-          Save your UNZA room or home address — checkout fills this in
+          Save your delivery room or home address — checkout fills this in
           automatically.
         </p>
         <LocationForm
