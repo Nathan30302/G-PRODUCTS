@@ -76,11 +76,23 @@ export function AddStaffForm() {
           <input name="phone" type="tel" className="field" placeholder="0972…" />
         </label>
         <label className="block sm:col-span-2">
-          <span className="field-label">Role</span>
-          <input type="hidden" name="role" value="STAFF" />
-          <p className="mt-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm text-white/50">
-            Staff — they sign in on Profile with this email + password and open
-            the Provider desk. There is only one provider (owner).
+          <span className="field-label">Role on the desk</span>
+          <input
+            name="staffTitle"
+            className="field"
+            placeholder="e.g. Orders & uploads, Shop floor, Services desk"
+            required
+            list="staff-role-suggestions"
+          />
+          <datalist id="staff-role-suggestions">
+            <option value="Orders & sales" />
+            <option value="Products & uploads" />
+            <option value="Services desk" />
+            <option value="Stock & inventory" />
+          </datalist>
+          <p className="mt-2 text-xs text-white/40">
+            Write what this person does — products, orders, services, etc. They
+            sign in on Profile with the email and password above.
           </p>
         </label>
       </div>

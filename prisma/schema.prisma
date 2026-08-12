@@ -40,6 +40,8 @@ model User {
   phone        String?
   passwordHash String
   role         Role     @default(STAFF)
+  /// Owner-written job title, e.g. "Orders & uploads", "Shop floor"
+  staffTitle   String?
   createdAt    DateTime @default(now())
 }
 

@@ -53,7 +53,7 @@ export function AdminShell({
   user,
   children
 }: {
-  user: { name: string; role: "OWNER" | "STAFF" };
+  user: { name: string; role: "OWNER" | "STAFF"; staffTitle?: string | null };
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -142,7 +142,9 @@ export function AdminShell({
                   {user.name}
                 </span>
                 <span className="block text-[10px] uppercase tracking-wider text-white/35">
-                  {user.role === "OWNER" ? "Owner" : "Staff"}
+                  {user.role === "OWNER"
+                    ? "Owner"
+                    : user.staffTitle?.trim() || "Staff"}
                 </span>
               </span>
             </div>

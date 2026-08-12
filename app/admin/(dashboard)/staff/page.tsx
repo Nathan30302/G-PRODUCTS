@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { requireOwner } from "@/lib/auth";
 import { AddStaffForm } from "@/components/admin/AddStaffForm";
+import { StaffRoleCell } from "@/components/admin/StaffRoleCell";
 import { deleteStaff } from "@/app/admin/(dashboard)/staff/actions";
 
 export const dynamic = "force-dynamic";
@@ -49,15 +50,11 @@ export default async function StaffPage() {
                   </td>
                   <td className="px-5 py-3.5 text-white/60">{u.email}</td>
                   <td className="px-5 py-3.5">
-                    <span
-                      className={`rounded-pill border px-2.5 py-1 text-xs font-semibold ${
-                        u.role === "OWNER"
-                          ? "border-brand/30 bg-brand/10 text-brand"
-                          : "border-white/15 text-white/65"
-                      }`}
-                    >
-                      {u.role === "OWNER" ? "Owner" : "Staff"}
-                    </span>
+                    <StaffRoleCell
+                      userId={u.id}
+                      role={u.role}
+                      staffTitle={u.staffTitle}
+                    />
                   </td>
                   <td className="px-5 py-3.5 text-right">
                     {u.id === owner.id ? (
@@ -87,8 +84,8 @@ export default async function StaffPage() {
         </p>
         <h2 className="mt-1 text-xl font-black text-white">Add a user</h2>
         <p className="mt-2 text-sm text-white/50">
-          Staff can manage products and orders. Owners can also manage staff and
-          delete products.
+          Write each person&apos;s role when you add them. Staff can manage
+          products and orders; owners can also manage staff and delete products.
         </p>
         <div className="mt-5">
           <AddStaffForm />

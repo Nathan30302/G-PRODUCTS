@@ -8,6 +8,12 @@ import { normalizePhone } from "@/lib/phone";
 
 export type StaffState = { error?: string; success?: string };
 
+const STAFF_TITLE_MAX = 80;
+
+function cleanStaffTitle(raw: string): string {
+  return raw.trim().slice(0, STAFF_TITLE_MAX);
+}
+
 export async function addStaff(
   _prev: StaffState | undefined,
   formData: FormData
@@ -20,27 +26,17 @@ export async function addStaff(
   const name = String(formData.get("name") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const phone = normalizePhone(String(formData.get("phone") ?? ""));
-  const role = formData.get("role") === "OWNER" ? "OWNER" : "STAFF";
+  const staffTitle = cleanStaffTitle(String(formData.get("staffTitle") ?? ""));
 
   if (!email || !name || !password) {
     return { error: "Name, email and password are required." };
   }
+  if (!staffTitle) {
+    return { error: "Write a role for this staff member (e.g. Orders & uploads)." };
+  }
 
   const pwErr = passwordError(password);
   if (pwErr) return { error: pwErr };
-
-  // Only one provider (OWNER). Extra people are always STAFF unless demoting.
-  let nextRole: "OWNER" | "STAFF" = role;
-  if (role === "OWNER") {
-    const owners = await prisma.user.count({ where: { role: "OWNER" } });
-    if (owners > 0) {
-      return {
-        error:
-          "There can only be one provider. Add this person as Staff instead."
-      };
-    }
-    nextRole = "OWNER";
-  }
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -53,14 +49,41 @@ export async function addStaff(
       name,
       phone,
       passwordHash: await hashPassword(password),
-      role: nextRole
+      role: "STAFF",
+      staffTitle
     }
   });
 
   revalidatePath("/admin/staff");
   return {
-    success: `${name} was added. Send them ${email} and the password you set.`
+    success: `${name} was added as “${staffTitle}”. Send them ${email} and the password you set.`
   };
+}
+
+export async function updateStaffTitle(
+  _prev: StaffState | undefined,
+  formData: FormData
+): Promise<StaffState> {
+  await requireOwner();
+
+  const id = String(formData.get("id") ?? "").trim();
+  const staffTitle = cleanStaffTitle(String(formData.get("staffTitle") ?? ""));
+
+  if (!id) return { error: "Missing staff member." };
+  if (!staffTitle) return { error: "Role cannot be empty." };
+
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user || user.role === "OWNER") {
+    return { error: "You can only edit roles for staff members." };
+  }
+
+  await prisma.user.update({
+    where: { id },
+    data: { staffTitle }
+  });
+
+  revalidatePath("/admin/staff");
+  return { success: "Role updated." };
 }
 
 export async function deleteStaff(formData: FormData): Promise<void> {

@@ -2,19 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { formatPrice } from "@/lib/format";
-import { updateOrderStatus } from "@/app/admin/(dashboard)/orders/actions";
+import { OrderStatusForm } from "@/components/admin/OrderStatusForm";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Order" };
-
-const STATUSES = [
-  "PENDING",
-  "PAID",
-  "PREPARING",
-  "READY",
-  "DELIVERED",
-  "CANCELLED"
-];
 
 function waLink(phone: string, ref: string) {
   let p = phone.replace(/[^0-9]/g, "");
@@ -120,26 +111,7 @@ export default async function OrderDetail({
 
           <section className="rounded-card border border-ink-800 bg-ink-850 p-6">
             <h2 className="text-lg font-bold text-white">Update status</h2>
-            <form action={updateOrderStatus} className="mt-4 space-y-3">
-              <input type="hidden" name="id" value={order.id} />
-              <select
-                name="status"
-                defaultValue={order.status}
-                className="w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand"
-              >
-                {STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="w-full rounded-pill bg-brand px-4 py-2.5 text-sm font-bold text-ink-950 hover:bg-brand-soft"
-              >
-                Save status
-              </button>
-            </form>
+            <OrderStatusForm orderId={order.id} currentStatus={order.status} />
           </section>
         </div>
       </div>
