@@ -304,10 +304,10 @@ async function main() {
   await run("npx", ["prisma", "generate"]);
 
   try {
-    const { prepareCustomerSchemaForPush } = await import(
+    const { prepareCustomerSchema } = await import(
       "../lib/migrate-customers"
     );
-    prepareCustomerSchemaForPush();
+    await prepareCustomerSchema();
   } catch (err) {
     console.warn("[start] customer pre-migration:", err);
   }
