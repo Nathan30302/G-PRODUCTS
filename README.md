@@ -90,6 +90,7 @@ TypeScript** at build time. Those packages are now in `dependencies`, and
    - `AUTH_SECRET` — long random string
    - `NEXT_PUBLIC_BASE_URL` — your Railway public URL (e.g. `https://….up.railway.app`)
    - `OWNER_EMAIL` / `OWNER_NAME` / `OWNER_PASSWORD` — first admin account (seed)
+   - `OWNER_SYNC_PASSWORD` — set to `1` only if you want redeploys to force-reset the owner password from `OWNER_PASSWORD`. Leave unset so password changes in Account stick.
 3. **Optional but recommended:** add a **Volume** mounted at `/data`, then set:
    - `DATABASE_URL=file:/data/gproducts.db`  
    Without a volume, SQLite lives on the container disk and is wiped on redeploy.

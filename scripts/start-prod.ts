@@ -142,8 +142,8 @@ function startNext(port: string): Promise<never> {
 
 /**
  * Exactly one provider (OWNER). Created as gift@gproducts.zm / changeme123
- * (overridable via OWNER_*). Password is synced from OWNER_PASSWORD on boot
- * unless OWNER_SYNC_PASSWORD=0 (so in-app password changes can stick).
+ * (overridable via OWNER_*). Password is only reset from OWNER_PASSWORD when
+ * OWNER_SYNC_PASSWORD=1 — otherwise in-app password changes stick across deploys.
  */
 async function ensureOwnerAccount() {
   const { PrismaClient } = await import("@prisma/client");
@@ -155,10 +155,7 @@ async function ensureOwnerAccount() {
     .toLowerCase();
   const name = (process.env.OWNER_NAME ?? "Gift Mbumwae").trim();
   const password = process.env.OWNER_PASSWORD ?? "changeme123";
-  // Default: keep Railway password in sync so Gift can always sign in.
-  // Set OWNER_SYNC_PASSWORD=0 after changing password in the desk if you
-  // don't want redeploys to reset it.
-  const syncPassword = process.env.OWNER_SYNC_PASSWORD !== "0";
+  const syncPassword = process.env.OWNER_SYNC_PASSWORD === "1";
 
   try {
     const passwordHash = await bcrypt.hash(password, 10);
@@ -185,7 +182,7 @@ async function ensureOwnerAccount() {
       });
       console.log(
         `[start] provider login ready: ${email}${
-          syncPassword ? " (password from OWNER_PASSWORD)" : ""
+          syncPassword ? " (password synced from OWNER_PASSWORD)" : ""
         }`
       );
     }
@@ -318,6 +315,18 @@ async function main() {
     await linkOrdersToCustomers();
   } catch (err) {
     console.warn("[start] link orders to customers:", err);
+  }
+
+  try {
+    const { canonicalizeCustomerPhones } = await import(
+      "../lib/customer-lookup"
+    );
+    const fixed = await canonicalizeCustomerPhones();
+    if (fixed > 0) {
+      console.log(`[start] canonicalized ${fixed} customer phone(s)`);
+    }
+  } catch (err) {
+    console.warn("[start] customer phone canonicalization:", err);
   }
 
   try {

@@ -38,9 +38,17 @@ export async function changeDeskPassword(
     data: { passwordHash: await hashPassword(next) }
   });
 
+  const verify = await prisma.user.findUnique({ where: { id: user.id } });
+  if (
+    !verify ||
+    !(await verifyPassword(next, verify.passwordHash))
+  ) {
+    return { error: "Password could not be saved. Please try again." };
+  }
+
   revalidatePath("/admin/account");
   return {
     success:
-      "Password updated. Tip: set OWNER_SYNC_PASSWORD=0 in Railway (or update OWNER_PASSWORD) so the next deploy doesn’t reset it."
+      "Password updated. Sign in with your new password on Profile or the provider desk."
   };
 }

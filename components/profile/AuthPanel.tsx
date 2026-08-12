@@ -206,10 +206,14 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                   name="identifier"
                   type="text"
                   autoComplete="username"
+                  inputMode="email"
                   required
                   className="field"
                   placeholder="0972… or you@email.com"
                 />
+                <span className="mt-1.5 block text-[11px] text-white/30">
+                  Use the same phone or email you signed up with.
+                </span>
               </label>
               <PasswordInput
                 name="password"
@@ -263,6 +267,7 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                   name="phone"
                   type="tel"
                   autoComplete="tel"
+                  inputMode="tel"
                   required
                   className="field"
                   placeholder="0972 500 209"
