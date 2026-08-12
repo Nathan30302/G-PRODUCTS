@@ -154,6 +154,8 @@ async function ensureOwnerAccount() {
     .trim()
     .toLowerCase();
   const name = (process.env.OWNER_NAME ?? "Gift Mbumwae").trim();
+  const ownerPhone =
+    normalizePhone(process.env.OWNER_PHONE ?? "0972500209") ?? null;
   const password = process.env.OWNER_PASSWORD ?? "changeme123";
   const syncPassword = process.env.OWNER_SYNC_PASSWORD === "1";
 

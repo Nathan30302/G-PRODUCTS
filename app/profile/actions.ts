@@ -16,6 +16,7 @@ import {
 import { passwordError } from "@/lib/password";
 import { normalizePhone, phoneVariants } from "@/lib/phone";
 import { findCustomerByIdentifier } from "@/lib/customer-lookup";
+import { findDeskUserByIdentifier } from "@/lib/user-lookup";
 import { isProviderSignupEmail } from "@/lib/provider-emails";
 import { siteConfig } from "@/config/site";
 
@@ -33,45 +34,58 @@ export async function unifiedLoginAction(
       return { error: "Enter your phone or email, and your password." };
     }
 
-    // Desk users (provider + staff) — email only
-    if (identifier.includes("@")) {
-      const email = identifier.toLowerCase();
-      const user = await prisma.user.findUnique({ where: { email } });
-      if (user && (await verifyPassword(password, user.passwordHash))) {
+    // Provider desk + staff — email or phone
+    const deskUser = await findDeskUserByIdentifier(identifier);
+    if (deskUser) {
+      if (await verifyPassword(password, deskUser.passwordHash)) {
         await destroyCustomerSession().catch(() => undefined);
         await createSession({
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role
+          id: deskUser.id,
+          email: deskUser.email,
+          name: deskUser.name,
+          role: deskUser.role
         });
         redirect(siteConfig.apps.provider.home);
       }
-      if (user) {
-        return { error: "Wrong password. Try again." };
-      }
-      // Not a desk account — fall through to shop customer email lookup below
+      return {
+        error: deskUser.role === "OWNER"
+          ? `Wrong password for the provider account (${deskUser.email}). Try again or reset it under Account in the provider desk.`
+          : "Wrong password for your staff account. Check with the owner if you need a reset."
+      };
     }
 
-    // Shop customers — phone or email (same as signup)
+    // Shop customers — phone or email
     const customer = await findCustomerByIdentifier(identifier);
-    if (customer && (await verifyPassword(password, customer.passwordHash))) {
-      await destroySession().catch(() => undefined);
-      await createCustomerSession({
-        id: customer.id,
-        email: customer.email,
-        name: customer.name,
-        phone: customer.phone
-      });
-      redirect(siteConfig.apps.customer.home);
-    }
     if (customer) {
-      return { error: "Wrong password. Try again." };
+      if (await verifyPassword(password, customer.passwordHash)) {
+        await destroySession().catch(() => undefined);
+        await createCustomerSession({
+          id: customer.id,
+          email: customer.email,
+          name: customer.name,
+          phone: customer.phone
+        });
+        redirect(siteConfig.apps.customer.home);
+      }
+      return {
+        error:
+          "Wrong password. Try again, or use Create account if you have not signed up on this site yet."
+      };
+    }
+
+    const ownerEmail =
+      process.env.OWNER_EMAIL?.trim().toLowerCase() ?? "gift@gproducts.zm";
+
+    if (identifier.includes("@") && identifier.toLowerCase() === ownerEmail) {
+      return {
+        error:
+          "Provider account not found in the database. After a fresh deploy, sign in with the default password (changeme123) once, then change it under Account."
+      };
     }
 
     return {
       error:
-        "No account matched that phone/email. Check the details, or Create account."
+        "No account matched that phone or email. Use Create account if you have not signed up yet, or double-check spelling (providers use gift@gproducts.zm)."
     };
   } catch (err) {
     if (isRedirectError(err)) throw err;

@@ -206,13 +206,17 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                   name="identifier"
                   type="text"
                   autoComplete="username"
-                  inputMode="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                   required
                   className="field"
                   placeholder="0972… or you@email.com"
                 />
                 <span className="mt-1.5 block text-[11px] text-white/30">
-                  Use the same phone or email you signed up with.
+                  Shop customers: phone or email. Provider (Gift): use{" "}
+                  <span className="text-white/50">gift@gproducts.zm</span> or
+                  your shop phone.
                 </span>
               </label>
               <PasswordInput
