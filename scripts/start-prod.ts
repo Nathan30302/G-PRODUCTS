@@ -148,6 +148,7 @@ function startNext(port: string): Promise<never> {
 async function ensureOwnerAccount() {
   const { PrismaClient } = await import("@prisma/client");
   const bcrypt = await import("bcryptjs");
+  const { normalizePhone } = await import("../lib/phone");
   const prisma = new PrismaClient();
 
   const email = (process.env.OWNER_EMAIL ?? "gift@gproducts.zm")
@@ -168,6 +169,7 @@ async function ensureOwnerAccount() {
         data: {
           email,
           name,
+          phone: ownerPhone,
           passwordHash,
           role: "OWNER"
         }
@@ -179,6 +181,7 @@ async function ensureOwnerAccount() {
         data: {
           name,
           role: "OWNER",
+          ...(ownerPhone && !existing.phone ? { phone: ownerPhone } : {}),
           ...(syncPassword ? { passwordHash } : {})
         }
       });
