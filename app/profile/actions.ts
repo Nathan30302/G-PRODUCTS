@@ -49,7 +49,7 @@ export async function unifiedLoginAction(
       }
       return {
         error: deskUser.role === "OWNER"
-          ? `Wrong password for the provider account (${deskUser.email}). Try again or reset it under Account in the provider desk.`
+          ? "Wrong password. Try again."
           : "Wrong password for your staff account. Check with the owner if you need a reset."
       };
     }
@@ -79,13 +79,13 @@ export async function unifiedLoginAction(
     if (identifier.includes("@") && identifier.toLowerCase() === ownerEmail) {
       return {
         error:
-          "Provider account not found in the database. After a fresh deploy, sign in with the default password (changeme123) once, then change it under Account."
+          "No account matched that email. Check your spelling or use Create account."
       };
     }
 
     return {
       error:
-        "No account matched that phone or email. Use Create account if you have not signed up yet, or double-check spelling (providers use gift@gproducts.zm)."
+        "No account matched that phone or email. Use Create account if you have not signed up yet."
     };
   } catch (err) {
     if (isRedirectError(err)) throw err;
@@ -168,7 +168,7 @@ export async function unifiedSignupAction(
       if (ownerCount > 0) {
         return {
           error:
-            "The provider account already exists. Use Sign in with gift@gproducts.zm (or your OWNER_EMAIL)."
+            "An account with this email already exists. Please sign in instead."
         };
       }
 
