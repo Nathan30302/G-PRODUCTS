@@ -60,7 +60,7 @@ export async function POST(req: Request) {
           {
             error:
               deskUser.role === "OWNER"
-                ? `Wrong password for ${deskUser.email}. If you never changed it, try changeme123.`
+                ? "Wrong password. Try again."
                 : "Wrong password for your staff account."
           },
           { status: 401 }
@@ -128,7 +128,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         error:
-          "No account matched that phone or email. Use Create account, or for the provider try gift@gproducts.zm."
+          "No account matched that phone or email. Use Create account if you have not signed up yet."
       },
       { status: 404 }
     );

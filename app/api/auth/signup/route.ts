@@ -114,7 +114,7 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             error:
-              "The provider account already exists. Sign in with gift@gproducts.zm."
+              "An account with this email already exists. Please sign in instead."
           },
           { status: 409 }
         );
