@@ -1,13 +1,14 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
-
-const COOKIE = "gp_session";
-const ALG = "HS256";
-const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
-const FALLBACK_SECRET = "change-me-in-railway-variables";
+import {
+  DESK_COOKIE,
+  DESK_MAX_AGE,
+  sessionCookieOptions,
+  signDeskToken,
+  verifyDeskToken
+} from "@/lib/session-cookies";
 
 export type SessionUser = {
   id: string;
@@ -15,14 +16,6 @@ export type SessionUser = {
   name: string;
   role: "OWNER" | "STAFF";
 };
-
-function secret(): Uint8Array {
-  // Never throw during login — a short/missing secret used to crash Profile
-  // into the generic "Something went wrong" page.
-  const raw = process.env.AUTH_SECRET?.trim();
-  const s = raw && raw.length >= 16 ? raw : FALLBACK_SECRET;
-  return new TextEncoder().encode(s);
-}
 
 export function hashPassword(plain: string): Promise<string> {
   return bcrypt.hash(plain, 10);
@@ -33,44 +26,22 @@ export function verifyPassword(plain: string, hash: string): Promise<boolean> {
 }
 
 export async function createSession(user: SessionUser): Promise<void> {
-  const token = await new SignJWT({
-    email: user.email,
-    name: user.name,
-    role: user.role
-  })
-    .setProtectedHeader({ alg: ALG })
-    .setSubject(user.id)
-    .setIssuedAt()
-    .setExpirationTime(`${MAX_AGE}s`)
-    .sign(secret());
-
+  const token = await signDeskToken(user);
   const store = await cookies();
-  store.set(COOKIE, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: MAX_AGE
-  });
+  store.set(DESK_COOKIE, token, sessionCookieOptions(DESK_MAX_AGE));
 }
 
 export async function destroySession(): Promise<void> {
   const store = await cookies();
-  store.delete(COOKIE);
+  store.set(DESK_COOKIE, "", { ...sessionCookieOptions(0), maxAge: 0 });
 }
 
 export async function getSession(): Promise<SessionUser | null> {
   const store = await cookies();
-  const token = store.get(COOKIE)?.value;
+  const token = store.get(DESK_COOKIE)?.value;
   if (!token) return null;
   try {
-    const { payload } = await jwtVerify(token, secret());
-    return {
-      id: String(payload.sub),
-      email: String(payload.email),
-      name: String(payload.name),
-      role: payload.role === "OWNER" ? "OWNER" : "STAFF"
-    };
+    return await verifyDeskToken(token);
   } catch {
     return null;
   }

@@ -8,8 +8,16 @@ export async function findCustomerByIdentifier(identifier: string) {
 
   if (trimmed.includes("@")) {
     const email = trimmed.toLowerCase();
-    const byEmail = await prisma.customer.findUnique({ where: { email } });
-    if (byEmail) return byEmail;
+    const exact = await prisma.customer.findUnique({ where: { email } });
+    if (exact) return exact;
+
+    const fuzzy = await prisma.customer.findMany({
+      where: { email: { contains: email } }
+    });
+    const match = fuzzy.find(
+      (c) => c.email.trim().toLowerCase() === email
+    );
+    if (match) return match;
   }
 
   const phone = normalizePhone(trimmed);
@@ -21,25 +29,10 @@ export async function findCustomerByIdentifier(identifier: string) {
     if (byPhone) return byPhone;
   }
 
-  // Last-resort: match the last 9 digits (local ZM mobile without country code)
   const digits = trimmed.replace(/\D/g, "");
   if (digits.length >= 9) {
     const tail = digits.slice(-9);
-    const candidates = await prisma.customer.findMany({
-      select: {
-        id: true,
-        email: true,
-        phone: true,
-        name: true,
-        firstName: true,
-        lastName: true,
-        passwordHash: true,
-        defaultLocation: true,
-        locationLabel: true,
-        createdAt: true,
-        updatedAt: true
-      }
-    });
+    const candidates = await prisma.customer.findMany();
     const match = candidates.find((c) =>
       c.phone.replace(/\D/g, "").endsWith(tail)
     );
