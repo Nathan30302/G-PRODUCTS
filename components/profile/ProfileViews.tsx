@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Icon } from "@/components/Icons";
-import { unifiedLogoutAction } from "@/app/profile/actions";
 import type { CustomerSession } from "@/lib/customer-auth";
 import { formatPrice, formatDateTime } from "@/lib/format";
 import { LocationForm } from "@/components/profile/LocationForm";
+import { LogoutButton } from "@/components/LogoutButton";
 
 type OrderRow = {
   id: string;
@@ -51,14 +51,7 @@ export function AccountHome({
             {customer.email ? ` · ${customer.email}` : null}
           </p>
         </div>
-        <form action={unifiedLogoutAction}>
-          <button
-            type="submit"
-            className="rounded-pill border border-white/15 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white/55 transition-colors hover:border-white/30 hover:text-white"
-          >
-            Sign out
-          </button>
-        </form>
+        <LogoutButton className="rounded-pill border border-white/15 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white/55 transition-colors hover:border-white/30 hover:text-white" />
       </div>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-3">

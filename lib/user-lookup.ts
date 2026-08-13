@@ -1,14 +1,29 @@
 import { prisma } from "@/lib/db";
 import { normalizePhone, phoneVariants } from "@/lib/phone";
 
-/** Provider desk login — email or phone (Gift may use either on mobile). */
+/** Case-insensitive email match for SQLite. */
+export async function findUserByEmail(email: string) {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return null;
+
+  const exact = await prisma.user.findUnique({ where: { email: normalized } });
+  if (exact) return exact;
+
+  const all = await prisma.user.findMany({
+    where: { email: { contains: normalized } }
+  });
+  return (
+    all.find((u) => u.email.trim().toLowerCase() === normalized) ?? null
+  );
+}
+
+/** Provider desk login — email or phone. */
 export async function findDeskUserByIdentifier(identifier: string) {
   const trimmed = identifier.trim();
   if (!trimmed) return null;
 
   if (trimmed.includes("@")) {
-    const email = trimmed.toLowerCase();
-    const byEmail = await prisma.user.findUnique({ where: { email } });
+    const byEmail = await findUserByEmail(trimmed);
     if (byEmail) return byEmail;
   }
 
@@ -25,17 +40,7 @@ export async function findDeskUserByIdentifier(identifier: string) {
   if (digits.length >= 9) {
     const tail = digits.slice(-9);
     const users = await prisma.user.findMany({
-      where: { phone: { not: null } },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        phone: true,
-        passwordHash: true,
-        role: true,
-        staffTitle: true,
-        createdAt: true
-      }
+      where: { phone: { not: null } }
     });
     const match = users.find(
       (u) => u.phone && u.phone.replace(/\D/g, "").endsWith(tail)

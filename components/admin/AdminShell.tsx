@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { logoutAction } from "@/app/admin/actions";
 import { Logo } from "@/components/Logo";
+import { LogoutButton } from "@/components/LogoutButton";
 
 type NavItem = {
   href: string;
@@ -159,14 +159,7 @@ export function AdminShell({
             >
               Live shop
             </Link>
-            <form action={logoutAction} className="hidden sm:block">
-              <button
-                type="submit"
-                className="rounded-pill px-3 py-2 text-xs font-semibold text-white/40 transition-colors hover:text-red-400"
-              >
-                Sign out
-              </button>
-            </form>
+            <LogoutButton className="hidden rounded-pill px-3 py-2 text-xs font-semibold text-white/40 transition-colors hover:text-red-400 sm:block" />
           </div>
         </div>
       </header>
@@ -266,14 +259,10 @@ export function AdminShell({
               >
                 Live shop
               </Link>
-              <form action={logoutAction} className="flex-1">
-                <button
-                  type="submit"
-                  className="w-full rounded-pill py-3 text-sm font-semibold text-red-400"
-                >
-                  Sign out
-                </button>
-              </form>
+              <LogoutButton
+                className="flex-1 rounded-pill py-3 text-sm font-semibold text-red-400"
+                label="Sign out"
+              />
             </div>
           </div>
         </div>

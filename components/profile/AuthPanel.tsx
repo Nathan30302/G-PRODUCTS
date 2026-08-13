@@ -1,32 +1,13 @@
 "use client";
 
-import { useActionState, useMemo, useState, type ChangeEvent } from "react";
-import { useFormStatus } from "react-dom";
+import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  unifiedLoginAction,
-  unifiedSignupAction,
-  type AuthFormState
-} from "@/app/profile/actions";
 import { passwordChecks } from "@/lib/password";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
 
 type Mode = "signin" | "signup";
-
-function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: string }) {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="btn-brand mt-1 w-full py-3.5 text-sm disabled:opacity-60"
-    >
-      {pending ? pendingLabel : label}
-    </button>
-  );
-}
 
 function PasswordInput({
   name,
@@ -44,10 +25,7 @@ function PasswordInput({
   showMeter?: boolean;
 }) {
   const [show, setShow] = useState(false);
-  const checks = useMemo(
-    () => passwordChecks(value ?? ""),
-    [value]
-  );
+  const checks = useMemo(() => passwordChecks(value ?? ""), [value]);
   const score = checks.filter((c) => c.ok).length;
 
   return (
@@ -125,25 +103,85 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(initialMode);
   const [password, setPassword] = useState("");
-
-  const [loginState, loginAction] = useActionState<
-    AuthFormState | undefined,
-    FormData
-  >(unifiedLoginAction, undefined);
-
-  const [signupState, signupAction] = useActionState<
-    AuthFormState | undefined,
-    FormData
-  >(unifiedSignupAction, undefined);
-
-  const state = mode === "signin" ? loginState : signupState;
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
   function switchMode(next: Mode) {
     setMode(next);
     setPassword("");
+    setError(null);
     router.replace(next === "signup" ? "/profile?mode=signup" : "/profile", {
       scroll: false
     });
+  }
+
+  async function onLogin(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setPending(true);
+    const form = new FormData(e.currentTarget);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          identifier: String(form.get("identifier") ?? "").trim(),
+          password: String(form.get("password") ?? "")
+        })
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        redirectTo?: string;
+      };
+      if (!res.ok) {
+        setError(data.error ?? "Sign in failed.");
+        setPending(false);
+        return;
+      }
+      router.push(data.redirectTo ?? "/");
+      router.refresh();
+    } catch {
+      setError("Network error. Check your connection and try again.");
+      setPending(false);
+    }
+  }
+
+  async function onSignup(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setPending(true);
+    const form = new FormData(e.currentTarget);
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          firstName: String(form.get("firstName") ?? "").trim(),
+          lastName: String(form.get("lastName") ?? "").trim(),
+          phone: String(form.get("phone") ?? "").trim(),
+          email: String(form.get("email") ?? "").trim(),
+          password: String(form.get("password") ?? ""),
+          confirmPassword: String(form.get("confirmPassword") ?? "")
+        })
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        redirectTo?: string;
+      };
+      if (!res.ok) {
+        setError(data.error ?? "Could not create account.");
+        setPending(false);
+        return;
+      }
+      // Account created + session cookie set — go straight in
+      router.push(data.redirectTo ?? "/profile/account");
+      router.refresh();
+    } catch {
+      setError("Network error. Check your connection and try again.");
+      setPending(false);
+    }
   }
 
   return (
@@ -166,8 +204,8 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
         </h1>
         <p className="mt-2 max-w-xs text-sm text-white/45">
           {mode === "signin"
-            ? "Sign in with your phone or email — we’ll take you to the right place."
-            : "One account for the shop. All fields are required."}
+            ? "Sign in with your phone or email — you’ll stay signed in."
+            : "All fields required. You’ll be signed in right after signup."}
         </p>
       </div>
 
@@ -199,7 +237,7 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
 
         <div className="p-5 sm:p-7">
           {mode === "signin" ? (
-            <form action={loginAction} className="space-y-4" key="signin">
+            <form onSubmit={onLogin} className="space-y-4" key="signin">
               <label className="block">
                 <span className="field-label">Phone or email</span>
                 <input
@@ -214,9 +252,8 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                   placeholder="0972… or you@email.com"
                 />
                 <span className="mt-1.5 block text-[11px] text-white/30">
-                  Shop customers: phone or email. Provider (Gift): use{" "}
-                  <span className="text-white/50">gift@gproducts.zm</span> or
-                  your shop phone.
+                  Shop: phone or email. Provider:{" "}
+                  <span className="text-white/50">gift@gproducts.zm</span>
                 </span>
               </label>
               <PasswordInput
@@ -225,21 +262,22 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                 autoComplete="current-password"
               />
 
-              {state?.error ? (
+              {error ? (
                 <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                  {state.error}
+                  {error}
                 </p>
               ) : null}
 
-              <SubmitButton label="Sign in" pendingLabel="Signing in…" />
+              <button
+                type="submit"
+                disabled={pending}
+                className="btn-brand mt-1 w-full py-3.5 text-sm disabled:opacity-60"
+              >
+                {pending ? "Signing in…" : "Sign in"}
+              </button>
             </form>
           ) : (
-            <form
-              action={signupAction}
-              className="space-y-4"
-              key="signup"
-              onChange={() => undefined}
-            >
+            <form onSubmit={onSignup} className="space-y-4" key="signup">
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block">
                   <span className="field-label">First name</span>
@@ -276,9 +314,6 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                   className="field"
                   placeholder="0972 500 209"
                 />
-                <span className="mt-1.5 block text-[11px] text-white/30">
-                  Used for orders, delivery and signing in.
-                </span>
               </label>
 
               <label className="block">
@@ -287,6 +322,7 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                   name="email"
                   type="email"
                   autoComplete="email"
+                  autoCapitalize="none"
                   required
                   className="field"
                   placeholder="you@email.com"
@@ -308,19 +344,23 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                 autoComplete="new-password"
               />
 
-              {state?.error ? (
+              {error ? (
                 <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                  {state.error}
+                  {error}
                 </p>
               ) : null}
 
-              <SubmitButton
-                label="Create account"
-                pendingLabel="Creating…"
-              />
+              <button
+                type="submit"
+                disabled={pending}
+                className="btn-brand mt-1 w-full py-3.5 text-sm disabled:opacity-60"
+              >
+                {pending ? "Creating…" : "Create account"}
+              </button>
 
               <p className="text-center text-[11px] leading-relaxed text-white/30">
-                Desk staff are added by the owner — they only need Sign in.
+                Password needs 8+ characters, upper, lower, a number and a
+                symbol (e.g. Shop2026!).
               </p>
             </form>
           )}
@@ -328,7 +368,10 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
       </div>
 
       <p className="relative mt-7 text-center text-sm text-white/35">
-        <Link href="/" className="inline-flex items-center gap-1.5 hover:text-white/60">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 hover:text-white/60"
+        >
           <Icon name="chevron-left" className="h-3.5 w-3.5" />
           Back to shop
         </Link>
