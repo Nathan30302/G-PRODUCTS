@@ -61,16 +61,18 @@ export function ProductRail({
 
   return (
     <section
-      className={`${embedded ? "w-full" : "container-g"} mt-24 ${className}`}
+      className={`${embedded ? "w-full" : "container-g"} mt-14 sm:mt-16 ${className}`}
     >
-      <div className="mb-7 flex items-end justify-between gap-4">
+      <div className="mb-5 flex items-end justify-between gap-4 sm:mb-6">
         <div>
           <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${eye}`}>
             {accent === "accent" ? "Deals" : "Shop"}
           </p>
-          <h2 className="display mt-2 text-2xl sm:text-3xl">{title}</h2>
+          <h2 className="display mt-1.5 text-xl sm:text-2xl lg:text-3xl">
+            {title}
+          </h2>
           {subtitle ? (
-            <p className="mt-2 max-w-md text-sm text-white/50">{subtitle}</p>
+            <p className="mt-1.5 max-w-md text-sm text-white/50">{subtitle}</p>
           ) : null}
         </div>
         <div className="flex items-center gap-2">
@@ -117,12 +119,12 @@ export function ProductRail({
         />
         <div
           ref={scroller}
-          className="no-scrollbar snap-rail -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0"
+          className="no-scrollbar snap-rail -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:gap-3.5 sm:px-0"
         >
           {products.map((p, i) => (
             <div
               key={p.id}
-              className="snap-item w-[62vw] shrink-0 sm:w-64 lg:w-[19rem]"
+              className="snap-item w-[44vw] max-w-[11.75rem] shrink-0 sm:w-52 sm:max-w-none lg:w-56"
             >
               <ProductCard product={p} priority={i < 2} />
             </div>

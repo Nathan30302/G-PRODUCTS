@@ -98,7 +98,7 @@ export default async function ProductPage({
                 {product.brand}
               </span>
             )}
-            <h1 className="mt-1.5 text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl">
+            <h1 className="mt-1.5 text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
               {product.name}
             </h1>
 
@@ -111,8 +111,8 @@ export default async function ProductPage({
               )}
             </div>
 
-            <div className="mt-6 flex items-baseline gap-3">
-              <span className="text-4xl font-black tracking-tight text-white">
+            <div className="mt-5 flex items-baseline gap-3">
+              <span className="text-3xl font-black tracking-tight text-white sm:text-4xl">
                 {formatPrice(product.price)}
               </span>
               {product.compareAtPrice && (

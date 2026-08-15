@@ -157,15 +157,15 @@ export function HomeMobileSections({
 }) {
   return (
     <div className="lg:hidden">
-      <section className="container-g mt-16 sm:mt-20">
-        <div className="mb-8">
+      <section className="container-g mt-12 sm:mt-16">
+        <div className="mb-6">
           <p className="eyebrow">Browse</p>
           <h2 className="display mt-2 text-2xl sm:text-3xl">Shop by category</h2>
           <p className="mt-2 text-sm text-white/50">
             Stationery, storage, chargers, audio and more.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
           {categories.map((c) => (
             <CategoryTile key={c.slug} category={c} />
           ))}
