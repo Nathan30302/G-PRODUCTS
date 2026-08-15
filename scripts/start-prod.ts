@@ -244,6 +244,50 @@ async function repairBrokenCatalogImages() {
   }
 }
 
+/**
+ * Append any new seed photos to existing products without wiping admin uploads.
+ * Enables swipe galleries on live DBs that already have a full catalog.
+ */
+async function syncExtraCatalogImages() {
+  const { PrismaClient } = await import("@prisma/client");
+  const { products } = await import("../lib/products");
+  const prisma = new PrismaClient();
+
+  try {
+    let added = 0;
+    for (const seed of products) {
+      if (seed.images.length < 2) continue;
+      const product = await prisma.product.findUnique({
+        where: { slug: seed.slug },
+        include: { images: { orderBy: { sortOrder: "asc" } } }
+      });
+      if (!product) continue;
+
+      const have = new Set(product.images.map((i) => i.url));
+      let sortOrder = product.images.length;
+      for (const img of seed.images) {
+        if (have.has(img.url)) continue;
+        await prisma.productImage.create({
+          data: {
+            productId: product.id,
+            url: img.url,
+            alt: img.alt,
+            sortOrder
+          }
+        });
+        have.add(img.url);
+        sortOrder += 1;
+        added += 1;
+      }
+    }
+    if (added > 0) {
+      console.log(`[start] appended ${added} extra catalog photo(s) for swipe`);
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function ensureCatalog() {
   const { PrismaClient } = await import("@prisma/client");
   const { catalogNeedsSeed, MIN_PRODUCTS } = await import(
@@ -371,6 +415,12 @@ async function main() {
     await repairBrokenCatalogImages();
   } catch (err) {
     console.warn("[start] image URL repair:", err);
+  }
+
+  try {
+    await syncExtraCatalogImages();
+  } catch (err) {
+    console.warn("[start] extra catalog images:", err);
   }
 
   const port = process.env.PORT || "3000";
