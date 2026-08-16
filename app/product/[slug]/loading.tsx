@@ -5,7 +5,7 @@ export default function ProductLoading() {
     <div className="container-g py-6 sm:py-10">
       <Skeleton className="h-4 w-56" />
       <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
-        <Skeleton className="aspect-square w-full rounded-card" />
+        <Skeleton className="mx-auto aspect-square w-full max-w-[20rem] rounded-[1.25rem] sm:max-w-md lg:mx-0 lg:max-w-none" />
         <div className="space-y-4">
           <Skeleton className="h-4 w-20" />
           <Skeleton className="h-9 w-4/5" />

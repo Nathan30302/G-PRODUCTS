@@ -38,6 +38,8 @@ const IMG = {
 function p(
   partial: Omit<SeedProduct, "images" | "stock" | "shortSpecs" | "description"> & {
     image: string;
+    /** Optional extra photos — shoppers can swipe these on the product page */
+    extraImages?: string[];
     specs?: string[];
     description?: string;
     stock?: SeedProduct["stock"];
@@ -45,6 +47,13 @@ function p(
     hotDeal?: boolean;
   }
 ): SeedProduct {
+  const images = [
+    { url: partial.image, alt: partial.name },
+    ...(partial.extraImages ?? []).map((url, i) => ({
+      url,
+      alt: `${partial.name} — photo ${i + 2}`
+    }))
+  ];
   return {
     id: partial.id,
     slug: partial.slug,
@@ -53,7 +62,7 @@ function p(
     categorySlug: partial.categorySlug,
     price: partial.price,
     compareAtPrice: partial.compareAtPrice,
-    images: [{ url: partial.image, alt: partial.name }],
+    images,
     shortSpecs: partial.specs ?? [],
     description:
       partial.description ??
@@ -387,6 +396,7 @@ export const products: SeedProduct[] = [
     categorySlug: "computers",
     price: 75,
     image: IMG.mouse,
+    extraImages: [IMG.keyboard, U("photo-1527864550417-7fd91fc51a46")],
     featured: true,
     hotDeal: true
   }),
@@ -452,6 +462,7 @@ export const products: SeedProduct[] = [
     categorySlug: "chargers",
     price: 100,
     image: IMG.oraimo,
+    extraImages: [IMG.iphone, IMG.samsung, IMG.cable],
     featured: true
   }),
   p({
@@ -612,6 +623,7 @@ export const products: SeedProduct[] = [
     categorySlug: "audio",
     price: 200,
     image: IMG.airpods,
+    extraImages: [IMG.headset, U("photo-1606220945770-b5b6c2c55bf1")],
     featured: true
   }),
   p({
@@ -709,6 +721,10 @@ export const products: SeedProduct[] = [
     categorySlug: "watches",
     price: 300,
     image: IMG.watch,
+    extraImages: [
+      U("photo-1523275335684-37898b6baf30"),
+      U("photo-1508685096489-7aacd43bd3b1")
+    ],
     hotDeal: true
   })
 ];

@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ProductImage } from "@/lib/types";
 import { SafeImage } from "@/components/SafeImage";
 
-const SWIPE_THRESHOLD = 48;
+const SWIPE_THRESHOLD = 40;
 
 export function ProductGallery({
   images,
@@ -46,7 +46,7 @@ export function ProductGallery({
   return (
     <div className="lg:sticky lg:top-24">
       <div
-        className="relative aspect-square touch-pan-y overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 shadow-card"
+        className="relative mx-auto aspect-square w-full max-w-[20rem] touch-pan-y overflow-hidden rounded-[1.25rem] border border-white/[0.07] bg-[radial-gradient(ellipse_at_center,_#123b43_0%,_#06181c_72%)] shadow-card sm:max-w-md lg:mx-0 lg:max-w-none"
         onTouchStart={(e) => onPointerDown(e.touches[0].clientX)}
         onTouchEnd={(e) => onPointerUp(e.changedTouches[0].clientX)}
         onMouseDown={(e) => onPointerDown(e.clientX)}
@@ -59,18 +59,18 @@ export function ProductGallery({
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={active}
-            initial={{ opacity: 0, x: 24 }}
+            initial={{ opacity: 0, x: 28 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            exit={{ opacity: 0, x: -28 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="absolute inset-0"
           >
             <SafeImage
               src={current.url || null}
               alt={current.alt ?? name}
               fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="pointer-events-none object-cover select-none"
+              sizes="(max-width: 1024px) 90vw, 28rem"
+              className="pointer-events-none object-contain p-6 select-none sm:p-8"
               priority
               draggable={false}
             />
@@ -78,8 +78,8 @@ export function ProductGallery({
         </AnimatePresence>
 
         {badge && (
-          <span className="pointer-events-none absolute left-4 top-4 rounded-pill bg-accent px-3 py-1 text-sm font-bold text-ink-950 shadow-accent-glow">
-            {badge}
+          <span className="pointer-events-none absolute left-3 top-3 rounded-pill bg-brand px-2.5 py-1 text-[11px] font-extrabold text-ink-950 shadow-brand-glow sm:left-4 sm:top-4 sm:text-xs">
+            Save {badge.replace(/^-/, "")}
           </span>
         )}
 
@@ -90,7 +90,7 @@ export function ProductGallery({
               aria-label="Previous photo"
               onClick={() => go(-1)}
               disabled={active === 0}
-              className="absolute left-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-ink-950/70 text-white/80 backdrop-blur-sm transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-30"
+              className="absolute left-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border border-white/12 bg-ink-950/65 text-base text-white/75 backdrop-blur-sm transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-25 sm:left-3 sm:h-9 sm:w-9"
             >
               ‹
             </button>
@@ -99,61 +99,57 @@ export function ProductGallery({
               aria-label="Next photo"
               onClick={() => go(1)}
               disabled={active === count - 1}
-              className="absolute right-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-ink-950/70 text-white/80 backdrop-blur-sm transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-30"
+              className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border border-white/12 bg-ink-950/65 text-base text-white/75 backdrop-blur-sm transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-25 sm:right-3 sm:h-9 sm:w-9"
             >
               ›
             </button>
-            <p className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-pill bg-ink-950/75 px-3 py-1 text-[11px] font-semibold text-white/70 backdrop-blur-sm">
-              Swipe photos · {active + 1}/{count}
-            </p>
           </>
         )}
       </div>
 
-      {count > 1 && (
-        <>
-          <div className="mt-3 flex justify-center gap-1.5">
-            {list.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Show photo ${i + 1}`}
-                onClick={() => setActive(i)}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === active
-                    ? "w-6 bg-brand"
-                    : "w-1.5 bg-white/25 hover:bg-white/45"
-                }`}
-              />
-            ))}
-          </div>
+      {/* Plug-style segment progress under the photo */}
+      {count > 1 ? (
+        <div className="mx-auto mt-3 flex max-w-[20rem] gap-1.5 sm:max-w-md lg:mx-0 lg:max-w-none">
+          {list.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Show photo ${i + 1}`}
+              onClick={() => setActive(i)}
+              className={`h-1 flex-1 rounded-full transition-colors ${
+                i === active ? "bg-brand" : "bg-white/20 hover:bg-white/35"
+              }`}
+            />
+          ))}
+        </div>
+      ) : null}
 
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-            {list.map((img, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setActive(i)}
-                aria-label={`View image ${i + 1}`}
-                aria-current={i === active}
-                className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border transition-all sm:h-20 sm:w-20 ${
-                  i === active
-                    ? "border-brand ring-2 ring-brand/30"
-                    : "border-white/10 opacity-70 hover:opacity-100"
-                }`}
-              >
-                <SafeImage
-                  src={img.url || null}
-                  alt={img.alt ?? `${name} ${i + 1}`}
-                  fill
-                  sizes="80px"
-                  className="object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        </>
-      )}
+      {count > 1 ? (
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+          {list.map((img, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setActive(i)}
+              aria-label={`View image ${i + 1}`}
+              aria-current={i === active}
+              className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border bg-[radial-gradient(ellipse_at_center,_#123b43_0%,_#06181c_75%)] transition-all sm:h-14 sm:w-14 ${
+                i === active
+                  ? "border-brand ring-2 ring-brand/25"
+                  : "border-white/10 opacity-65 hover:opacity-100"
+              }`}
+            >
+              <SafeImage
+                src={img.url || null}
+                alt={img.alt ?? `${name} ${i + 1}`}
+                fill
+                sizes="56px"
+                className="object-contain p-1.5"
+              />
+            </button>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

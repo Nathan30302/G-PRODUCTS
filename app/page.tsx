@@ -42,6 +42,7 @@ export default async function HomePage() {
         featured={featured}
         newest={newest}
         services={serviceLinks}
+        allProducts={all}
       />
 
       <HomeMobileSections
@@ -49,6 +50,7 @@ export default async function HomePage() {
         hotDeals={hotDeals}
         featured={featured}
         newest={newest}
+        allProducts={all}
       />
 
       <div className="lg:hidden">
