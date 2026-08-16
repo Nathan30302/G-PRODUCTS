@@ -1,10 +1,20 @@
 import Link from "next/link";
-import { Category } from "@/lib/types";
+import { Category, Product } from "@/lib/types";
 import { CategoryTile } from "@/components/CategoryTile";
 import { ProductRail } from "@/components/ProductRail";
 import { Icon } from "@/components/Icons";
 
 type ServiceLink = { slug: string; name: string; tagline: string };
+
+function coverByCategory(products: Product[]) {
+  const map = new Map<string, string>();
+  for (const p of products) {
+    if (map.has(p.categorySlug)) continue;
+    const url = p.images[0]?.url;
+    if (url) map.set(p.categorySlug, url);
+  }
+  return map;
+}
 
 /** Laptop / desktop homepage — mobile keeps the original stacked layout. */
 export function HomeDesktop({
@@ -12,13 +22,15 @@ export function HomeDesktop({
   hotDeals,
   featured,
   newest,
-  services
+  services,
+  allProducts = []
 }: {
   categories: Category[];
-  hotDeals: Parameters<typeof ProductRail>[0]["products"];
-  featured: Parameters<typeof ProductRail>[0]["products"];
-  newest: Parameters<typeof ProductRail>[0]["products"];
+  hotDeals: Product[];
+  featured: Product[];
+  newest: Product[];
   services: ServiceLink[];
+  allProducts?: Product[];
 }) {
   return (
     <div className="hidden lg:block">
@@ -143,31 +155,40 @@ export function HomeDesktop({
   );
 }
 
-/** Mobile / tablet — unchanged stacked homepage sections. */
+/** Mobile / tablet — Plug-inspired category grid + product rails. */
 export function HomeMobileSections({
   categories,
   hotDeals,
   featured,
-  newest
+  newest,
+  allProducts = []
 }: {
   categories: Category[];
-  hotDeals: Parameters<typeof ProductRail>[0]["products"];
-  featured: Parameters<typeof ProductRail>[0]["products"];
-  newest: Parameters<typeof ProductRail>[0]["products"];
+  hotDeals: Product[];
+  featured: Product[];
+  newest: Product[];
+  allProducts?: Product[];
 }) {
+  const covers = coverByCategory(allProducts);
+
   return (
     <div className="lg:hidden">
-      <section className="container-g mt-12 sm:mt-16">
-        <div className="mb-6">
-          <p className="eyebrow">Browse</p>
-          <h2 className="display mt-2 text-2xl sm:text-3xl">Shop by category</h2>
-          <p className="mt-2 text-sm text-white/50">
-            Stationery, storage, chargers, audio and more.
+      <section className="container-g mt-10 sm:mt-14">
+        <div className="mb-5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40">
+            Trusted by many, loved by all
           </p>
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">
+            Explore our top picks
+          </h2>
         </div>
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-3.5">
           {categories.map((c) => (
-            <CategoryTile key={c.slug} category={c} />
+            <CategoryTile
+              key={c.slug}
+              category={c}
+              imageUrl={covers.get(c.slug)}
+            />
           ))}
         </div>
       </section>

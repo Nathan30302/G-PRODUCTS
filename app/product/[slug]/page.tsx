@@ -13,6 +13,7 @@ import { ProductGallery } from "@/components/ProductGallery";
 import { MobileBuyBar } from "@/components/MobileBuyBar";
 import { ProductRail } from "@/components/ProductRail";
 import { Icon } from "@/components/Icons";
+import type { Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,54 @@ const trust = [
   { icon: "wallet", label: "Mobile Money" },
   { icon: "truck", label: "Fast delivery" }
 ];
+
+function ProductHeading({
+  product,
+  off,
+  saved
+}: {
+  product: Product;
+  off: number | null;
+  saved: number;
+}) {
+  return (
+    <>
+      {product.brand ? (
+        <span className="text-sm font-semibold uppercase tracking-wide text-brand/80">
+          {product.brand}
+        </span>
+      ) : null}
+      <h1 className="mt-1.5 text-[1.65rem] font-black leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+        {product.name}
+      </h1>
+
+      <div className="mt-4 flex flex-wrap items-end gap-x-3 gap-y-2">
+        <span className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+          {formatPrice(product.price)}
+        </span>
+        {product.compareAtPrice ? (
+          <span className="pb-1 text-base text-white/35 line-through sm:text-lg">
+            {formatPrice(product.compareAtPrice)}
+          </span>
+        ) : null}
+        {off ? (
+          <span className="mb-0.5 rounded-pill bg-brand px-2.5 py-1 text-[11px] font-extrabold text-ink-950">
+            Save {off}%
+          </span>
+        ) : null}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2.5">
+        <StockBadge status={product.stock} />
+        {saved > 0 ? (
+          <span className="text-xs font-medium text-white/45">
+            You save {formatPrice(saved)}
+          </span>
+        ) : null}
+      </div>
+    </>
+  );
+}
 
 export default async function ProductPage({
   params
@@ -85,71 +134,51 @@ export default async function ProductPage({
           <span className="truncate text-white/70">{product.name}</span>
         </nav>
 
-        <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
-          <ProductGallery
-            images={product.images}
-            name={product.name}
-            badge={off ? `-${off}%` : null}
-          />
+        {/* Mobile: title → gallery → buy (Plug order). Desktop: gallery | details */}
+        <div className="mt-5 grid gap-6 lg:mt-6 lg:grid-cols-2 lg:gap-12">
+          <div className="lg:hidden">
+            <ProductHeading product={product} off={off} saved={saved} />
+          </div>
 
-          <div className="lg:py-2">
-            {product.brand && (
-              <span className="text-sm font-semibold uppercase tracking-wide text-brand/80">
-                {product.brand}
-              </span>
-            )}
-            <h1 className="mt-1.5 text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
-              {product.name}
-            </h1>
+          <div className="order-2 lg:order-1">
+            <ProductGallery
+              images={product.images}
+              name={product.name}
+              badge={off ? `-${off}%` : null}
+            />
+          </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <StockBadge status={product.stock} />
-              {off && (
-                <span className="rounded-pill bg-accent/15 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/30">
-                  Save {formatPrice(saved)}
-                </span>
-              )}
+          <div className="order-3 space-y-6 lg:order-2 lg:py-1">
+            <div className="hidden lg:block">
+              <ProductHeading product={product} off={off} saved={saved} />
             </div>
 
-            <div className="mt-5 flex items-baseline gap-3">
-              <span className="text-3xl font-black tracking-tight text-white sm:text-4xl">
-                {formatPrice(product.price)}
-              </span>
-              {product.compareAtPrice && (
-                <span className="text-lg text-white/35 line-through">
-                  {formatPrice(product.compareAtPrice)}
-                </span>
-              )}
-            </div>
-
-            <p className="mt-6 leading-relaxed text-white/65">
-              {product.description}
-            </p>
-
-            <div className="mt-8 max-w-sm">
+            <div className="max-w-md">
               <ProductActions product={product} />
             </div>
 
-            {/* trust row */}
-            <div className="mt-8 grid grid-cols-3 gap-3">
+            <p className="leading-relaxed text-white/60">{product.description}</p>
+
+            <div className="grid grid-cols-3 gap-2.5">
               {trust.map((t) => (
                 <div
                   key={t.label}
-                  className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-ink-850/60 p-3 text-center"
+                  className="flex flex-col items-center gap-1.5 rounded-xl border border-white/[0.06] bg-ink-850/50 px-2 py-3 text-center"
                 >
                   <Icon name={t.icon} className="h-5 w-5 text-brand" />
-                  <span className="text-[11px] font-medium text-white/60">
+                  <span className="text-[10px] font-medium leading-tight text-white/55 sm:text-[11px]">
                     {t.label}
                   </span>
                 </div>
               ))}
             </div>
 
-            {/* specs table */}
             {product.shortSpecs.length > 0 && (
-              <div className="mt-10">
-                <h2 className="text-lg font-bold text-white">Specifications</h2>
-                <dl className="mt-4 overflow-hidden rounded-card border border-white/[0.06]">
+              <div>
+                <h2 className="text-base font-bold text-white sm:text-lg">
+                  Specifications
+                </h2>
+                <dl className="mt-3 overflow-hidden rounded-[1.1rem] border border-white/[0.06]">
                   {product.shortSpecs.map((s, i) => (
                     <div
                       key={s}

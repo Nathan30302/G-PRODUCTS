@@ -71,8 +71,21 @@ export function ProductRail({
           <h2 className="display mt-1.5 text-xl sm:text-2xl lg:text-3xl">
             {title}
           </h2>
-          {subtitle ? (
+          {href ? (
+            <Link
+              href={href}
+              className="mt-1.5 inline-flex items-center gap-1 text-sm font-semibold text-brand/90 hover:text-brand sm:hidden"
+            >
+              {hrefLabel}
+              <Icon name="chevron-right" className="h-3.5 w-3.5" />
+            </Link>
+          ) : subtitle ? (
             <p className="mt-1.5 max-w-md text-sm text-white/50">{subtitle}</p>
+          ) : null}
+          {subtitle && href ? (
+            <p className="mt-1.5 hidden max-w-md text-sm text-white/50 sm:block">
+              {subtitle}
+            </p>
           ) : null}
         </div>
         <div className="flex items-center gap-2">
@@ -131,18 +144,6 @@ export function ProductRail({
           ))}
         </div>
       </div>
-
-      {href ? (
-        <div className="mt-5 sm:hidden">
-          <Link
-            href={href}
-            className="flex items-center justify-center gap-1 rounded-pill border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-semibold text-white/80"
-          >
-            {hrefLabel}
-            <Icon name="arrow-right" className="h-4 w-4" />
-          </Link>
-        </div>
-      ) : null}
     </section>
   );
 }
