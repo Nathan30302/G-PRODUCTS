@@ -71,10 +71,10 @@ html.splash-open body {
     transform: translate3d(0, 0, 0) scale(1);
   }
   33% {
-    transform: translate3d(12%, -8%, 0) scale(1.12);
+    transform: translate3d(16%, -10%, 0) scale(1.14);
   }
   66% {
-    transform: translate3d(-8%, 6%, 0) scale(0.94);
+    transform: translate3d(-10%, 8%, 0) scale(0.92);
   }
 }
 
@@ -84,10 +84,10 @@ html.splash-open body {
     transform: translate3d(0, 0, 0) scale(1);
   }
   40% {
-    transform: translate3d(-14%, 10%, 0) scale(1.08);
+    transform: translate3d(-18%, 12%, 0) scale(1.1);
   }
   70% {
-    transform: translate3d(6%, -12%, 0) scale(0.96);
+    transform: translate3d(8%, -14%, 0) scale(0.95);
   }
 }
 
@@ -97,7 +97,7 @@ html.splash-open body {
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(10%, 14%, 0) scale(1.1);
+    transform: translate3d(14%, 16%, 0) scale(1.12);
   }
 }
 
@@ -108,8 +108,8 @@ html.splash-open body {
     opacity: 0.35;
   }
   50% {
-    transform: translate3d(-50%, -6%, 0) scale(1.15);
-    opacity: 0.55;
+    transform: translate3d(-50%, -10%, 0) scale(1.18);
+    opacity: 0.58;
   }
 }
 
@@ -119,21 +119,22 @@ html.splash-open body {
 }
 
 .splash-blob-a {
-  animation: splash-blob-a 18s ease-in-out infinite;
+  animation: splash-blob-a 11s ease-in-out infinite;
 }
 
 .splash-blob-b {
-  animation: splash-blob-b 22s ease-in-out infinite;
-  animation-delay: -4s;
+  animation: splash-blob-b 13s ease-in-out infinite;
+  animation-delay: -3s;
 }
 
 .splash-blob-c {
-  animation: splash-blob-c 20s ease-in-out infinite;
-  animation-delay: -8s;
+  animation: splash-blob-c 12s ease-in-out infinite;
+  animation-delay: -5s;
 }
 
 .splash-blob-d {
-  animation: splash-blob-d 14s ease-in-out infinite;
+  animation: splash-blob-d 9s ease-in-out infinite;
+  animation-delay: -2s;
 }
 
 @media (prefers-reduced-motion: reduce) {

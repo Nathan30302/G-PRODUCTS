@@ -251,10 +251,6 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                   className="field"
                   placeholder="0972… or you@email.com"
                 />
-                <span className="mt-1.5 block text-[11px] text-white/30">
-                  Shop: phone or email. Provider:{" "}
-                  <span className="text-white/50">gift@gproducts.zm</span>
-                </span>
               </label>
               <PasswordInput
                 name="password"

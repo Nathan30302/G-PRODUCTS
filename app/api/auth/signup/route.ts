@@ -113,8 +113,7 @@ export async function POST(req: Request) {
       if (ownerCount > 0) {
         return NextResponse.json(
           {
-            error:
-              "The provider account already exists. Sign in with gift@gproducts.zm."
+            error: "The provider account already exists. Sign in instead."
           },
           { status: 409 }
         );

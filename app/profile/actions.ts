@@ -48,9 +48,7 @@ export async function unifiedLoginAction(
         redirect(siteConfig.apps.provider.home);
       }
       return {
-        error: deskUser.role === "OWNER"
-          ? `Wrong password for the provider account (${deskUser.email}). Try again or reset it under Account in the provider desk.`
-          : "Wrong password for your staff account. Check with the owner if you need a reset."
+        error: "Wrong password. Check your details and try again."
       };
     }
 
@@ -73,19 +71,9 @@ export async function unifiedLoginAction(
       };
     }
 
-    const ownerEmail =
-      process.env.OWNER_EMAIL?.trim().toLowerCase() ?? "gift@gproducts.zm";
-
-    if (identifier.includes("@") && identifier.toLowerCase() === ownerEmail) {
-      return {
-        error:
-          "Provider account not found in the database. After a fresh deploy, sign in with the default password (changeme123) once, then change it under Account."
-      };
-    }
-
     return {
       error:
-        "No account matched that phone or email. Use Create account if you have not signed up yet, or double-check spelling (providers use gift@gproducts.zm)."
+        "No account matched that phone or email. Use Create account if you have not signed up yet."
     };
   } catch (err) {
     if (isRedirectError(err)) throw err;
@@ -167,8 +155,7 @@ export async function unifiedSignupAction(
       const ownerCount = await prisma.user.count({ where: { role: "OWNER" } });
       if (ownerCount > 0) {
         return {
-          error:
-            "The provider account already exists. Use Sign in with gift@gproducts.zm (or your OWNER_EMAIL)."
+          error: "The provider account already exists. Use Sign in instead."
         };
       }
 

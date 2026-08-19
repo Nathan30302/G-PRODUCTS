@@ -15,13 +15,13 @@ const BRAND = {
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v2",
-  admin: "gproducts-admin-splash-v2"
+  shop: "gproducts-splash-v3",
+  admin: "gproducts-admin-splash-v3"
 } as const;
 
-const MIN_MS = 1800;
-const MAX_MS = 3000;
-const EXIT_MS = 720;
+/** Premium moment — not tied to page load */
+const SPLASH_MS = 6000;
+const EXIT_MS = 850;
 
 const COPY = {
   shop: {
@@ -132,44 +132,10 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
     setPhase("show");
     document.documentElement.classList.add("splash-open");
 
-    const start = Date.now();
-    let loaded = document.readyState === "complete";
-
-    const maybeFinish = () => {
-      const elapsed = Date.now() - start;
-      if (elapsed >= MAX_MS) {
-        finish();
-        return true;
-      }
-      if (loaded && elapsed >= MIN_MS) {
-        finish();
-        return true;
-      }
-      return false;
-    };
-
-    const onLoad = () => {
-      loaded = true;
-      maybeFinish();
-    };
-
-    if (!loaded) {
-      window.addEventListener("load", onLoad, { once: true });
-    }
-
-    const tick = window.setInterval(() => {
-      if (maybeFinish()) window.clearInterval(tick);
-    }, 80);
-
-    const hardMax = window.setTimeout(() => {
-      window.clearInterval(tick);
-      finish();
-    }, MAX_MS + 50);
+    const timer = window.setTimeout(finish, SPLASH_MS);
 
     return () => {
-      window.removeEventListener("load", onLoad);
-      window.clearInterval(tick);
-      window.clearTimeout(hardMax);
+      window.clearTimeout(timer);
       document.documentElement.classList.remove("splash-open");
     };
   }, [variant, finish]);
@@ -198,22 +164,22 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
         {reducedMotion ? <StaticBackdrop /> : <AnimatedBackdrop />}
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.88, y: 16 }}
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{
             opacity: exiting ? 0 : 1,
-            scale: exiting ? 1.05 : 1,
-            y: exiting ? -12 : 0
+            scale: exiting ? 1.04 : 1,
+            y: exiting ? -10 : 0
           }}
           transition={{
-            duration: reducedMotion ? 0.4 : 0.9,
+            duration: reducedMotion ? 0.45 : 1.1,
             ease: [0.16, 1, 0.3, 1]
           }}
           className="relative z-10 flex flex-col items-center px-8 text-center"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.15, duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.35, duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
             <div
@@ -226,41 +192,23 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.85, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
             className="display mt-8 text-3xl font-black tracking-tight text-white sm:text-4xl"
           >
             {copy.title}
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.62, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 1.1, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
             className="mt-2 max-w-xs text-sm font-medium text-white/55 sm:text-base"
           >
             {copy.line}
           </motion.p>
         </motion.div>
-
-        {!reducedMotion && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: exiting ? 0 : 0.6 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            className="absolute bottom-[max(2rem,env(safe-area-inset-bottom))] left-1/2 h-1 w-16 -translate-x-1/2 overflow-hidden rounded-full bg-white/10"
-            aria-hidden
-          >
-            <motion.div
-              className="h-full rounded-full"
-              style={{ backgroundColor: BRAND.yellow }}
-              initial={{ width: "0%" }}
-              animate={{ width: "100%" }}
-              transition={{ duration: MAX_MS / 1000, ease: "linear" }}
-            />
-          </motion.div>
-        )}
 
         <button
           type="button"

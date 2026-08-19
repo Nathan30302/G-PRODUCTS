@@ -10,7 +10,6 @@ import { discountPercent } from "@/lib/format";
 import { ProductPurchasePanel } from "@/components/ProductPurchasePanel";
 import { ProductDetailInfo } from "@/components/ProductDetailInfo";
 import { ProductVariantProvider } from "@/components/ProductVariantContext";
-import { MobileBuyBar } from "@/components/MobileBuyBar";
 import { ProductRail } from "@/components/ProductRail";
 import { Icon } from "@/components/Icons";
 
@@ -64,7 +63,7 @@ export default async function ProductPage({
     .slice(0, 8);
 
   return (
-    <div className="pb-24 md:pb-0">
+    <div>
       <div className="container-g py-6 sm:py-10">
         <nav className="flex flex-wrap items-center gap-1.5 text-sm text-white/40">
           <Link href="/" className="transition-colors hover:text-white">
@@ -101,7 +100,6 @@ export default async function ProductPage({
             </div>
           </div>
 
-          <MobileBuyBar product={product} />
         </ProductVariantProvider>
 
         <div className="mt-8 grid grid-cols-3 gap-3">
