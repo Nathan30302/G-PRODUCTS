@@ -15,13 +15,13 @@ const BRAND = {
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v3",
-  admin: "gproducts-admin-splash-v3"
+  shop: "gproducts-splash-v4",
+  admin: "gproducts-admin-splash-v4"
 } as const;
 
-/** Premium moment — not tied to page load */
-const SPLASH_MS = 6000;
-const EXIT_MS = 850;
+const MIN_MS = 2200;
+const MAX_MS = 3000;
+const EXIT_MS = 750;
 
 const COPY = {
   shop: {
@@ -36,39 +36,20 @@ const COPY = {
 
 function AnimatedBackdrop() {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="splash-backdrop pointer-events-none absolute inset-0 overflow-hidden">
       <div
-        className="absolute inset-0"
-        style={{
-          background: `radial-gradient(ellipse at 50% 120%, ${BRAND.yellow}18, transparent 55%), radial-gradient(ellipse at 80% 20%, ${BRAND.green}14, transparent 45%), ${BRAND.ink}`
-        }}
-      />
-
-      <div
-        className="splash-blob splash-blob-a absolute -left-[20%] top-[5%] h-[min(85vw,32rem)] w-[min(85vw,32rem)] rounded-full opacity-50 blur-[100px]"
-        style={{ backgroundColor: `${BRAND.yellow}55` }}
+        className="splash-blob splash-blob-1"
+        style={{ backgroundColor: BRAND.green }}
       />
       <div
-        className="splash-blob splash-blob-b absolute -right-[18%] top-[18%] h-[min(70vw,26rem)] w-[min(70vw,26rem)] rounded-full opacity-45 blur-[95px]"
-        style={{ backgroundColor: `${BRAND.green}50` }}
+        className="splash-blob splash-blob-2"
+        style={{ backgroundColor: BRAND.yellow }}
       />
+      <div className="splash-blob splash-blob-3" />
       <div
-        className="splash-blob splash-blob-c absolute bottom-[8%] left-[10%] h-[min(60vw,22rem)] w-[min(60vw,22rem)] rounded-full opacity-35 blur-[90px]"
-        style={{ backgroundColor: `${BRAND.yellowSoft}40` }}
+        className="splash-blob splash-blob-4"
+        style={{ backgroundColor: BRAND.greenSoft }}
       />
-      <div
-        className="splash-blob splash-blob-d absolute left-1/2 top-[42%] h-[min(50vw,18rem)] w-[min(50vw,18rem)] rounded-full blur-[110px]"
-        style={{ backgroundColor: `${BRAND.greenSoft}35` }}
-      />
-      <div
-        className="absolute inset-0 opacity-[0.07]"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 40%, rgba(255,255,255,0.9), transparent 42%)"
-        }}
-      />
-
-      <div className="absolute inset-0 bg-gradient-to-b from-ink-950/20 via-transparent to-ink-950/50" />
     </div>
   );
 }
@@ -132,10 +113,44 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
     setPhase("show");
     document.documentElement.classList.add("splash-open");
 
-    const timer = window.setTimeout(finish, SPLASH_MS);
+    const start = Date.now();
+    let loaded = document.readyState === "complete";
+
+    const maybeFinish = () => {
+      const elapsed = Date.now() - start;
+      if (elapsed >= MAX_MS) {
+        finish();
+        return true;
+      }
+      if (loaded && elapsed >= MIN_MS) {
+        finish();
+        return true;
+      }
+      return false;
+    };
+
+    const onLoad = () => {
+      loaded = true;
+      maybeFinish();
+    };
+
+    if (!loaded) {
+      window.addEventListener("load", onLoad, { once: true });
+    }
+
+    const tick = window.setInterval(() => {
+      if (maybeFinish()) window.clearInterval(tick);
+    }, 80);
+
+    const hardMax = window.setTimeout(() => {
+      window.clearInterval(tick);
+      finish();
+    }, MAX_MS + 50);
 
     return () => {
-      window.clearTimeout(timer);
+      window.removeEventListener("load", onLoad);
+      window.clearInterval(tick);
+      window.clearTimeout(hardMax);
       document.documentElement.classList.remove("splash-open");
     };
   }, [variant, finish]);
@@ -159,29 +174,17 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
         scale: exiting ? 1.02 : 1
       }}
       transition={{ duration: EXIT_MS / 1000, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden bg-ink-950"
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden"
+      style={{ backgroundColor: BRAND.ink }}
     >
         {reducedMotion ? <StaticBackdrop /> : <AnimatedBackdrop />}
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{
-            opacity: exiting ? 0 : 1,
-            scale: exiting ? 1.04 : 1,
-            y: exiting ? -10 : 0
-          }}
-          transition={{
-            duration: reducedMotion ? 0.45 : 1.1,
-            ease: [0.16, 1, 0.3, 1]
-          }}
-          className="relative z-10 flex flex-col items-center px-8 text-center"
+        <div
+          className={`relative z-10 flex flex-col items-center px-8 text-center ${
+            reducedMotion ? "" : "splash-content"
+          } ${exiting ? "splash-content-exit" : ""}`}
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.35, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
-          >
+          <div className={reducedMotion ? "relative" : "splash-logo-wrap relative"}>
             <div
               className="absolute -inset-10 rounded-full blur-3xl"
               style={{ backgroundColor: `${BRAND.yellow}22` }}
@@ -189,26 +192,24 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
             <div className="relative rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.4)] backdrop-blur-md sm:p-5">
               <Logo size="lg" priority withText={false} />
             </div>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.85, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="display mt-8 text-3xl font-black tracking-tight text-white sm:text-4xl"
+          <h1
+            className={`display mt-8 text-3xl font-black tracking-tight text-white sm:text-4xl ${
+              reducedMotion ? "" : "splash-title"
+            }`}
           >
             {copy.title}
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-2 max-w-xs text-sm font-medium text-white/55 sm:text-base"
+          <p
+            className={`mt-2 max-w-xs text-sm font-medium text-white/55 sm:text-base ${
+              reducedMotion ? "" : "splash-tagline"
+            }`}
           >
             {copy.line}
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
         <button
           type="button"
