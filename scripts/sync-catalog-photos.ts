@@ -1,31 +1,31 @@
 /**
- * Apply HD catalog photos to the database (variants + per-colour images).
- * Skips products that only have provider uploads. Replaces Unsplash / old placeholders.
+ * Apply unique HD catalog photos (3 angles, colour variants) to the database.
+ * Replaces Unsplash / leftover catalog placeholders. Never wipes /api/media uploads.
+ * Only attaches image URLs for files that exist on disk.
  *
  * Usage: npx tsx scripts/sync-catalog-photos.ts
- *        npx tsx scripts/sync-catalog-photos.ts --force   # replace all non-upload images
+ *        npx tsx scripts/sync-catalog-photos.ts --force
  */
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { products } from "../lib/products";
 import {
   catalogDefForSlug,
   catalogUrl,
-  expectedCatalogFile
+  galleryFilesForSlug
 } from "../lib/catalog-photos";
 import { isUploadUrl } from "../lib/uploads";
 
 const prisma = new PrismaClient();
 const force = process.argv.includes("--force");
+const CATALOG_DIR = path.join(process.cwd(), "public", "products", "catalog");
 
-function isPlaceholder(url: string): boolean {
-  if (isUploadUrl(url)) return false;
-  if (url.startsWith("/products/catalog/")) return false;
-  return (
-    url.includes("unsplash.com") ||
-    url.startsWith("/products/") ||
-    force
-  );
+function existingCatalogFiles(files: string[]): string[] {
+  return files.filter((file) => existsSync(path.join(CATALOG_DIR, file)));
 }
+
+type KeptUpload = { url: string; alt: string; variantName: string | null };
 
 async function syncProduct(slug: string): Promise<boolean> {
   const row = await prisma.product.findUnique({
@@ -34,22 +34,44 @@ async function syncProduct(slug: string): Promise<boolean> {
   });
   if (!row) return false;
 
-  const hasUploads = row.images.some((i) => isUploadUrl(i.url));
-  if (hasUploads && !force) {
-    console.log(`  skip ${slug} (provider uploads)`);
+  const uploadImages = row.images.filter((i) => isUploadUrl(i.url));
+  const onlyUploads =
+    uploadImages.length > 0 && row.images.every((i) => isUploadUrl(i.url));
+
+  if (onlyUploads) {
+    console.log(`  skip ${slug} (provider uploads only)`);
     return false;
   }
 
+  if (uploadImages.length > 0 && !force) {
+    console.log(`  skip ${slug} (has provider uploads; use --force to mix catalog)`);
+    return false;
+  }
+
+  const variantNameById = new Map(row.variants.map((v) => [v.id, v.name]));
+  const kept: KeptUpload[] = uploadImages.map((i) => ({
+    url: i.url,
+    alt: i.alt,
+    variantName: i.variantId ? variantNameById.get(i.variantId) ?? null : null
+  }));
+
   const def = catalogDefForSlug(slug);
-  const defaultFile = def?.file ?? expectedCatalogFile(slug);
-  const defaultUrl = catalogUrl(defaultFile);
 
   if (def?.variants && def.variants.length > 0) {
+    await prisma.productImage.deleteMany({
+      where: {
+        productId: row.id,
+        NOT: { url: { startsWith: "/api/media/" } }
+      }
+    });
     await prisma.productVariant.deleteMany({ where: { productId: row.id } });
-    await prisma.productImage.deleteMany({ where: { productId: row.id } });
+
+    let photoCount = 0;
+    const createdByName = new Map<string, string>();
 
     for (let i = 0; i < def.variants.length; i++) {
       const v = def.variants[i];
+      const files = existingCatalogFiles(v.files);
       const variant = await prisma.productVariant.create({
         data: {
           productId: row.id,
@@ -59,14 +81,29 @@ async function syncProduct(slug: string): Promise<boolean> {
           sortOrder: i
         }
       });
-      await prisma.productImage.create({
-        data: {
+      createdByName.set(v.name.toLowerCase(), variant.id);
+      if (files.length === 0) continue;
+      await prisma.productImage.createMany({
+        data: files.map((file, idx) => ({
           productId: row.id,
           variantId: variant.id,
-          url: catalogUrl(v.file),
+          url: catalogUrl(file),
           alt: `${row.name} — ${v.name}`,
-          sortOrder: 0
-        }
+          sortOrder: idx
+        }))
+      });
+      photoCount += files.length;
+    }
+
+    const leftoverUploads = await prisma.productImage.findMany({
+      where: { productId: row.id, url: { startsWith: "/api/media/" } }
+    });
+    for (const img of leftoverUploads) {
+      const name = kept.find((k) => k.url === img.url)?.variantName;
+      const variantId = name ? createdByName.get(name.toLowerCase()) ?? null : null;
+      await prisma.productImage.update({
+        where: { id: img.id },
+        data: { variantId, sortOrder: 50 }
       });
     }
 
@@ -74,23 +111,22 @@ async function syncProduct(slug: string): Promise<boolean> {
     await prisma.product.update({
       where: { id: row.id },
       data: {
-        stock: totalQty === 0 ? "sold_out" : totalQty <= 5 ? "low_stock" : "in_stock"
+        stock:
+          totalQty === 0
+            ? "sold_out"
+            : totalQty <= 5
+              ? "low_stock"
+              : "in_stock"
       }
     });
 
-    console.log(`  ✓ ${slug} (${def.variants.length} colours)`);
+    console.log(
+      `  ✓ ${slug} (${def.variants.length} colours, ${photoCount} catalog photos${kept.length ? `, kept ${kept.length} uploads` : ""})`
+    );
     return true;
   }
 
-  const shouldReplace =
-    force ||
-    row.images.length === 0 ||
-    row.images.every((i) => isPlaceholder(i.url));
-
-  if (!shouldReplace) {
-    console.log(`  skip ${slug} (custom photos)`);
-    return false;
-  }
+  const files = existingCatalogFiles(def?.files ?? galleryFilesForSlug(slug));
 
   await prisma.productImage.deleteMany({
     where: {
@@ -105,40 +141,36 @@ async function syncProduct(slug: string): Promise<boolean> {
         productId: row.id,
         name: "Standard",
         colorHex: null,
-        quantity: row.stock === "sold_out" ? 0 : row.stock === "low_stock" ? 3 : 12,
+        quantity:
+          row.stock === "sold_out" ? 0 : row.stock === "low_stock" ? 3 : 12,
         sortOrder: 0
       }
     });
   }
 
-  await prisma.productImage.create({
-    data: {
-      productId: row.id,
-      url: defaultUrl,
-      alt: row.name,
-      sortOrder: 0
-    }
-  });
+  if (files.length > 0) {
+    await prisma.productImage.createMany({
+      data: files.map((file, idx) => ({
+        productId: row.id,
+        url: catalogUrl(file),
+        alt: row.name,
+        sortOrder: idx
+      }))
+    });
+  }
 
-  console.log(`  ✓ ${slug}`);
+  console.log(
+    `  ✓ ${slug} (${files.length} photos${kept.length ? `, kept ${kept.length} uploads` : ""})`
+  );
   return true;
 }
 
 async function main() {
-  console.log(`Syncing catalog photos${force ? " (force)" : ""}…`);
+  console.log(`Syncing unique catalog photos${force ? " (force, keep /api/media)" : ""}…`);
   let updated = 0;
 
   for (const p of products) {
     if (await syncProduct(p.slug)) updated++;
-  }
-
-  // Also sync any DB products not in seed catalog
-  const extra = await prisma.product.findMany({
-    where: { slug: { notIn: products.map((x) => x.slug) } },
-    select: { slug: true }
-  });
-  for (const { slug } of extra) {
-    if (await syncProduct(slug)) updated++;
   }
 
   console.log(`Updated ${updated} product(s).`);

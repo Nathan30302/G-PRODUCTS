@@ -1,9 +1,8 @@
 import { Product } from "@/lib/types";
+import { catalogUrl, galleryFilesForSlug } from "@/lib/catalog-photos";
 
 // Seed catalog — colour variants are synced via scripts/sync-catalog-photos.ts.
 type SeedProduct = Omit<Product, "variants">;
-
-const catalogImage = (slug: string) => `/products/catalog/${slug}.jpg`;
 
 function p(
   partial: Omit<SeedProduct, "images" | "stock" | "shortSpecs" | "description"> & {
@@ -22,7 +21,10 @@ function p(
     categorySlug: partial.categorySlug,
     price: partial.price,
     compareAtPrice: partial.compareAtPrice,
-    images: [{ url: catalogImage(partial.slug), alt: partial.name }],
+    images: galleryFilesForSlug(partial.slug).map((file) => ({
+      url: catalogUrl(file),
+      alt: partial.name
+    })),
     shortSpecs: partial.specs ?? [],
     description:
       partial.description ??

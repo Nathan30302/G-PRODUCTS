@@ -11,10 +11,22 @@ function safeFilename(name: string): string {
   return name.replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "") || "photo.jpg";
 }
 
-async function readCatalogFile(relative: string): Promise<Buffer> {
-  const clean = relative.replace(/^\/+/, "").replace(/\.\./g, "");
-  const filePath = path.join(process.cwd(), "public", clean);
-  if (!filePath.startsWith(path.join(process.cwd(), "public", "products", "catalog"))) {
+function contentTypeFor(url: string, fallback = "image/jpeg"): string {
+  if (/\.png$/i.test(url)) return "image/png";
+  if (/\.webp$/i.test(url)) return "image/webp";
+  if (/\.gif$/i.test(url)) return "image/gif";
+  if (/\.jpe?g$/i.test(url)) return "image/jpeg";
+  return fallback;
+}
+
+async function readCatalogFile(url: string): Promise<Buffer> {
+  const base = path.basename(url.split("?")[0] ?? "");
+  if (!/^[\w.-]+\.(jpe?g|png|webp|gif)$/i.test(base)) {
+    throw new Error("Invalid catalog file.");
+  }
+  const catalogRoot = path.join(process.cwd(), "public", "products", "catalog");
+  const filePath = path.resolve(catalogRoot, base);
+  if (!filePath.startsWith(catalogRoot + path.sep)) {
     throw new Error("Invalid catalog path.");
   }
   return readFile(filePath);
@@ -40,14 +52,14 @@ export async function GET(req: Request) {
 
     if (url.startsWith("/products/catalog/")) {
       body = await readCatalogFile(url);
-      if (url.endsWith(".png")) contentType = "image/png";
-      else if (url.endsWith(".webp")) contentType = "image/webp";
-    } else if (url.startsWith("/api/media/")) {
-      const relative = url.replace(/^\/api\/media\//, "");
+      contentType = contentTypeFor(url);
+    } else if (url.startsWith("/api/media/") || url.startsWith("/uploads/")) {
+      const relative = url
+        .replace(/^\/api\/media\//, "")
+        .replace(/^\/uploads\//, "");
       const filePath = resolveUploadPath(relative);
       body = await readFile(filePath);
-      if (url.endsWith(".png")) contentType = "image/png";
-      else if (url.endsWith(".webp")) contentType = "image/webp";
+      contentType = contentTypeFor(url);
     } else if (url.startsWith("http://") || url.startsWith("https://")) {
       const res = await fetch(url);
       if (!res.ok) throw new Error("Could not fetch photo.");

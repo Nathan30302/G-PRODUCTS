@@ -16,7 +16,7 @@ type Props = {
   /** Allow multiple photos (products). Services use a single photo. */
   multiple?: boolean;
   label?: string;
-  /** Provider desk — show download links for reuse */
+  /** Provider desk — show download links for reuse (on by default) */
   allowDownload?: boolean;
   /** Prefix for downloaded filenames */
   downloadPrefix?: string;
@@ -34,7 +34,7 @@ export function ImageUploader({
   folder = "products",
   multiple = true,
   label = "Photos",
-  allowDownload = false,
+  allowDownload = true,
   downloadPrefix = "product"
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -136,7 +136,8 @@ export function ImageUploader({
                     url,
                     `${downloadPrefix}-${idx + 1}${url.match(/\.(png|webp|gif)/i)?.[0] ?? ".jpg"}`
                   )}
-                  className="absolute bottom-1.5 left-1.5 rounded-pill bg-ink-950/85 px-2.5 py-1 text-[10px] font-bold text-brand opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
+                  download
+                  className="absolute bottom-1.5 left-1.5 z-10 rounded-pill bg-ink-950/90 px-2.5 py-1.5 text-[10px] font-bold text-brand shadow-lg"
                 >
                   Download
                 </a>
