@@ -377,6 +377,13 @@ async function main() {
     console.warn("[start] image URL repair:", err);
   }
 
+  try {
+    console.log("[start] syncing HD catalog photos");
+    await run("npx", ["tsx", "scripts/sync-catalog-photos.ts"]);
+  } catch (err) {
+    console.warn("[start] catalog photo sync:", err);
+  }
+
   const port = process.env.PORT || "3000";
   await startNext(port);
 }

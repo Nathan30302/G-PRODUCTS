@@ -1,43 +1,12 @@
 import { Product } from "@/lib/types";
 
-// Seed catalog — colour variants are created in prisma/seed.ts.
+// Seed catalog — colour variants are synced via scripts/sync-catalog-photos.ts.
 type SeedProduct = Omit<Product, "variants">;
 
-// Official G-Products price list (Aug 2026). Prices in ZMW.
-
-const U = (id: string) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&q=80`;
-
-const IMG = {
-  stationery: U("photo-1586075010923-2dd4570fb338"),
-  pens: U("photo-1517842645767-c639042777db"),
-  paper: U("photo-1586281380349-632531db7ed4"),
-  calculator: U("photo-1611532736597-de2d4265fba3"),
-  storage: "/products/memory-flash.png",
-  hdd: U("photo-1597872200969-2b65d56bd16b"),
-  mouse: "/products/wireless-mouse.png",
-  keyboard: U("photo-1587829741301-dc798b83add3"),
-  casing: U("photo-1531492746076-161ca9bcad58"),
-  oraimo: "/products/oraimo-charger.png",
-  iphone: "/products/iphone-chargers.png",
-  samsung: "/products/samsung-45w-charger.png",
-  cable: U("photo-1625948515291-69613efd103f"),
-  laptopCharger: U("photo-1588872657578-7efd1f1555ed"),
-  extension: "/products/top-plug-adaptor.png",
-  airpods: "/products/mango-airpods.png",
-  headset: U("photo-1484704849700-f032a568e944"),
-  speaker: U("photo-1608043152269-423dbba4e7e1"),
-  stand: U("photo-1512941937669-90a1b58e7e9c"),
-  protector: U("photo-1592890288564-76628a30a657"),
-  pouch: U("photo-1601784551446-20c9e07cdbdb"),
-  watch: U("photo-1546868871-7041f2a55e12"),
-  lock: U("photo-1558618666-fcd25c85cd64"),
-  glue: U("photo-1615485290382-441e4d049cb5")
-};
+const catalogImage = (slug: string) => `/products/catalog/${slug}.jpg`;
 
 function p(
   partial: Omit<SeedProduct, "images" | "stock" | "shortSpecs" | "description"> & {
-    image: string;
     specs?: string[];
     description?: string;
     stock?: SeedProduct["stock"];
@@ -53,7 +22,7 @@ function p(
     categorySlug: partial.categorySlug,
     price: partial.price,
     compareAtPrice: partial.compareAtPrice,
-    images: [{ url: partial.image, alt: partial.name }],
+    images: [{ url: catalogImage(partial.slug), alt: partial.name }],
     shortSpecs: partial.specs ?? [],
     description:
       partial.description ??
@@ -72,7 +41,6 @@ export const products: SeedProduct[] = [
     name: "Exercise Book 192 pages",
     categorySlug: "stationery",
     price: 16,
-    image: IMG.stationery,
     specs: ["192 pages"],
     featured: true
   }),
@@ -82,7 +50,6 @@ export const products: SeedProduct[] = [
     name: "Exercise Book 288 pages",
     categorySlug: "stationery",
     price: 40,
-    image: IMG.stationery,
     specs: ["288 pages"]
   }),
   p({
@@ -91,7 +58,6 @@ export const products: SeedProduct[] = [
     name: "Tipex",
     categorySlug: "stationery",
     price: 10,
-    image: IMG.glue
   }),
   p({
     id: "p-glue",
@@ -99,7 +65,6 @@ export const products: SeedProduct[] = [
     name: "Glue",
     categorySlug: "stationery",
     price: 3,
-    image: IMG.glue
   }),
   p({
     id: "p-corms",
@@ -107,7 +72,6 @@ export const products: SeedProduct[] = [
     name: "Corms",
     categorySlug: "stationery",
     price: 3,
-    image: IMG.glue
   }),
   p({
     id: "p-bic-crystal",
@@ -116,7 +80,6 @@ export const products: SeedProduct[] = [
     brand: "Bic",
     categorySlug: "stationery",
     price: 5,
-    image: IMG.pens,
     featured: true
   }),
   p({
@@ -126,7 +89,6 @@ export const products: SeedProduct[] = [
     brand: "Bic",
     categorySlug: "stationery",
     price: 7,
-    image: IMG.pens
   }),
   p({
     id: "p-nataraj",
@@ -135,7 +97,6 @@ export const products: SeedProduct[] = [
     brand: "Nataraj",
     categorySlug: "stationery",
     price: 3,
-    image: IMG.pens
   }),
   p({
     id: "p-pencil",
@@ -143,7 +104,6 @@ export const products: SeedProduct[] = [
     name: "Pencil",
     categorySlug: "stationery",
     price: 3,
-    image: IMG.pens
   }),
   p({
     id: "p-ruler",
@@ -151,7 +111,6 @@ export const products: SeedProduct[] = [
     name: "Ruler",
     categorySlug: "stationery",
     price: 8,
-    image: IMG.stationery
   }),
   p({
     id: "p-sharpener",
@@ -159,7 +118,6 @@ export const products: SeedProduct[] = [
     name: "Sharpener",
     categorySlug: "stationery",
     price: 3,
-    image: IMG.stationery
   }),
   p({
     id: "p-marker",
@@ -167,7 +125,6 @@ export const products: SeedProduct[] = [
     name: "Marker",
     categorySlug: "stationery",
     price: 5,
-    image: IMG.pens
   }),
   p({
     id: "p-keyholder-5",
@@ -175,7 +132,6 @@ export const products: SeedProduct[] = [
     name: "Key Holder",
     categorySlug: "locks",
     price: 5,
-    image: IMG.lock,
     specs: ["Standard"]
   }),
   p({
@@ -184,7 +140,6 @@ export const products: SeedProduct[] = [
     name: "Key Holder (Premium)",
     categorySlug: "locks",
     price: 15,
-    image: IMG.lock
   }),
   p({
     id: "p-envelope",
@@ -192,7 +147,6 @@ export const products: SeedProduct[] = [
     name: "Envelope",
     categorySlug: "stationery",
     price: 5,
-    image: IMG.paper
   }),
   p({
     id: "p-ream",
@@ -200,7 +154,6 @@ export const products: SeedProduct[] = [
     name: "Ream Paper",
     categorySlug: "stationery",
     price: 115,
-    image: IMG.paper,
     specs: ["Full ream"],
     featured: true
   }),
@@ -211,7 +164,6 @@ export const products: SeedProduct[] = [
     brand: "Casio",
     categorySlug: "stationery",
     price: 200,
-    image: IMG.calculator,
     specs: ["Original Casio"],
     featured: true,
     hotDeal: true
@@ -223,7 +175,6 @@ export const products: SeedProduct[] = [
     brand: "Sharp",
     categorySlug: "stationery",
     price: 200,
-    image: IMG.calculator,
     specs: ["Original Sharp"]
   }),
 
@@ -235,7 +186,6 @@ export const products: SeedProduct[] = [
     brand: "Union",
     categorySlug: "locks",
     price: 140,
-    image: IMG.lock,
     featured: true
   }),
   p({
@@ -245,7 +195,6 @@ export const products: SeedProduct[] = [
     brand: "Fieldex",
     categorySlug: "locks",
     price: 110,
-    image: IMG.lock
   }),
 
   // —— Phone stands ——
@@ -255,7 +204,6 @@ export const products: SeedProduct[] = [
     name: "Phone Stand / Holder",
     categorySlug: "phone-accessories",
     price: 50,
-    image: IMG.stand,
     featured: true
   }),
   p({
@@ -264,7 +212,6 @@ export const products: SeedProduct[] = [
     name: "Phone Stand / Holder (Plus)",
     categorySlug: "phone-accessories",
     price: 60,
-    image: IMG.stand
   }),
   p({
     id: "p-stand-200",
@@ -272,7 +219,6 @@ export const products: SeedProduct[] = [
     name: "Phone Stand / Holder (Premium)",
     categorySlug: "phone-accessories",
     price: 200,
-    image: IMG.stand
   }),
   p({
     id: "p-full-glue",
@@ -280,7 +226,6 @@ export const products: SeedProduct[] = [
     name: "Screen Protector — Full Glue",
     categorySlug: "phone-accessories",
     price: 50,
-    image: IMG.protector
   }),
   p({
     id: "p-privacy",
@@ -288,7 +233,6 @@ export const products: SeedProduct[] = [
     name: "Screen Protector — Privacy",
     categorySlug: "phone-accessories",
     price: 80,
-    image: IMG.protector,
     hotDeal: true
   }),
   p({
@@ -297,7 +241,6 @@ export const products: SeedProduct[] = [
     name: "Phone Pouch",
     categorySlug: "phone-accessories",
     price: 80,
-    image: IMG.pouch
   }),
 
   // —— Memory cards ——
@@ -316,7 +259,6 @@ export const products: SeedProduct[] = [
       name: `Memory Card ${gb}GB`,
       categorySlug: "storage",
       price,
-      image: IMG.storage,
       specs: [
         `${gb}GB`,
         "Optional FREE loading: movies, games, music & school materials"
@@ -340,7 +282,6 @@ export const products: SeedProduct[] = [
       name: `Flash Disk ${gb}GB`,
       categorySlug: "storage",
       price,
-      image: IMG.storage,
       specs: [
         `${gb}GB`,
         "Optional FREE loading: movies, games, music & school materials"
@@ -364,7 +305,6 @@ export const products: SeedProduct[] = [
       name: `Hard Drive ${size}`,
       categorySlug: "storage",
       price,
-      image: IMG.hdd,
       specs: [size, "Optional FREE loading available"],
       featured: size === "1TB",
       hotDeal: size === "1TB"
@@ -378,7 +318,6 @@ export const products: SeedProduct[] = [
     name: "Wired Mouse",
     categorySlug: "computers",
     price: 60,
-    image: IMG.mouse
   }),
   p({
     id: "p-wireless-mouse",
@@ -386,7 +325,6 @@ export const products: SeedProduct[] = [
     name: "Wireless Mouse",
     categorySlug: "computers",
     price: 75,
-    image: IMG.mouse,
     featured: true,
     hotDeal: true
   }),
@@ -396,7 +334,6 @@ export const products: SeedProduct[] = [
     name: "Wired Keyboard",
     categorySlug: "computers",
     price: 250,
-    image: IMG.keyboard
   }),
   p({
     id: "p-wireless-kb",
@@ -404,7 +341,6 @@ export const products: SeedProduct[] = [
     name: "Wireless Keyboard",
     categorySlug: "computers",
     price: 300,
-    image: IMG.keyboard
   }),
   p({
     id: "p-hdd-case-2",
@@ -412,7 +348,6 @@ export const products: SeedProduct[] = [
     name: "Hard Drive Casing USB 2.0",
     categorySlug: "computers",
     price: 100,
-    image: IMG.casing,
     specs: ["USB 2.0"]
   }),
   p({
@@ -421,7 +356,6 @@ export const products: SeedProduct[] = [
     name: "Hard Drive Casing USB 3.0",
     categorySlug: "computers",
     price: 150,
-    image: IMG.casing,
     specs: ["USB 3.0"]
   }),
 
@@ -433,7 +367,6 @@ export const products: SeedProduct[] = [
     brand: "Apple-compatible",
     categorySlug: "chargers",
     price: 150,
-    image: IMG.iphone,
     featured: true
   }),
   p({
@@ -442,7 +375,6 @@ export const products: SeedProduct[] = [
     name: "Type-C Charger Head",
     categorySlug: "chargers",
     price: 100,
-    image: IMG.samsung
   }),
   p({
     id: "p-oraimo-full",
@@ -451,7 +383,6 @@ export const products: SeedProduct[] = [
     brand: "Oraimo",
     categorySlug: "chargers",
     price: 100,
-    image: IMG.oraimo,
     featured: true
   }),
   p({
@@ -461,7 +392,6 @@ export const products: SeedProduct[] = [
     brand: "Oraimo",
     categorySlug: "chargers",
     price: 50,
-    image: IMG.oraimo
   }),
   p({
     id: "p-mango-ctc",
@@ -470,7 +400,6 @@ export const products: SeedProduct[] = [
     brand: "Mango",
     categorySlug: "chargers",
     price: 150,
-    image: IMG.cable
   }),
   p({
     id: "p-samsung-ctc",
@@ -479,7 +408,6 @@ export const products: SeedProduct[] = [
     brand: "Samsung",
     categorySlug: "chargers",
     price: 150,
-    image: IMG.samsung
   }),
   p({
     id: "p-sivia-cable",
@@ -488,7 +416,6 @@ export const products: SeedProduct[] = [
     brand: "Sivia",
     categorySlug: "chargers",
     price: 50,
-    image: IMG.cable
   }),
   p({
     id: "p-seal-tape",
@@ -496,7 +423,6 @@ export const products: SeedProduct[] = [
     name: "Seal Tape",
     categorySlug: "chargers",
     price: 30,
-    image: IMG.glue
   }),
   p({
     id: "p-oraimo-headset",
@@ -505,7 +431,6 @@ export const products: SeedProduct[] = [
     brand: "Oraimo",
     categorySlug: "audio",
     price: 60,
-    image: IMG.headset
   }),
   p({
     id: "p-akg",
@@ -514,7 +439,6 @@ export const products: SeedProduct[] = [
     brand: "Samsung",
     categorySlug: "audio",
     price: 35,
-    image: IMG.headset
   }),
   p({
     id: "p-mango-hs",
@@ -523,7 +447,6 @@ export const products: SeedProduct[] = [
     brand: "Mango",
     categorySlug: "audio",
     price: 50,
-    image: IMG.headset
   }),
 
   // —— Power ——
@@ -533,7 +456,6 @@ export const products: SeedProduct[] = [
     name: "Laptop Charger Full Set",
     categorySlug: "power",
     price: 250,
-    image: IMG.laptopCharger,
     specs: ["HP, Dell, Lenovo, Acer, Asus, Toshiba, Samsung"],
     description:
       "Laptop charger full set for HP, Dell, Lenovo, Acer, Asus, Toshiba and Samsung. Tell us your laptop model when ordering.",
@@ -545,7 +467,6 @@ export const products: SeedProduct[] = [
     name: "Laptop Power Pack Only",
     categorySlug: "power",
     price: 200,
-    image: IMG.laptopCharger,
     specs: ["Power pack only — HP, Dell, Lenovo, Acer, Asus, Toshiba, Samsung"]
   }),
   ...([
@@ -564,7 +485,6 @@ export const products: SeedProduct[] = [
       name: `Extension Cable ${ways} (${len})`,
       categorySlug: "power",
       price,
-      image: IMG.extension,
       specs: [ways, len]
     })
   ),
@@ -576,7 +496,6 @@ export const products: SeedProduct[] = [
     name: "AirPods Pro 3",
     categorySlug: "audio",
     price: 300,
-    image: IMG.airpods,
     featured: true
   }),
   p({
@@ -585,7 +504,6 @@ export const products: SeedProduct[] = [
     name: "AirPods Pro 2 (Type-C)",
     categorySlug: "audio",
     price: 350,
-    image: IMG.airpods,
     hotDeal: true
   }),
   p({
@@ -594,7 +512,6 @@ export const products: SeedProduct[] = [
     name: "AirPods Pro 2",
     categorySlug: "audio",
     price: 300,
-    image: IMG.airpods
   }),
   p({
     id: "p-ap-pro1",
@@ -602,7 +519,6 @@ export const products: SeedProduct[] = [
     name: "AirPods Pro 1",
     categorySlug: "audio",
     price: 280,
-    image: IMG.airpods
   }),
   p({
     id: "p-oraimo-f9",
@@ -611,7 +527,6 @@ export const products: SeedProduct[] = [
     brand: "Oraimo",
     categorySlug: "audio",
     price: 200,
-    image: IMG.airpods,
     featured: true
   }),
   p({
@@ -621,7 +536,6 @@ export const products: SeedProduct[] = [
     brand: "Sivia",
     categorySlug: "audio",
     price: 150,
-    image: IMG.airpods
   }),
   p({
     id: "p-tws-f9",
@@ -629,7 +543,6 @@ export const products: SeedProduct[] = [
     name: "TWS F9-5",
     categorySlug: "audio",
     price: 200,
-    image: IMG.airpods
   }),
   p({
     id: "p-ubl",
@@ -637,7 +550,6 @@ export const products: SeedProduct[] = [
     name: "UBL Harman",
     categorySlug: "audio",
     price: 200,
-    image: IMG.speaker
   }),
   p({
     id: "p-vortex",
@@ -645,7 +557,6 @@ export const products: SeedProduct[] = [
     name: "Vortex Pods",
     categorySlug: "audio",
     price: 150,
-    image: IMG.airpods
   }),
   p({
     id: "p-mango-pods",
@@ -654,7 +565,6 @@ export const products: SeedProduct[] = [
     brand: "Mango",
     categorySlug: "audio",
     price: 150,
-    image: IMG.airpods
   }),
   p({
     id: "p-tronix",
@@ -662,7 +572,6 @@ export const products: SeedProduct[] = [
     name: "Tronix Pods",
     categorySlug: "audio",
     price: 150,
-    image: IMG.airpods
   }),
   p({
     id: "p-calus-s69",
@@ -671,7 +580,6 @@ export const products: SeedProduct[] = [
     brand: "CALUS",
     categorySlug: "audio",
     price: 500,
-    image: IMG.speaker,
     featured: true
   }),
   p({
@@ -681,7 +589,6 @@ export const products: SeedProduct[] = [
     brand: "CALUS",
     categorySlug: "audio",
     price: 200,
-    image: IMG.speaker
   }),
   p({
     id: "p-r800",
@@ -689,7 +596,6 @@ export const products: SeedProduct[] = [
     name: "R800 Bluetooth Speaker",
     categorySlug: "audio",
     price: 250,
-    image: IMG.speaker
   }),
 
   // —— Watches ——
@@ -699,7 +605,6 @@ export const products: SeedProduct[] = [
     name: "T900 Ultra Smart Watch",
     categorySlug: "watches",
     price: 250,
-    image: IMG.watch,
     featured: true
   }),
   p({
@@ -708,7 +613,6 @@ export const products: SeedProduct[] = [
     name: "KT8 Ultra Max Smart Watch",
     categorySlug: "watches",
     price: 300,
-    image: IMG.watch,
     hotDeal: true
   })
 ];

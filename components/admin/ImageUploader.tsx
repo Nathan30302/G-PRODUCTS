@@ -16,7 +16,15 @@ type Props = {
   /** Allow multiple photos (products). Services use a single photo. */
   multiple?: boolean;
   label?: string;
+  /** Provider desk — show download links for reuse */
+  allowDownload?: boolean;
+  /** Prefix for downloaded filenames */
+  downloadPrefix?: string;
 };
+
+function downloadHref(url: string, filename: string): string {
+  return `/api/admin/download-photo?url=${encodeURIComponent(url)}&name=${encodeURIComponent(filename)}`;
+}
 
 export function ImageUploader({
   name,
@@ -25,7 +33,9 @@ export function ImageUploader({
   onUrlsChange,
   folder = "products",
   multiple = true,
-  label = "Photos"
+  label = "Photos",
+  allowDownload = false,
+  downloadPrefix = "product"
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [internalUrls, setInternalUrls] = useState<string[]>(
@@ -120,6 +130,17 @@ export function ImageUploader({
               >
                 Remove
               </button>
+              {allowDownload && (
+                <a
+                  href={downloadHref(
+                    url,
+                    `${downloadPrefix}-${idx + 1}${url.match(/\.(png|webp|gif)/i)?.[0] ?? ".jpg"}`
+                  )}
+                  className="absolute bottom-1.5 left-1.5 rounded-pill bg-ink-950/85 px-2.5 py-1 text-[10px] font-bold text-brand opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
+                >
+                  Download
+                </a>
+              )}
             </div>
           ))}
         </div>

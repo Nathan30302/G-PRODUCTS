@@ -193,6 +193,8 @@ export function VariantEditor({
                     <ImageUploader
                       folder="products"
                       multiple
+                      allowDownload
+                      downloadPrefix={`${row.name.trim() || "colour"}`.toLowerCase().replace(/\s+/g, "-")}
                       label={`Photos for ${row.name.trim() || "this colour"}`}
                       urls={row.imageUrls}
                       onUrlsChange={(imageUrls) =>

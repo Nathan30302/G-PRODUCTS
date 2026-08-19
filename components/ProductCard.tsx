@@ -44,15 +44,15 @@ export function ProductCard({
       className="group block h-full transition-transform duration-200 ease-out active:scale-[0.97] active:opacity-90"
     >
       <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-ink-900/70">
-        <div className="relative aspect-square overflow-hidden bg-ink-850">
+        <div className="relative aspect-square overflow-hidden bg-white">
           <SafeImage
             src={coverUrl}
             alt={product.name}
             fill
             priority={priority}
-            quality={72}
+            quality={85}
             sizes="(max-width: 640px) 46vw, (max-width: 1024px) 30vw, 16rem"
-            className={`object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03] ${
+            className={`object-contain p-2 transition-transform duration-300 ease-out group-hover:scale-[1.03] ${
               soldOut ? "opacity-50 saturate-[0.65]" : ""
             }`}
           />
