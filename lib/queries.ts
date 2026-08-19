@@ -54,7 +54,11 @@ function toProduct(p: DbProductWithRelations): Product {
     compareAtPrice: p.compareAtPrice ?? undefined,
     images: p.images
       .sort((a, b) => a.sortOrder - b.sortOrder)
-      .map((i) => ({ url: i.url, alt: i.alt })),
+      .map((i) => ({
+        url: i.url,
+        alt: i.alt,
+        variantId: i.variantId ?? undefined
+      })),
     shortSpecs: specs,
     description: p.description,
     stock,

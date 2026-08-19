@@ -1,60 +1,44 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo } from "react";
 import { Product } from "@/lib/types";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { NotifyMeForm } from "@/components/NotifyMeForm";
 import { productWhatsAppLink } from "@/lib/whatsapp";
 import { Icon } from "@/components/Icons";
-
-function swatchStyle(hex?: string, name?: string): CSSProperties {
-  if (hex) return { backgroundColor: hex };
-  // fallback: hash name to a grey tone
-  const n = (name ?? "x").toLowerCase();
-  if (n.includes("white") || n.includes("ivory")) return { backgroundColor: "#f5f5f5" };
-  if (n.includes("black") || n.includes("midnight")) return { backgroundColor: "#111111" };
-  if (n.includes("blue")) return { backgroundColor: "#2563eb" };
-  if (n.includes("red")) return { backgroundColor: "#dc2626" };
-  if (n.includes("green")) return { backgroundColor: "#16a34a" };
-  if (n.includes("gold") || n.includes("yellow")) return { backgroundColor: "#eab308" };
-  if (n.includes("silver") || n.includes("grey") || n.includes("gray"))
-    return { backgroundColor: "#9ca3af" };
-  if (n.includes("pink")) return { backgroundColor: "#ec4899" };
-  return { backgroundColor: "#6b7280" };
-}
+import { useProductVariant } from "@/components/ProductVariantContext";
+import { swatchStyle } from "@/lib/swatch";
 
 export function ProductActions({ product }: { product: Product }) {
-  const firstAvailable =
-    product.variants.find((v) => v.available) ?? product.variants[0] ?? null;
-  const [selectedId, setSelectedId] = useState<string | null>(
-    firstAvailable?.id ?? null
-  );
-
-  const selected = useMemo(
-    () => product.variants.find((v) => v.id === selectedId) ?? null,
-    [product.variants, selectedId]
-  );
+  const { selectedId, setSelectedId, selected } = useProductVariant();
 
   const waLink = productWhatsAppLink(
     product,
-    typeof window !== "undefined" ? window.location.href : undefined
+    typeof window !== "undefined" ? window.location.href : undefined,
+    selected ?? undefined
   );
 
   const showVariants = product.variants.length > 0;
-  const unavailable = selected ? !selected.available : product.stock === "sold_out";
+  const unavailable = selected
+    ? !selected.available
+    : product.stock === "sold_out";
+
+  const selectionLabel = useMemo(() => {
+    if (!selected) return null;
+    return selected.available
+      ? selected.name
+      : `${selected.name} · Out of stock`;
+  }, [selected]);
 
   return (
     <div id="buy" className="scroll-mt-28 space-y-4">
       {showVariants && (
         <div>
           <p className="text-sm font-semibold text-white">
-            Colour
-            {selected && (
+            Choose colour
+            {selectionLabel && (
               <span className="ml-2 font-normal text-white/50">
-                {selected.name}
-                {selected.available
-                  ? ` · ${selected.quantity} in stock`
-                  : " · Out of stock"}
+                · {selectionLabel}
               </span>
             )}
           </p>
@@ -67,11 +51,7 @@ export function ProductActions({ product }: { product: Product }) {
                   key={v.id}
                   type="button"
                   onClick={() => setSelectedId(v.id)}
-                  title={
-                    out
-                      ? `${v.name} — out of stock`
-                      : `${v.name} (${v.quantity} available)`
-                  }
+                  title={out ? `${v.name} — out of stock` : v.name}
                   className={`relative flex items-center gap-2 rounded-pill border px-3 py-2 text-sm font-medium transition-colors ${
                     out
                       ? "cursor-pointer border-white/10 bg-white/[0.03] text-white/35"
@@ -86,7 +66,9 @@ export function ProductActions({ product }: { product: Product }) {
                     }`}
                     style={swatchStyle(v.colorHex, v.name)}
                   />
-                  <span className={out ? "line-through decoration-white/30" : ""}>
+                  <span
+                    className={out ? "line-through decoration-white/30" : ""}
+                  >
                     {v.name}
                   </span>
                   {out && (
@@ -96,6 +78,13 @@ export function ProductActions({ product }: { product: Product }) {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {selected && selected.available && (
+        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] px-4 py-3 text-sm text-white/70">
+          <span className="font-semibold text-white">Your selection:</span>{" "}
+          {product.name} · {selected.name}
         </div>
       )}
 

@@ -8,6 +8,7 @@ export type Category = {
 export type ProductImage = {
   url: string;
   alt: string;
+  variantId?: string | null;
 };
 
 export type StockStatus = "in_stock" | "low_stock" | "sold_out";

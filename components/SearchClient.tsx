@@ -59,6 +59,21 @@ export function SearchClient({
     else setCat("all");
   }
 
+  const grouped = useMemo(() => {
+    if (query.trim() || cat !== "all") return null;
+    const map = new Map<string, Product[]>();
+    for (const c of categories) map.set(c.slug, []);
+    for (const p of products) {
+      const list = map.get(p.categorySlug);
+      if (list) list.push(p);
+    }
+    return categories
+      .map((c) => ({ category: c, items: map.get(c.slug) ?? [] }))
+      .filter((g) => g.items.length > 0);
+  }, [query, cat, products, categories]);
+
+  const showGrouped = grouped && grouped.length > 0;
+
   return (
     <div className="container-g py-8 sm:py-10">
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
@@ -167,6 +182,32 @@ export function SearchClient({
           <Link href="/" className="btn-brand mt-5 px-5 py-2.5">
             Browse the shop
           </Link>
+        </div>
+      ) : showGrouped ? (
+        <div className="mt-6 space-y-10">
+          {grouped!.map(({ category, items }) => (
+            <section key={category.slug}>
+              <div className="mb-4 flex items-end justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand/80">
+                    {category.name}
+                  </p>
+                  <p className="mt-1 text-sm text-white/45">{category.tagline}</p>
+                </div>
+                <Link
+                  href={`/category/${category.slug}`}
+                  className="text-sm font-semibold text-brand hover:underline"
+                >
+                  View all
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                {items.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

@@ -1,11 +1,16 @@
 import { siteConfig } from "@/config/site";
 import { formatPrice } from "@/lib/format";
-import { Product } from "@/lib/types";
+import { Product, ProductVariant } from "@/lib/types";
 
-export function productWhatsAppLink(product: Product, url?: string): string {
+export function productWhatsAppLink(
+  product: Product,
+  url?: string,
+  variant?: ProductVariant
+): string {
+  const spec = variant ? ` (${variant.name})` : "";
   const lines = [
     `Hi G-Products, I'm interested in:`,
-    `*${product.name}* - ${formatPrice(product.price)}`,
+    `*${product.name}${spec}* - ${formatPrice(product.price)}`,
     url ? `Link: ${url}` : ""
   ].filter(Boolean);
   const text = encodeURIComponent(lines.join("\n"));

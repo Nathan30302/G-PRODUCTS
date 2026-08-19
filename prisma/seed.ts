@@ -44,13 +44,18 @@ async function main() {
   }
   console.log(`Seeded ${categories.length} categories`);
 
-  // --- Products ---
+  // --- Products (never delete provider-added items or their photos) ---
   for (const p of products) {
     const categoryId = categoryIdBySlug.get(p.categorySlug);
     if (!categoryId) {
       console.warn(`Skipping ${p.slug}: unknown category ${p.categorySlug}`);
       continue;
     }
+
+    const existing = await prisma.product.findUnique({
+      where: { slug: p.slug },
+      include: { images: true, variants: true }
+    });
 
     await prisma.product.upsert({
       where: { slug: p.slug },
@@ -81,32 +86,31 @@ async function main() {
       }
     });
 
-    // reset images to match seed data
-    await prisma.productImage.deleteMany({
-      where: { product: { slug: p.slug } }
-    });
-    const created = await prisma.product.findUnique({
+    const row = await prisma.product.findUnique({
       where: { slug: p.slug }
     });
-    if (created) {
+    if (!row) continue;
+
+    // Only seed images/variants when the product is new or still empty
+    if (!existing || existing.images.length === 0) {
+      await prisma.productImage.deleteMany({ where: { productId: row.id } });
       await prisma.productImage.createMany({
         data: p.images.map((img, idx) => ({
-          productId: created.id,
+          productId: row.id,
           url: img.url,
           alt: img.alt,
           sortOrder: idx
         }))
       });
+    }
 
-      // Default colour variant from legacy stock status
+    if (!existing || existing.variants.length === 0) {
       const qty =
         p.stock === "sold_out" ? 0 : p.stock === "low_stock" ? 3 : 12;
-      await prisma.productVariant.deleteMany({
-        where: { productId: created.id }
-      });
+      await prisma.productVariant.deleteMany({ where: { productId: row.id } });
       await prisma.productVariant.create({
         data: {
-          productId: created.id,
+          productId: row.id,
           name: "Standard",
           colorHex: null,
           quantity: qty,
@@ -115,26 +119,9 @@ async function main() {
       });
     }
   }
-  console.log(`Seeded ${products.length} products (+ colour variants)`);
+  console.log(`Seeded ${products.length} catalog products (photos preserved)`);
 
-  // Remove products / categories no longer in the official catalog.
-  // Guard empty notIn — Prisma/SQL treats NOT IN () as matching everything.
-  const keepSlugs = products.map((p) => p.slug);
-  if (keepSlugs.length > 0) {
-    const removed = await prisma.product.deleteMany({
-      where: { slug: { notIn: keepSlugs } }
-    });
-    if (removed.count) console.log(`Removed ${removed.count} old products`);
-  }
-
-  const keepCats = categories.map((c) => c.slug);
-  if (keepCats.length > 0) {
-    const removedCats = await prisma.category.deleteMany({
-      where: { slug: { notIn: keepCats } }
-    });
-    if (removedCats.count)
-      console.log(`Removed ${removedCats.count} old categories`);
-  }
+  // Do not delete products the provider added outside the seed catalog
 
   // --- Service offerings (admin-editable) ---
   for (let i = 0; i < services.length; i++) {

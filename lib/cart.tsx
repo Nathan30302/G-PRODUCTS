@@ -10,6 +10,7 @@ import {
   ReactNode
 } from "react";
 import { Product, ProductVariant } from "@/lib/types";
+import { coverImageForProduct } from "@/lib/product-images";
 
 export type CartItem = {
   id: string; // productId:variantId or productId
@@ -70,7 +71,7 @@ function reducer(state: CartState, action: CartAction): CartState {
             name: displayName,
             variantName: variant?.name,
             price: product.price,
-            image: product.images[0]?.url ?? "",
+            image: coverImageForProduct(product, variant),
             qty: 1
           }
         ]

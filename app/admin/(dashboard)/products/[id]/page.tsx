@@ -38,6 +38,10 @@ export default async function EditProductPage({
     specs = [];
   }
 
+  const sharedImageUrls = product.images
+    .filter((i) => !i.variantId)
+    .map((i) => i.url);
+
   return (
     <ProductForm
       categories={categories}
@@ -53,12 +57,24 @@ export default async function EditProductPage({
         shortSpecs: specs,
         featured: product.featured,
         hotDeal: product.hotDeal,
-        imageUrls: product.images.map((i) => i.url),
-        variants: product.variants.map((v) => ({
-          name: v.name,
-          colorHex: v.colorHex ?? "",
-          quantity: v.quantity
-        }))
+        sharedImageUrls,
+        variants: product.variants.map((v, idx) => {
+          const variantImages = product.images
+            .filter((i) => i.variantId === v.id)
+            .map((i) => i.url);
+          return {
+            id: v.id,
+            name: v.name,
+            colorHex: v.colorHex ?? "",
+            quantity: v.quantity,
+            imageUrls:
+              variantImages.length > 0
+                ? variantImages
+                : idx === 0
+                  ? sharedImageUrls
+                  : []
+          };
+        })
       }}
     />
   );

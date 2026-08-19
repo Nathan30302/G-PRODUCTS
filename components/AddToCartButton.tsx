@@ -6,6 +6,7 @@ import { useCart } from "@/lib/cart";
 import { useToast } from "@/components/Toast";
 import { Icon } from "@/components/Icons";
 import { Product, ProductVariant } from "@/lib/types";
+import { coverImageForProduct } from "@/lib/product-images";
 
 export function AddToCartButton({
   product,
@@ -66,7 +67,7 @@ export function AddToCartButton({
       description: chosen
         ? `${product.name} · ${chosen.name}`
         : product.name,
-      image: product.images[0]?.url,
+      image: coverImageForProduct(product, chosen),
       href: "/cart",
       hrefLabel: "View cart"
     });

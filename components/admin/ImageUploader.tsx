@@ -3,10 +3,14 @@
 import { useRef, useState, useTransition } from "react";
 
 type Props = {
-  /** Form field name that receives the URL(s) */
-  name: string;
+  /** Form field name that receives the URL(s) — omit when using onUrlsChange */
+  name?: string;
   /** Starting URLs already saved on the product/service */
   initialUrls?: string[];
+  /** Controlled URLs (overrides initialUrls when set) */
+  urls?: string[];
+  /** Called when URLs change (for variant editors) */
+  onUrlsChange?: (urls: string[]) => void;
   /** products | services */
   folder?: "products" | "services";
   /** Allow multiple photos (products). Services use a single photo. */
@@ -17,14 +21,22 @@ type Props = {
 export function ImageUploader({
   name,
   initialUrls = [],
+  urls: controlledUrls,
+  onUrlsChange,
   folder = "products",
   multiple = true,
   label = "Photos"
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [urls, setUrls] = useState<string[]>(
+  const [internalUrls, setInternalUrls] = useState<string[]>(
     initialUrls.filter(Boolean)
   );
+  const urls = controlledUrls ?? internalUrls;
+  const setUrls = (next: string[] | ((prev: string[]) => string[])) => {
+    const resolved = typeof next === "function" ? next(urls) : next;
+    if (onUrlsChange) onUrlsChange(resolved);
+    else setInternalUrls(resolved);
+  };
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -78,7 +90,7 @@ export function ImageUploader({
         ) : null}
       </div>
 
-      <input type="hidden" name={name} value={value} />
+      {name ? <input type="hidden" name={name} value={value} /> : null}
 
       {urls.length > 0 ? (
         <div className="mt-3 grid grid-cols-3 gap-2.5 sm:grid-cols-4">

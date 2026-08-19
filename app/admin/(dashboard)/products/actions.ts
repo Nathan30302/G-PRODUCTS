@@ -36,7 +36,13 @@ function toInt(value: FormDataEntryValue | null): number | null {
   return parseInt(s, 10);
 }
 
-type VariantInput = { name: string; colorHex?: string; quantity: number };
+type VariantInput = {
+  id?: string;
+  name: string;
+  colorHex?: string;
+  quantity: number;
+  imageUrls: string[];
+};
 
 function parseVariants(raw: string): VariantInput[] {
   try {
@@ -44,9 +50,13 @@ function parseVariants(raw: string): VariantInput[] {
     if (!Array.isArray(list)) return [];
     return list
       .map((v) => ({
+        id: v.id ? String(v.id).trim() : undefined,
         name: String(v.name ?? "").trim(),
         colorHex: String(v.colorHex ?? "").trim() || undefined,
-        quantity: Math.max(0, Math.round(Number(v.quantity) || 0))
+        quantity: Math.max(0, Math.round(Number(v.quantity) || 0)),
+        imageUrls: Array.isArray(v.imageUrls)
+          ? v.imageUrls.map((u) => String(u).trim()).filter(Boolean)
+          : []
       }))
       .filter((v) => v.name);
   } catch {
@@ -76,14 +86,9 @@ export async function saveProduct(
       .map((s) => s.trim())
       .filter(Boolean);
 
-    const imageUrls = String(formData.get("imageUrls") ?? "")
-      .split("\n")
-      .map((s) => s.trim())
-      .filter(Boolean);
-
     const variants = parseVariants(String(formData.get("variantsJson") ?? "[]"));
     if (variants.length === 0) {
-      variants.push({ name: "Standard", quantity: 0 });
+      variants.push({ name: "Standard", quantity: 0, imageUrls: [] });
     }
 
     if (!name) return { error: "Product name is required." };
@@ -94,7 +99,9 @@ export async function saveProduct(
       where: { slug: categorySlug }
     });
     if (!category) {
-      return { error: "That category isn’t available. Refresh and try again." };
+      return {
+        error: "That category isn’t available. Refresh and try again."
+      };
     }
 
     const totalQty = variants.reduce((n, v) => n + v.quantity, 0);
@@ -125,27 +132,77 @@ export async function saveProduct(
       productId = created.id;
     }
 
-    await prisma.productImage.deleteMany({ where: { productId } });
-    if (imageUrls.length > 0) {
-      await prisma.productImage.createMany({
-        data: imageUrls.map((url, idx) => ({
-          productId,
-          url,
-          alt: name,
-          sortOrder: idx
-        }))
-      });
+    const existingVariants = await prisma.productVariant.findMany({
+      where: { productId }
+    });
+    const keptVariantIds: string[] = [];
+
+    for (let idx = 0; idx < variants.length; idx++) {
+      const v = variants[idx];
+      let variantId = v.id;
+
+      if (variantId && existingVariants.some((ev) => ev.id === variantId)) {
+        await prisma.productVariant.update({
+          where: { id: variantId },
+          data: {
+            name: v.name,
+            colorHex: v.colorHex ?? null,
+            quantity: v.quantity,
+            sortOrder: idx
+          }
+        });
+      } else {
+        const byName = existingVariants.find(
+          (ev) =>
+            ev.name.toLowerCase() === v.name.toLowerCase() &&
+            !keptVariantIds.includes(ev.id)
+        );
+        if (byName) {
+          variantId = byName.id;
+          await prisma.productVariant.update({
+            where: { id: variantId },
+            data: {
+              name: v.name,
+              colorHex: v.colorHex ?? null,
+              quantity: v.quantity,
+              sortOrder: idx
+            }
+          });
+        } else {
+          const created = await prisma.productVariant.create({
+            data: {
+              productId,
+              name: v.name,
+              colorHex: v.colorHex ?? null,
+              quantity: v.quantity,
+              sortOrder: idx
+            }
+          });
+          variantId = created.id;
+        }
+      }
+
+      keptVariantIds.push(variantId!);
+
+      await prisma.productImage.deleteMany({ where: { variantId } });
+      if (v.imageUrls.length > 0) {
+        await prisma.productImage.createMany({
+          data: v.imageUrls.map((url, i) => ({
+            productId,
+            variantId,
+            url,
+            alt: `${name} · ${v.name}`,
+            sortOrder: i
+          }))
+        });
+      }
     }
 
-    await prisma.productVariant.deleteMany({ where: { productId } });
-    await prisma.productVariant.createMany({
-      data: variants.map((v, idx) => ({
+    await prisma.productVariant.deleteMany({
+      where: {
         productId,
-        name: v.name,
-        colorHex: v.colorHex ?? null,
-        quantity: v.quantity,
-        sortOrder: idx
-      }))
+        id: { notIn: keptVariantIds }
+      }
     });
 
     revalidatePath("/admin/products");
