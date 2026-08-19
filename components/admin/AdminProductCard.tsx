@@ -3,13 +3,17 @@ import { formatPrice } from "@/lib/format";
 import { Product } from "@/lib/types";
 import { SafeImage } from "@/components/SafeImage";
 import { Icon } from "@/components/Icons";
+import { coverImageForProduct } from "@/lib/product-images";
 
 export function AdminProductCard({
   product
 }: {
   product: Product & { categoryName: string; slug: string };
 }) {
-  const thumb = product.images[0]?.url ?? "";
+  const thumb = coverImageForProduct(
+    product,
+    product.variants.find((v) => v.available) ?? product.variants[0] ?? null
+  );
   const totalStock = product.variants.reduce((n, v) => n + v.quantity, 0);
   const inStock = totalStock > 0;
   const lowStock = inStock && totalStock <= 5;

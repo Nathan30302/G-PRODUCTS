@@ -191,9 +191,18 @@ export async function saveProduct(
 
       keptVariantIds.push(variantId!);
 
-      // Only replace photos when the provider touched this colour's gallery.
-      // Empty imageUrls on an untouched section keeps existing uploads safe.
-      if (v.photosDirty) {
+      const existingForVariant = await prisma.productImage.count({
+        where: { variantId }
+      });
+
+      // Sync when photos were edited, on first save with uploads, or when
+      // the form has URLs but this colour has none in the database yet.
+      const shouldSyncImages =
+        v.photosDirty ||
+        (!id && v.imageUrls.length > 0) ||
+        (v.imageUrls.length > 0 && existingForVariant === 0);
+
+      if (shouldSyncImages) {
         await prisma.productImage.deleteMany({ where: { variantId } });
         if (v.imageUrls.length > 0) {
           await prisma.productImage.createMany({
@@ -220,12 +229,13 @@ export async function saveProduct(
     revalidatePath("/");
     revalidatePath("/search");
     revalidatePath(`/category/${categorySlug}`);
-    if (id) {
-      const existing = await prisma.product.findUnique({
-        where: { id: productId },
-        select: { slug: true }
-      });
-      if (existing) revalidatePath(`/product/${existing.slug}`);
+
+    const saved = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { slug: true }
+    });
+    if (saved?.slug) {
+      revalidatePath(`/product/${saved.slug}`);
     }
 
     redirect("/admin/products");

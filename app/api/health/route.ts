@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
+import { existsSync } from "node:fs";
 import { prisma } from "@/lib/db";
 import { MIN_PRODUCTS } from "@/lib/ensure-catalog";
+import { uploadsRoot } from "@/lib/uploads";
+import { legacyUploadRoots } from "@/lib/upload-resolve";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +34,8 @@ export async function GET() {
     const dbPath = process.env.DATABASE_URL?.startsWith("file:")
       ? process.env.DATABASE_URL.slice("file:".length).split("?")[0]
       : null;
+    const uploadRoots = legacyUploadRoots();
+    const hasDataVolume = existsSync("/data");
 
     return NextResponse.json(
       {
@@ -45,7 +50,12 @@ export async function GET() {
           process.env.OWNER_EMAIL?.trim() || "gift@gproducts.zm"
         ),
         dbPath,
-        minProducts: MIN_PRODUCTS
+        minProducts: MIN_PRODUCTS,
+        uploads: {
+          activeRoot: uploadsRoot(),
+          hasDataVolume,
+          roots: uploadRoots
+        }
       },
       { status: ok ? 200 : 503 }
     );

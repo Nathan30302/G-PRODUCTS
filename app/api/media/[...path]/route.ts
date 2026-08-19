@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import { resolveUploadPath, uploadsRoot } from "@/lib/uploads";
+import { resolveUploadFile } from "@/lib/upload-resolve";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,11 +28,9 @@ export async function GET(
   }
 
   const relative = parts.join("/");
-  const absolute = resolveUploadPath(relative);
-  const root = uploadsRoot();
+  const absolute = resolveUploadFile(relative);
 
-  // Prevent path traversal outside the uploads root
-  if (!absolute.startsWith(root)) {
+  if (!absolute) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 

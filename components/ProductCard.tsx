@@ -4,6 +4,7 @@ import { formatPrice, discountPercent } from "@/lib/format";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { Icon } from "@/components/Icons";
 import { SafeImage } from "@/components/SafeImage";
+import { coverImageForProduct } from "@/lib/product-images";
 
 export function ProductCard({
   product,
@@ -18,6 +19,7 @@ export function ProductCard({
   const primary =
     product.variants.find((v) => v.available) ?? product.variants[0] ?? null;
   const colorLabel = primary?.name;
+  const coverUrl = coverImageForProduct(product, primary);
 
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/85 transition-all duration-500 ease-out-expo hover:border-brand/25 hover:bg-ink-850/90">
@@ -27,8 +29,8 @@ export function ProductCard({
       >
         <div className="relative aspect-square bg-[radial-gradient(ellipse_at_center,_#123b43_0%,_#06181c_70%)]">
           <SafeImage
-            src={product.images[0]?.url}
-            alt={product.images[0]?.alt ?? product.name}
+            src={coverUrl}
+            alt={product.name}
             fill
             priority={priority}
             quality={75}

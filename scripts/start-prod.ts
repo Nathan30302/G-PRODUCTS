@@ -78,14 +78,18 @@ function migrateUploadsToVolume() {
   if (!existsSync("/data")) return;
 
   const target = path.join("/data", "uploads");
-  const legacy = path.join(process.cwd(), ".uploads");
+  const legacySources = [
+    path.join(process.cwd(), ".uploads"),
+    path.join(process.cwd(), "public", "uploads")
+  ];
 
   mkdirSync(target, { recursive: true });
 
-  if (existsSync(legacy)) {
+  for (const legacy of legacySources) {
+    if (!existsSync(legacy)) continue;
     try {
       cpSync(legacy, target, { recursive: true, force: false });
-      console.log("[start] merged legacy uploads into /data/uploads");
+      console.log(`[start] merged ${legacy} → ${target}`);
     } catch {
       // target may already contain files — that's fine
     }
