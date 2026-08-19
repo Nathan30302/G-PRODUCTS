@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { LogoutButton } from "@/components/LogoutButton";
+import { LaunchSplash } from "@/components/LaunchSplash";
 
 type NavItem = {
   href: string;
@@ -99,6 +100,7 @@ export function AdminShell({
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-ink-950 text-white">
+      <LaunchSplash variant="admin" />
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.07),_transparent_55%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.05),_transparent_45%)]" />

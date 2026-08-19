@@ -58,6 +58,12 @@ html {
   scrollbar-width: none;
 }
 
+/* Prevent scroll while launch splash is visible */
+html.splash-open,
+html.splash-open body {
+  overflow: hidden;
+}
+
 /* Hero entrance stagger */
 .hero-rise {
   animation: hero-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
