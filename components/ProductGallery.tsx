@@ -103,8 +103,8 @@ export function ProductGallery({
             >
               ›
             </button>
-            <p className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-pill bg-ink-950/75 px-3 py-1 text-[11px] font-semibold text-white/70 backdrop-blur-sm">
-              Swipe photos · {active + 1}/{count}
+            <p className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-pill bg-ink-950/75 px-3 py-1 text-[11px] font-semibold tabular-nums text-white/70 backdrop-blur-sm">
+              {active + 1} / {count}
             </p>
           </>
         )}

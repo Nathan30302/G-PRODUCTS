@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { categories } from "../lib/categories";
 import { products } from "../lib/products";
 import { services, DEFAULT_SETTINGS } from "../lib/services";
+import { isUploadUrl } from "../lib/uploads";
 
 const prisma = new PrismaClient();
 
@@ -91,9 +92,20 @@ async function main() {
     });
     if (!row) continue;
 
-    // Only seed images/variants when the product is new or still empty
-    if (!existing || existing.images.length === 0) {
-      await prisma.productImage.deleteMany({ where: { productId: row.id } });
+    // Only seed placeholder images on brand-new products with no photos yet.
+    // Never overwrite provider uploads or any photos already in the database.
+    const hasPhotos = (existing?.images.length ?? 0) > 0;
+    const hasUploads = existing?.images.some((img) => isUploadUrl(img.url));
+    if (!existing) {
+      await prisma.productImage.createMany({
+        data: p.images.map((img, idx) => ({
+          productId: row.id,
+          url: img.url,
+          alt: img.alt,
+          sortOrder: idx
+        }))
+      });
+    } else if (!hasPhotos && !hasUploads) {
       await prisma.productImage.createMany({
         data: p.images.map((img, idx) => ({
           productId: row.id,

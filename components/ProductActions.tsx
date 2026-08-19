@@ -34,15 +34,11 @@ export function ProductActions({ product }: { product: Product }) {
     <div id="buy" className="scroll-mt-28 space-y-4">
       {showVariants && (
         <div>
-          <p className="text-sm font-semibold text-white">
-            Choose colour
-            {selectionLabel && (
-              <span className="ml-2 font-normal text-white/50">
-                · {selectionLabel}
-              </span>
-            )}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <p className="text-sm font-semibold text-white">Choose colour</p>
+          {selectionLabel && (
+            <p className="mt-1 text-sm text-white/50">{selectionLabel}</p>
+          )}
+          <div className="mt-4 flex flex-wrap gap-3">
             {product.variants.map((v) => {
               const active = v.id === selectedId;
               const out = !v.available;
@@ -52,28 +48,34 @@ export function ProductActions({ product }: { product: Product }) {
                   type="button"
                   onClick={() => setSelectedId(v.id)}
                   title={out ? `${v.name} — out of stock` : v.name}
-                  className={`relative flex items-center gap-2 rounded-pill border px-3 py-2 text-sm font-medium transition-colors ${
-                    out
-                      ? "cursor-pointer border-white/10 bg-white/[0.03] text-white/35"
-                      : active
-                        ? "border-brand bg-brand/15 text-white"
-                        : "border-ink-700 bg-ink-900 text-white/70 hover:border-ink-600"
+                  aria-label={v.name}
+                  aria-pressed={active}
+                  className={`group relative flex flex-col items-center gap-2 transition-transform active:scale-95 ${
+                    out ? "opacity-50" : ""
                   }`}
                 >
                   <span
-                    className={`h-4 w-4 shrink-0 rounded-full ring-1 ring-white/20 ${
-                      out ? "opacity-40 grayscale" : ""
-                    }`}
+                    className={`relative flex h-11 w-11 items-center justify-center rounded-full ring-2 transition-all ${
+                      active
+                        ? "ring-brand ring-offset-2 ring-offset-ink-950 scale-110"
+                        : "ring-white/20 hover:ring-white/40"
+                    } ${out ? "grayscale" : ""}`}
                     style={swatchStyle(v.colorHex, v.name)}
-                  />
+                  >
+                    {active && (
+                      <span className="absolute inset-0 rounded-full ring-2 ring-brand/60" />
+                    )}
+                    {out && (
+                      <span className="absolute inset-0 rounded-full bg-ink-950/45" />
+                    )}
+                  </span>
                   <span
-                    className={out ? "line-through decoration-white/30" : ""}
+                    className={`max-w-[4.5rem] truncate text-center text-[11px] font-medium ${
+                      active ? "text-white" : "text-white/50"
+                    } ${out ? "line-through decoration-white/30" : ""}`}
                   >
                     {v.name}
                   </span>
-                  {out && (
-                    <span className="absolute inset-0 rounded-pill bg-ink-950/40" />
-                  )}
                 </button>
               );
             })}

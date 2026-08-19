@@ -206,23 +206,7 @@ export function ProductForm({
           }
         />
 
-        {product?.sharedImageUrls && product.sharedImageUrls.length > 0 && (
-          <Section eyebrow="Legacy" title="Shared photos (fallback)">
-            <p className="-mt-2 text-sm text-white/45">
-              These photos are kept as a fallback until you assign them to a
-              colour above. They will not be deleted automatically.
-            </p>
-            <textarea
-              name="sharedImageUrls"
-              defaultValue={product.sharedImageUrls.join("\n")}
-              rows={3}
-              readOnly
-              className={`${field} opacity-80`}
-            />
-          </Section>
-        )}
-
-        <Section eyebrow="Step 3" title="Details & visibility">
+        <Section eyebrow="Step 4" title="Details & visibility">
           <div>
             <label className={label}>Description</label>
             <textarea

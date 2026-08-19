@@ -84,20 +84,23 @@ export function ImageUploader({
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
-        <label className="text-sm text-white/60">{label}</label>
+        <label className="text-sm font-semibold text-white/70">{label}</label>
         {pending ? (
-          <span className="text-xs font-semibold text-brand">Uploading…</span>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" />
+            Uploading…
+          </span>
         ) : null}
       </div>
 
       {name ? <input type="hidden" name={name} value={value} /> : null}
 
       {urls.length > 0 ? (
-        <div className="mt-3 grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {urls.map((url, idx) => (
             <div
               key={`${url}-${idx}`}
-              className="group relative aspect-square overflow-hidden rounded-2xl border border-white/[0.08] bg-ink-950"
+              className="group relative aspect-square overflow-hidden rounded-2xl border border-white/[0.08] bg-ink-950 shadow-inner"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -105,10 +108,15 @@ export function ImageUploader({
                 alt=""
                 className="h-full w-full object-cover"
               />
+              {idx === 0 && (
+                <span className="absolute left-2 top-2 rounded-pill bg-brand px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-ink-950">
+                  Cover
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => removeAt(idx)}
-                className="absolute right-1.5 top-1.5 rounded-pill bg-ink-950/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white/80 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
+                className="absolute right-1.5 top-1.5 rounded-pill bg-ink-950/85 px-2.5 py-1 text-[10px] font-bold text-white/90 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
               >
                 Remove
               </button>
@@ -116,22 +124,36 @@ export function ImageUploader({
           ))}
         </div>
       ) : (
-        <p className="mt-3 text-xs text-white/35">
-          No photos yet — add clear product shots from your phone.
-        </p>
-      )}
-
-      <div className="mt-3 flex flex-wrap items-center gap-2">
         <button
           type="button"
           disabled={pending}
           onClick={() => inputRef.current?.click()}
-          className="rounded-pill border border-brand/40 bg-brand/10 px-4 py-2.5 text-sm font-bold text-brand transition-colors hover:bg-brand/20 disabled:opacity-50"
+          className="mt-3 flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/15 bg-ink-950/50 px-4 py-8 text-center transition-colors hover:border-brand/40 hover:bg-brand/[0.04] disabled:opacity-50"
         >
-          {multiple ? "Upload photos" : "Upload photo"}
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-2xl text-brand">
+            +
+          </span>
+          <span className="text-sm font-semibold text-white/80">
+            {multiple ? "Add photos" : "Add photo"}
+          </span>
+          <span className="text-xs text-white/35">
+            From your phone · JPG, PNG or WebP
+          </span>
         </button>
-        <span className="text-xs text-white/35">JPG, PNG or WebP · max 15MB each</span>
-      </div>
+      )}
+
+      {urls.length > 0 && (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => inputRef.current?.click()}
+            className="rounded-pill border border-brand/40 bg-brand/10 px-4 py-2.5 text-sm font-bold text-brand transition-colors hover:bg-brand/20 disabled:opacity-50"
+          >
+            {multiple ? "Add more photos" : "Replace photo"}
+          </button>
+        </div>
+      )}
 
       <input
         ref={inputRef}

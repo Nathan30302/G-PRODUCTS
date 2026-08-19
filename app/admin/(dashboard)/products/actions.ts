@@ -42,6 +42,8 @@ type VariantInput = {
   colorHex?: string;
   quantity: number;
   imageUrls: string[];
+  /** True when the provider changed photos for this colour in the form. */
+  photosDirty?: boolean;
 };
 
 function parseVariants(raw: string): VariantInput[] {
@@ -56,7 +58,8 @@ function parseVariants(raw: string): VariantInput[] {
         quantity: Math.max(0, Math.round(Number(v.quantity) || 0)),
         imageUrls: Array.isArray(v.imageUrls)
           ? v.imageUrls.map((u) => String(u).trim()).filter(Boolean)
-          : []
+          : [],
+        photosDirty: Boolean(v.photosDirty)
       }))
       .filter((v) => v.name);
   } catch {
@@ -139,6 +142,10 @@ export async function saveProduct(
 
     for (let idx = 0; idx < variants.length; idx++) {
       const v = variants[idx];
+      // New products: any uploaded URLs should persist on first save.
+      if (!id && v.imageUrls.length > 0) {
+        v.photosDirty = true;
+      }
       let variantId = v.id;
 
       if (variantId && existingVariants.some((ev) => ev.id === variantId)) {
@@ -184,17 +191,21 @@ export async function saveProduct(
 
       keptVariantIds.push(variantId!);
 
-      await prisma.productImage.deleteMany({ where: { variantId } });
-      if (v.imageUrls.length > 0) {
-        await prisma.productImage.createMany({
-          data: v.imageUrls.map((url, i) => ({
-            productId,
-            variantId,
-            url,
-            alt: `${name} · ${v.name}`,
-            sortOrder: i
-          }))
-        });
+      // Only replace photos when the provider touched this colour's gallery.
+      // Empty imageUrls on an untouched section keeps existing uploads safe.
+      if (v.photosDirty) {
+        await prisma.productImage.deleteMany({ where: { variantId } });
+        if (v.imageUrls.length > 0) {
+          await prisma.productImage.createMany({
+            data: v.imageUrls.map((url, i) => ({
+              productId,
+              variantId,
+              url,
+              alt: `${name} · ${v.name}`,
+              sortOrder: i
+            }))
+          });
+        }
       }
     }
 
