@@ -6,10 +6,9 @@ import {
   getProductsByCategory,
   getCategoryBySlug
 } from "@/lib/queries";
-import { formatPrice, discountPercent } from "@/lib/format";
-import { StockBadge } from "@/components/StockBadge";
-import { ProductActions } from "@/components/ProductActions";
-import { ProductGalleryWithVariant } from "@/components/ProductGalleryWithVariant";
+import { discountPercent } from "@/lib/format";
+import { ProductPurchasePanel } from "@/components/ProductPurchasePanel";
+import { ProductDetailInfo } from "@/components/ProductDetailInfo";
 import { ProductVariantProvider } from "@/components/ProductVariantContext";
 import { MobileBuyBar } from "@/components/MobileBuyBar";
 import { ProductRail } from "@/components/ProductRail";
@@ -87,92 +86,59 @@ export default async function ProductPage({
         </nav>
 
         <ProductVariantProvider product={product}>
-          <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
-            <ProductGalleryWithVariant
-              name={product.name}
-              badge={off ? `-${off}%` : null}
-            />
+          <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10 xl:gap-12">
+            <div className="mx-auto w-full max-w-[min(100%,20rem)] shrink-0 sm:max-w-xs lg:mx-0 lg:max-w-[22rem]">
+              <ProductPurchasePanel
+                product={product}
+                badge={off ? `-${off}%` : null}
+                compareOff={off}
+                saved={saved}
+              />
+            </div>
 
-            <div className="lg:py-2">
-              {product.brand && (
-                <span className="text-sm font-semibold uppercase tracking-wide text-brand/80">
-                  {product.brand}
-                </span>
-              )}
-              <h1 className="mt-1.5 text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl">
-                {product.name}
-              </h1>
-
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <StockBadge status={product.stock} />
-                {off && (
-                  <span className="rounded-pill bg-accent/15 px-3 py-1 text-xs font-semibold text-accent ring-1 ring-accent/30">
-                    Save {formatPrice(saved)}
-                  </span>
-                )}
-              </div>
-
-              <div className="mt-6 flex items-baseline gap-3">
-                <span className="text-4xl font-black tracking-tight text-white">
-                  {formatPrice(product.price)}
-                </span>
-                {product.compareAtPrice && (
-                  <span className="text-lg text-white/35 line-through">
-                    {formatPrice(product.compareAtPrice)}
-                  </span>
-                )}
-              </div>
-
-              <p className="mt-6 leading-relaxed text-white/65">
-                {product.description}
-              </p>
-
-              <div className="mt-8 max-w-sm">
-                <ProductActions product={product} />
-              </div>
-
-              {/* trust row */}
-              <div className="mt-8 grid grid-cols-3 gap-3">
-                {trust.map((t) => (
-                  <div
-                    key={t.label}
-                    className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-ink-850/60 p-3 text-center"
-                  >
-                    <Icon name={t.icon} className="h-5 w-5 text-brand" />
-                    <span className="text-[11px] font-medium text-white/60">
-                      {t.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* specs table */}
-              {product.shortSpecs.length > 0 && (
-                <div className="mt-10">
-                  <h2 className="text-lg font-bold text-white">Specifications</h2>
-                  <dl className="mt-4 overflow-hidden rounded-card border border-white/[0.06]">
-                    {product.shortSpecs.map((s, i) => (
-                      <div
-                        key={s}
-                        className={`flex items-start gap-3 px-4 py-3 text-sm ${
-                          i % 2 === 0 ? "bg-ink-850/60" : "bg-transparent"
-                        }`}
-                      >
-                        <Icon
-                          name="check"
-                          className="mt-0.5 h-4 w-4 shrink-0 text-accent"
-                        />
-                        <span className="text-white/75">{s}</span>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              )}
+            <div className="min-w-0 flex-1">
+              <ProductDetailInfo product={product} />
             </div>
           </div>
 
           <MobileBuyBar product={product} />
         </ProductVariantProvider>
+
+        <div className="mt-8 grid grid-cols-3 gap-3">
+          {trust.map((t) => (
+            <div
+              key={t.label}
+              className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-ink-850/60 p-3 text-center"
+            >
+              <Icon name={t.icon} className="h-5 w-5 text-brand" />
+              <span className="text-[11px] font-medium text-white/60">
+                {t.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {product.shortSpecs.length > 0 && (
+          <div className="mt-10">
+            <h2 className="text-lg font-bold text-white">Specifications</h2>
+            <dl className="mt-4 overflow-hidden rounded-card border border-white/[0.06]">
+              {product.shortSpecs.map((s, i) => (
+                <div
+                  key={s}
+                  className={`flex items-start gap-3 px-4 py-3 text-sm ${
+                    i % 2 === 0 ? "bg-ink-850/60" : "bg-transparent"
+                  }`}
+                >
+                  <Icon
+                    name="check"
+                    className="mt-0.5 h-4 w-4 shrink-0 text-accent"
+                  />
+                  <span className="text-white/75">{s}</span>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
       </div>
 
       {related.length > 0 && (

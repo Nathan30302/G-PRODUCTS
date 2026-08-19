@@ -1,22 +1,33 @@
 "use client";
 
-import { ProductGallery } from "@/components/ProductGallery";
+import { ProductGallery, VariantColorPicker } from "@/components/ProductGallery";
 import { useProductVariant } from "@/components/ProductVariantContext";
+import { ProductVariant } from "@/lib/types";
 
 export function ProductGalleryWithVariant({
   name,
-  badge
+  badge,
+  variants
 }: {
   name: string;
   badge?: string | null;
+  variants: ProductVariant[];
 }) {
-  const { galleryImages, selectedId } = useProductVariant();
+  const { galleryImages, selectedId, setSelectedId } = useProductVariant();
+
   return (
-    <ProductGallery
-      key={selectedId ?? "default"}
-      images={galleryImages}
-      name={name}
-      badge={badge}
-    />
+    <div>
+      <ProductGallery
+        key={selectedId ?? "default"}
+        images={galleryImages}
+        name={name}
+        badge={badge}
+      />
+      <VariantColorPicker
+        variants={variants}
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+      />
+    </div>
   );
 }
