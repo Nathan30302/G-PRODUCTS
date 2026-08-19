@@ -7,7 +7,7 @@ export const metadata = { title: "New product" };
 export default async function NewProductPage() {
   const categories = await prisma.category.findMany({
     orderBy: { sortOrder: "asc" },
-    select: { slug: true, name: true }
+    select: { slug: true, name: true, tagline: true, icon: true }
   });
   return <ProductForm categories={categories} />;
 }

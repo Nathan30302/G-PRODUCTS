@@ -23,7 +23,7 @@ export default async function EditProductPage({
     }),
     prisma.category.findMany({
       orderBy: { sortOrder: "asc" },
-      select: { slug: true, name: true }
+      select: { slug: true, name: true, tagline: true, icon: true }
     }),
     getSession()
   ]);
@@ -42,12 +42,18 @@ export default async function EditProductPage({
     .filter((i) => !i.variantId)
     .map((i) => i.url);
 
+  const coverUrl =
+    product.images.find((i) => i.variantId)?.url ??
+    sharedImageUrls[0] ??
+    product.images[0]?.url;
+
   return (
     <ProductForm
       categories={categories}
       canDelete={session?.role === "OWNER"}
       product={{
         id: product.id,
+        slug: product.slug,
         name: product.name,
         brand: product.brand ?? "",
         categorySlug: product.category.slug,
@@ -58,6 +64,7 @@ export default async function EditProductPage({
         featured: product.featured,
         hotDeal: product.hotDeal,
         sharedImageUrls,
+        coverUrl,
         variants: product.variants.map((v, idx) => {
           const variantImages = product.images
             .filter((i) => i.variantId === v.id)
