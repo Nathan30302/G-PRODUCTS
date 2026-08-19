@@ -64,6 +64,87 @@ html.splash-open body {
   overflow: hidden;
 }
 
+/* Launch splash — GPU-friendly drifting brand blobs */
+@keyframes splash-blob-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(12%, -8%, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(-8%, 6%, 0) scale(0.94);
+  }
+}
+
+@keyframes splash-blob-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  40% {
+    transform: translate3d(-14%, 10%, 0) scale(1.08);
+  }
+  70% {
+    transform: translate3d(6%, -12%, 0) scale(0.96);
+  }
+}
+
+@keyframes splash-blob-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(10%, 14%, 0) scale(1.1);
+  }
+}
+
+@keyframes splash-blob-d {
+  0%,
+  100% {
+    transform: translate3d(-50%, 0, 0) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(-50%, -6%, 0) scale(1.15);
+    opacity: 0.55;
+  }
+}
+
+.splash-blob {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.splash-blob-a {
+  animation: splash-blob-a 18s ease-in-out infinite;
+}
+
+.splash-blob-b {
+  animation: splash-blob-b 22s ease-in-out infinite;
+  animation-delay: -4s;
+}
+
+.splash-blob-c {
+  animation: splash-blob-c 20s ease-in-out infinite;
+  animation-delay: -8s;
+}
+
+.splash-blob-d {
+  animation: splash-blob-d 14s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-blob-a,
+  .splash-blob-b,
+  .splash-blob-c,
+  .splash-blob-d {
+    animation: none;
+  }
+}
+
 /* Hero entrance stagger */
 .hero-rise {
   animation: hero-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
