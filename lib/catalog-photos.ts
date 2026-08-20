@@ -250,9 +250,19 @@ addWiki("casio-scientific-calculator-1.jpg", "CASIO_fx-991DE_PLUS.jpg");
 addWiki("casio-scientific-calculator-2.jpg", "Casio_fx-991CW.jpg");
 addWiki("casio-scientific-calculator-3.jpg", "Casio_fx-991DE_CW.jpg");
 
-addWiki("union-mortice-lock-1.jpg", "Mortise-lock.jpg");
+addWiki("union-mortice-lock-1.jpg", "Einsteckschloss_(1).JPG");
 addWiki("union-mortice-lock-2.jpg", "Einsteckschloss_02_(fcm).jpg");
-addWiki("union-mortice-lock-3.jpg", "Lever_Lock_and_Key.jpg");
+addWiki("union-mortice-lock-3.jpg", "Einsteckschloss_(3).JPG");
+addWiki("fieldex-mortice-lock-1.jpg", "Einsteckschloss_06_(fcm).jpg");
+addWiki("fieldex-mortice-lock-2.jpg", "Einsteckschloss_(2).JPG");
+addWiki("fieldex-mortice-lock-3.jpg", "Schlossfalle_01_(fcm).jpg");
+addWiki("key-holder-5-1.jpg", "Single_empty_keyring.jpg");
+addWiki("key-holder-5-2.jpg", "Various_keys_on_keyring.jpg");
+addWiki(
+  "key-holder-5-3.jpg",
+  "Schlüsselbrett_Pension_Hindelang_Ravensburg_MHQ.jpg"
+);
+addWiki("key-holder-15-2.jpg", "Key_chain_4.jpg");
 
 addWiki(
   "memory-card-2gb-1.jpg",
@@ -293,7 +303,13 @@ addWiki(
   "calus-s39-speaker-1.jpg",
   "JBL_GO2_Bluetooth_speaker_00_10_27_681000_(turned_upright).jpeg"
 );
-addWiki("calus-s69-speaker-1.jpg", "UE_Boom_2.jpg");
+photoSources["calus-s69-speaker-1.jpg"] =
+  "https://calus-live.com/upfile/prod/091536fe04d14f633874afdce09884bc.jpg";
+photoSources["calus-s69-speaker-2.jpg"] =
+  "https://calus-live.com/upfile/prod_cover/772721fcfec889884b14fbc4a250203f.jpg";
+photoSources["calus-s69-speaker-3.jpg"] =
+  "https://calus-live.com/upfile/prod_cover/b8c0b333a0e0ae304fbe0c76e89948f0.jpg";
+addWiki("tws-f9-5-2.jpg", "Simsiz_quloqchin.jpg");
 
 addWiki("laptop-charger-full-set-1.jpg", "Notebook-Computer-AC-Adapter.jpg");
 addWiki(
