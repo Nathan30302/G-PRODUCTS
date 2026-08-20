@@ -49,6 +49,7 @@ export function ImageUploader({
   };
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const replaceAllRef = useRef(false);
 
   const value = multiple ? urls.join("\n") : urls[0] ?? "";
 
@@ -56,13 +57,35 @@ export function ImageUploader({
     setUrls((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function move(index: number, dir: -1 | 1) {
+    setUrls((prev) => {
+      const j = index + dir;
+      if (j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[index], next[j]] = [next[j], next[index]];
+      return next;
+    });
+  }
+
+  function makeCover(index: number) {
+    setUrls((prev) => {
+      if (index === 0) return prev;
+      const next = [...prev];
+      const [item] = next.splice(index, 1);
+      next.unshift(item);
+      return next;
+    });
+  }
+
   function onPick(files: FileList | null) {
     if (!files?.length) return;
     setError(null);
+    const replace = replaceAllRef.current;
+    replaceAllRef.current = false;
 
     const list = Array.from(files);
     startTransition(async () => {
-      const next: string[] = multiple ? [...urls] : [];
+      const next: string[] = multiple && !replace ? [...urls] : [];
       for (const file of list) {
         const body = new FormData();
         body.set("file", file);
@@ -110,26 +133,59 @@ export function ImageUploader({
           {urls.map((url, idx) => (
             <div
               key={`${url}-${idx}`}
-              className="group relative aspect-square overflow-hidden rounded-2xl border border-white/[0.08] bg-ink-950 shadow-inner"
+              className="group relative aspect-square overflow-hidden rounded-2xl border border-white/[0.08] bg-white shadow-inner"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={url}
                 alt=""
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain p-2"
               />
               {idx === 0 && (
                 <span className="absolute left-2 top-2 rounded-pill bg-brand px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-ink-950">
                   Cover
                 </span>
               )}
-              <button
-                type="button"
-                onClick={() => removeAt(idx)}
-                className="absolute right-1.5 top-1.5 rounded-pill bg-ink-950/85 px-2.5 py-1 text-[10px] font-bold text-white/90 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
-              >
-                Remove
-              </button>
+              <div className="absolute right-1.5 top-1.5 flex flex-col gap-1">
+                {idx > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => makeCover(idx)}
+                    className="rounded-pill bg-ink-950/85 px-2 py-1 text-[10px] font-bold text-brand"
+                  >
+                    Make cover
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeAt(idx)}
+                  className="rounded-pill bg-ink-950/85 px-2.5 py-1 text-[10px] font-bold text-white/90"
+                >
+                  Remove
+                </button>
+              </div>
+              {multiple && urls.length > 1 && (
+                <div className="absolute bottom-1.5 right-1.5 flex gap-1">
+                  <button
+                    type="button"
+                    aria-label="Move earlier"
+                    disabled={idx === 0}
+                    onClick={() => move(idx, -1)}
+                    className="grid h-7 w-7 place-items-center rounded-full bg-ink-950/85 text-white disabled:opacity-30"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Move later"
+                    disabled={idx === urls.length - 1}
+                    onClick={() => move(idx, 1)}
+                    className="grid h-7 w-7 place-items-center rounded-full bg-ink-950/85 text-white disabled:opacity-30"
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
               {allowDownload && (
                 <a
                   href={downloadHref(
@@ -174,6 +230,48 @@ export function ImageUploader({
           >
             {multiple ? "Add more photos" : "Replace photo"}
           </button>
+          {multiple && (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => {
+                replaceAllRef.current = true;
+                inputRef.current?.click();
+              }}
+              className="rounded-pill border border-white/15 px-4 py-2.5 text-sm font-semibold text-white/70 hover:text-white disabled:opacity-50"
+            >
+              Replace all
+            </button>
+          )}
+        </div>
+      )}
+
+      {urls.length > 0 && (
+        <div className="mt-4 rounded-2xl border border-white/[0.07] bg-ink-950/40 p-3">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
+            Shop preview
+          </p>
+          <p className="mt-1 text-xs text-white/45">
+            Cover photo is what customers see first. White background, full product in frame.
+          </p>
+          <div className="mt-3 max-w-[11rem]">
+            <div className="overflow-hidden rounded-2xl border border-white/[0.06]">
+              <div className="relative aspect-square bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={urls[0]}
+                  alt=""
+                  className="h-full w-full object-contain p-2"
+                />
+              </div>
+              <div className="bg-ink-900 px-2.5 py-2">
+                <p className="text-[11px] font-semibold text-white/80">Cover</p>
+                <p className="text-[10px] text-white/40">
+                  Photo 1 of {urls.length}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

@@ -149,7 +149,7 @@ export function ProductForm({
                 alt={product?.name ?? "Product"}
                 fill
                 sizes="112px"
-                className="object-cover"
+                className="object-contain p-1 bg-white"
               />
             </div>
           )}
@@ -168,7 +168,7 @@ export function ProductForm({
             <p className="mt-2 text-sm text-white/50">
               {isEdit
                 ? "Update prices, colours, and photos — your changes go live after saving."
-                : "A clear flow: basics, category, colours with photos, then details."}
+                : "A clear flow: basics, category, colours with photos, then details. Photo 1 is the shop cover — reorder until it looks right."}
             </p>
           </div>
           <div className="flex shrink-0 flex-wrap justify-center gap-2 sm:flex-col sm:items-end">

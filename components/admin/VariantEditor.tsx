@@ -19,7 +19,9 @@ const PRESETS = [
   { name: "Silver", colorHex: "#c0c0c0" },
   { name: "Blue", colorHex: "#2563eb" },
   { name: "Red", colorHex: "#dc2626" },
-  { name: "Gold", colorHex: "#eab308" }
+  { name: "Gold", colorHex: "#eab308" },
+  { name: "Brown", colorHex: "#7c4a1e" },
+  { name: "Green", colorHex: "#166534" }
 ];
 
 export function VariantEditor({

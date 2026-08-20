@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Category, Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { Icon } from "@/components/Icons";
+import { filterCatalog, type SortMode, type StockFilter } from "@/lib/search";
 
 type TrendChip = {
   label: string;
@@ -17,7 +18,9 @@ type TrendChip = {
 const trending: TrendChip[] = [
   { label: "Exercise Book", query: "exercise" },
   { label: "Memory Card", query: "memory", category: "storage" },
-  { label: "AirPods", query: "airpods", category: "audio" },
+  { label: "F9-5", query: "f9-5", category: "audio" },
+  { label: "Extension", query: "extension", category: "chargers" },
+  { label: "Union lock", query: "union lock", category: "locks" },
   { label: "Oraimo", query: "oraimo", category: "chargers" },
   { label: "Mouse", query: "mouse", category: "computers" },
   { label: "Printing", href: "/services/printing" }
@@ -36,18 +39,19 @@ export function SearchClient({
   const [query, setQuery] = useState(initialQuery);
   const [cat, setCat] = useState<string>("all");
 
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return products.filter((p) => {
-      const matchesCat = cat === "all" || p.categorySlug === cat;
-      const matchesQuery =
-        !q ||
-        p.name.toLowerCase().includes(q) ||
-        (p.brand?.toLowerCase().includes(q) ?? false) ||
-        (p.shortSpecs ?? []).some((s) => s.toLowerCase().includes(q));
-      return matchesCat && matchesQuery;
-    });
-  }, [query, cat, products]);
+  const [stock, setStock] = useState<StockFilter>("all");
+  const [sort, setSort] = useState<SortMode>("match");
+
+  const results = useMemo(
+    () =>
+      filterCatalog(products, {
+        query,
+        category: cat,
+        stock,
+        sort
+      }),
+    [query, cat, stock, sort, products]
+  );
 
   function applyTrend(chip: TrendChip) {
     if (chip.href) {
@@ -63,14 +67,14 @@ export function SearchClient({
     if (query.trim() || cat !== "all") return null;
     const map = new Map<string, Product[]>();
     for (const c of categories) map.set(c.slug, []);
-    for (const p of products) {
+    for (const p of results) {
       const list = map.get(p.categorySlug);
       if (list) list.push(p);
     }
     return categories
       .map((c) => ({ category: c, items: map.get(c.slug) ?? [] }))
       .filter((g) => g.items.length > 0);
-  }, [query, cat, products, categories]);
+  }, [query, cat, results, categories]);
 
   const showGrouped = grouped && grouped.length > 0;
 
@@ -95,7 +99,7 @@ export function SearchClient({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           autoFocus
-          placeholder="Search stationery, chargers, AirPods…"
+          placeholder="Try f9-5, 5m extension, union lock…"
           className="w-full rounded-pill border border-white/10 bg-ink-900/70 py-4 pr-12 text-white shadow-card outline-none transition-colors focus:border-brand/50"
           style={{ paddingLeft: "3.25rem" }}
         />
@@ -132,7 +136,51 @@ export function SearchClient({
         </div>
       )}
 
-      <div className="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible">
+      <div className="mt-4 flex flex-wrap gap-2">
+        {(
+          [
+            ["all", "All stock"],
+            ["in_stock", "In stock"],
+            ["sold_out", "Out of stock"]
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setStock(id)}
+            className={`rounded-pill px-3 py-1 text-xs font-medium ${
+              stock === id
+                ? "bg-white/15 text-white"
+                : "bg-white/[0.04] text-white/50 hover:text-white/80"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+        <span className="mx-1 h-5 w-px self-center bg-white/10" />
+        {(
+          [
+            ["match", "Best match"],
+            ["price-asc", "Price ↑"],
+            ["price-desc", "Price ↓"]
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setSort(id)}
+            className={`rounded-pill px-3 py-1 text-xs font-medium ${
+              sort === id
+                ? "bg-brand/20 text-brand"
+                : "bg-white/[0.04] text-white/50 hover:text-white/80"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible">
         <button
           type="button"
           onClick={() => setCat("all")}

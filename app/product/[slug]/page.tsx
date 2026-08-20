@@ -12,6 +12,7 @@ import { ProductDetailInfo } from "@/components/ProductDetailInfo";
 import { ProductVariantProvider } from "@/components/ProductVariantContext";
 import { ProductRail } from "@/components/ProductRail";
 import { Icon } from "@/components/Icons";
+import { relatedProducts } from "@/lib/related-products";
 
 export const dynamic = "force-dynamic";
 
@@ -58,9 +59,7 @@ export default async function ProductPage({
   const saved = product.compareAtPrice
     ? product.compareAtPrice - product.price
     : 0;
-  const related = categoryProducts
-    .filter((p) => p.id !== product.id)
-    .slice(0, 8);
+  const related = relatedProducts(product, categoryProducts, 8);
 
   return (
     <div>
@@ -141,8 +140,8 @@ export default async function ProductPage({
 
       {related.length > 0 && (
         <ProductRail
-          title="Related products"
-          subtitle={`More from ${category?.name ?? "the shop"}.`}
+          title="You might also want"
+          subtitle="Similar items customers usually look at together."
           products={related}
           href={category ? `/category/${category.slug}` : "/search"}
         />

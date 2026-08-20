@@ -26,7 +26,7 @@ export function AdminProductCard({
           alt={product.name}
           fill
           sizes="(max-width: 640px) 50vw, 280px"
-          className="object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.04]"
+          className="object-contain p-2 bg-white transition-transform duration-500 ease-out-expo group-hover:scale-[1.04]"
           fallbackClassName="grid h-full w-full place-items-center text-[10px] font-bold uppercase tracking-wide text-white/20"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/80 via-transparent to-transparent" />

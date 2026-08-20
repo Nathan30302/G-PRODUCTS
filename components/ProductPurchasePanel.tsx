@@ -1,140 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Product, ProductImage, ProductVariant } from "@/lib/types";
+import { Product, ProductVariant } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
-import { SafeImage } from "@/components/SafeImage";
 import { swatchStyle } from "@/lib/swatch";
 import { useProductVariant } from "@/components/ProductVariantContext";
-
-const SWIPE_THRESHOLD = 36;
-
-function ProductGalleryFrame({
-  images,
-  name,
-  badge
-}: {
-  images: ProductImage[];
-  name: string;
-  badge?: string | null;
-}) {
-  const [active, setActive] = useState(0);
-  const pointerStart = useRef<number | null>(null);
-  const dragging = useRef(false);
-
-  const list = images.length > 0 ? images : [{ url: "", alt: name }];
-  const count = list.length;
-  const current = list[Math.min(active, count - 1)];
-
-  useEffect(() => {
-    setActive(0);
-  }, [images]);
-
-  function go(dir: -1 | 1) {
-    setActive((i) => Math.max(0, Math.min(count - 1, i + dir)));
-  }
-
-  function onPointerDown(clientX: number) {
-    pointerStart.current = clientX;
-    dragging.current = true;
-  }
-
-  function onPointerUp(clientX: number) {
-    if (!dragging.current || pointerStart.current === null) return;
-    const delta = clientX - pointerStart.current;
-    if (Math.abs(delta) >= SWIPE_THRESHOLD) {
-      go(delta < 0 ? 1 : -1);
-    }
-    pointerStart.current = null;
-    dragging.current = false;
-  }
-
-  return (
-    <div className="w-full">
-      <div
-        className="relative aspect-square touch-pan-y overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55"
-        onTouchStart={(e) => onPointerDown(e.touches[0].clientX)}
-        onTouchEnd={(e) => onPointerUp(e.changedTouches[0].clientX)}
-        onMouseDown={(e) => onPointerDown(e.clientX)}
-        onMouseUp={(e) => onPointerUp(e.clientX)}
-        onMouseLeave={() => {
-          pointerStart.current = null;
-          dragging.current = false;
-        }}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={`${active}-${current.url}`}
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0"
-          >
-            <SafeImage
-              src={current.url || null}
-              alt={current.alt ?? name}
-              fill
-              sizes="(max-width: 640px) 72vw, 320px"
-              className="pointer-events-none object-contain p-3 select-none sm:p-4"
-              priority
-              draggable={false}
-            />
-          </motion.div>
-        </AnimatePresence>
-
-        {badge && (
-          <span className="pointer-events-none absolute left-2.5 top-2.5 rounded-pill bg-accent px-2 py-0.5 text-[10px] font-bold text-ink-950">
-            {badge}
-          </span>
-        )}
-      </div>
-
-      {count > 1 && (
-        <div className="mt-2.5 space-y-2">
-          <div className="flex justify-center gap-1.5">
-            {list.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Show photo ${i + 1}`}
-                onClick={() => setActive(i)}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === active ? "w-5 bg-brand" : "w-1.5 bg-white/25 hover:bg-white/40"
-                }`}
-              />
-            ))}
-          </div>
-          <div className="flex justify-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
-            {list.map((img, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`View image ${i + 1}`}
-                aria-current={i === active}
-                onClick={() => setActive(i)}
-                className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-lg border transition-all ${
-                  i === active
-                    ? "border-brand ring-1 ring-brand/40"
-                    : "border-white/10 opacity-70 hover:opacity-100"
-                }`}
-              >
-                <SafeImage
-                  src={img.url || null}
-                  alt={img.alt ?? `${name} ${i + 1}`}
-                  fill
-                  sizes="44px"
-                  className="object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+import { ProductGallery } from "@/components/ProductGallery";
 
 function CircularSwatches({
   variants,
@@ -210,11 +80,14 @@ export function ProductPurchasePanel({
 
   return (
     <div className="lg:sticky lg:top-24">
-      <ProductGalleryFrame
+      <ProductGallery
         key={selectedId ?? "default"}
         images={galleryImages}
         name={product.name}
         badge={badge}
+        showingLabel={
+          product.variants.length > 1 ? selected?.name ?? null : null
+        }
       />
 
       <CircularSwatches

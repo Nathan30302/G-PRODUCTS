@@ -240,9 +240,12 @@ export const products: SeedProduct[] = [
   p({
     id: "p-pouch",
     slug: "phone-pouch",
-    name: "Phone Pouch",
+    name: "Phone Pouch — pick a colour",
     categorySlug: "phone-accessories",
     price: 80,
+    specs: ["Pick Black or Blue", "Belt-clip pouch"],
+    description:
+      "Choose the colour you want. Photos show the pouch itself — pick Black or Blue on the product page."
   }),
 
   // —— Memory cards ——

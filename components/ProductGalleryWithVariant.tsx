@@ -13,7 +13,8 @@ export function ProductGalleryWithVariant({
   badge?: string | null;
   variants: ProductVariant[];
 }) {
-  const { galleryImages, selectedId, setSelectedId } = useProductVariant();
+  const { galleryImages, selectedId, setSelectedId, selected } =
+    useProductVariant();
 
   return (
     <div>
@@ -22,6 +23,9 @@ export function ProductGalleryWithVariant({
         images={galleryImages}
         name={name}
         badge={badge}
+        showingLabel={
+          variants.length > 1 ? selected?.name ?? null : null
+        }
       />
       <VariantColorPicker
         variants={variants}
