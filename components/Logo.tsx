@@ -7,6 +7,7 @@ const sizes = {
   sm: 40,
   md: 44,
   lg: 112,
+  splash: 176,
   hero: 304
 } as const;
 
@@ -24,6 +25,7 @@ export function Logo({
 }) {
   const src = withText ? LOGO_SRC : MARK_SRC;
   const alt = withText ? "G-Products and Services" : "G-Products";
+  const fit = withText ? "object-cover" : "object-contain";
 
   if (size === "hero") {
     return (
@@ -38,7 +40,7 @@ export function Logo({
           priority={priority}
           quality={100}
           unoptimized
-          className="object-cover"
+          className={fit}
         />
       </span>
     );
@@ -48,7 +50,9 @@ export function Logo({
 
   return (
     <span
-      className={`relative inline-flex shrink-0 overflow-hidden rounded-xl ${className}`}
+      className={`relative inline-flex shrink-0 ${
+        withText ? "overflow-hidden rounded-xl" : "overflow-visible"
+      } ${className}`}
       style={{ width: px, height: px }}
     >
       <Image
@@ -59,7 +63,7 @@ export function Logo({
         priority={priority}
         quality={100}
         unoptimized
-        className="h-full w-full object-cover"
+        className={`h-full w-full ${fit} ${withText ? "" : "p-[8%]"}`}
       />
     </span>
   );

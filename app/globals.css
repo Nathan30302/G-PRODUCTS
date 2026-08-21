@@ -166,7 +166,7 @@ html.splash-open body {
 
 .splash-logo-wrap {
   opacity: 0;
-  animation: splash-logo-in 0.8s ease-out 0.4s forwards;
+  animation: splash-logo-in 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.28s forwards;
 }
 
 .splash-title {
@@ -184,13 +184,17 @@ html.splash-open body {
 }
 
 @keyframes splash-logo-in {
-  from {
+  0% {
     opacity: 0;
-    transform: scale(0.85);
+    transform: scale(0.72) translate3d(0, 18px, 0);
   }
-  to {
+  60% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.04) translate3d(0, -2px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
   }
 }
 

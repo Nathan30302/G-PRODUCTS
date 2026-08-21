@@ -87,7 +87,7 @@ export const products: SeedProduct[] = [
   p({
     id: "p-bic-fine",
     slug: "bic-fine-pen",
-    name: "Bic Fine Pen",
+    name: "Bic Fine Pen — pick a colour",
     brand: "Bic",
     categorySlug: "stationery",
     price: 7,

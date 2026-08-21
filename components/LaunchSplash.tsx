@@ -15,8 +15,8 @@ const BRAND = {
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v4",
-  admin: "gproducts-admin-splash-v4"
+  shop: "gproducts-splash-v6",
+  admin: "gproducts-admin-splash-v6"
 } as const;
 
 const MIN_MS = 2200;
@@ -184,14 +184,21 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
             reducedMotion ? "" : "splash-content"
           } ${exiting ? "splash-content-exit" : ""}`}
         >
-          <div className={reducedMotion ? "relative" : "splash-logo-wrap relative"}>
+          <div
+            className={
+              reducedMotion ? "relative" : "splash-logo-wrap relative"
+            }
+          >
             <div
-              className="absolute -inset-10 rounded-full blur-3xl"
-              style={{ backgroundColor: `${BRAND.yellow}22` }}
+              className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl sm:h-56 sm:w-56"
+              style={{ backgroundColor: `${BRAND.yellow}28` }}
             />
-            <div className="relative rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.4)] backdrop-blur-md sm:p-5">
-              <Logo size="lg" priority withText={false} />
-            </div>
+            <Logo
+              size="splash"
+              priority
+              withText={false}
+              className="relative"
+            />
           </div>
 
           <h1
