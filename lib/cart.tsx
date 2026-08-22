@@ -79,7 +79,7 @@ function reducer(state: CartState, action: CartAction): CartState {
             variantName: variant?.name,
             fitment,
             price: linePrice,
-            image: coverImageForProduct(product, variant),
+            image: coverImageForProduct(product, variant, fitment),
             qty: addQty
           }
         ]

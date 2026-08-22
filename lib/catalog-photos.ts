@@ -45,6 +45,14 @@ function colorAngles(slug: string, color: string, count = 3): string[] {
   return Array.from({ length: count }, (_, i) => `${slug}-${key}-${i + 1}.jpg`);
 }
 
+/** One photo per camera-cutout family for silicone pouches. */
+function pouchFamilyFiles(color: string): string[] {
+  const key = color.toLowerCase().replace(/\s+/g, "-");
+  return ["single", "plus", "notch", "island"].map(
+    (family) => `phone-pouch-${key}-${family}-1.jpg`
+  );
+}
+
 /** Colourways that customers can pick */
 const COLOUR_PRODUCTS: Record<
   string,
@@ -281,7 +289,10 @@ export const catalogProducts: CatalogProductDef[] = ALL_SLUGS.map((slug) => {
       files: flyer,
       variants: colours.map((c) => ({
         ...c,
-        files: colorAngles(slug, c.name, 3)
+        files:
+          slug === "phone-pouch"
+            ? pouchFamilyFiles(c.name)
+            : colorAngles(slug, c.name, 3)
       }))
     };
   }

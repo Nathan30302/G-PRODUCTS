@@ -54,6 +54,15 @@ export function ProductPurchasePanel({
         showingLabel={multi ? selected?.name ?? null : null}
       />
 
+      {/* Pouches: model first, then colour (cutout depends on model). */}
+      {fitment && product.slug === "phone-pouch" ? (
+        <FitmentPicker
+          fitment={fitment}
+          value={fitmentValue}
+          onChange={setFitmentValue}
+        />
+      ) : null}
+
       {multi &&
         (isExtension ? (
           <ExtensionPicker
@@ -68,6 +77,9 @@ export function ProductPurchasePanel({
             variants={product.variants}
             selectedId={selectedId}
             onSelect={setSelectedId}
+            locked={!fitmentValue && product.slug === "phone-pouch"}
+            lockHint="Choose your iPhone model first"
+            fitmentModel={fitmentValue}
           />
         ) : (
           <PricedOptionGrid
@@ -78,7 +90,7 @@ export function ProductPurchasePanel({
           />
         ))}
 
-      {fitment ? (
+      {fitment && product.slug !== "phone-pouch" ? (
         <FitmentPicker
           fitment={fitment}
           value={fitmentValue}

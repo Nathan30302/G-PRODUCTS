@@ -5,6 +5,16 @@ export type FitmentConfig = {
   options: string[];
 };
 
+/** Camera cutout families for silicone pouches (matches catalog filenames). */
+export type CameraFamily = "single" | "plus" | "notch" | "island";
+
+export const CAMERA_FAMILIES: CameraFamily[] = [
+  "single",
+  "plus",
+  "notch",
+  "island"
+];
+
 const IPHONE_MODELS = [
   "iPhone 6",
   "iPhone 6 Plus",
@@ -52,4 +62,29 @@ export const FITMENT_BY_SLUG: Record<string, FitmentConfig> = {
 
 export function fitmentForSlug(slug: string): FitmentConfig | null {
   return FITMENT_BY_SLUG[slug] ?? null;
+}
+
+/** Map a chosen iPhone model to the pouch camera-cutout family. */
+export function cameraFamilyForModel(model: string | null | undefined): CameraFamily | null {
+  if (!model) return null;
+  const m = model.trim();
+
+  // Dual-camera Plus (home-button era)
+  if (/iPhone (6|6s|7|8)\s+Plus/i.test(m)) return "plus";
+
+  // Single rear camera (home-button era)
+  if (/iPhone (6|6s|7|8)\b/i.test(m) && !/Plus/i.test(m)) return "single";
+
+  // Notch / dual–triple camera X–11 era
+  if (/iPhone (X|XR|XS|11)/i.test(m)) return "notch";
+
+  // Dynamic Island / square module 12–16
+  if (/iPhone 1[2-6]/i.test(m)) return "island";
+
+  return null;
+}
+
+export function cameraFamilyFromUrl(url: string): CameraFamily | null {
+  const m = url.match(/-(single|plus|notch|island)(?:-\d+)?\.(?:jpe?g|png|webp)/i);
+  return (m?.[1]?.toLowerCase() as CameraFamily) ?? null;
 }

@@ -120,13 +120,21 @@ async function syncProduct(slug: string): Promise<boolean> {
       createdByName.set(v.name.toLowerCase(), variant.id);
       if (files.length === 0) continue;
       await prisma.productImage.createMany({
-        data: files.map((file, idx) => ({
-          productId: row.id,
-          variantId: variant.id,
-          url: catalogUrl(file),
-          alt: `${row.name} — ${v.name}`,
-          sortOrder: idx
-        }))
+        data: files.map((file, idx) => {
+          const familyMatch = file.match(
+            /-(single|plus|notch|island)(?:-\d+)?\.jpg$/i
+          );
+          const family = familyMatch?.[1]?.toLowerCase();
+          return {
+            productId: row.id,
+            variantId: variant.id,
+            url: catalogUrl(file),
+            alt: family
+              ? `${row.name} — ${v.name} · ${family}`
+              : `${row.name} — ${v.name}`,
+            sortOrder: idx
+          };
+        })
       });
       photoCount += files.length;
     }

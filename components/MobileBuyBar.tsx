@@ -39,7 +39,7 @@ export function MobileBuyBar({ product }: { product: Product }) {
     toast({
       title: "Added to cart",
       description: `${product.name} · ${detail}`,
-      image: coverImageForProduct(product, chosen),
+      image: coverImageForProduct(product, chosen, fitmentValue),
       href: "/cart",
       hrefLabel: "View cart"
     });

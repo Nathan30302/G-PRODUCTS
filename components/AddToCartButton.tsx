@@ -77,7 +77,7 @@ export function AddToCartButton({
     toast({
       title: n > 1 ? `Added ×${n}` : "Added to cart",
       description: detail ? `${product.name} · ${detail}` : product.name,
-      image: coverImageForProduct(product, chosen),
+      image: coverImageForProduct(product, chosen, fitment),
       href: "/cart",
       hrefLabel: "View cart"
     });

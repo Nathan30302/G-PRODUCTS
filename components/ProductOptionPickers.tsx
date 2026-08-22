@@ -7,35 +7,45 @@ import { swatchStyle } from "@/lib/swatch";
 import { SafeImage } from "@/components/SafeImage";
 import { Icon } from "@/components/Icons";
 import type { FitmentConfig } from "@/lib/fitment";
+import { imagesForVariant } from "@/lib/product-images";
 
 function thumbForVariant(
   images: ProductImage[],
-  variantId: string
+  variantId: string,
+  fitmentModel?: string | null
 ): string | null {
-  const hit = images.find((i) => i.variantId === variantId && i.url);
-  return hit?.url ?? null;
+  const list = imagesForVariant(images, variantId, { fitmentModel });
+  return list[0]?.url ?? null;
 }
 
 export function ColourPicker({
   product,
   variants,
   selectedId,
-  onSelect
+  onSelect,
+  locked = false,
+  lockHint,
+  fitmentModel
 }: {
   product: Product;
   variants: ProductVariant[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  locked?: boolean;
+  lockHint?: string;
+  fitmentModel?: string | null;
 }) {
   const selected = variants.find((v) => v.id === selectedId);
 
   return (
-    <div className="mt-5">
+    <div className={`mt-5 ${locked ? "opacity-55" : ""}`}>
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/40">
           Colour
         </p>
-        {selected ? (
+        {locked ? (
+          <p className="text-xs text-white/35">{lockHint ?? "Select model first"}</p>
+        ) : selected ? (
           <p className="text-sm font-semibold text-white/80">
             {selected.name}
             {!selected.available ? (
@@ -49,20 +59,27 @@ export function ColourPicker({
         {variants.map((v) => {
           const active = v.id === selectedId;
           const out = !v.available;
-          const thumb = thumbForVariant(product.images, v.id);
+          const thumb = thumbForVariant(product.images, v.id, fitmentModel);
           return (
             <button
               key={v.id}
               type="button"
+              disabled={locked}
               onClick={() => onSelect(v.id)}
               aria-label={v.name}
               aria-pressed={active}
-              title={out ? `${v.name} — out of stock` : v.name}
+              title={
+                locked
+                  ? lockHint ?? "Select model first"
+                  : out
+                    ? `${v.name} — out of stock`
+                    : v.name
+              }
               className={`group relative overflow-hidden rounded-2xl border bg-[#f4f4f2] text-left transition-all duration-300 ease-out-expo ${
                 active
                   ? "border-brand ring-2 ring-brand/40 shadow-brand-glow"
                   : "border-white/10 hover:-translate-y-0.5 hover:border-white/25"
-              } ${out ? "opacity-45" : ""}`}
+              } ${out || locked ? "opacity-45" : ""} ${locked ? "cursor-not-allowed" : ""}`}
             >
               <span className="relative block aspect-square">
                 {thumb ? (
@@ -300,70 +317,29 @@ export function ExtensionPicker({
           })}
         </div>
       </div>
-
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {parsed.map(({ variant: v, ways: w, length: len }) => {
-          const on = v.id === selectedId;
-          const out = !v.available;
-          const t = thumbForVariant(product.images, v.id);
-          return (
-            <button
-              key={v.id}
-              type="button"
-              disabled={out}
-              onClick={() => {
-                if (w && len) pick(w, len);
-                else onSelect(v.id);
-              }}
-              className={`overflow-hidden rounded-2xl border text-left transition-all ${
-                on
-                  ? "border-brand ring-2 ring-brand/35"
-                  : "border-white/10 hover:border-white/25"
-              } ${out ? "opacity-40" : ""}`}
-            >
-              <span className="relative block aspect-[4/3] bg-[#f4f4f2]">
-                {t ? (
-                  <SafeImage
-                    src={t}
-                    alt=""
-                    fill
-                    sizes="120px"
-                    className="object-contain p-1"
-                  />
-                ) : null}
-              </span>
-              <span className="block px-2 py-1.5">
-                <span className="block text-[11px] font-bold text-white">
-                  {w ?? v.name}
-                </span>
-                <span className="text-[10px] text-white/45">
-                  {len ?? ""} · {formatPrice(unitPrice(product, v))}
-                </span>
-              </span>
-            </button>
-          );
-        })}
-      </div>
     </div>
   );
 }
 
 const MODEL_GROUPS: { title: string; match: (m: string) => boolean }[] = [
   {
-    title: "iPhone 6 / 7 / 8",
-    match: (m) => /iPhone (6|7|8)/i.test(m) && !/X|XR|XS|11|12|13|14|15|16/.test(m)
+    title: "6 / 7 / 8 · single camera",
+    match: (m) =>
+      /iPhone (6|6s|7|8)\b/i.test(m) &&
+      !/Plus/i.test(m) &&
+      !/X|XR|XS|11|12|13|14|15|16/.test(m)
   },
   {
-    title: "iPhone X / 11",
+    title: "Plus · dual camera",
+    match: (m) => /iPhone (6|6s|7|8)\s+Plus/i.test(m)
+  },
+  {
+    title: "X / 11 · notch",
     match: (m) => /iPhone (X|XR|XS|11)/i.test(m)
   },
   {
-    title: "iPhone 12 / 13",
-    match: (m) => /iPhone 1[23]/i.test(m)
-  },
-  {
-    title: "iPhone 14 / 15 / 16",
-    match: (m) => /iPhone 1[456]/i.test(m)
+    title: "12–16 · camera island",
+    match: (m) => /iPhone 1[2-6]/i.test(m)
   }
 ];
 

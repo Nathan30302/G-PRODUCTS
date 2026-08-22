@@ -45,8 +45,11 @@ export function ProductVariantProvider({
   );
 
   const galleryImages = useMemo(
-    () => imagesForVariant(product.images, selectedId),
-    [product.images, selectedId]
+    () =>
+      imagesForVariant(product.images, selectedId, {
+        fitmentModel: fitmentValue
+      }),
+    [product.images, selectedId, fitmentValue]
   );
 
   const fitmentReady = !fitment || Boolean(fitmentValue);
