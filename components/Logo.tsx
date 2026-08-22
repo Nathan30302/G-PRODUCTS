@@ -8,7 +8,8 @@ const sizes = {
   sm: 36,
   md: 44,
   lg: 112,
-  splash: 176
+  /** Intrinsic source size; splash layout uses CSS clamp for phone/desktop. */
+  splash: 220
 } as const;
 
 /**
@@ -31,8 +32,8 @@ export function Logo({
 
   return (
     <span
-      className={`relative inline-flex shrink-0 ${className}`}
-      style={{ width: px, height: px }}
+      className={`relative inline-flex shrink-0 ${isLarge ? "splash-mark" : ""} ${className}`}
+      style={isLarge ? undefined : { width: px, height: px }}
     >
       <Image
         src={MARK_SRC}
@@ -42,7 +43,7 @@ export function Logo({
         priority={priority}
         quality={100}
         unoptimized
-        className={`h-full w-full object-contain ${isLarge ? "p-[2%]" : "p-[4%]"}`}
+        className={`h-full w-full object-contain ${isLarge ? "p-[1.5%]" : "p-[4%]"}`}
       />
     </span>
   );

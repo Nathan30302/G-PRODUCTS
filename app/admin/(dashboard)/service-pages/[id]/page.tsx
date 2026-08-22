@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { parseSettings } from "@/lib/services";
+import { adminInitialServiceImages } from "@/lib/service-media";
 import { saveServiceOffer } from "@/app/admin/(dashboard)/service-pages/actions";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 
@@ -21,6 +22,7 @@ export default async function EditServicePage({
   const offer = await prisma.serviceOffer.findUnique({ where: { id } });
   if (!offer) notFound();
   const settings = parseSettings(offer.settings);
+  const initialPhotos = adminInitialServiceImages(offer.slug, offer.imageUrl);
 
   return (
     <div>
@@ -67,13 +69,16 @@ export default async function EditServicePage({
           <ImageUploader
             name="imageUrl"
             folder="services"
-            multiple={false}
-            label="Photo"
-            initialUrls={offer.imageUrl ? [offer.imageUrl] : []}
+            multiple
+            label="Service photos"
+            downloadPrefix={offer.slug}
+            initialUrls={initialPhotos}
           />
           <p className="mt-2 text-xs text-white/40">
-            Upload a clear photo of this service — it shows on the public
-            services pages.
+            First photo is the cover on tiles and the gallery. Use{" "}
+            <span className="text-brand">Make cover</span> to choose which
+            customers see first. Add workshop / print-shop shots — swipe gallery
+            on the public page.
           </p>
         </div>
         <div>
@@ -160,7 +165,6 @@ export default async function EditServicePage({
           </div>
         )}
 
-        {/* Hidden defaults so save always gets full settings */}
         {offer.serviceType !== "KEY_CUTTING" && (
           <>
             <input

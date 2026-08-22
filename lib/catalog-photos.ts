@@ -4,6 +4,8 @@
  * for items with no distinct free photo. Never reuse one file across products.
  */
 
+import { POUCH_LAYOUTS, FITMENT_BY_SLUG, modelSlug } from "@/lib/fitment";
+
 export type CatalogVariantDef = {
   name: string;
   colorHex?: string;
@@ -45,12 +47,22 @@ function colorAngles(slug: string, color: string, count = 3): string[] {
   return Array.from({ length: count }, (_, i) => `${slug}-${key}-${i + 1}.jpg`);
 }
 
-/** One photo per camera-cutout family for silicone pouches. */
+/** One photo per camera layout + per iPhone model (model files share layout masters). */
 function pouchFamilyFiles(color: string): string[] {
   const key = color.toLowerCase().replace(/\s+/g, "-");
-  return ["single", "plus", "notch", "island"].map(
-    (family) => `phone-pouch-${key}-${family}-1.jpg`
+  const layouts = POUCH_LAYOUTS.map(
+    (layout) => `phone-pouch-${key}-${layout}-1.jpg`
   );
+  const models = (FITMENT_BY_SLUG["phone-pouch"]?.options ?? [])
+    .map((opt) => modelSlug(opt))
+    .filter((s): s is string => Boolean(s))
+    .map((slug) => `phone-pouch-${key}-${slug}-1.jpg`);
+  return [
+    ...models,
+    ...layouts,
+    `phone-pouch-${key}-notch-1.jpg`,
+    `phone-pouch-${key}-island-1.jpg`
+  ];
 }
 
 /** Colourways that customers can pick */

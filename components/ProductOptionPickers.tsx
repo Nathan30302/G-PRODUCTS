@@ -7,7 +7,21 @@ import { swatchStyle } from "@/lib/swatch";
 import { SafeImage } from "@/components/SafeImage";
 import { Icon } from "@/components/Icons";
 import type { FitmentConfig } from "@/lib/fitment";
+import { shortModelLabel } from "@/lib/fitment";
 import { imagesForVariant } from "@/lib/product-images";
+
+function isLightSwatch(hex?: string, name?: string): boolean {
+  const n = (name ?? "").toLowerCase();
+  if (n.includes("white") || n.includes("yellow") || n.includes("mint") || n.includes("lilac") || n.includes("grey") || n.includes("gray")) {
+    return true;
+  }
+  if (!hex || !/^#?[0-9a-f]{6}$/i.test(hex)) return false;
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return (r * 299 + g * 587 + b * 114) / 1000 > 160;
+}
 
 function thumbForVariant(
   images: ProductImage[],
@@ -25,7 +39,8 @@ export function ColourPicker({
   onSelect,
   locked = false,
   lockHint,
-  fitmentModel
+  fitmentModel,
+  swatchesOnly = false
 }: {
   product: Product;
   variants: ProductVariant[];
@@ -34,6 +49,8 @@ export function ColourPicker({
   locked?: boolean;
   lockHint?: string;
   fitmentModel?: string | null;
+  /** Round colour dots only — used for silicone pouches after model pick. */
+  swatchesOnly?: boolean;
 }) {
   const selected = variants.find((v) => v.id === selectedId);
 
@@ -55,60 +72,105 @@ export function ColourPicker({
         ) : null}
       </div>
 
-      <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-5">
-        {variants.map((v) => {
-          const active = v.id === selectedId;
-          const out = !v.available;
-          const thumb = thumbForVariant(product.images, v.id, fitmentModel);
-          return (
-            <button
-              key={v.id}
-              type="button"
-              disabled={locked}
-              onClick={() => onSelect(v.id)}
-              aria-label={v.name}
-              aria-pressed={active}
-              title={
-                locked
-                  ? lockHint ?? "Select model first"
-                  : out
-                    ? `${v.name} — out of stock`
-                    : v.name
-              }
-              className={`group relative overflow-hidden rounded-2xl border bg-[#f4f4f2] text-left transition-all duration-300 ease-out-expo ${
-                active
-                  ? "border-brand ring-2 ring-brand/40 shadow-brand-glow"
-                  : "border-white/10 hover:-translate-y-0.5 hover:border-white/25"
-              } ${out || locked ? "opacity-45" : ""} ${locked ? "cursor-not-allowed" : ""}`}
-            >
-              <span className="relative block aspect-square">
-                {thumb ? (
-                  <SafeImage
-                    src={thumb}
-                    alt=""
-                    fill
-                    sizes="96px"
-                    className="object-contain p-1.5"
-                  />
-                ) : (
-                  <span
-                    className="absolute inset-3 rounded-xl ring-1 ring-black/10"
-                    style={swatchStyle(v.colorHex, v.name)}
-                  />
-                )}
-              </span>
-              <span className="block truncate px-1.5 pb-2 text-center text-[10px] font-semibold text-ink-950/70">
-                {v.name}
-              </span>
-              {active ? (
-                <span className="absolute right-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full bg-brand text-ink-950">
-                  <Icon name="check" className="h-3 w-3" />
+      {swatchesOnly ? (
+        <div className="mt-3 flex flex-wrap gap-2.5">
+          {variants.map((v) => {
+            const active = v.id === selectedId;
+            const out = !v.available;
+            return (
+              <button
+                key={v.id}
+                type="button"
+                disabled={locked}
+                onClick={() => onSelect(v.id)}
+                aria-label={v.name}
+                aria-pressed={active}
+                title={
+                  locked
+                    ? lockHint ?? "Select model first"
+                    : out
+                      ? `${v.name} — out of stock`
+                      : v.name
+                }
+                className={`relative h-10 w-10 rounded-full transition-all duration-300 ease-out-expo ${
+                  active
+                    ? "scale-110 ring-2 ring-brand ring-offset-2 ring-offset-ink-950"
+                    : "ring-1 ring-white/20 hover:scale-105 hover:ring-white/40"
+                } ${out || locked ? "opacity-40" : ""} ${locked ? "cursor-not-allowed" : ""}`}
+                style={swatchStyle(v.colorHex, v.name)}
+              >
+                {active ? (
+                  <span className="absolute inset-0 grid place-items-center">
+                    <Icon
+                      name="check"
+                      className={`h-4 w-4 drop-shadow ${
+                        isLightSwatch(v.colorHex, v.name)
+                          ? "text-ink-950"
+                          : "text-white"
+                      }`}
+                    />
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-5">
+          {variants.map((v) => {
+            const active = v.id === selectedId;
+            const out = !v.available;
+            const thumb = thumbForVariant(product.images, v.id, fitmentModel);
+            return (
+              <button
+                key={v.id}
+                type="button"
+                disabled={locked}
+                onClick={() => onSelect(v.id)}
+                aria-label={v.name}
+                aria-pressed={active}
+                title={
+                  locked
+                    ? lockHint ?? "Select model first"
+                    : out
+                      ? `${v.name} — out of stock`
+                      : v.name
+                }
+                className={`group relative overflow-hidden rounded-2xl border bg-[#f4f4f2] text-left transition-all duration-300 ease-out-expo ${
+                  active
+                    ? "border-brand ring-2 ring-brand/40 shadow-brand-glow"
+                    : "border-white/10 hover:-translate-y-0.5 hover:border-white/25"
+                } ${out || locked ? "opacity-45" : ""} ${locked ? "cursor-not-allowed" : ""}`}
+              >
+                <span className="relative block aspect-square">
+                  {thumb ? (
+                    <SafeImage
+                      src={thumb}
+                      alt=""
+                      fill
+                      sizes="96px"
+                      className="object-contain p-1.5"
+                    />
+                  ) : (
+                    <span
+                      className="absolute inset-3 rounded-xl ring-1 ring-black/10"
+                      style={swatchStyle(v.colorHex, v.name)}
+                    />
+                  )}
                 </span>
-              ) : null}
-            </button>
-          );
-        })}
-      </div>
+                <span className="block truncate px-1.5 pb-2 text-center text-[10px] font-semibold text-ink-950/70">
+                  {v.name}
+                </span>
+                {active ? (
+                  <span className="absolute right-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full bg-brand text-ink-950">
+                    <Icon name="check" className="h-3 w-3" />
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -321,28 +383,6 @@ export function ExtensionPicker({
   );
 }
 
-const MODEL_GROUPS: { title: string; match: (m: string) => boolean }[] = [
-  {
-    title: "6 / 7 / 8 · single camera",
-    match: (m) =>
-      /iPhone (6|6s|7|8)\b/i.test(m) &&
-      !/Plus/i.test(m) &&
-      !/X|XR|XS|11|12|13|14|15|16/.test(m)
-  },
-  {
-    title: "Plus · dual camera",
-    match: (m) => /iPhone (6|6s|7|8)\s+Plus/i.test(m)
-  },
-  {
-    title: "X / 11 · notch",
-    match: (m) => /iPhone (X|XR|XS|11)/i.test(m)
-  },
-  {
-    title: "12–16 · camera island",
-    match: (m) => /iPhone 1[2-6]/i.test(m)
-  }
-];
-
 export function FitmentPicker({
   fitment,
   value,
@@ -352,17 +392,17 @@ export function FitmentPicker({
   value: string | null;
   onChange: (v: string | null) => void;
 }) {
-  const groups = MODEL_GROUPS.map((g) => ({
-    title: g.title,
-    options: fitment.options.filter(g.match)
-  })).filter((g) => g.options.length > 0);
+  const [query, setQuery] = useState("");
 
-  const leftover = fitment.options.filter(
-    (o) => !MODEL_GROUPS.some((g) => g.match(o))
-  );
-  if (leftover.length) {
-    groups.push({ title: "Other", options: leftover });
-  }
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return fitment.options;
+    return fitment.options.filter((opt) => {
+      const full = opt.toLowerCase();
+      const short = shortModelLabel(opt).toLowerCase();
+      return full.includes(q) || short.includes(q) || short.replace(/\s+/g, "").includes(q.replace(/\s+/g, ""));
+    });
+  }, [fitment.options, query]);
 
   return (
     <div className="mt-5">
@@ -371,39 +411,91 @@ export function FitmentPicker({
           {fitment.label}
         </p>
         {value ? (
-          <p className="text-sm font-semibold text-brand">{value}</p>
+          <button
+            type="button"
+            onClick={() => onChange(null)}
+            className="text-xs font-semibold text-white/40 transition hover:text-white/70"
+          >
+            Clear
+          </button>
         ) : (
           <p className="text-xs text-white/35">Required</p>
         )}
       </div>
 
-      <div className="mt-3 space-y-4">
-        {groups.map((g) => (
-          <div key={g.title}>
-            <p className="mb-2 text-[11px] font-semibold text-white/35">
-              {g.title}
+      {value ? (
+        <div className="mt-3 flex items-center gap-2 rounded-2xl border border-brand/40 bg-brand/10 px-3.5 py-3">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-ink-950">
+            <Icon name="check" className="h-4 w-4" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-brand/80">
+              Your phone
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {g.options.map((opt) => {
-                const on = value === opt;
-                return (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => onChange(opt)}
-                    className={`rounded-pill border px-3 py-1.5 text-xs font-semibold transition-all ${
-                      on
-                        ? "border-brand bg-brand text-ink-950 shadow-brand-glow"
-                        : "border-white/10 bg-white/[0.03] text-white/70 hover:border-brand/35 hover:text-white"
-                    }`}
-                  >
-                    {opt.replace(/^iPhone\s+/i, "")}
-                  </button>
-                );
-              })}
-            </div>
+            <p className="truncate text-sm font-bold text-white">{value}</p>
           </div>
-        ))}
+        </div>
+      ) : null}
+
+      <label className="relative mt-3 block">
+        <span className="sr-only">Search iPhone model</span>
+        <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-white/35">
+          <svg
+            viewBox="0 0 24 24"
+            className="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3-3" strokeLinecap="round" />
+          </svg>
+        </span>
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search your iPhone… e.g. 15 Pro Max"
+          autoComplete="off"
+          className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-10 pr-3.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-brand/50 focus:ring-1 focus:ring-brand/30"
+        />
+      </label>
+
+      <div
+        className="mt-2 max-h-52 overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-white/[0.02] sm:max-h-64"
+        role="listbox"
+        aria-label={fitment.label}
+      >
+        {filtered.length === 0 ? (
+          <p className="px-4 py-6 text-center text-sm text-white/40">
+            No model matches “{query}”
+          </p>
+        ) : (
+          filtered.map((opt) => {
+            const on = value === opt;
+            return (
+              <button
+                key={opt}
+                type="button"
+                role="option"
+                aria-selected={on}
+                onClick={() => {
+                  onChange(opt);
+                  setQuery("");
+                }}
+                className={`flex w-full items-center justify-between gap-3 border-b border-white/[0.04] px-4 py-3 text-left text-sm transition last:border-0 ${
+                  on
+                    ? "bg-brand/15 font-bold text-brand"
+                    : "text-white/75 hover:bg-white/[0.04] hover:text-white"
+                }`}
+              >
+                <span>{opt}</span>
+                {on ? <Icon name="check" className="h-4 w-4 shrink-0" /> : null}
+              </button>
+            );
+          })
+        )}
       </div>
     </div>
   );

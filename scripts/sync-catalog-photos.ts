@@ -19,6 +19,7 @@ import { isUploadUrl } from "../lib/uploads";
 
 const prisma = new PrismaClient();
 const force = process.argv.includes("--force");
+const forceIfCatalogOnly = process.argv.includes("--force-if-catalog-only");
 const refreshCopy = process.argv.includes("--refresh-copy");
 const onlyArg = process.argv.find((a) => a.startsWith("--only="));
 const onlySlugs = onlyArg
@@ -60,7 +61,7 @@ async function syncProduct(slug: string): Promise<boolean> {
       console.log(`  ↻ copy ${slug}`);
     }
     // Copy-only mode must not wipe photos the provider already set.
-    if (!force) return true;
+    if (!force && !forceIfCatalogOnly) return true;
   }
 
   const uploadImages = row.images.filter((i) => isUploadUrl(i.url));
@@ -77,8 +78,12 @@ async function syncProduct(slug: string): Promise<boolean> {
     return false;
   }
 
+  // Refresh catalog files for catalog-only products without touching desk uploads.
+  const allowCatalogRefresh =
+    force || (forceIfCatalogOnly && uploadImages.length === 0);
+
   // Never silently restore old catalog files over a product that already has photos.
-  if (!force && row.images.length > 0) {
+  if (!allowCatalogRefresh && row.images.length > 0) {
     console.log(`  skip ${slug} (already has photos — set --force to replace)`);
     return false;
   }
@@ -122,7 +127,7 @@ async function syncProduct(slug: string): Promise<boolean> {
       await prisma.productImage.createMany({
         data: files.map((file, idx) => {
           const familyMatch = file.match(
-            /-(single|plus|notch|island)(?:-\d+)?\.jpg$/i
+            /-(single|plus|x|xr|11pro|12dual|12pro|14pro|15dual|15pro|17dual|17pro|notch|island|iphone-[a-z0-9-]+)(?:-\d+)?\.jpg$/i
           );
           const family = familyMatch?.[1]?.toLowerCase();
           return {
@@ -229,8 +234,10 @@ async function syncProduct(slug: string): Promise<boolean> {
 async function main() {
   console.log(
     `Syncing unique catalog photos${force ? " (force)" : ""}${
-      refreshCopy ? " + refresh copy" : ""
-    }${onlySlugs ? ` · only ${onlySlugs.join(", ")}` : ""}…`
+      forceIfCatalogOnly ? " (catalog-only refresh)" : ""
+    }${refreshCopy ? " + refresh copy" : ""}${
+      onlySlugs ? ` · only ${onlySlugs.join(", ")}` : ""
+    }…`
   );
   let updated = 0;
 

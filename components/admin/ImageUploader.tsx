@@ -13,7 +13,7 @@ type Props = {
   onUrlsChange?: (urls: string[]) => void;
   /** products | services */
   folder?: "products" | "services";
-  /** Allow multiple photos (products). Services use a single photo. */
+  /** Allow multiple photos (products & service galleries). First = cover. */
   multiple?: boolean;
   label?: string;
   /** Provider desk — show download links for reuse (on by default) */
@@ -252,7 +252,10 @@ export function ImageUploader({
             Shop preview
           </p>
           <p className="mt-1 text-xs text-white/45">
-            Cover photo is what customers see first. White background, full product in frame.
+            Cover photo is what customers see first
+            {folder === "services"
+              ? " on tiles and as gallery photo 1."
+              : ". White background, full product in frame."}
           </p>
           <div className="mt-3 max-w-[11rem]">
             <div className="overflow-hidden rounded-2xl border border-white/[0.06]">

@@ -4,7 +4,10 @@ import { useMemo, useState } from "react";
 import type { ServiceSettings } from "@/lib/services";
 import { formatPrice } from "@/lib/format";
 import { ServiceResult } from "@/components/services/ServiceResult";
-import { ServiceSteps } from "@/components/services/ServiceSteps";
+import {
+  FormSection,
+  ServiceSteps
+} from "@/components/services/ServiceSteps";
 import { FileUploadField } from "@/components/services/FileUploadField";
 
 const field =
@@ -119,131 +122,148 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-6">
+    <form onSubmit={submit} className="space-y-5">
       <ServiceSteps steps={STEPS} current={stepIndex} />
 
-      <div className="rounded-[1.15rem] border border-ink-800 bg-ink-900 p-5">
-        <h3 className="font-bold text-white">Requirements</h3>
-        <ul className="mt-3 space-y-2 text-sm text-white/60">
-          <li>• Collateral more valuable than the money borrowed</li>
-          <li>• Clear photo or scan of your original NRC</li>
-          <li>• Least amount: {formatPrice(LOAN_MIN)}</li>
+      <div className="rounded-[1.15rem] border border-brand/20 bg-brand/[0.06] px-4 py-3.5">
+        <p className="text-sm font-semibold text-white">What you need</p>
+        <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-white/55">
+          <li>• Collateral worth more than the loan amount</li>
+          <li>• Clear photo / scan of your original NRC</li>
+          <li>• Minimum {formatPrice(LOAN_MIN)}</li>
         </ul>
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {LOAN_RATES.map((r) => (
-            <div
+            <button
               key={r.weeks}
-              className="rounded-xl border border-ink-700 bg-ink-850 px-3 py-2 text-center"
+              type="button"
+              onClick={() => setWeeks(r.weeks)}
+              className={`rounded-xl border px-3 py-2 text-center transition-colors ${
+                weeks === r.weeks
+                  ? "border-brand bg-brand/15 ring-1 ring-brand/30"
+                  : "border-ink-700 bg-ink-900/80 hover:border-ink-600"
+              }`}
             >
-              <p className="text-xs text-white/40">{r.weeks} week</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-white/40">
+                {r.weeks} wk
+              </p>
               <p className="text-lg font-black text-brand">{r.rate}%</p>
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <FormSection
+        title="1 · Loan details"
+        hint="Amount and term — interest updates live below."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm text-white/60">Full name</span>
+            <input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={field}
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm text-white/60">Phone (WhatsApp)</span>
+            <input
+              required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className={field}
+              placeholder="09xx xxx xxx"
+            />
+          </label>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm text-white/60">Amount needed (ZMW)</span>
+            <input
+              type="number"
+              min={LOAN_MIN}
+              step={50}
+              required
+              value={amount}
+              onChange={(e) =>
+                setAmount(Math.max(LOAN_MIN, Number(e.target.value) || LOAN_MIN))
+              }
+              className={field}
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm text-white/60">Term</span>
+            <select
+              value={weeks}
+              onChange={(e) => setWeeks(Number(e.target.value))}
+              className={field}
+            >
+              {LOAN_RATES.map((r) => (
+                <option key={r.weeks} value={r.weeks}>
+                  {r.weeks} week{r.weeks > 1 ? "s" : ""} — {r.rate}%
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div className="rounded-xl border border-ink-800 bg-ink-900 px-4 py-3 text-sm text-white/60">
+          Est. interest {formatPrice(interest)} · Est. repay{" "}
+          <span className="font-bold text-brand">{formatPrice(repay)}</span>
+        </div>
+      </FormSection>
+
+      <FormSection
+        title="2 · Collateral"
+        hint="Describe what you will leave — must be worth more than the loan."
+      >
         <label className="block">
-          <span className="text-sm text-white/60">Full name</span>
-          <input
+          <span className="text-sm text-white/60">Collateral description</span>
+          <textarea
             required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={collateral}
+            onChange={(e) => setCollateral(e.target.value)}
+            rows={2}
             className={field}
+            placeholder="e.g. Laptop, phone, appliance…"
           />
         </label>
-        <label className="block">
-          <span className="text-sm text-white/60">Phone (WhatsApp)</span>
-          <input
-            required
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className={field}
-            placeholder="09xx xxx xxx"
-          />
-        </label>
-      </div>
+      </FormSection>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className="text-sm text-white/60">Amount needed (ZMW)</span>
-          <input
-            type="number"
-            min={LOAN_MIN}
-            step={50}
-            required
-            value={amount}
-            onChange={(e) =>
-              setAmount(Math.max(LOAN_MIN, Number(e.target.value) || LOAN_MIN))
-            }
-            className={field}
-          />
-        </label>
-        <label className="block">
-          <span className="text-sm text-white/60">Term</span>
-          <select
-            value={weeks}
-            onChange={(e) => setWeeks(Number(e.target.value))}
-            className={field}
-          >
-            {LOAN_RATES.map((r) => (
-              <option key={r.weeks} value={r.weeks}>
-                {r.weeks} week{r.weeks > 1 ? "s" : ""} — {r.rate}%
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div className="rounded-xl border border-ink-800 bg-ink-900 px-4 py-3 text-sm text-white/60">
-        Est. interest {formatPrice(interest)} · Est. repay{" "}
-        <span className="font-bold text-white">{formatPrice(repay)}</span>
-      </div>
-
-      <label className="block">
-        <span className="text-sm text-white/60">
-          Collateral (must be worth more than the loan)
-        </span>
-        <textarea
+      <FormSection
+        title="3 · NRC"
+        hint="Upload a clear front (and back if needed). Kept for review only."
+      >
+        <FileUploadField
+          files={nrcFiles}
+          onChange={setNrcFiles}
           required
-          value={collateral}
-          onChange={(e) => setCollateral(e.target.value)}
-          rows={2}
-          className={field}
-          placeholder="e.g. Laptop, phone, appliance…"
+          multiple={false}
+          maxFiles={2}
+          label="Upload NRC"
+          hint="Clear photo or scan of your original NRC."
+          accept=".pdf,.png,.jpg,.jpeg,.webp"
         />
-      </label>
-
-      <FileUploadField
-        files={nrcFiles}
-        onChange={setNrcFiles}
-        required
-        multiple={false}
-        maxFiles={2}
-        label="Upload NRC"
-        hint="Clear front (and back if needed) of your original NRC — kept for review only."
-        accept=".pdf,.png,.jpg,.jpeg,.webp"
-      />
-
-      <label className="flex items-start gap-3 text-sm text-white/70">
-        <input
-          type="checkbox"
-          checked={hasNrc}
-          onChange={(e) => setHasNrc(e.target.checked)}
-          className="mt-1 h-4 w-4 accent-[#f6d400]"
-        />
-        I confirm this is a copy of my original NRC
-      </label>
-
-      <label className="block">
-        <span className="text-sm text-white/60">Notes (optional)</span>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          rows={2}
-          className={field}
-        />
-      </label>
+        <label className="flex items-start gap-3 text-sm text-white/70">
+          <input
+            type="checkbox"
+            checked={hasNrc}
+            onChange={(e) => setHasNrc(e.target.checked)}
+            className="mt-1 h-4 w-4 accent-[#f6d400]"
+          />
+          I confirm this is a copy of my original NRC
+        </label>
+        <label className="block">
+          <span className="text-sm text-white/60">Notes (optional)</span>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={2}
+            className={field}
+          />
+        </label>
+      </FormSection>
 
       {error && (
         <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
@@ -254,9 +274,11 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-soft disabled:opacity-60"
+        className="w-full rounded-pill bg-brand px-6 py-3.5 text-sm font-bold text-ink-950 shadow-brand-glow hover:bg-brand-soft disabled:opacity-60"
       >
-        {submitting ? "Sending request..." : "Request a loan"}
+        {submitting
+          ? "Sending request..."
+          : `Request ${formatPrice(amount)} loan`}
       </button>
     </form>
   );

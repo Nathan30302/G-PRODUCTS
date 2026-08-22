@@ -33,9 +33,9 @@ export default async function ServicesPage() {
             Keys, loans & printing
           </h1>
           <p className="mt-3 text-base leading-relaxed text-white/55">
-            Order online from your phone — upload print files in full quality,
-            pay with Mobile Money, then pick up at {siteConfig.branch} or get
-            delivery via Yango.
+            Order online from your phone — swipe real workshop photos, upload
+            print files in full quality, pay with Mobile Money, then pick up at{" "}
+            {siteConfig.branch} or get delivery via Yango.
           </p>
           <ul className="mt-5 grid gap-2 text-sm text-white/50 sm:grid-cols-3">
             <li className="flex items-center gap-2">

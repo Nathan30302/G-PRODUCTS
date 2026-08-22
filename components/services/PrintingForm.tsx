@@ -13,7 +13,10 @@ import {
   type PayMethod
 } from "@/components/services/PaymentPicker";
 import { ServiceResult } from "@/components/services/ServiceResult";
-import { ServiceSteps } from "@/components/services/ServiceSteps";
+import {
+  FormSection,
+  ServiceSteps
+} from "@/components/services/ServiceSteps";
 import { FileUploadField } from "@/components/services/FileUploadField";
 
 const field =
@@ -191,7 +194,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-6">
+    <form onSubmit={submit} className="space-y-5">
       <ServiceSteps steps={STEPS} current={stepIndex} />
 
       <div className="rounded-[1.15rem] border border-brand/20 bg-brand/[0.06] px-4 py-3 text-sm text-white/65">
@@ -203,31 +206,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className="text-sm text-white/60">Full name</span>
-          <input
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={field}
-          />
-        </label>
-        <label className="block">
-          <span className="text-sm text-white/60">Phone (WhatsApp)</span>
-          <input
-            required
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className={field}
-            placeholder="09xx xxx xxx"
-          />
-        </label>
-      </div>
-
-      <div>
-        <p className="text-sm font-semibold text-white">What do you need?</p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+      <FormSection
+        title="1 · What do you need?"
+        hint="Tap a job — prices are per unit / page."
+      >
+        <div className="grid gap-2 sm:grid-cols-2">
           {menu.map((m) => (
             <button
               key={m.id}
@@ -235,79 +218,116 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
               onClick={() => setJobId(m.id)}
               className={`rounded-xl border p-3 text-left transition-colors ${
                 jobId === m.id
-                  ? "border-brand bg-brand/10"
+                  ? "border-brand bg-brand/10 ring-1 ring-brand/25"
                   : "border-ink-700 bg-ink-900 hover:border-ink-600"
               }`}
             >
               <span className="block text-sm font-bold text-white">{m.name}</span>
-              <span className="text-xs text-white/50">
+              <span className="text-xs text-brand/90">
                 {formatPrice(m.price)} / unit
               </span>
             </button>
           ))}
         </div>
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm text-white/60">Quantity / pages</span>
+            <input
+              type="number"
+              min={1}
+              value={pages}
+              onChange={(e) =>
+                setPages(Math.max(1, Number(e.target.value) || 1))
+              }
+              className={field}
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm text-white/60">Copies</span>
+            <input
+              type="number"
+              min={1}
+              value={copies}
+              onChange={(e) =>
+                setCopies(Math.max(1, Number(e.target.value) || 1))
+              }
+              className={field}
+            />
+          </label>
+        </div>
+      </FormSection>
 
-      <FileUploadField
-        files={files}
-        onChange={setFiles}
-        required={needsFile}
-        label="Upload documents or photos"
+      <FormSection
+        title="2 · Upload files"
         hint={
           needsFile
-            ? "Required for this job — clear photos of pages work great from your phone."
+            ? "Required for this job — clear phone photos of pages work great."
             : "Optional for this service — add files if you already have them."
         }
-      />
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className="text-sm text-white/60">Quantity / pages</span>
-          <input
-            type="number"
-            min={1}
-            value={pages}
-            onChange={(e) => setPages(Math.max(1, Number(e.target.value) || 1))}
-            className={field}
-          />
-        </label>
-        <label className="block">
-          <span className="text-sm text-white/60">Copies</span>
-          <input
-            type="number"
-            min={1}
-            value={copies}
-            onChange={(e) =>
-              setCopies(Math.max(1, Number(e.target.value) || 1))
-            }
-            className={field}
-          />
-        </label>
-      </div>
-
-      <label className="block">
-        <span className="text-sm text-white/60">Notes (optional)</span>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          rows={2}
-          className={field}
-          placeholder="e.g. Staple, double-sided, A4…"
+      >
+        <FileUploadField
+          files={files}
+          onChange={setFiles}
+          required={needsFile}
+          label="Documents or photos"
+          hint={
+            needsFile
+              ? "Full quality — Gift downloads HD originals from the desk."
+              : "Add files if helpful for typing, scan, laminate, or bind."
+          }
         />
-      </label>
+        <label className="block">
+          <span className="text-sm text-white/60">Notes (optional)</span>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={2}
+            className={field}
+            placeholder="e.g. Staple, double-sided, A4…"
+          />
+        </label>
+      </FormSection>
 
-      <DeliveryPicker
-        method={delivery}
-        address={address}
-        onMethod={setDelivery}
-        onAddress={setAddress}
-      />
+      <FormSection
+        title="3 · Delivery & contact"
+        hint="Pickup at the shop or Yango to your area."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm text-white/60">Full name</span>
+            <input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={field}
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm text-white/60">Phone (WhatsApp)</span>
+            <input
+              required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className={field}
+              placeholder="09xx xxx xxx"
+            />
+          </label>
+        </div>
+        <DeliveryPicker
+          method={delivery}
+          address={address}
+          onMethod={setDelivery}
+          onAddress={setAddress}
+        />
+      </FormSection>
 
-      <PaymentPicker method={pay} onChange={setPay} />
+      <FormSection title="4 · Pay" hint="Choose Mobile Money — then place order.">
+        <PaymentPicker method={pay} onChange={setPay} />
+      </FormSection>
 
-      <div className="flex items-center justify-between rounded-xl border border-ink-800 bg-ink-900 px-4 py-3">
+      <div className="flex items-center justify-between rounded-xl border border-brand/20 bg-brand/[0.06] px-4 py-3.5">
         <span className="text-sm text-white/60">Estimated total</span>
-        <span className="text-lg font-black text-white">
+        <span className="text-lg font-black text-brand">
           {formatPrice(estimate)}
         </span>
       </div>
@@ -325,9 +345,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       <button
         type="submit"
         disabled={phase === "submitting"}
-        className="w-full rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-soft disabled:opacity-60"
+        className="w-full rounded-pill bg-brand px-6 py-3.5 text-sm font-bold text-ink-950 shadow-brand-glow hover:bg-brand-soft disabled:opacity-60"
       >
-        {phase === "submitting" ? "Placing order..." : "Place print order"}
+        {phase === "submitting"
+          ? "Placing order..."
+          : `Place print order · ${formatPrice(estimate)}`}
       </button>
     </form>
   );

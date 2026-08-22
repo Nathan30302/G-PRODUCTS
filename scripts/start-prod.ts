@@ -397,10 +397,12 @@ async function main() {
   try {
     console.log("[start] syncing HD catalog photos (fill missing only)");
     await run("npx", ["tsx", "scripts/sync-catalog-photos.ts"]);
-    // Brand/copy refresh for pouches + extensions — never force-replace photos
+    // Refresh pouches + extensions catalog files when the desk has not uploaded
+    // custom photos — never overwrite /api/media uploads.
     await run("npx", [
       "tsx",
       "scripts/sync-catalog-photos.ts",
+      "--force-if-catalog-only",
       "--refresh-copy",
       "--only=phone-pouch,extension-cable"
     ]);

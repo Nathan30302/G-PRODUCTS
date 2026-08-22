@@ -47,11 +47,15 @@ export function ProductPurchasePanel({
   return (
     <div className="lg:sticky lg:top-24">
       <ProductGallery
-        key={selectedId ?? "default"}
+        key={`${selectedId ?? "default"}-${fitmentValue ?? "nofit"}`}
         images={galleryImages}
         name={product.name}
         badge={badge}
-        showingLabel={multi ? selected?.name ?? null : null}
+        showingLabel={
+          multi
+            ? [selected?.name, fitmentValue].filter(Boolean).join(" · ") || null
+            : null
+        }
       />
 
       {/* Pouches: model first, then colour (cutout depends on model). */}
@@ -80,6 +84,7 @@ export function ProductPurchasePanel({
             locked={!fitmentValue && product.slug === "phone-pouch"}
             lockHint="Choose your iPhone model first"
             fitmentModel={fitmentValue}
+            swatchesOnly={product.slug === "phone-pouch"}
           />
         ) : (
           <PricedOptionGrid

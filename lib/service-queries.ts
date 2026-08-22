@@ -5,6 +5,10 @@ import {
   type ServiceDef,
   type ServiceSlug
 } from "@/lib/services";
+import {
+  coverFromImages,
+  resolveServiceImages
+} from "@/lib/service-media";
 
 function toDef(row: {
   id: string;
@@ -19,6 +23,7 @@ function toDef(row: {
   payable: boolean;
   settings: string;
 }): ServiceDef {
+  const images = resolveServiceImages(row.slug, row.imageUrl);
   return {
     id: row.id,
     slug: row.slug as ServiceSlug,
@@ -27,7 +32,8 @@ function toDef(row: {
     tagline: row.tagline,
     description: row.description,
     icon: row.icon,
-    image: row.imageUrl,
+    image: coverFromImages(images) || row.imageUrl,
+    images,
     priceLabel: row.priceLabel ?? undefined,
     payable: row.payable,
     settings: parseSettings(row.settings)

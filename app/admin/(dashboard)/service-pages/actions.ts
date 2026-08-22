@@ -5,6 +5,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { DEFAULT_SETTINGS } from "@/lib/services";
+import {
+  parseServiceImageUrls,
+  serializeServiceImageUrls
+} from "@/lib/service-media";
 
 function toInt(value: FormDataEntryValue | null, fallback: number): number {
   const n = parseInt(String(value ?? "").replace(/[^0-9]/g, ""), 10);
@@ -19,7 +23,10 @@ export async function saveServiceOffer(formData: FormData): Promise<void> {
   const name = String(formData.get("name") ?? "").trim();
   const tagline = String(formData.get("tagline") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
-  const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  const imageUrls = parseServiceImageUrls(
+    String(formData.get("imageUrl") ?? "")
+  );
+  const imageUrl = serializeServiceImageUrls(imageUrls);
   const priceLabel = String(formData.get("priceLabel") ?? "").trim() || null;
   const enabled = formData.get("enabled") === "on";
 

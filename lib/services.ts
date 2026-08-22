@@ -8,7 +8,10 @@ export type ServiceDef = {
   tagline: string;
   description: string;
   icon: string;
+  /** Cover image (first gallery photo). */
   image: string;
+  /** Swipeable gallery — cover is images[0]. */
+  images: string[];
   priceLabel?: string;
   payable: boolean;
   settings: ServiceSettings;
@@ -53,7 +56,12 @@ export const DEFAULT_SETTINGS: ServiceSettings = {
   printMenu: DEFAULT_PRINT_MENU
 };
 
-/** Fallback / seed catalog — high-quality Unsplash photos */
+import {
+  SERVICE_GALLERIES,
+  coverFromImages
+} from "@/lib/service-media";
+
+/** Fallback / seed catalog — curated HD workshop galleries */
 export const services: ServiceDef[] = [
   {
     slug: "key-cutting",
@@ -63,8 +71,8 @@ export const services: ServiceDef[] = [
     description:
       "Bring your key to any G-Products shop (UNZA, Kalingalinga or Balastone), or order online: send your key by Yango, we cut a copy, then we return original + new key.",
     icon: "key",
-    image:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80",
+    images: SERVICE_GALLERIES["key-cutting"],
+    image: coverFromImages(SERVICE_GALLERIES["key-cutting"]),
     priceLabel: "From K 50",
     payable: true,
     settings: { ...DEFAULT_SETTINGS }
@@ -77,8 +85,8 @@ export const services: ServiceDef[] = [
     description:
       "Short-term collateral-based loans from K 500. Submit a request and we'll follow up on WhatsApp.",
     icon: "wallet",
-    image:
-      "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=1200&q=80",
+    images: SERVICE_GALLERIES["g-loans"],
+    image: coverFromImages(SERVICE_GALLERIES["g-loans"]),
     priceLabel: "From K 500",
     payable: false,
     settings: { ...DEFAULT_SETTINGS }
@@ -91,7 +99,8 @@ export const services: ServiceDef[] = [
     description:
       "Upload your documents or choose a service (photocopy, print, scan, laminate, bind). Pay with Mobile Money, then pick up at UNZA / Kalingalinga / Balastone or get Yango delivery.",
     icon: "printer",
-    image: "/services/printing-menu.jpg",
+    images: SERVICE_GALLERIES.printing,
+    image: coverFromImages(SERVICE_GALLERIES.printing),
     priceLabel: "From K 1",
     payable: true,
     settings: { ...DEFAULT_SETTINGS }

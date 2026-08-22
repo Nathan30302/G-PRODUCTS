@@ -15,8 +15,8 @@ export async function ServicesBand() {
             Need more than gadgets?
           </h2>
           <p className="mt-2 max-w-xl text-sm text-white/50">
-            Key cutting, collateral loans, and document printing — upload from
-            home, pay with Mobile Money, pick up or get Yango delivery.
+            Key cutting, collateral loans, and document printing — real shop
+            photos, upload from home, pay with Mobile Money, pick up or Yango.
           </p>
         </div>
         <Link
