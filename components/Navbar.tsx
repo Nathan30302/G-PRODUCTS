@@ -131,15 +131,21 @@ export function Navbar() {
         <div className="flex items-center gap-1.5 sm:gap-2">
           <form
             onSubmit={submitSearch}
-            className="hidden items-center rounded-pill border border-white/10 bg-white/[0.03] pl-3.5 pr-1 transition-colors focus-within:border-brand/40 focus-within:bg-white/[0.05] md:flex"
+            className="hidden items-center gap-1 rounded-pill border border-white/10 bg-white/[0.03] py-1 pl-3.5 pr-1.5 transition-all focus-within:border-brand/40 focus-within:bg-white/[0.06] focus-within:shadow-brand-glow md:flex"
           >
-            <Icon name="search" className="h-4 w-4 text-white/40" />
+            <Icon name="search" className="h-4 w-4 shrink-0 text-brand/80" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search products…"
-              className="w-36 bg-transparent px-2 py-2.5 text-sm text-white outline-none placeholder:text-white/35 lg:w-44"
+              className="w-40 bg-transparent px-2 py-2 text-sm text-white outline-none placeholder:text-white/35 lg:w-52"
             />
+            <button
+              type="submit"
+              className="rounded-pill bg-brand/15 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-brand transition-colors hover:bg-brand hover:text-ink-950"
+            >
+              Go
+            </button>
           </form>
 
           <Link

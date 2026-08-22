@@ -1,12 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { Category, Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { Icon } from "@/components/Icons";
+import { ShopEmptyState } from "@/components/shop/ui";
 import { filterCatalog, type SortMode, type StockFilter } from "@/lib/search";
+import { formatPrice } from "@/lib/format";
+import { coverImageForProduct } from "@/lib/product-images";
+import { SafeImage } from "@/components/SafeImage";
 
 type TrendChip = {
   label: string;
@@ -36,22 +41,40 @@ export function SearchClient({
   initialQuery?: string;
 }) {
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState(initialQuery);
+  const deferredQuery = useDeferredValue(query);
   const [cat, setCat] = useState<string>("all");
-
   const [stock, setStock] = useState<StockFilter>("all");
   const [sort, setSort] = useState<SortMode>("match");
+  const [focused, setFocused] = useState(false);
 
   const results = useMemo(
     () =>
       filterCatalog(products, {
-        query,
+        query: deferredQuery,
         category: cat,
         stock,
         sort
       }),
-    [query, cat, stock, sort, products]
+    [deferredQuery, cat, stock, sort, products]
   );
+
+  const suggestions = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (q.length < 1) return [];
+    return products
+      .filter((p) =>
+        [p.name, p.brand ?? "", p.categorySlug]
+          .join(" ")
+          .toLowerCase()
+          .includes(q)
+      )
+      .slice(0, 6);
+  }, [query, products]);
+
+  const showSuggest =
+    focused && query.trim().length > 0 && suggestions.length > 0;
 
   function applyTrend(chip: TrendChip) {
     if (chip.href) {
@@ -61,10 +84,11 @@ export function SearchClient({
     setQuery(chip.query ?? chip.label);
     if (chip.category) setCat(chip.category);
     else setCat("all");
+    inputRef.current?.focus();
   }
 
   const grouped = useMemo(() => {
-    if (query.trim() || cat !== "all") return null;
+    if (deferredQuery.trim() || cat !== "all") return null;
     const map = new Map<string, Product[]>();
     for (const c of categories) map.set(c.slug, []);
     for (const p of results) {
@@ -74,196 +98,374 @@ export function SearchClient({
     return categories
       .map((c) => ({ category: c, items: map.get(c.slug) ?? [] }))
       .filter((g) => g.items.length > 0);
-  }, [query, cat, results, categories]);
+  }, [deferredQuery, cat, results, categories]);
 
   const showGrouped = grouped && grouped.length > 0;
+  const searching = deferredQuery.trim().length > 0 || cat !== "all";
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "/" && !e.metaKey && !e.ctrlKey) {
+        const tag = (e.target as HTMLElement)?.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
-    <div className="container-g py-8 sm:py-10">
-      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
-        Catalogue
-      </p>
-      <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
-        Shop
-      </h1>
-      <p className="mt-2 text-sm text-white/50">
-        Find genuine products across {products.length} items.
-      </p>
-
-      <div className="relative mt-7">
-        <Icon
-          name="search"
-          className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40"
-        />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          autoFocus
-          placeholder="Try f9-5, 5m extension, union lock…"
-          className="w-full rounded-pill border border-white/10 bg-ink-900/70 py-4 pr-12 text-white shadow-card outline-none transition-colors focus:border-brand/50"
-          style={{ paddingLeft: "3.25rem" }}
-        />
-        {query && (
-          <button
-            type="button"
-            onClick={() => setQuery("")}
-            aria-label="Clear search"
-            className="absolute right-4 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full bg-white/[0.06] text-white/60 transition-colors hover:text-white"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
-        )}
+    <div className="relative pb-10">
+      {/* Atmosphere */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[22rem] overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_-10%,rgba(246,212,0,0.14),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_90%_20%,rgba(34,197,94,0.06),transparent_50%)]" />
       </div>
 
-      {!query && (
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="flex items-center gap-1.5 text-sm text-white/40">
-            <Icon name="spark" className="h-4 w-4 text-brand" />
-            Trending:
-          </span>
-          {trending.map((t) => (
-            <button
-              key={t.label}
-              type="button"
-              onClick={() => applyTrend(t)}
-              className="rounded-pill border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-sm text-white/70 transition-colors hover:border-brand/40 hover:text-white"
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {(
-          [
-            ["all", "All stock"],
-            ["in_stock", "In stock"],
-            ["sold_out", "Out of stock"]
-          ] as const
-        ).map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => setStock(id)}
-            className={`rounded-pill px-3 py-1 text-xs font-medium ${
-              stock === id
-                ? "bg-white/15 text-white"
-                : "bg-white/[0.04] text-white/50 hover:text-white/80"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-        <span className="mx-1 h-5 w-px self-center bg-white/10" />
-        {(
-          [
-            ["match", "Best match"],
-            ["price-asc", "Price ↑"],
-            ["price-desc", "Price ↓"]
-          ] as const
-        ).map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => setSort(id)}
-            className={`rounded-pill px-3 py-1 text-xs font-medium ${
-              sort === id
-                ? "bg-brand/20 text-brand"
-                : "bg-white/[0.04] text-white/50 hover:text-white/80"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible">
-        <button
-          type="button"
-          onClick={() => setCat("all")}
-          className={`shrink-0 rounded-pill px-4 py-1.5 text-sm font-medium transition-colors ${
-            cat === "all"
-              ? "bg-brand text-ink-950"
-              : "bg-white/[0.04] text-white/70 hover:text-white"
-          }`}
-        >
-          All
-        </button>
-        {categories.map((c) => (
-          <button
-            key={c.slug}
-            type="button"
-            onClick={() => setCat(c.slug)}
-            className={`shrink-0 rounded-pill px-4 py-1.5 text-sm font-medium transition-colors ${
-              cat === c.slug
-                ? "bg-brand text-ink-950"
-                : "bg-white/[0.04] text-white/70 hover:text-white"
-            }`}
-          >
-            {c.name}
-          </button>
-        ))}
-      </div>
-
-      <p className="mt-6 text-sm text-white/45">
-        {results.length} result{results.length === 1 ? "" : "s"}
-        {query && (
-          <>
-            {" "}
-            for <span className="text-white/70">&ldquo;{query}&rdquo;</span>
-          </>
-        )}
-      </p>
-
-      {results.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-white/[0.04] text-white/40">
-            <Icon name="search" className="h-6 w-6" />
-          </span>
-          <p className="mt-4 font-semibold text-white">Nothing found</p>
-          <p className="mt-1 text-sm text-white/50">
-            Try another search or browse the shop.
+      <div className="container-g relative pt-8 sm:pt-10">
+        <header className="max-w-2xl">
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand/90">
+            Catalogue
           </p>
-          <Link href="/" className="btn-brand mt-5 px-5 py-2.5">
-            Browse the shop
-          </Link>
-        </div>
-      ) : showGrouped ? (
-        <div className="mt-6 space-y-10">
-          {grouped!.map(({ category, items }) => (
-            <section key={category.slug}>
-              <div className="mb-4 flex items-end justify-between gap-3">
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand/80">
-                    {category.name}
-                  </p>
-                  <p className="mt-1 text-sm text-white/45">{category.tagline}</p>
-                </div>
-                <Link
-                  href={`/category/${category.slug}`}
-                  className="text-sm font-semibold text-brand hover:underline"
+          <h1 className="display mt-1.5 text-3xl sm:text-4xl">Shop</h1>
+          <p className="mt-2 text-sm leading-relaxed text-white/50">
+            Search {products.length} products — stationery, chargers, audio and
+            more. Press{" "}
+            <kbd className="rounded-md border border-white/15 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[11px] text-white/60">
+              /
+            </kbd>{" "}
+            to jump here anytime.
+          </p>
+        </header>
+
+        {/* Search stage */}
+        <div className="relative z-20 mt-7">
+          <div
+            className={`relative overflow-hidden rounded-[1.5rem] border bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-1.5 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.7)] transition-all duration-300 ${
+              focused
+                ? "border-brand/45 shadow-brand-glow ring-1 ring-brand/20"
+                : "border-white/[0.08]"
+            }`}
+          >
+            <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
+            <div className="relative flex items-center gap-2 rounded-[1.15rem] bg-ink-950/50 px-3 sm:px-4">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/20">
+                <Icon name="search" className="h-5 w-5" />
+              </span>
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => {
+                  // delay so suggestion click registers
+                  window.setTimeout(() => setFocused(false), 160);
+                }}
+                autoFocus={!initialQuery}
+                placeholder="Search — f9-5, 5m extension, union lock…"
+                className="min-w-0 flex-1 bg-transparent py-4 text-[15px] text-white outline-none placeholder:text-white/35 sm:text-base"
+                aria-label="Search products"
+                autoComplete="off"
+                spellCheck={false}
+              />
+              {query ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    inputRef.current?.focus();
+                  }}
+                  aria-label="Clear search"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/55 transition-colors hover:border-brand/35 hover:text-brand"
                 >
-                  View all
-                </Link>
-              </div>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                {items.map((p) => (
-                  <ProductCard key={p.id} product={p} />
-                ))}
-              </div>
-            </section>
-          ))}
+                  <Icon name="close" className="h-4 w-4" />
+                </button>
+              ) : (
+                <span className="hidden shrink-0 rounded-pill border border-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white/30 sm:inline">
+                  Live
+                </span>
+              )}
+            </div>
+          </div>
+
+          <AnimatePresence>
+            {showSuggest ? (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-x-0 top-[calc(100%+0.5rem)] z-30 overflow-hidden rounded-[1.25rem] border border-white/[0.08] bg-ink-900/95 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.75)] backdrop-blur-xl"
+              >
+                <p className="border-b border-white/[0.06] px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.16em] text-white/35">
+                  Quick matches
+                </p>
+                <ul>
+                  {suggestions.map((p) => {
+                    const thumb = coverImageForProduct(
+                      p,
+                      p.variants.find((v) => v.available) ??
+                        p.variants[0] ??
+                        null
+                    );
+                    return (
+                      <li key={p.id}>
+                        <Link
+                          href={`/product/${p.slug}`}
+                          className="flex items-center gap-3 px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
+                        >
+                          <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-[#f4f4f2]">
+                            <SafeImage
+                              src={thumb}
+                              alt=""
+                              fill
+                              sizes="44px"
+                              className="object-contain p-1"
+                            />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-sm font-semibold text-white">
+                              {p.name}
+                            </span>
+                            <span className="block text-xs text-white/40">
+                              {formatPrice(p.price)}
+                            </span>
+                          </span>
+                          <Icon
+                            name="chevron-right"
+                            className="h-4 w-4 shrink-0 text-white/25"
+                          />
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
-      ) : (
-        <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {results.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
+
+        {/* Trending */}
+        {!query && (
+          <div className="mt-5">
+            <p className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-white/35">
+              <Icon name="spark" className="h-3.5 w-3.5 text-brand" />
+              Popular right now
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {trending.map((t) => (
+                <button
+                  key={t.label}
+                  type="button"
+                  onClick={() => applyTrend(t)}
+                  className="rounded-pill border border-white/10 bg-white/[0.03] px-3.5 py-2 text-sm font-medium text-white/70 transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brand/10 hover:text-brand"
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Filters panel */}
+        <div className="mt-6 rounded-[1.35rem] border border-white/[0.07] bg-white/[0.02] p-3 sm:p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/30">
+              Stock
+            </span>
+            {(
+              [
+                ["all", "All"],
+                ["in_stock", "In stock"],
+                ["sold_out", "Sold out"]
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setStock(id)}
+                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${
+                  stock === id
+                    ? "bg-white text-ink-950"
+                    : "bg-white/[0.04] text-white/50 hover:text-white/80"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+            <span className="mx-1 hidden h-5 w-px bg-white/10 sm:inline" />
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/30">
+              Sort
+            </span>
+            {(
+              [
+                ["match", "Best match"],
+                ["price-asc", "Price ↑"],
+                ["price-desc", "Price ↓"]
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setSort(id)}
+                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${
+                  sort === id
+                    ? "bg-brand text-ink-950 shadow-brand-glow"
+                    : "bg-white/[0.04] text-white/50 hover:text-white/80"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto pb-0.5">
+            <button
+              type="button"
+              onClick={() => setCat("all")}
+              className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-sm font-semibold transition-all ${
+                cat === "all"
+                  ? "bg-brand text-ink-950 shadow-brand-glow"
+                  : "border border-white/10 bg-ink-950/40 text-white/65 hover:border-brand/30 hover:text-white"
+              }`}
+            >
+              All categories
+            </button>
+            {categories.map((c) => (
+              <button
+                key={c.slug}
+                type="button"
+                onClick={() => setCat(c.slug)}
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-sm font-semibold transition-all ${
+                  cat === c.slug
+                    ? "bg-brand text-ink-950 shadow-brand-glow"
+                    : "border border-white/10 bg-ink-950/40 text-white/65 hover:border-brand/30 hover:text-white"
+                }`}
+              >
+                <Icon
+                  name={c.icon}
+                  className={`h-3.5 w-3.5 ${
+                    cat === c.slug ? "text-ink-950/70" : "text-brand/80"
+                  }`}
+                />
+                {c.name}
+              </button>
+            ))}
+          </div>
         </div>
-      )}
+
+        {/* Results meta */}
+        <div className="mt-6 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-sm text-white/45">
+              <span className="font-semibold tabular-nums text-white">
+                {results.length}
+              </span>{" "}
+              result{results.length === 1 ? "" : "s"}
+              {deferredQuery.trim() ? (
+                <>
+                  {" "}
+                  for{" "}
+                  <span className="text-brand">
+                    &ldquo;{deferredQuery.trim()}&rdquo;
+                  </span>
+                </>
+              ) : null}
+              {cat !== "all" ? (
+                <>
+                  {" "}
+                  in{" "}
+                  <span className="text-white/70">
+                    {categories.find((c) => c.slug === cat)?.name ?? cat}
+                  </span>
+                </>
+              ) : null}
+            </p>
+            {searching ? (
+              <p className="mt-1 text-xs text-white/30">
+                Tap a product to open it
+              </p>
+            ) : null}
+          </div>
+          {searching ? (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery("");
+                setCat("all");
+                setStock("all");
+                setSort("match");
+              }}
+              className="text-xs font-semibold text-white/40 transition-colors hover:text-brand"
+            >
+              Clear filters
+            </button>
+          ) : null}
+        </div>
+
+        {results.length === 0 ? (
+          <div className="mt-8">
+            <ShopEmptyState
+              icon="search"
+              title="Nothing matched"
+              description="Try a shorter word, a brand name, or pick a category above."
+              action={
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    setCat("all");
+                    inputRef.current?.focus();
+                  }}
+                  className="btn-brand"
+                >
+                  Reset search
+                  <Icon name="refresh" className="h-4 w-4" />
+                </button>
+              }
+            />
+          </div>
+        ) : showGrouped ? (
+          <div className="mt-6 space-y-12">
+            {grouped!.map(({ category, items }) => (
+              <section key={category.slug}>
+                <div className="mb-5 flex items-end justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
+                      <Icon name={category.icon} className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <h2 className="display text-xl">{category.name}</h2>
+                      <p className="mt-0.5 text-sm text-white/45">
+                        {category.tagline}
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    href={`/category/${category.slug}`}
+                    className="shrink-0 text-sm font-semibold text-brand hover:underline"
+                  >
+                    View all
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                  {items.map((p) => (
+                    <ProductCard key={p.id} product={p} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {results.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

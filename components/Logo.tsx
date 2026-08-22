@@ -3,11 +3,12 @@ import Image from "next/image";
 const LOGO_SRC = "/brand/g-products-logo.png";
 const MARK_SRC = "/brand/g-products-mark.png";
 
+/** Pixel box for the rendered mark / lockup. Full wordmark needs more room. */
 const sizes = {
-  sm: 40,
+  sm: 36,
   md: 44,
-  lg: 112,
-  splash: 176,
+  lg: 120,
+  splash: 184,
   hero: 304
 } as const;
 
@@ -17,30 +18,34 @@ export function Logo({
   className = "",
   priority = false
 }: {
-  /** When false, shows only the G mark (still from the official logo). */
+  /** Full lockup when there’s room; compact sizes use the balanced G mark. */
   withText?: boolean;
   size?: keyof typeof sizes;
   className?: string;
   priority?: boolean;
 }) {
-  const src = withText ? LOGO_SRC : MARK_SRC;
-  const alt = withText ? "G-Products and Services" : "G-Products";
-  const fit = withText ? "object-cover" : "object-contain";
+  const compact = size === "sm" || size === "md";
+  // Small chrome (nav) always uses the mark so proportions stay true —
+  // object-cover on the full lockup was zooming the G and throwing it off.
+  const useLockup = withText && !compact;
+  const src = useLockup ? LOGO_SRC : MARK_SRC;
+  const alt = useLockup ? "G-Products and Services" : "G-Products";
 
   if (size === "hero") {
     return (
       <span
-        className={`relative block aspect-square w-[min(76vw,19rem)] overflow-hidden sm:w-[19.5rem] lg:w-[21rem] ${className}`}
+        className={`relative block aspect-square w-[min(76vw,19rem)] overflow-hidden rounded-[1.75rem] sm:w-[19.5rem] lg:w-[21rem] ${className}`}
+        style={{ backgroundColor: "#092742" }}
       >
         <Image
-          src={src}
+          src={LOGO_SRC}
           alt={alt}
           fill
           sizes="(max-width: 640px) 72vw, 320px"
           priority={priority}
           quality={100}
           unoptimized
-          className={fit}
+          className="object-contain p-[6%]"
         />
       </span>
     );
@@ -48,11 +53,34 @@ export function Logo({
 
   const px = sizes[size];
 
+  if (useLockup) {
+    return (
+      <span
+        className={`relative inline-flex shrink-0 overflow-hidden rounded-2xl ${className}`}
+        style={{
+          width: px,
+          height: px,
+          backgroundColor: "#092742"
+        }}
+      >
+        <Image
+          src={LOGO_SRC}
+          alt={alt}
+          width={px}
+          height={px}
+          priority={priority}
+          quality={100}
+          unoptimized
+          className="h-full w-full object-contain p-[5%]"
+        />
+      </span>
+    );
+  }
+
+  // Mark — balanced crop of the real lockup icon
   return (
     <span
-      className={`relative inline-flex shrink-0 ${
-        withText ? "overflow-hidden rounded-xl" : "overflow-visible"
-      } ${className}`}
+      className={`relative inline-flex shrink-0 ${className}`}
       style={{ width: px, height: px }}
     >
       <Image
@@ -63,7 +91,7 @@ export function Logo({
         priority={priority}
         quality={100}
         unoptimized
-        className={`h-full w-full ${fit} ${withText ? "" : "p-[8%]"}`}
+        className="h-full w-full object-contain p-[4%]"
       />
     </span>
   );
