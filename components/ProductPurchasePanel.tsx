@@ -123,7 +123,7 @@ export function ProductPurchasePanel({
   compareOff?: number | null;
   saved?: number;
 }) {
-  const { galleryImages, selectedId, setSelectedId, selected } =
+  const { galleryImages, selectedId, setSelectedId, selected, fitment, fitmentValue, setFitmentValue } =
     useProductVariant();
 
   const pricedOptions = hasPricedOptions(product);
@@ -158,6 +158,32 @@ export function ProductPurchasePanel({
             onSelect={setSelectedId}
           />
         ))}
+
+      {fitment ? (
+        <div className="mt-4">
+          <label
+            htmlFor="fitment-select"
+            className="mb-2 block text-xs font-semibold uppercase tracking-wide text-white/40"
+          >
+            {fitment.label}
+          </label>
+          <select
+            id="fitment-select"
+            value={fitmentValue ?? ""}
+            onChange={(e) =>
+              setFitmentValue(e.target.value ? e.target.value : null)
+            }
+            className="w-full rounded-xl border border-white/10 bg-ink-900 px-3.5 py-3 text-sm font-semibold text-white outline-none focus:border-brand/50"
+          >
+            <option value="">Select your {fitment.label.toLowerCase()}…</option>
+            {fitment.options.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
 
       <div className="mt-4 border-t border-white/[0.06] pt-4">
         <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">

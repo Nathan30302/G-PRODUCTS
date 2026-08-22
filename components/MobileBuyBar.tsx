@@ -13,33 +13,40 @@ import { coverImageForProduct } from "@/lib/product-images";
 export function MobileBuyBar({ product }: { product: Product }) {
   const { add } = useCart();
   const { toast } = useToast();
-  const { selected } = useProductVariant();
+  const { selected, fitment, fitmentValue, fitmentReady } = useProductVariant();
 
   const soldOut = product.stock === "sold_out";
   const multi = product.variants.length > 1;
   const chosen = selected ?? product.variants.find((v) => v.available) ?? null;
   const displayPrice = unitPrice(product, chosen);
-  const chooseLabel = hasPricedOptions(product) ? "Choose option" : "Choose colour";
+  const chooseLabel = fitment
+    ? "Choose model"
+    : hasPricedOptions(product)
+      ? "Choose option"
+      : "Choose colour";
   const waLink = productWhatsAppLink(
     product,
     typeof window !== "undefined" ? window.location.href : undefined,
-    chosen ?? undefined
+    chosen ?? undefined,
+    fitmentValue ?? undefined
   );
 
   function handleAdd() {
-    if (soldOut || !chosen?.available) return;
+    if (soldOut || !chosen?.available || !fitmentReady) return;
     if (multi && !selected) return;
-    add(product, chosen);
+    add(product, chosen, 1, fitmentValue ?? undefined);
+    const detail = [chosen.name, fitmentValue].filter(Boolean).join(" · ");
     toast({
       title: "Added to cart",
-      description: `${product.name} · ${chosen.name}`,
+      description: `${product.name} · ${detail}`,
       image: coverImageForProduct(product, chosen),
       href: "/cart",
       hrefLabel: "View cart"
     });
   }
 
-  const canQuickAdd = chosen?.available && (!multi || selected);
+  const canQuickAdd =
+    chosen?.available && (!multi || selected) && fitmentReady;
 
   return (
     <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+3.75rem)] z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg md:hidden">
@@ -47,6 +54,7 @@ export function MobileBuyBar({ product }: { product: Product }) {
         <div className="min-w-0">
           <p className="text-[11px] text-white/45">
             {selected ? `${selected.name} · ` : ""}
+            {fitmentValue ? `${fitmentValue} · ` : ""}
             Price
           </p>
           <p className="truncate text-lg font-extrabold text-white">

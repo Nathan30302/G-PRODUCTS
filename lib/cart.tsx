@@ -13,12 +13,13 @@ import { Product, ProductVariant, unitPrice } from "@/lib/types";
 import { coverImageForProduct } from "@/lib/product-images";
 
 export type CartItem = {
-  id: string; // productId:variantId or productId
+  id: string; // productId:variantId or productId (+ optional ::fitment)
   productId: string;
   variantId?: string;
   slug: string;
   name: string;
   variantName?: string;
+  fitment?: string;
   price: number;
   image: string;
   qty: number;
@@ -30,6 +31,7 @@ type AddPayload = {
   product: Product;
   variant?: ProductVariant;
   qty?: number;
+  fitment?: string;
 };
 
 type CartAction =
@@ -39,21 +41,23 @@ type CartAction =
   | { type: "clear" }
   | { type: "hydrate"; state: CartState };
 
-const STORAGE_KEY = "gproducts_cart_v2";
+const STORAGE_KEY = "gproducts_cart_v3";
 
-function cartLineId(productId: string, variantId?: string) {
-  return variantId ? `${productId}:${variantId}` : productId;
+function cartLineId(productId: string, variantId?: string, fitment?: string) {
+  const base = variantId ? `${productId}:${variantId}` : productId;
+  return fitment ? `${base}::${fitment}` : base;
 }
 
 function reducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "add": {
-      const { product, variant } = action.payload;
+      const { product, variant, fitment } = action.payload;
       const addQty = Math.max(1, Math.round(action.payload.qty ?? 1));
-      const id = cartLineId(product.id, variant?.id);
-      const displayName = variant
-        ? `${product.name} (${variant.name})`
-        : product.name;
+      const id = cartLineId(product.id, variant?.id, fitment);
+      const parts = [product.name];
+      if (variant) parts.push(variant.name);
+      if (fitment) parts.push(fitment);
+      const displayName = parts.join(" · ");
       const linePrice = unitPrice(product, variant);
       const existing = state.items.find((i) => i.id === id);
       if (existing) {
@@ -73,6 +77,7 @@ function reducer(state: CartState, action: CartAction): CartState {
             slug: product.slug,
             name: displayName,
             variantName: variant?.name,
+            fitment,
             price: linePrice,
             image: coverImageForProduct(product, variant),
             qty: addQty
@@ -101,7 +106,12 @@ type CartContextValue = {
   items: CartItem[];
   count: number;
   total: number;
-  add: (product: Product, variant?: ProductVariant, qty?: number) => void;
+  add: (
+    product: Product,
+    variant?: ProductVariant,
+    qty?: number,
+    fitment?: string
+  ) => void;
   remove: (id: string) => void;
   setQty: (id: string, qty: number) => void;
   clear: () => void;
@@ -145,8 +155,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items: state.items,
       count,
       total,
-      add: (product, variant, qty) =>
-        dispatch({ type: "add", payload: { product, variant, qty } }),
+      add: (product, variant, qty, fitment) =>
+        dispatch({ type: "add", payload: { product, variant, qty, fitment } }),
       remove: (id) => dispatch({ type: "remove", id }),
       setQty: (id, qty) => dispatch({ type: "setQty", id, qty }),
       clear: () => dispatch({ type: "clear" })

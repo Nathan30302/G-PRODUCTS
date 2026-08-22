@@ -5,12 +5,14 @@ import { Product, ProductVariant } from "@/lib/types";
 export function productWhatsAppLink(
   product: Product,
   url?: string,
-  variant?: ProductVariant
+  variant?: ProductVariant,
+  fitment?: string
 ): string {
-  const spec = variant ? ` (${variant.name})` : "";
+  const bits = [variant?.name, fitment].filter(Boolean).join(" · ");
+  const spec = bits ? ` (${bits})` : "";
   const lines = [
     `Hi G-Products, I'm interested in:`,
-    `*${product.name}${spec}* - ${formatPrice(product.price)}`,
+    `*${product.name}${spec}* - ${formatPrice(variant?.price ?? product.price)}`,
     url ? `Link: ${url}` : ""
   ].filter(Boolean);
   const text = encodeURIComponent(lines.join("\n"));

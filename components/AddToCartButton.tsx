@@ -12,12 +12,17 @@ export function AddToCartButton({
   product,
   variant,
   qty = 1,
+  fitment,
+  requireFitment = false,
   compact = false,
   requireOptions = false
 }: {
   product: Product;
   variant?: ProductVariant | null;
   qty?: number;
+  fitment?: string | null;
+  /** When true, block add until fitment is chosen */
+  requireFitment?: boolean;
   compact?: boolean;
   /** On cards: if multiple options, link to product page instead of adding */
   requireOptions?: boolean;
@@ -30,6 +35,7 @@ export function AddToCartButton({
   const soldOut = product.stock === "sold_out";
   const variantSoldOut = variant ? !variant.available : false;
   const chooseLabel = hasPricedOptions(product) ? "Choose option" : "Choose colour";
+  const needsFitment = requireFitment && !fitment;
 
   if (soldOut || variantSoldOut) {
     return (
@@ -58,24 +64,38 @@ export function AddToCartButton({
   }
 
   function handleAdd() {
+    if (needsFitment) return;
     const chosen =
       variant ??
       product.variants.find((v) => v.available) ??
       product.variants[0];
     if (product.variants.length > 0 && (!chosen || !chosen.available)) return;
     const n = Math.max(1, Math.round(qty));
-    add(product, chosen, n);
+    add(product, chosen, n, fitment ?? undefined);
     setAdded(true);
+    const detail = [chosen?.name, fitment].filter(Boolean).join(" · ");
     toast({
       title: n > 1 ? `Added ×${n}` : "Added to cart",
-      description: chosen
-        ? `${product.name} · ${chosen.name}`
-        : product.name,
+      description: detail ? `${product.name} · ${detail}` : product.name,
       image: coverImageForProduct(product, chosen),
       href: "/cart",
       hrefLabel: "View cart"
     });
     setTimeout(() => setAdded(false), 1400);
+  }
+
+  if (needsFitment) {
+    return (
+      <button
+        type="button"
+        disabled
+        className={`flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-pill border border-white/15 bg-white/[0.04] font-semibold text-white/45 ${
+          compact ? "px-4 py-2 text-sm" : "px-4 py-3"
+        }`}
+      >
+        Choose iPhone model
+      </button>
+    );
   }
 
   return (

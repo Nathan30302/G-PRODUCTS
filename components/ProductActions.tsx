@@ -10,13 +10,14 @@ import { Icon } from "@/components/Icons";
 import { useProductVariant } from "@/components/ProductVariantContext";
 
 export function ProductActions({ product }: { product: Product }) {
-  const { selected } = useProductVariant();
+  const { selected, fitment, fitmentValue, fitmentReady } = useProductVariant();
   const [qty, setQty] = useState(1);
 
   const waLink = productWhatsAppLink(
     product,
     typeof window !== "undefined" ? window.location.href : undefined,
-    selected ?? undefined
+    selected ?? undefined,
+    fitmentValue ?? undefined
   );
 
   const unavailable = selected
@@ -72,7 +73,18 @@ export function ProductActions({ product }: { product: Product }) {
             </p>
           )}
 
-          <AddToCartButton product={product} variant={selected} qty={qty} />
+          <AddToCartButton
+            product={product}
+            variant={selected}
+            qty={qty}
+            fitment={fitmentValue}
+            requireFitment={Boolean(fitment)}
+          />
+          {fitment && !fitmentReady ? (
+            <p className="text-center text-xs text-brand/90">
+              Select your {fitment.label.toLowerCase()} above
+            </p>
+          ) : null}
         </>
       )}
 

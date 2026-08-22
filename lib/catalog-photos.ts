@@ -78,8 +78,11 @@ const COLOUR_PRODUCTS: Record<
     { name: "Black", colorHex: "#111111", quantity: 10 }
   ],
   "phone-pouch": [
-    { name: "Black", colorHex: "#111111", quantity: 8 },
-    { name: "Blue", colorHex: "#1d4ed8", quantity: 6 }
+    { name: "Navy", colorHex: "#1e3a5f", quantity: 10 },
+    { name: "Pink", colorHex: "#f9a8d4", quantity: 8 },
+    { name: "Red", colorHex: "#dc2626", quantity: 8 },
+    { name: "Teal", colorHex: "#0d9488", quantity: 8 },
+    { name: "Black", colorHex: "#111111", quantity: 10 }
   ],
   "bic-crystal-pen": [
     { name: "Blue", colorHex: "#1d4ed8", quantity: 20 },
@@ -89,6 +92,14 @@ const COLOUR_PRODUCTS: Record<
   "phone-stand-50": [
     { name: "Black", colorHex: "#111111", quantity: 8 },
     { name: "White", colorHex: "#f5f5f5", quantity: 6 }
+  ],
+  "oraimo-original-headset": [
+    { name: "White", colorHex: "#f5f5f5", quantity: 10 },
+    { name: "Black", colorHex: "#111111", quantity: 10 }
+  ],
+  "samsung-akg-headset": [
+    { name: "White", colorHex: "#f5f5f5", quantity: 8 },
+    { name: "Black", colorHex: "#111111", quantity: 8 }
   ]
 };
 
@@ -220,6 +231,7 @@ const FLYER_SLUGS = new Set([
   "mango-c-to-c-full-charger",
   "oraimo-duraline-2-cable",
   "oraimo-original-headset",
+  "airpods-pro-1",
   "memory-card-32gb",
   "flash-disk-32gb",
   "extension-cable",
@@ -257,11 +269,7 @@ export const catalogProducts: CatalogProductDef[] = ALL_SLUGS.map((slug) => {
       files: flyer,
       variants: colours.map((c) => ({
         ...c,
-        files: colorAngles(
-          slug,
-          c.name,
-          slug === "phone-pouch" ? 4 : 3
-        )
+        files: colorAngles(slug, c.name, 3)
       }))
     };
   }
@@ -752,9 +760,16 @@ export const commonsSearch: Record<string, string> = {
   "phone-stand-200": "foldable metal tablet phone stand",
   "screen-protector-full-glue": "tempered glass screen protector",
   "screen-protector-privacy": "privacy screen protector glass",
-  "phone-pouch": "phone pouch case",
-  "phone-pouch-black": "black phone pouch leather",
-  "phone-pouch-blue": "blue phone pouch case",
+  "phone-pouch": "silicone iPhone case",
+  "phone-pouch-navy": "navy silicone iPhone case",
+  "phone-pouch-pink": "pink silicone iPhone case",
+  "phone-pouch-red": "red silicone iPhone case",
+  "phone-pouch-teal": "teal silicone iPhone case",
+  "phone-pouch-black": "black silicone iPhone case",
+  "oraimo-original-headset-white": "Oraimo white wired earphones",
+  "oraimo-original-headset-black": "Oraimo black wired earphones",
+  "samsung-akg-headset-white": "Samsung AKG white USB-C earphones",
+  "samsung-akg-headset-black": "Samsung AKG black USB-C earphones",
   "memory-card-2gb": "microSD card 2GB",
   "memory-card-4gb": "microSD card 4GB",
   "memory-card-8gb": "microSD card 8GB",

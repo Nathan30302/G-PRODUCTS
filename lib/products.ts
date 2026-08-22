@@ -140,14 +140,18 @@ export const products: SeedProduct[] = [
     name: "Key Holder",
     categorySlug: "locks",
     price: 5,
-    specs: ["Standard"]
+    specs: ["Basic key ring"],
+    description: "Simple steel key ring — hold your house and shop keys."
   }),
   p({
     id: "p-keyholder-15",
     slug: "key-holder-15",
-    name: "Key Holder (Premium)",
+    name: "Premium Key Holder",
     categorySlug: "locks",
     price: 15,
+    specs: ["Leather organiser", "Metal hooks"],
+    description:
+      "Premium leather key holder / organiser with metal hooks — neater than a plain ring."
   }),
   p({
     id: "p-envelope",
@@ -198,6 +202,9 @@ export const products: SeedProduct[] = [
     brand: "Union",
     categorySlug: "locks",
     price: 140,
+    specs: ["3-lever mortice", "Keys included", "Timber doors"],
+    description:
+      "Union-style 3-lever mortice lock — the familiar hardware-store lock used on timber doors around Lusaka. Supplied with keys.",
     featured: true
   }),
   p({
@@ -207,6 +214,9 @@ export const products: SeedProduct[] = [
     brand: "Fieldex",
     categorySlug: "locks",
     price: 110,
+    specs: ["Brass finish", "Mortice set", "Keys included"],
+    description:
+      "Fieldex brass mortice lock set with keys — a solid everyday door lock for homes and shops."
   }),
 
   // —— Phone stands ——
@@ -257,12 +267,17 @@ export const products: SeedProduct[] = [
   p({
     id: "p-pouch",
     slug: "phone-pouch",
-    name: "iPhone Silicone Pouch — pick a colour",
+    name: "iPhone Silicone Pouch",
     categorySlug: "phone-accessories",
     price: 80,
-    specs: ["K80 for all colours", "Soft silicone", "Black or Blue on the page"],
+    specs: [
+      "K80 for all",
+      "Soft silicone",
+      "Navy · Pink · Red · Teal · Black",
+      "Choose your iPhone model"
+    ],
     description:
-      "Sleek silicone iPhone pouches — soft, stylish and protective. Pick Black or Blue here. Other colours from the shop flyer (teal, red, pink, navy) can be requested on WhatsApp."
+      "Upgrade your iPhone with sleek silicone cases — soft, stylish and protective. Pick your colour (navy, pink, red, teal or black) and your iPhone model from 6 through 16. K80 for all."
   }),
 
   // —— Memory cards ——
@@ -397,6 +412,13 @@ export const products: SeedProduct[] = [
     brand: "Apple-compatible",
     categorySlug: "chargers",
     price: 150,
+    specs: [
+      "UK Type G plug (Zambia)",
+      "USB-C wall charger",
+      "USB-C to Lightning cable"
+    ],
+    description:
+      "Full iPhone Type-C charger set with a UK Type G wall plug for Zambia sockets, plus USB-C to Lightning cable. Not a US two-pin brick.",
     featured: true
   }),
   p({
@@ -405,6 +427,9 @@ export const products: SeedProduct[] = [
     name: "Type-C Charger Head",
     categorySlug: "chargers",
     price: 100,
+    specs: ["UK Type G plug", "USB-C port", "Compact foldable pins"],
+    description:
+      "White USB-C charger head with UK Type G three-pin plug — ready for Zambian wall sockets."
   }),
   p({
     id: "p-oraimo-full",
@@ -467,6 +492,9 @@ export const products: SeedProduct[] = [
     brand: "Samsung",
     categorySlug: "chargers",
     price: 150,
+    specs: ["UK Type G plug", "USB-C to USB-C cable", "Super Fast Charging"],
+    description:
+      "Samsung-style USB-C full charger with UK Type G wall plug and USB-C to USB-C cable — correct for Zambia sockets."
   }),
   p({
     id: "p-sivia-cable",
@@ -475,6 +503,9 @@ export const products: SeedProduct[] = [
     brand: "Sivia",
     categorySlug: "chargers",
     price: 50,
+    specs: ["USB-A to USB-C", "Data sync & charge"],
+    description:
+      "White USB-A to USB-C charging and data cable — everyday phone and accessory lead."
   }),
   p({
     id: "p-seal-tape",
@@ -482,6 +513,8 @@ export const products: SeedProduct[] = [
     name: "Seal Tape",
     categorySlug: "chargers",
     price: 30,
+    specs: ["Clear packing tape"],
+    description: "Clear seal / packing tape roll for parcels and shop use."
   }),
   p({
     id: "p-oraimo-headset",
@@ -492,14 +525,12 @@ export const products: SeedProduct[] = [
     price: 60,
     specs: [
       "OEP-E17 / Conch 2",
+      "White or Black",
       "Deeper bass",
-      "Comfortable eartips",
-      "Stylish design",
-      "Improved durability",
       "3.5mm jack"
     ],
     description:
-      "Oraimo Lite Conch 2 (OEP-E17) wired in-ear earphones with deeper bass, comfortable eartips, stylish design and improved durability. Standard 3.5mm jack — plug in and play."
+      "Oraimo Lite Conch 2 (OEP-E17) wired in-ear earphones with deeper bass and comfortable eartips. Choose white or black. Standard 3.5mm jack."
   }),
   p({
     id: "p-akg",
@@ -508,6 +539,9 @@ export const products: SeedProduct[] = [
     brand: "Samsung",
     categorySlug: "audio",
     price: 35,
+    specs: ["USB-C", "AKG tuned", "White or Black"],
+    description:
+      "Samsung AKG USB-C wired earphones. Choose white or black — distinct from the Oraimo 3.5mm headset."
   }),
   p({
     id: "p-mango-hs",
@@ -516,6 +550,9 @@ export const products: SeedProduct[] = [
     brand: "Mango",
     categorySlug: "audio",
     price: 50,
+    specs: ["Wired in-ear", "Inline mic"],
+    description:
+      "Mango wired in-ear headset with inline mic — a different look from Samsung AKG and Oraimo Conch."
   }),
 
   // —— Power ——
@@ -564,6 +601,9 @@ export const products: SeedProduct[] = [
     name: "AirPods Pro 3",
     categorySlug: "audio",
     price: 300,
+    specs: ["Latest Pro generation", "Case + earbuds"],
+    description:
+      "AirPods Pro 3 — newest Pro look. Photos show the latest case and buds (distinct from Pro 2).",
     featured: true
   }),
   p({
@@ -572,6 +612,9 @@ export const products: SeedProduct[] = [
     name: "AirPods Pro 2 (Type-C)",
     categorySlug: "audio",
     price: 350,
+    specs: ["USB-C charging case", "2nd generation"],
+    description:
+      "AirPods Pro 2 with USB-C charging case — the Type-C port is the clear difference from Lightning Pro 2.",
     hotDeal: true
   }),
   p({
@@ -580,6 +623,9 @@ export const products: SeedProduct[] = [
     name: "AirPods Pro 2",
     categorySlug: "audio",
     price: 300,
+    specs: ["Lightning case", "Buds outside case shots"],
+    description:
+      "AirPods Pro 2 (Lightning). Gallery shows buds outside the case so you can tell them apart from Type-C Pro 2 and Pro 1."
   }),
   p({
     id: "p-ap-pro1",
@@ -587,6 +633,9 @@ export const products: SeedProduct[] = [
     name: "AirPods Pro 1",
     categorySlug: "audio",
     price: 280,
+    specs: ["1st generation", "Renewed quality-checked"],
+    description:
+      "AirPods Pro 1st generation (renewed). Premium sound, ANC, and wireless charging case — clearly labelled as Gen 1."
   }),
   p({
     id: "p-oraimo-f9",
