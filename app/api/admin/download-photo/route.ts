@@ -11,11 +11,16 @@ function safeFilename(name: string): string {
   return name.replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "") || "photo.jpg";
 }
 
-function contentTypeFor(url: string, fallback = "image/jpeg"): string {
+function contentTypeFor(url: string, fallback = "application/octet-stream"): string {
   if (/\.png$/i.test(url)) return "image/png";
   if (/\.webp$/i.test(url)) return "image/webp";
   if (/\.gif$/i.test(url)) return "image/gif";
   if (/\.jpe?g$/i.test(url)) return "image/jpeg";
+  if (/\.pdf$/i.test(url)) return "application/pdf";
+  if (/\.docx$/i.test(url)) {
+    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  }
+  if (/\.doc$/i.test(url)) return "application/msword";
   return fallback;
 }
 

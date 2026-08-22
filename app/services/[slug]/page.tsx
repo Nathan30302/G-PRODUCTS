@@ -103,9 +103,11 @@ export default async function ServiceDetailPage({
                 {service.payable ? "Place your order" : "Submit a request"}
               </h2>
               <p className="mt-0.5 text-sm text-white/50">
-                {service.payable
-                  ? "Fill in the details, pay with Mobile Money, then pickup or Yango."
-                  : "We&apos;ll review your request and contact you on WhatsApp."}
+                {slug === "printing"
+                  ? "Choose a job, upload files from your phone, pay, then track status."
+                  : service.payable
+                    ? "Fill in the details, pay with Mobile Money, then pickup or Yango."
+                    : "Upload what’s needed — we’ll review and contact you on WhatsApp."}
               </p>
             </div>
           </div>
