@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { resolveUploadFile } from "@/lib/upload-resolve";
+import {
+  attachmentContentDisposition,
+  displayFilenameFromUrl
+} from "@/lib/service-files";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,7 +23,7 @@ const TYPES: Record<string, string> = {
 };
 
 export async function GET(
-  _req: Request,
+  req: Request,
   ctx: { params: Promise<{ path: string[] }> }
 ) {
   const { path: parts } = await ctx.params;
@@ -41,12 +45,32 @@ export async function GET(
     }
     const buf = await readFile(absolute);
     const ext = path.extname(absolute).toLowerCase();
-    return new NextResponse(buf, {
-      headers: {
-        "Content-Type": TYPES[ext] ?? "application/octet-stream",
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    });
+    const contentType = TYPES[ext] ?? "application/octet-stream";
+
+    const { searchParams } = new URL(req.url);
+    const forceDownload =
+      searchParams.get("download") === "1" ||
+      searchParams.get("download") === "true";
+
+    const headers: Record<string, string> = {
+      "Content-Type": contentType,
+      "Cache-Control": forceDownload
+        ? "private, max-age=3600"
+        : "public, max-age=31536000, immutable",
+      "X-Content-Type-Options": "nosniff"
+    };
+
+    if (forceDownload) {
+      const requested = String(searchParams.get("name") ?? "").trim();
+      const safeRequested = requested.replace(/[/\\]/g, "").slice(0, 180);
+      const filename =
+        safeRequested ||
+        displayFilenameFromUrl(relative) ||
+        path.basename(absolute);
+      headers["Content-Disposition"] = attachmentContentDisposition(filename);
+    }
+
+    return new NextResponse(buf, { headers });
   } catch {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }

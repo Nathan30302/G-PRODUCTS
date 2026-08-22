@@ -184,16 +184,8 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
             reducedMotion ? "" : "splash-content"
           } ${exiting ? "splash-content-exit" : ""}`}
         >
-          <div
-            className={
-              reducedMotion ? "relative" : "splash-logo-wrap relative"
-            }
-          >
-            <div
-              className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl sm:h-56 sm:w-56"
-              style={{ backgroundColor: `${BRAND.yellow}28` }}
-            />
-            <Logo size="splash" priority className="relative" />
+          <div className={reducedMotion ? undefined : "splash-logo-wrap"}>
+            <Logo size="splash" priority />
           </div>
 
           <h1

@@ -395,9 +395,9 @@ async function main() {
   }
 
   try {
-    console.log("[start] syncing HD catalog photos");
+    console.log("[start] syncing HD catalog photos (fill missing only)");
     await run("npx", ["tsx", "scripts/sync-catalog-photos.ts"]);
-    // Refresh pouches + PK TRUSTS extensions (new colours / brand copy)
+    // Brand/copy refresh for pouches + extensions — never force-replace photos
     await run("npx", [
       "tsx",
       "scripts/sync-catalog-photos.ts",

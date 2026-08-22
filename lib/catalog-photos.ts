@@ -269,7 +269,8 @@ export const catalogProducts: CatalogProductDef[] = ALL_SLUGS.map((slug) => {
         name: o.name,
         price: o.price,
         quantity: o.quantity,
-        files: angles(o.filePrefix)
+        // One clear product shot is enough for trailing sockets
+        files: [`${o.filePrefix}-1.jpg`]
       }))
     };
   }

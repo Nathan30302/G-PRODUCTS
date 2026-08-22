@@ -10,6 +10,9 @@ import {
   DeskPanelHeader,
   StatusPill
 } from "@/components/admin/desk";
+import { ServiceFilesPanel } from "@/components/admin/ServiceFilesPanel";
+import { describeServiceFiles } from "@/lib/service-files";
+import { Icon } from "@/components/Icons";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Service request" };
@@ -21,12 +24,41 @@ const STATUSES = [
   "READY",
   "DELIVERED",
   "CANCELLED"
-];
+] as const;
+
+const STATUS_HINT: Record<string, string> = {
+  NEW: "Just received — review details & files",
+  CONFIRMED: "Paid / confirmed — start the job",
+  IN_PROGRESS: "Working on it (e.g. printing / cutting)",
+  READY: "Ready for pickup or Yango",
+  DELIVERED: "Collected / delivered",
+  CANCELLED: "Cancelled"
+};
 
 const typeLabel: Record<string, string> = {
   KEY_CUTTING: "Key Cutting",
   G_LOANS: "G-Loans",
   PRINTING: "Printing"
+};
+
+const DETAIL_LABELS: Record<string, string> = {
+  jobId: "Job code",
+  jobName: "Job",
+  unitPrice: "Unit price",
+  pages: "Pages / qty",
+  copies: "Copies",
+  notes: "Notes",
+  keyType: "Key type",
+  qty: "Quantity",
+  flow: "Flow",
+  cutFee: "Cut fee",
+  yangoToStore: "Yango to store",
+  yangoReturn: "Yango return",
+  amount: "Amount",
+  weeks: "Weeks",
+  rate: "Rate %",
+  collateral: "Collateral",
+  hasNrc: "Has NRC"
 };
 
 function waLink(phone: string, ref: string) {
@@ -37,6 +69,26 @@ function waLink(phone: string, ref: string) {
     `Hello, regarding your G-Products service ${ref}:`
   );
   return `https://wa.me/${p}?text=${text}`;
+}
+
+function formatDetailValue(key: string, v: unknown): string {
+  if (typeof v === "boolean") return v ? "Yes" : "No";
+  if (
+    typeof v === "number" &&
+    (key === "unitPrice" ||
+      key === "cutFee" ||
+      key === "yangoToStore" ||
+      key === "yangoReturn" ||
+      key === "amount")
+  ) {
+    return formatPrice(v);
+  }
+  if (key === "flow") {
+    const s = String(v);
+    if (s === "IN_STORE") return "In-store";
+    if (s === "YANGO_ROUNDTRIP") return "Yango round-trip";
+  }
+  return String(v);
 }
 
 export default async function ServiceDetailPage({
@@ -55,13 +107,10 @@ export default async function ServiceDetailPage({
     details = {};
   }
 
-  let files: string[] = [];
-  try {
-    files = request.fileUrls ? JSON.parse(request.fileUrls) : [];
-    if (!Array.isArray(files)) files = [];
-  } catch {
-    files = [];
-  }
+  const files = describeServiceFiles(request.fileUrls);
+  const isPrinting = request.serviceType === "PRINTING";
+  const showFiles =
+    isPrinting || request.serviceType === "G_LOANS" || files.length > 0;
 
   return (
     <div className="space-y-6">
@@ -90,7 +139,16 @@ export default async function ServiceDetailPage({
               {request.paymentStatus ? (
                 <StatusPill status={request.paymentStatus} kind="payment" />
               ) : null}
+              {files.length > 0 ? (
+                <span className="inline-flex items-center gap-1.5 rounded-pill border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-brand">
+                  <Icon name="file" className="h-3 w-3" />
+                  {files.length} file{files.length === 1 ? "" : "s"}
+                </span>
+              ) : null}
             </div>
+            <p className="mt-3 text-sm text-white/45">
+              {STATUS_HINT[request.status] ?? ""}
+            </p>
           </div>
           <div className="text-left lg:text-right">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">
@@ -107,6 +165,7 @@ export default async function ServiceDetailPage({
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/20"
             >
+              <Icon name="whatsapp" className="h-4 w-4" />
               WhatsApp customer
             </a>
           </div>
@@ -115,16 +174,27 @@ export default async function ServiceDetailPage({
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
+          {showFiles ? (
+            <ServiceFilesPanel
+              files={files}
+              emptyHint={
+                isPrinting
+                  ? "No print files on this job. Customer may need to re-upload from Services → Printing."
+                  : undefined
+              }
+            />
+          ) : null}
+
           <DeskPanel>
             <DeskPanelHeader title="Request details" />
             <dl className="space-y-3 px-5 py-4 text-sm">
               {Object.entries(details).map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4">
-                  <dt className="capitalize text-white/45">
-                    {k.replace(/([A-Z])/g, " $1")}
+                  <dt className="text-white/45">
+                    {DETAIL_LABELS[k] ?? k.replace(/([A-Z])/g, " $1")}
                   </dt>
-                  <dd className="text-right text-white/85">
-                    {typeof v === "boolean" ? (v ? "Yes" : "No") : String(v)}
+                  <dd className="max-w-[65%] text-right text-white/85">
+                    {formatDetailValue(k, v)}
                   </dd>
                 </div>
               ))}
@@ -138,30 +208,6 @@ export default async function ServiceDetailPage({
               )}
             </dl>
           </DeskPanel>
-
-          {files.length > 0 ? (
-            <DeskPanel>
-              <DeskPanelHeader
-                title="Uploaded files"
-                subtitle="Download to print or forward on WhatsApp"
-              />
-              <ul className="divide-y divide-white/[0.05]">
-                {files.map((url) => (
-                  <li key={url} className="px-5 py-3">
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      download
-                      className="text-sm font-semibold text-brand hover:underline"
-                    >
-                      {url.split("/").pop()}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </DeskPanel>
-          ) : null}
 
           <DeskPanel>
             <DeskPanelHeader title="Customer" />
@@ -210,7 +256,10 @@ export default async function ServiceDetailPage({
           </DeskPanel>
 
           <DeskPanel>
-            <DeskPanelHeader title="Update status" />
+            <DeskPanelHeader
+              title="Update status"
+              subtitle="Move the job through your workflow"
+            />
             <form action={updateServiceStatus} className="space-y-3 px-5 py-4">
               <input type="hidden" name="id" value={request.id} />
               <select
@@ -220,7 +269,8 @@ export default async function ServiceDetailPage({
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
-                    {s}
+                    {s.replace(/_/g, " ")}
+                    {STATUS_HINT[s] ? ` — ${STATUS_HINT[s]}` : ""}
                   </option>
                 ))}
               </select>

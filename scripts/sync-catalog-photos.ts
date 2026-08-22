@@ -59,6 +59,8 @@ async function syncProduct(slug: string): Promise<boolean> {
       });
       console.log(`  ↻ copy ${slug}`);
     }
+    // Copy-only mode must not wipe photos the provider already set.
+    if (!force) return true;
   }
 
   const uploadImages = row.images.filter((i) => isUploadUrl(i.url));
@@ -72,6 +74,12 @@ async function syncProduct(slug: string): Promise<boolean> {
 
   if (uploadImages.length > 0 && !force) {
     console.log(`  skip ${slug} (has provider uploads; use --force to mix catalog)`);
+    return false;
+  }
+
+  // Never silently restore old catalog files over a product that already has photos.
+  if (!force && row.images.length > 0) {
+    console.log(`  skip ${slug} (already has photos — set --force to replace)`);
     return false;
   }
 

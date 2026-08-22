@@ -8,13 +8,12 @@ const sizes = {
   sm: 36,
   md: 44,
   lg: 112,
-  splash: 176,
-  hero: 160
+  splash: 176
 } as const;
 
 /**
- * Brand mark only (G + teardrop). The full blue lockup photo is not used in UI —
- * nav, splash, hero, auth, and desk all share this same G.
+ * Brand mark only (G + teardrop). No framed/navy chrome — mark sits on the
+ * surrounding surface. Used in nav, splash, auth, and desk.
  */
 export function Logo({
   size = "md",
@@ -28,27 +27,7 @@ export function Logo({
   priority?: boolean;
 }) {
   const px = sizes[size];
-  const isLarge = size === "hero" || size === "splash";
-
-  if (isLarge) {
-    return (
-      <span
-        className={`relative inline-flex shrink-0 ${className}`}
-        style={{ width: px, height: px }}
-      >
-        <Image
-          src={MARK_SRC}
-          alt="G-Products"
-          width={px}
-          height={px}
-          priority={priority}
-          quality={100}
-          unoptimized
-          className="h-full w-full object-contain p-[2%]"
-        />
-      </span>
-    );
-  }
+  const isLarge = size === "splash";
 
   return (
     <span
@@ -63,7 +42,7 @@ export function Logo({
         priority={priority}
         quality={100}
         unoptimized
-        className="h-full w-full object-contain p-[4%]"
+        className={`h-full w-full object-contain ${isLarge ? "p-[2%]" : "p-[4%]"}`}
       />
     </span>
   );
