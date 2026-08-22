@@ -107,7 +107,7 @@ export default async function ServiceDetailPage({
                   ? "Choose a job, upload files from your phone, pay, then track status."
                   : service.payable
                     ? "Fill in the details, pay with Mobile Money, then pickup or Yango."
-                    : "Upload what’s needed — we’ll review and contact you on WhatsApp."}
+                    : "Upload what is needed — we will review and contact you on WhatsApp."}
               </p>
             </div>
           </div>

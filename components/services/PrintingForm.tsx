@@ -124,8 +124,8 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       setFileCount(typeof data.files === "number" ? data.files : files.length);
       setMessage(
         data.mode === "manual"
-          ? "Print order received. Your files are with Gift’s team — pay with Mobile Money and we’ll prepare your job for pickup or Yango."
-          : "Approve the payment on your phone. Once paid, we’ll process your uploaded files."
+          ? "Print order received. Your files are with Gift's team — pay with Mobile Money and we'll prepare your job for pickup or Yango."
+          : "Approve the payment on your phone. Once paid, we'll process your uploaded files."
       );
       if (data.mode === "live" && data.paymentStatus === "PENDING") {
         setPhase("pending");
@@ -142,7 +142,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
               if (j.paymentStatus === "SUCCESS") {
                 setPhase("done");
                 setMessage(
-                  "Payment received. Your files are on the desk — we’ll prepare your print job."
+                  "Payment received. Your files are on the desk — we'll prepare your print job."
                 );
               } else {
                 setError("Payment failed. You can try again.");
@@ -197,9 +197,9 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       <div className="rounded-[1.15rem] border border-brand/20 bg-brand/[0.06] px-4 py-3 text-sm text-white/65">
         <p className="font-semibold text-white">Print from home</p>
         <p className="mt-1 text-xs leading-relaxed text-white/50">
-          Upload photos or documents here in full quality. Gift’s team sees them
-          on the desk and downloads HD originals to print — no need to resend on
-          WhatsApp.
+          Upload photos or documents here in full quality. Gift&apos;s team sees
+          them on the desk and downloads HD originals to print — no need to
+          resend on WhatsApp.
         </p>
       </div>
 

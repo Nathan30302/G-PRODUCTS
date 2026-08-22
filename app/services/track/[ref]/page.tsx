@@ -188,7 +188,7 @@ export default async function ServiceTrackPage({
         <section className="rounded-[1.35rem] border border-white/[0.08] bg-ink-900/50 p-5 sm:p-6">
           <h2 className="display text-xl">Your uploads</h2>
           <p className="mt-1 text-sm text-white/45">
-            Same files Gift’s team sees on the desk — original quality.
+            Same files Gift&apos;s team sees on the desk — original quality.
           </p>
           {files.length === 0 ? (
             <p className="mt-6 text-sm text-white/40">
