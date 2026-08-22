@@ -12,10 +12,17 @@ export default async function DashboardLayout({
   children: ReactNode;
 }) {
   const session = await requireUser();
-  const profile = await prisma.user.findUnique({
-    where: { id: session.id },
-    select: { staffTitle: true }
-  });
+  const [profile, pendingOrders, serviceQueue, stockAlerts] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: session.id },
+      select: { staffTitle: true }
+    }),
+    prisma.order.count({ where: { status: "PENDING" } }),
+    prisma.serviceRequest.count({
+      where: { status: { in: ["NEW", "CONFIRMED"] } }
+    }),
+    prisma.stockNotify.count()
+  ]);
 
   return (
     <AdminShell
@@ -23,6 +30,11 @@ export default async function DashboardLayout({
         name: session.name,
         role: session.role,
         staffTitle: profile?.staffTitle ?? null
+      }}
+      badges={{
+        orders: pendingOrders,
+        services: serviceQueue,
+        stock: stockAlerts
       }}
     >
       {children}

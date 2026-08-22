@@ -8,23 +8,34 @@ import { isUploadUrl } from "../lib/uploads";
 const prisma = new PrismaClient();
 
 async function main() {
-  // --- Owner account ---
+  // --- Owner account (create only — never reset an existing password) ---
   const ownerEmail = process.env.OWNER_EMAIL ?? "gift@gproducts.zm";
   const ownerName = process.env.OWNER_NAME ?? "Gift Mbumwae";
   const ownerPassword = process.env.OWNER_PASSWORD ?? "changeme123";
 
-  const passwordHash = await bcrypt.hash(ownerPassword, 10);
-  await prisma.user.upsert({
-    where: { email: ownerEmail },
-    update: { name: ownerName, role: "OWNER" },
-    create: {
-      email: ownerEmail,
-      name: ownerName,
-      passwordHash,
-      role: "OWNER"
-    }
+  const existingOwner = await prisma.user.findUnique({
+    where: { email: ownerEmail }
   });
-  console.log(`Owner account ready: ${ownerEmail}`);
+  if (!existingOwner) {
+    const passwordHash = await bcrypt.hash(ownerPassword, 10);
+    await prisma.user.create({
+      data: {
+        email: ownerEmail,
+        name: ownerName,
+        passwordHash,
+        role: "OWNER"
+      }
+    });
+    console.log(`Owner account created: ${ownerEmail}`);
+  } else {
+    await prisma.user.update({
+      where: { email: ownerEmail },
+      data: { name: ownerName, role: "OWNER" }
+    });
+    console.log(
+      `Owner account ready: ${ownerEmail} (password unchanged)`
+    );
+  }
 
   // --- Categories ---
   const categoryIdBySlug = new Map<string, string>();
@@ -45,7 +56,9 @@ async function main() {
   }
   console.log(`Seeded ${categories.length} categories`);
 
-  // --- Products (never delete provider-added items or their photos) ---
+  // --- Products: create missing only. Never overwrite live prices, copy, or photos. ---
+  let created = 0;
+  let skipped = 0;
   for (const p of products) {
     const categoryId = categoryIdBySlug.get(p.categorySlug);
     if (!categoryId) {
@@ -58,21 +71,39 @@ async function main() {
       include: { images: true, variants: true }
     });
 
-    await prisma.product.upsert({
-      where: { slug: p.slug },
-      update: {
-        name: p.name,
-        brand: p.brand,
-        categoryId,
-        price: p.price,
-        compareAtPrice: p.compareAtPrice,
-        description: p.description,
-        shortSpecs: JSON.stringify(p.shortSpecs),
-        stock: p.stock,
-        featured: p.featured ?? false,
-        hotDeal: p.hotDeal ?? false
-      },
-      create: {
+    if (existing) {
+      skipped += 1;
+      // Fill images only if the live product has none (never wipe uploads).
+      const hasPhotos = existing.images.length > 0;
+      const hasUploads = existing.images.some((img) => isUploadUrl(img.url));
+      if (!hasPhotos && !hasUploads) {
+        await prisma.productImage.createMany({
+          data: p.images.map((img, idx) => ({
+            productId: existing.id,
+            url: img.url,
+            alt: img.alt,
+            sortOrder: idx
+          }))
+        });
+      }
+      if (existing.variants.length === 0) {
+        const qty =
+          p.stock === "sold_out" ? 0 : p.stock === "low_stock" ? 3 : 12;
+        await prisma.productVariant.create({
+          data: {
+            productId: existing.id,
+            name: "Standard",
+            colorHex: null,
+            quantity: qty,
+            sortOrder: 0
+          }
+        });
+      }
+      continue;
+    }
+
+    const row = await prisma.product.create({
+      data: {
         slug: p.slug,
         name: p.name,
         brand: p.brand,
@@ -86,74 +117,50 @@ async function main() {
         hotDeal: p.hotDeal ?? false
       }
     });
+    created += 1;
 
-    const row = await prisma.product.findUnique({
-      where: { slug: p.slug }
+    await prisma.productImage.createMany({
+      data: p.images.map((img, idx) => ({
+        productId: row.id,
+        url: img.url,
+        alt: img.alt,
+        sortOrder: idx
+      }))
     });
-    if (!row) continue;
 
-    // Only seed placeholder images on brand-new products with no photos yet.
-    // Never overwrite provider uploads or any photos already in the database.
-    const hasPhotos = (existing?.images.length ?? 0) > 0;
-    const hasUploads = existing?.images.some((img) => isUploadUrl(img.url));
-    if (!existing) {
-      await prisma.productImage.createMany({
-        data: p.images.map((img, idx) => ({
-          productId: row.id,
-          url: img.url,
-          alt: img.alt,
-          sortOrder: idx
-        }))
-      });
-    } else if (!hasPhotos && !hasUploads) {
-      await prisma.productImage.createMany({
-        data: p.images.map((img, idx) => ({
-          productId: row.id,
-          url: img.url,
-          alt: img.alt,
-          sortOrder: idx
-        }))
-      });
-    }
-
-    if (!existing || existing.variants.length === 0) {
-      const qty =
-        p.stock === "sold_out" ? 0 : p.stock === "low_stock" ? 3 : 12;
-      await prisma.productVariant.deleteMany({ where: { productId: row.id } });
-      await prisma.productVariant.create({
-        data: {
-          productId: row.id,
-          name: "Standard",
-          colorHex: null,
-          quantity: qty,
-          sortOrder: 0
-        }
-      });
-    }
+    const qty =
+      p.stock === "sold_out" ? 0 : p.stock === "low_stock" ? 3 : 12;
+    await prisma.productVariant.create({
+      data: {
+        productId: row.id,
+        name: "Standard",
+        colorHex: null,
+        quantity: qty,
+        sortOrder: 0
+      }
+    });
   }
-  console.log(`Seeded ${products.length} catalog products (photos preserved)`);
+  console.log(
+    `Catalog seed: ${created} created, ${skipped} left untouched (photos & prices preserved)`
+  );
 
   // Do not delete products the provider added outside the seed catalog
 
-  // --- Service offerings (admin-editable) ---
+  // --- Service offerings: create missing; never overwrite Gift's live edits ---
   for (let i = 0; i < services.length; i++) {
     const s = services[i];
-    await prisma.serviceOffer.upsert({
-      where: { slug: s.slug },
-      update: {
-        name: s.name,
-        tagline: s.tagline,
-        description: s.description,
-        icon: s.icon,
-        imageUrl: s.image,
-        priceLabel: s.priceLabel ?? null,
-        payable: s.payable,
-        enabled: true,
-        sortOrder: i,
-        serviceType: s.type,
-        settings: JSON.stringify(DEFAULT_SETTINGS)
-      },
-      create: {
+    const existing = await prisma.serviceOffer.findUnique({
+      where: { slug: s.slug }
+    });
+    if (existing) {
+      await prisma.serviceOffer.update({
+        where: { slug: s.slug },
+        data: { sortOrder: i, enabled: true }
+      });
+      continue;
+    }
+    await prisma.serviceOffer.create({
+      data: {
         slug: s.slug,
         serviceType: s.type,
         name: s.name,
@@ -169,7 +176,7 @@ async function main() {
       }
     });
   }
-  console.log(`Seeded ${services.length} service offerings`);
+  console.log(`Seeded ${services.length} service offerings (live edits preserved)`);
 }
 
 main()

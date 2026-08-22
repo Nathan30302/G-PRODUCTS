@@ -12,59 +12,121 @@ type NavItem = {
   label: string;
   hint: string;
   ownerOnly?: boolean;
+  badgeKey?: "orders" | "services" | "stock";
 };
 
-const nav: NavItem[] = [
-  { href: "/admin", label: "Overview", hint: "Business pulse" },
+type NavGroup = {
+  label: string;
+  items: NavItem[];
+};
+
+const navGroups: NavGroup[] = [
   {
-    href: "/admin/products",
-    label: "Products",
-    hint: "Catalogue & stock"
-  },
-  { href: "/admin/orders", label: "Orders", hint: "Purchases" },
-  {
-    href: "/admin/customers",
-    label: "Customers",
-    hint: "Shop users & buyers"
-  },
-  {
-    href: "/admin/stock-notify",
-    label: "Stock alerts",
-    hint: "Waitlist"
+    label: "Home",
+    items: [
+      { href: "/admin", label: "Overview", hint: "Business pulse" }
+    ]
   },
   {
-    href: "/admin/services",
-    label: "Service orders",
-    hint: "Print, keys, loans"
+    label: "Catalogue",
+    items: [
+      {
+        href: "/admin/products",
+        label: "Products",
+        hint: "Catalogue & stock"
+      }
+    ]
   },
   {
-    href: "/admin/service-pages",
-    label: "Service pages",
-    hint: "Public content"
+    label: "Sales",
+    items: [
+      {
+        href: "/admin/orders",
+        label: "Orders",
+        hint: "Purchases",
+        badgeKey: "orders"
+      },
+      {
+        href: "/admin/customers",
+        label: "Customers",
+        hint: "Shop users & buyers"
+      }
+    ]
   },
   {
-    href: "/admin/staff",
-    label: "Staff",
-    hint: "Team access",
-    ownerOnly: true
+    label: "Ops",
+    items: [
+      {
+        href: "/admin/stock-notify",
+        label: "Stock alerts",
+        hint: "Waitlist",
+        badgeKey: "stock"
+      },
+      {
+        href: "/admin/services",
+        label: "Service orders",
+        hint: "Print, keys, loans",
+        badgeKey: "services"
+      },
+      {
+        href: "/admin/service-pages",
+        label: "Service pages",
+        hint: "Public content"
+      }
+    ]
   },
   {
-    href: "/admin/account",
-    label: "Account",
-    hint: "Password"
+    label: "Team",
+    items: [
+      {
+        href: "/admin/staff",
+        label: "Staff",
+        hint: "Team access",
+        ownerOnly: true
+      },
+      {
+        href: "/admin/account",
+        label: "Account",
+        hint: "Password"
+      }
+    ]
   }
 ];
 
+export type DeskBadges = {
+  orders: number;
+  services: number;
+  stock: number;
+};
+
+function todayLabel() {
+  return new Date().toLocaleDateString("en-ZM", {
+    weekday: "short",
+    day: "numeric",
+    month: "short"
+  });
+}
+
 export function AdminShell({
   user,
+  badges = { orders: 0, services: 0, stock: 0 },
   children
 }: {
   user: { name: string; role: "OWNER" | "STAFF"; staffTitle?: string | null };
+  badges?: DeskBadges;
   children: ReactNode;
 }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const items = nav.filter((i) => !i.ownerOnly || user.role === "OWNER");
+
+  const groups = navGroups
+    .map((g) => ({
+      ...g,
+      items: g.items.filter((i) => !i.ownerOnly || user.role === "OWNER")
+    }))
+    .filter((g) => g.items.length > 0);
+
+  const flatItems = groups.flatMap((g) => g.items);
 
   function isActive(href: string) {
     if (href === "/admin") return pathname === "/admin";
@@ -72,7 +134,12 @@ export function AdminShell({
   }
 
   const current =
-    items.find((i) => isActive(i.href))?.label ?? "Provider desk";
+    flatItems.find((i) => isActive(i.href))?.label ?? "Provider desk";
+
+  function badgeFor(key?: NavItem["badgeKey"]) {
+    if (!key) return 0;
+    return badges[key] ?? 0;
+  }
 
   useEffect(() => {
     setMenuOpen(false);
@@ -97,6 +164,56 @@ export function AdminShell({
     .join("")
     .slice(0, 2)
     .toUpperCase();
+
+  function NavLink({
+    item,
+    dense = false
+  }: {
+    item: NavItem;
+    dense?: boolean;
+  }) {
+    const active = isActive(item.href);
+    const count = badgeFor(item.badgeKey);
+    return (
+      <Link
+        href={item.href}
+        className={`relative block rounded-2xl transition-all duration-300 ease-out-expo ${
+          dense ? "px-3.5 py-3" : "px-4 py-4"
+        } ${
+          active
+            ? "bg-brand text-ink-950 shadow-brand-glow"
+            : "text-white/70 hover:bg-white/[0.04] hover:text-white"
+        }`}
+      >
+        {active ? (
+          <span className="absolute left-1.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-ink-950/40" />
+        ) : null}
+        <span className="flex items-center justify-between gap-2">
+          <span className={`block font-bold ${dense ? "text-sm" : "text-base"}`}>
+            {item.label}
+          </span>
+          {count > 0 ? (
+            <span
+              className={`rounded-pill px-2 py-0.5 text-[10px] font-black tabular-nums ${
+                active
+                  ? "bg-ink-950/20 text-ink-950"
+                  : "bg-brand/20 text-brand"
+              }`}
+            >
+              {count > 99 ? "99+" : count}
+            </span>
+          ) : null}
+        </span>
+        <span
+          className={`mt-0.5 block text-[11px] ${
+            active ? "text-ink-950/60" : "text-white/35"
+          }`}
+        >
+          {item.hint}
+        </span>
+      </Link>
+    );
+  }
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-ink-950 text-white">
@@ -140,6 +257,9 @@ export function AdminShell({
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
+            <span className="hidden rounded-pill border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/50 sm:inline">
+              {todayLabel()}
+            </span>
             <div className="hidden items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] py-1.5 pl-1.5 pr-3 md:flex">
               <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-[11px] font-black text-brand">
                 {initials}
@@ -169,33 +289,19 @@ export function AdminShell({
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:flex-row lg:py-10">
         <aside className="hidden lg:block lg:w-64 lg:shrink-0">
           <div className="sticky top-24 overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-3 shadow-card">
-            <nav className="space-y-1">
-              {items.map((i) => {
-                const active = isActive(i.href);
-                return (
-                  <Link
-                    key={i.href}
-                    href={i.href}
-                    className={`relative block rounded-2xl px-3.5 py-3 transition-all duration-300 ease-out-expo ${
-                      active
-                        ? "bg-brand text-ink-950 shadow-brand-glow"
-                        : "text-white/70 hover:bg-white/[0.04] hover:text-white"
-                    }`}
-                  >
-                    {active ? (
-                      <span className="absolute left-1.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-ink-950/40" />
-                    ) : null}
-                    <span className="block text-sm font-bold">{i.label}</span>
-                    <span
-                      className={`mt-0.5 block text-[11px] ${
-                        active ? "text-ink-950/60" : "text-white/35"
-                      }`}
-                    >
-                      {i.hint}
-                    </span>
-                  </Link>
-                );
-              })}
+            <nav className="space-y-4">
+              {groups.map((group) => (
+                <div key={group.label}>
+                  <p className="mb-1.5 px-3.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
+                    {group.label}
+                  </p>
+                  <div className="space-y-1">
+                    {group.items.map((i) => (
+                      <NavLink key={i.href} item={i} dense />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </nav>
           </div>
         </aside>
@@ -230,28 +336,45 @@ export function AdminShell({
               </button>
             </div>
 
-            <div className="grid gap-2">
-              {items.map((i) => {
-                const active = isActive(i.href);
-                return (
-                  <Link
-                    key={i.href}
-                    href={i.href}
-                    className={`rounded-2xl border px-4 py-4 transition-all ${
-                      active
-                        ? "border-brand/50 bg-brand/10"
-                        : "border-white/[0.06] bg-white/[0.02]"
-                    }`}
-                  >
-                    <span className="block text-base font-bold text-white">
-                      {i.label}
-                    </span>
-                    <span className="mt-0.5 block text-sm text-white/45">
-                      {i.hint}
-                    </span>
-                  </Link>
-                );
-              })}
+            <div className="space-y-5">
+              {groups.map((group) => (
+                <div key={group.label}>
+                  <p className="mb-2 px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
+                    {group.label}
+                  </p>
+                  <div className="grid gap-2">
+                    {group.items.map((i) => {
+                      const active = isActive(i.href);
+                      const count = badgeFor(i.badgeKey);
+                      return (
+                        <Link
+                          key={i.href}
+                          href={i.href}
+                          className={`rounded-2xl border px-4 py-4 transition-all ${
+                            active
+                              ? "border-brand/50 bg-brand/10"
+                              : "border-white/[0.06] bg-white/[0.02]"
+                          }`}
+                        >
+                          <span className="flex items-center justify-between gap-2">
+                            <span className="block text-base font-bold text-white">
+                              {i.label}
+                            </span>
+                            {count > 0 ? (
+                              <span className="rounded-pill bg-brand/20 px-2 py-0.5 text-[10px] font-black text-brand">
+                                {count}
+                              </span>
+                            ) : null}
+                          </span>
+                          <span className="mt-0.5 block text-sm text-white/45">
+                            {i.hint}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="mt-5 flex gap-2 border-t border-white/[0.06] pt-4">

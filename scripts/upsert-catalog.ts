@@ -39,37 +39,31 @@ async function main() {
       where: { slug: p.slug },
       include: { images: true, variants: true }
     });
-    await prisma.product.upsert({
-      where: { slug: p.slug },
-      update: {
-        name: p.name,
-        brand: p.brand,
-        categoryId,
-        price: p.price,
-        compareAtPrice: p.compareAtPrice,
-        description: p.description,
-        shortSpecs: JSON.stringify(p.shortSpecs),
-        stock: p.stock,
-        featured: p.featured ?? false,
-        hotDeal: p.hotDeal ?? false
-      },
-      create: {
-        slug: p.slug,
-        name: p.name,
-        brand: p.brand,
-        categoryId,
-        price: p.price,
-        compareAtPrice: p.compareAtPrice,
-        description: p.description,
-        shortSpecs: JSON.stringify(p.shortSpecs),
-        stock: p.stock,
-        featured: p.featured ?? false,
-        hotDeal: p.hotDeal ?? false
-      }
-    });
+
+    // Existing products: leave prices, copy, and photos alone.
+    if (!existing) {
+      await prisma.product.create({
+        data: {
+          slug: p.slug,
+          name: p.name,
+          brand: p.brand,
+          categoryId,
+          price: p.price,
+          compareAtPrice: p.compareAtPrice,
+          description: p.description,
+          shortSpecs: JSON.stringify(p.shortSpecs),
+          stock: p.stock,
+          featured: p.featured ?? false,
+          hotDeal: p.hotDeal ?? false
+        }
+      });
+    }
+
     const row = await prisma.product.findUnique({ where: { slug: p.slug } });
     if (!row) continue;
-    const hasPhotos = (existing?.images.length ?? 0) > 0;
+    const hasPhotos =
+      (existing?.images.length ?? 0) > 0 ||
+      (await prisma.productImage.count({ where: { productId: row.id } })) > 0;
     const hasUploads = existing?.images.some((img) => isUploadUrl(img.url));
     if (!existing) {
       await prisma.productImage.createMany({
@@ -105,17 +99,18 @@ async function main() {
       });
     }
   }
-  console.log(`Products upserted: ${products.length}`);
+  console.log(`Products upserted (existing left untouched): ${products.length}`);
 
+  // Only set printing defaults if the offer exists and has no price label yet.
   await prisma.serviceOffer.updateMany({
-    where: { slug: "printing" },
+    where: { slug: "printing", OR: [{ priceLabel: null }, { priceLabel: "" }] },
     data: {
       imageUrl: "/services/printing-menu.jpg",
       priceLabel: "From K 1",
       settings: JSON.stringify(DEFAULT_SETTINGS)
     }
   });
-  console.log("Printing menu prices updated");
+  console.log("Printing menu defaults checked");
 }
 
 main()

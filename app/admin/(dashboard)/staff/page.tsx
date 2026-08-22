@@ -3,6 +3,11 @@ import { requireOwner } from "@/lib/auth";
 import { AddStaffForm } from "@/components/admin/AddStaffForm";
 import { StaffRoleCell } from "@/components/admin/StaffRoleCell";
 import { deleteStaff } from "@/app/admin/(dashboard)/staff/actions";
+import {
+  DeskPageHeader,
+  DeskPanel,
+  DeskPanelHeader
+} from "@/components/admin/desk";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Staff" };
@@ -15,20 +20,17 @@ export default async function StaffPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
-          Team access
-        </p>
-        <h1 className="mt-1 text-3xl font-black tracking-tight text-white">
-          Staff
-        </h1>
-        <p className="mt-2 text-sm text-white/50">
-          Add teammates with an email + password, then share those details.
-          They sign in on Profile — they can’t create desk accounts themselves.
-        </p>
-      </div>
+      <DeskPageHeader
+        eyebrow="Team access"
+        title="Staff"
+        description="Add teammates with an email + password, then share those details. They sign in on Profile — they can't create desk accounts themselves."
+      />
 
-      <div className="overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 shadow-card">
+      <DeskPanel>
+        <DeskPanelHeader
+          title="Team members"
+          subtitle={`${users.length} login${users.length === 1 ? "" : "s"}`}
+        />
         <div className="overflow-x-auto">
           <table className="w-full min-w-[480px] text-left text-sm">
             <thead className="bg-white/[0.02] text-[11px] uppercase tracking-[0.14em] text-white/40">
@@ -36,7 +38,7 @@ export default async function StaffPage() {
                 <th className="px-5 py-3.5 font-semibold">Name</th>
                 <th className="px-5 py-3.5 font-semibold">Email</th>
                 <th className="px-5 py-3.5 font-semibold">Role</th>
-                <th className="px-5 py-3.5 font-semibold"></th>
+                <th className="px-5 py-3.5 font-semibold" />
               </tr>
             </thead>
             <tbody>
@@ -76,9 +78,9 @@ export default async function StaffPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </DeskPanel>
 
-      <div className="max-w-2xl rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-6 shadow-card sm:p-8">
+      <DeskPanel className="max-w-2xl p-6 sm:p-8">
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
           Invite
         </p>
@@ -90,7 +92,7 @@ export default async function StaffPage() {
         <div className="mt-5">
           <AddStaffForm />
         </div>
-      </div>
+      </DeskPanel>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllServiceOffersAdmin } from "@/lib/service-queries";
 import { SafeImage } from "@/components/SafeImage";
+import { DeskPageHeader } from "@/components/admin/desk";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Service pages" };
@@ -10,22 +11,20 @@ export default async function AdminServicePages() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
-          Public content
-        </p>
-        <h1 className="mt-1 text-3xl font-black tracking-tight text-white">
-          Service pages
-        </h1>
-        <p className="mt-2 max-w-xl text-sm text-white/50">
-          Photos, descriptions and prices on /services. Incoming customer jobs
-          live under{" "}
-          <Link href="/admin/services" className="text-brand hover:underline">
-            Service orders
-          </Link>
-          .
-        </p>
-      </div>
+      <DeskPageHeader
+        eyebrow="Public content"
+        title="Service pages"
+        description={
+          <>
+            Photos, descriptions and prices on /services. Incoming customer jobs
+            live under{" "}
+            <Link href="/admin/services" className="text-brand hover:underline">
+              Service orders
+            </Link>
+            .
+          </>
+        }
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {offers.map((o) => (

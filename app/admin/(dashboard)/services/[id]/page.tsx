@@ -1,9 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, formatDateTime } from "@/lib/format";
 import { updateServiceStatus } from "@/app/admin/(dashboard)/services/actions";
 import { siteConfig } from "@/config/site";
+import {
+  DeskHero,
+  DeskPanel,
+  DeskPanelHeader,
+  StatusPill
+} from "@/components/admin/desk";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Service request" };
@@ -58,8 +64,8 @@ export default async function ServiceDetailPage({
   }
 
   return (
-    <div>
-      <div className="mb-6 flex items-center gap-2 text-sm text-white/40">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center gap-2 text-sm text-white/40">
         <Link href="/admin/services" className="hover:text-white">
           Services
         </Link>
@@ -67,43 +73,81 @@ export default async function ServiceDetailPage({
         <span className="font-mono text-white/70">{request.ref}</span>
       </div>
 
+      <DeskHero>
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand">
+              Service request
+            </p>
+            <h1 className="display mt-2 text-3xl sm:text-4xl">
+              {typeLabel[request.serviceType] ?? request.serviceType}
+            </h1>
+            <p className="mt-2 font-mono text-sm text-white/55">
+              {request.ref} · {formatDateTime(request.createdAt)}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <StatusPill status={request.status} kind="service" />
+              {request.paymentStatus ? (
+                <StatusPill status={request.paymentStatus} kind="payment" />
+              ) : null}
+            </div>
+          </div>
+          <div className="text-left lg:text-right">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">
+              Amount
+            </p>
+            <p className="mt-1 text-3xl font-black tabular-nums text-white">
+              {typeof request.amount === "number"
+                ? formatPrice(request.amount)
+                : "—"}
+            </p>
+            <a
+              href={waLink(request.customerPhone, request.ref)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/20"
+            >
+              WhatsApp customer
+            </a>
+          </div>
+        </div>
+      </DeskHero>
+
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <section className="rounded-card border border-ink-800 bg-ink-850 p-6">
-            <h2 className="text-lg font-bold text-white">
-              {typeLabel[request.serviceType] ?? request.serviceType}
-            </h2>
-            <dl className="mt-4 space-y-2 text-sm">
+          <DeskPanel>
+            <DeskPanelHeader title="Request details" />
+            <dl className="space-y-3 px-5 py-4 text-sm">
               {Object.entries(details).map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4">
-                  <dt className="capitalize text-white/50">
+                  <dt className="capitalize text-white/45">
                     {k.replace(/([A-Z])/g, " $1")}
                   </dt>
-                  <dd className="text-right text-white/80">
+                  <dd className="text-right text-white/85">
                     {typeof v === "boolean" ? (v ? "Yes" : "No") : String(v)}
                   </dd>
                 </div>
               ))}
               {typeof request.amount === "number" && (
-                <div className="flex justify-between border-t border-ink-800 pt-3">
-                  <dt className="text-white/50">Amount</dt>
-                  <dd className="font-bold text-white">
+                <div className="flex justify-between border-t border-white/[0.06] pt-3">
+                  <dt className="text-white/45">Amount</dt>
+                  <dd className="font-bold tabular-nums text-white">
                     {formatPrice(request.amount)}
                   </dd>
                 </div>
               )}
             </dl>
-          </section>
+          </DeskPanel>
 
-          {files.length > 0 && (
-            <section className="rounded-card border border-ink-800 bg-ink-850 p-6">
-              <h2 className="text-lg font-bold text-white">Uploaded files</h2>
-              <p className="mt-1 text-xs text-white/40">
-                Download these to print. You can also forward them on WhatsApp.
-              </p>
-              <ul className="mt-4 space-y-2">
+          {files.length > 0 ? (
+            <DeskPanel>
+              <DeskPanelHeader
+                title="Uploaded files"
+                subtitle="Download to print or forward on WhatsApp"
+              />
+              <ul className="divide-y divide-white/[0.05]">
                 {files.map((url) => (
-                  <li key={url}>
+                  <li key={url} className="px-5 py-3">
                     <a
                       href={url}
                       target="_blank"
@@ -116,65 +160,63 @@ export default async function ServiceDetailPage({
                   </li>
                 ))}
               </ul>
-            </section>
-          )}
+            </DeskPanel>
+          ) : null}
 
-          <section className="rounded-card border border-ink-800 bg-ink-850 p-6">
-            <h2 className="text-lg font-bold text-white">Customer</h2>
-            <dl className="mt-4 space-y-2 text-sm">
+          <DeskPanel>
+            <DeskPanelHeader title="Customer" />
+            <dl className="space-y-3 px-5 py-4 text-sm">
               <div className="flex justify-between">
-                <dt className="text-white/50">Name</dt>
-                <dd className="text-white/80">{request.customerName}</dd>
+                <dt className="text-white/45">Name</dt>
+                <dd className="font-semibold text-white/85">
+                  {request.customerName}
+                </dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-white/50">Phone</dt>
-                <dd className="text-white/80">{request.customerPhone}</dd>
+                <dt className="text-white/45">Phone</dt>
+                <dd className="text-white/85">{request.customerPhone}</dd>
               </div>
-              <div className="flex justify-between">
-                <dt className="text-white/50">Delivery</dt>
-                <dd className="text-white/80">
+              <div className="flex justify-between gap-4">
+                <dt className="text-white/45">Delivery</dt>
+                <dd className="max-w-[60%] text-right text-white/85">
                   {request.deliveryMethod === "YANGO"
                     ? `Yango — ${request.address ?? ""}`
                     : `Pickup — ${siteConfig.branch}`}
                 </dd>
               </div>
             </dl>
-            <a
-              href={waLink(request.customerPhone, request.ref)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-2 text-sm font-semibold text-accent hover:bg-accent/20"
-            >
-              Message on WhatsApp
-            </a>
-          </section>
+          </DeskPanel>
         </div>
 
         <div className="space-y-6">
-          <section className="rounded-card border border-ink-800 bg-ink-850 p-6">
-            <h2 className="text-lg font-bold text-white">Payment</h2>
-            <p className="mt-2 text-sm text-white/60">
-              Method:{" "}
-              <span className="text-white">
-                {request.paymentMethod?.toUpperCase() ?? "—"}
-              </span>
-            </p>
-            <p className="mt-1 text-sm text-white/60">
-              Status:{" "}
-              <span className="text-white">
-                {request.paymentStatus ?? "N/A"}
-              </span>
-            </p>
-          </section>
+          <DeskPanel>
+            <DeskPanelHeader title="Payment" />
+            <div className="space-y-3 px-5 py-4 text-sm">
+              <div className="flex justify-between">
+                <span className="text-white/45">Method</span>
+                <span className="font-semibold text-white">
+                  {request.paymentMethod?.toUpperCase() ?? "—"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-white/45">Status</span>
+                {request.paymentStatus ? (
+                  <StatusPill status={request.paymentStatus} kind="payment" />
+                ) : (
+                  <span className="text-white/50">N/A</span>
+                )}
+              </div>
+            </div>
+          </DeskPanel>
 
-          <section className="rounded-card border border-ink-800 bg-ink-850 p-6">
-            <h2 className="text-lg font-bold text-white">Update status</h2>
-            <form action={updateServiceStatus} className="mt-4 space-y-3">
+          <DeskPanel>
+            <DeskPanelHeader title="Update status" />
+            <form action={updateServiceStatus} className="space-y-3 px-5 py-4">
               <input type="hidden" name="id" value={request.id} />
               <select
                 name="status"
                 defaultValue={request.status}
-                className="w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand"
+                className="w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
@@ -189,7 +231,7 @@ export default async function ServiceDetailPage({
                 Save status
               </button>
             </form>
-          </section>
+          </DeskPanel>
         </div>
       </div>
     </div>
