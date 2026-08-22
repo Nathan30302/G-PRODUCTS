@@ -4,6 +4,7 @@ export const siteConfig = {
   tagline: "Heart Gladdening Products",
   /** Official brand lockup — use everywhere as the logo */
   logo: "/brand/g-products-logo.png",
+  logoSm: "/brand/g-products-logo-sm.png",
   logoMark: "/brand/g-products-mark.png",
   description:
     "G-Products and Services — quality printing, electronics, stationery, accessories and essential services at affordable prices. Free delivery within school.",

@@ -1,7 +1,9 @@
 import Image from "next/image";
+import { siteConfig } from "@/config/site";
 
-const LOGO_SRC = "/brand/g-products-logo.png";
-const MARK_SRC = "/brand/g-products-mark.png";
+const LOGO_SRC = siteConfig.logo;
+const LOGO_SM_SRC = siteConfig.logoSm;
+const MARK_SRC = siteConfig.logoMark;
 
 /** Pixel box for the rendered mark / lockup. Full wordmark needs more room. */
 const sizes = {
@@ -28,7 +30,11 @@ export function Logo({
   // Small chrome (nav) always uses the mark so proportions stay true —
   // object-cover on the full lockup was zooming the G and throwing it off.
   const useLockup = withText && !compact;
-  const src = useLockup ? LOGO_SRC : MARK_SRC;
+  const src = useLockup
+    ? size === "lg"
+      ? LOGO_SM_SRC
+      : LOGO_SRC
+    : MARK_SRC;
   const alt = useLockup ? "G-Products and Services" : "G-Products";
 
   if (size === "hero") {
@@ -64,7 +70,7 @@ export function Logo({
         }}
       >
         <Image
-          src={LOGO_SRC}
+          src={src}
           alt={alt}
           width={px}
           height={px}
@@ -77,14 +83,14 @@ export function Logo({
     );
   }
 
-  // Mark — balanced crop of the real lockup icon
+  // Mark — balanced crop of the real lockup icon (exact brand, not redrawn)
   return (
     <span
       className={`relative inline-flex shrink-0 ${className}`}
       style={{ width: px, height: px }}
     >
       <Image
-        src={src}
+        src={MARK_SRC}
         alt={alt}
         width={px}
         height={px}

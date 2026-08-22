@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Icon } from "@/components/Icons";
+import { Logo } from "@/components/Logo";
 import { SmokeBackdrop } from "@/components/SmokeBackdrop";
 
 export function Hero() {
@@ -13,6 +14,10 @@ export function Hero() {
 
       <div className="container-g relative flex min-h-[calc(100svh-3.5rem)] flex-col justify-center py-14 sm:min-h-[calc(100svh-4rem)] sm:py-16">
         <div className="mx-auto flex w-full max-w-2xl flex-col items-center text-center">
+          <div className="hero-rise mb-7">
+            <Logo size="hero" priority />
+          </div>
+
           <h1 className="hero-rise display max-w-[12ch] text-[2.6rem] leading-[1.02] text-brand sm:max-w-none sm:text-5xl">
             {siteConfig.tagline}
           </h1>
