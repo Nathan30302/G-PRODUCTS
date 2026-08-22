@@ -22,16 +22,19 @@ export function HomeDesktop({
 }) {
   return (
     <div className="hidden lg:block">
-      <section className="relative border-b border-white/[0.06] bg-gradient-to-b from-ink-900/80 to-ink-950 py-10">
+      <section className="relative isolate overflow-hidden border-b border-white/[0.06] py-12 xl:py-14">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-ink-900 via-ink-950 to-ink-950" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_55%_at_15%_20%,rgba(246,212,0,0.11),transparent_55%)]" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_40%_at_90%_10%,rgba(34,197,94,0.06),transparent_50%)]" />
         <div className="container-g flex items-center justify-between gap-10">
           <div className="max-w-xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-brand">
               G-Products
             </p>
-            <h1 className="display mt-2 text-4xl text-brand">
+            <h1 className="display mt-2 text-4xl text-brand xl:text-[2.75rem]">
               Heart Gladdening Products
             </h1>
-            <p className="mt-3 text-base text-white/55">
+            <p className="mt-3 text-base leading-relaxed text-white/55">
               Stationery, electronics, chargers and services — organised so you
               find what you need fast.
             </p>
@@ -42,20 +45,36 @@ export function HomeDesktop({
               </Link>
               <Link
                 href="/services"
-                className="rounded-pill border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white/80 hover:border-brand/40"
+                className="rounded-pill border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white/80 transition-colors hover:border-brand/40 hover:text-white"
               >
                 Services
               </Link>
             </div>
+            <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/40">
+              <li className="flex items-center gap-1.5">
+                <Icon name="truck" className="h-3.5 w-3.5 text-brand" />
+                Free school delivery
+              </li>
+              <li className="flex items-center gap-1.5">
+                <Icon name="wallet" className="h-3.5 w-3.5 text-brand" />
+                Mobile Money
+              </li>
+              <li className="flex items-center gap-1.5">
+                <Icon name="map-pin" className="h-3.5 w-3.5 text-brand" />
+                4 pickup spots
+              </li>
+            </ul>
           </div>
-          <div className="grid max-w-md shrink-0 grid-cols-3 gap-2">
+          <div className="grid max-w-md shrink-0 grid-cols-3 gap-2.5">
             {services.slice(0, 3).map((s) => (
               <Link
                 key={s.slug}
                 href={`/services/${s.slug}`}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:border-brand/35"
+                className="group rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/40 hover:bg-white/[0.05]"
               >
-                <p className="text-xs font-bold text-white">{s.name}</p>
+                <p className="text-xs font-bold text-white group-hover:text-brand">
+                  {s.name}
+                </p>
                 <p className="mt-1 line-clamp-2 text-[11px] text-white/40">
                   {s.tagline}
                 </p>

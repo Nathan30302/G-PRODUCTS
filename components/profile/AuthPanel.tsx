@@ -207,6 +207,21 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
             ? "Sign in with your phone or email — you’ll stay signed in."
             : "All fields required. You’ll be signed in right after signup."}
         </p>
+        <ul className="mt-5 flex flex-wrap justify-center gap-2">
+          {[
+            { icon: "truck", label: "Track orders" },
+            { icon: "map-pin", label: "Saved address" },
+            { icon: "wallet", label: "Faster checkout" }
+          ].map((b) => (
+            <li
+              key={b.label}
+              className="inline-flex items-center gap-1.5 rounded-pill border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-white/50"
+            >
+              <Icon name={b.icon} className="h-3 w-3 text-brand" />
+              {b.label}
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="relative overflow-hidden rounded-[1.85rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-1.5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">

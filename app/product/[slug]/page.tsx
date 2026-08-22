@@ -37,10 +37,11 @@ export async function generateMetadata({
 }
 
 const trust = [
-  { icon: "shield", label: "Genuine product" },
-  { icon: "wallet", label: "Mobile Money" },
-  { icon: "truck", label: "Fast delivery" }
+  { icon: "truck", label: "School delivery", hint: "Free within campus" },
+  { icon: "wallet", label: "Mobile Money", hint: "MTN · Airtel · Zamtel" },
+  { icon: "map-pin", label: "4 pickup spots", hint: "UNZA · town · campus" }
 ];
+
 
 export default async function ProductPage({
   params
@@ -101,29 +102,32 @@ export default async function ProductPage({
 
         </ProductVariantProvider>
 
-        <div className="mt-8 grid grid-cols-3 gap-3">
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {trust.map((t) => (
             <div
               key={t.label}
-              className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-ink-850/60 p-3 text-center"
+              className="flex items-center gap-3 rounded-[1.15rem] border border-white/[0.07] bg-ink-900/50 px-4 py-3.5 sm:flex-col sm:items-center sm:gap-2 sm:p-4 sm:text-center"
             >
-              <Icon name={t.icon} className="h-5 w-5 text-brand" />
-              <span className="text-[11px] font-medium text-white/60">
-                {t.label}
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/20">
+                <Icon name={t.icon} className="h-5 w-5" />
               </span>
+              <div>
+                <p className="text-sm font-semibold text-white/85">{t.label}</p>
+                <p className="text-[11px] text-white/40">{t.hint}</p>
+              </div>
             </div>
           ))}
         </div>
 
         {product.shortSpecs.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-lg font-bold text-white">Specifications</h2>
-            <dl className="mt-4 overflow-hidden rounded-card border border-white/[0.06]">
+            <h2 className="display text-xl">Specifications</h2>
+            <dl className="mt-4 overflow-hidden rounded-[1.25rem] border border-white/[0.07] bg-ink-900/40">
               {product.shortSpecs.map((s, i) => (
                 <div
                   key={s}
-                  className={`flex items-start gap-3 px-4 py-3 text-sm ${
-                    i % 2 === 0 ? "bg-ink-850/60" : "bg-transparent"
+                  className={`flex items-start gap-3 px-4 py-3.5 text-sm ${
+                    i % 2 === 0 ? "bg-white/[0.02]" : "bg-transparent"
                   }`}
                 >
                   <Icon

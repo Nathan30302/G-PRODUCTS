@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/format";
 import { orderWhatsAppLink } from "@/lib/whatsapp";
 import { Icon } from "@/components/Icons";
 import { siteConfig } from "@/config/site";
+import { ShopEmptyState, ShopStickyBar } from "@/components/shop/ui";
 
 type PayMethod = "mtn" | "airtel" | "zamtel";
 type Phase = "idle" | "submitting" | "manual" | "pending" | "success" | "failed";
@@ -339,20 +340,19 @@ export function CheckoutClient({
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
           Secure checkout
         </p>
-        <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
-          Checkout
-        </h1>
-        <div className="mt-10 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
-          <span className="grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
-            <Icon name="cart" className="h-7 w-7" />
-          </span>
-          <p className="mt-5 text-lg font-semibold text-white">
-            Your cart is empty
-          </p>
-          <Link href="/search" className="btn-brand mt-6">
-            Start shopping
-            <Icon name="arrow-right" className="h-4 w-4" />
-          </Link>
+        <h1 className="mt-1.5 display text-3xl sm:text-4xl">Checkout</h1>
+        <div className="mt-10">
+          <ShopEmptyState
+            icon="cart"
+            title="Your cart is empty"
+            description="Add a few items, then come back to pay with Mobile Money."
+            action={
+              <Link href="/search" className="btn-brand">
+                Start shopping
+                <Icon name="arrow-right" className="h-4 w-4" />
+              </Link>
+            }
+          />
         </div>
       </div>
     );
@@ -547,23 +547,25 @@ export function CheckoutClient({
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+3.75rem)] z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg lg:hidden">
-        <div className="flex items-center gap-3">
-          <div className="min-w-0">
-            <p className="text-[11px] text-white/45">Total</p>
-            <p className="text-lg font-extrabold text-white">
-              {formatPrice(total)}
-            </p>
+      <div className="lg:hidden">
+        <ShopStickyBar>
+          <div className="flex items-center gap-3">
+            <div className="min-w-0">
+              <p className="text-[11px] text-white/45">Total</p>
+              <p className="text-lg font-extrabold tabular-nums text-white">
+                {formatPrice(total)}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={placeOrder}
+              disabled={!canPlace || phase === "submitting"}
+              className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98] disabled:bg-ink-700 disabled:text-white/40"
+            >
+              {phase === "submitting" ? "Placing..." : "Place order"}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={placeOrder}
-            disabled={!canPlace || phase === "submitting"}
-            className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98] disabled:bg-ink-700 disabled:text-white/40"
-          >
-            {phase === "submitting" ? "Placing..." : "Place order"}
-          </button>
-        </div>
+        </ShopStickyBar>
       </div>
     </div>
   );

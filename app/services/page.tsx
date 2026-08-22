@@ -22,18 +22,19 @@ export default async function ServicesPage() {
         / <span className="text-white/70">Services</span>
       </nav>
 
-      <header className="mt-5 max-w-2xl">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
-          Heart-gladdening help
-        </p>
-        <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
-          Services
-        </h1>
-        <p className="mt-3 text-base leading-relaxed text-white/55">
-          Key cutting, collateral-based loans, and document printing — order
-          online, pay with Mobile Money, then pick up at {siteConfig.branch} or
-          get delivery via Yango.
-        </p>
+      <header className="relative mt-5 max-w-2xl overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-br from-ink-900 via-ink-900/80 to-ink-950 p-6 sm:p-8">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-brand/10 blur-3xl" />
+        <div className="relative">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+            Heart-gladdening help
+          </p>
+          <h1 className="display mt-1.5 text-3xl sm:text-4xl">Services</h1>
+          <p className="mt-3 text-base leading-relaxed text-white/55">
+            Key cutting, collateral-based loans, and document printing — order
+            online, pay with Mobile Money, then pick up at {siteConfig.branch} or
+            get delivery via Yango.
+          </p>
+        </div>
       </header>
 
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

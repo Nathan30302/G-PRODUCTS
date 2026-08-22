@@ -76,7 +76,7 @@ export function ProductCard({
   }
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-ink-900/70 transition-transform duration-200 ease-out active:scale-[0.97]">
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-ink-900/70 transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-brand-glow active:scale-[0.97]">
       <div
         className="relative aspect-square overflow-hidden bg-white"
         onTouchStart={onTouchStart}

@@ -7,6 +7,7 @@ import { Icon } from "@/components/Icons";
 import { KeyCuttingForm } from "@/components/services/KeyCuttingForm";
 import { GLoansForm } from "@/components/services/GLoansForm";
 import { PrintingForm } from "@/components/services/PrintingForm";
+import { siteConfig } from "@/config/site";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +49,7 @@ export default async function ServiceDetailPage({
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2">
         <div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-card border border-ink-800 bg-ink-850">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[1.35rem] border border-white/[0.08] bg-ink-850 shadow-card">
             {service.image ? (
               <Image
                 src={service.image}
@@ -66,26 +67,49 @@ export default async function ServiceDetailPage({
               </div>
             )}
           </div>
-          <h1 className="mt-6 text-3xl font-black text-white">{service.name}</h1>
+          <h1 className="display mt-6 text-3xl sm:text-4xl">{service.name}</h1>
           <p className="mt-2 text-brand">{service.tagline}</p>
-          <p className="mt-4 text-white/60">{service.description}</p>
+          <p className="mt-4 leading-relaxed text-white/60">
+            {service.description}
+          </p>
           {service.priceLabel && (
-            <p className="mt-4 text-sm font-semibold text-white/80">
+            <p className="mt-4 inline-flex rounded-pill border border-brand/25 bg-brand/10 px-3.5 py-1.5 text-sm font-semibold text-brand">
               {service.priceLabel}
             </p>
           )}
+          <ul className="mt-6 space-y-2 text-sm text-white/50">
+            <li className="flex items-start gap-2.5">
+              <Icon name="map-pin" className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+              Pickup at {siteConfig.branch} — or Yango delivery.
+            </li>
+            <li className="flex items-start gap-2.5">
+              <Icon name="wallet" className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+              Pay with MTN, Airtel or Zamtel Mobile Money.
+            </li>
+            <li className="flex items-start gap-2.5">
+              <Icon name="whatsapp" className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+              We confirm and update you on WhatsApp.
+            </li>
+          </ul>
         </div>
 
-        <div className="rounded-card border border-ink-800 bg-ink-850 p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-white">
-            {service.payable ? "Place your order" : "Submit a request"}
-          </h2>
-          <p className="mt-1 text-sm text-white/50">
-            {service.payable
-              ? "Fill in the details, pay with Mobile Money, then pickup or Yango."
-              : "We'll review your request and contact you on WhatsApp."}
-          </p>
-          <div className="mt-6">
+        <div className="rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/90 to-ink-900/95 p-6 shadow-card sm:p-8">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/20">
+              <Icon name="edit" className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="text-lg font-bold text-white">
+                {service.payable ? "Place your order" : "Submit a request"}
+              </h2>
+              <p className="mt-0.5 text-sm text-white/50">
+                {service.payable
+                  ? "Fill in the details, pay with Mobile Money, then pickup or Yango."
+                  : "We&apos;ll review your request and contact you on WhatsApp."}
+              </p>
+            </div>
+          </div>
+          <div className="mt-6 border-t border-white/[0.06] pt-6">
             {slug === "key-cutting" && (
               <KeyCuttingForm settings={service.settings} />
             )}
