@@ -151,7 +151,7 @@ export default async function AdminProducts() {
                       name: v.name,
                       colorHex: v.colorHex ?? undefined,
                       quantity: v.quantity,
-                      price: v.price ?? null,
+                      price: v.price ?? undefined,
                       available: v.quantity > 0
                     }))
                   };
