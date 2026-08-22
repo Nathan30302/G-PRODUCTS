@@ -190,12 +190,7 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
       <div className="pointer-events-none absolute -right-10 top-32 h-40 w-40 rounded-full bg-accent/10 blur-[80px]" />
 
       <div className="relative mb-8 flex flex-col items-center text-center">
-        <div
-          className="overflow-hidden rounded-[1.35rem]"
-          style={{ backgroundColor: "#1a3344" }}
-        >
-          <Logo size="lg" priority />
-        </div>
+        <Logo size="lg" priority />
         <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
           Your account
         </p>
