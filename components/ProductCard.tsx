@@ -2,7 +2,7 @@
 
 import { useRef, useState, type TouchEvent } from "react";
 import Link from "next/link";
-import { Product } from "@/lib/types";
+import { Product, fromPrice, hasPricedOptions } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 import { SafeImage } from "@/components/SafeImage";
 import { coverImageForProduct } from "@/lib/product-images";
@@ -125,7 +125,9 @@ export function ProductCard({
         </h3>
         <div className="mt-auto flex items-baseline justify-between gap-2 pt-0.5">
           <span className="text-[13px] font-bold tabular-nums text-white sm:text-sm">
-            {formatPrice(product.price)}
+            {hasPricedOptions(product)
+              ? `From ${formatPrice(fromPrice(product))}`
+              : formatPrice(product.price)}
           </span>
           <StockPill status={product.stock} />
         </div>

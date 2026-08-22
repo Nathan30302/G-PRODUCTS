@@ -6,7 +6,9 @@
 
 export type CatalogVariantDef = {
   name: string;
-  colorHex: string;
+  colorHex?: string;
+  /** Per-option price (ZMW). Used for size/config options like extension leads. */
+  price?: number;
   files: string[];
   quantity?: number;
 };
@@ -90,6 +92,29 @@ const COLOUR_PRODUCTS: Record<
   ]
 };
 
+/** Size / config options with their own price (reuse existing photo prefixes). */
+const OPTION_PRODUCTS: Record<
+  string,
+  {
+    name: string;
+    price: number;
+    quantity: number;
+    /** Existing catalog filename prefix, e.g. extension-3-way-3m */
+    filePrefix: string;
+  }[]
+> = {
+  "extension-cable": [
+    { name: "3-way · 3m", price: 50, quantity: 12, filePrefix: "extension-3-way-3m" },
+    { name: "3-way · 5m", price: 55, quantity: 12, filePrefix: "extension-3-way-5m" },
+    { name: "4-way · 3m", price: 60, quantity: 12, filePrefix: "extension-4-way-3m" },
+    { name: "4-way · 5m", price: 65, quantity: 12, filePrefix: "extension-4-way-5m" },
+    { name: "5-way · 3m", price: 70, quantity: 12, filePrefix: "extension-5-way-3m" },
+    { name: "5-way · 5m", price: 75, quantity: 12, filePrefix: "extension-5-way-5m" },
+    { name: "6-way · 3m", price: 80, quantity: 12, filePrefix: "extension-6-way-3m" },
+    { name: "6-way · 5m", price: 85, quantity: 12, filePrefix: "extension-6-way-5m" }
+  ]
+};
+
 const ALL_SLUGS = [
   "exercise-book-192",
   "exercise-book-288",
@@ -155,14 +180,7 @@ const ALL_SLUGS = [
   "mango-headset",
   "laptop-charger-full-set",
   "laptop-power-pack-only",
-  "extension-3-way-3m",
-  "extension-3-way-5m",
-  "extension-4-way-3m",
-  "extension-4-way-5m",
-  "extension-5-way-3m",
-  "extension-5-way-5m",
-  "extension-6-way-3m",
-  "extension-6-way-5m",
+  "extension-cable",
   "airpods-pro-3",
   "airpods-pro-2-type-c",
   "airpods-pro-2",
@@ -204,8 +222,7 @@ const FLYER_SLUGS = new Set([
   "oraimo-original-headset",
   "memory-card-32gb",
   "flash-disk-32gb",
-  "extension-3-way-3m",
-  "extension-6-way-5m",
+  "extension-cable",
   "t900-ultra",
   "a58-plus-set",
   "momofly-v101",
@@ -219,8 +236,21 @@ const FLYER_SLUGS = new Set([
 ]);
 
 export const catalogProducts: CatalogProductDef[] = ALL_SLUGS.map((slug) => {
-  const colours = COLOUR_PRODUCTS[slug];
   const flyer = FLYER_SLUGS.has(slug) ? [`${slug}-flyer.jpg`] : [];
+  const options = OPTION_PRODUCTS[slug];
+  if (options) {
+    return {
+      slug,
+      files: flyer,
+      variants: options.map((o) => ({
+        name: o.name,
+        price: o.price,
+        quantity: o.quantity,
+        files: angles(o.filePrefix)
+      }))
+    };
+  }
+  const colours = COLOUR_PRODUCTS[slug];
   if (colours) {
     return {
       slug,
@@ -766,14 +796,7 @@ export const commonsSearch: Record<string, string> = {
   "mango-headset": "wired earbuds with microphone",
   "laptop-charger-full-set": "laptop AC adapter charger",
   "laptop-power-pack-only": "laptop power brick adapter",
-  "extension-3-way-3m": "UK Type G 3-way trailing socket extension",
-  "extension-3-way-5m": "UK Type G 3-way 5 metre extension lead",
-  "extension-4-way-3m": "UK Type G 4-way trailing socket",
-  "extension-4-way-5m": "UK Type G 4-way 5 metre extension lead",
-  "extension-5-way-3m": "UK Type G 5-way trailing socket",
-  "extension-5-way-5m": "UK Type G 5-way 5 metre extension lead",
-  "extension-6-way-3m": "UK Type G 6-way trailing socket",
-  "extension-6-way-5m": "UK Type G 6-way 5 metre extension lead",
+  "extension-cable": "UK Type G trailing socket extension lead",
   "airpods-pro-3": "AirPods Pro USB-C white earbuds",
   "airpods-pro-2-type-c": "AirPods Pro 2 USB-C charging case",
   "airpods-pro-2": "AirPods Pro 2nd generation",

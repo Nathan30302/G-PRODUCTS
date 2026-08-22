@@ -40,6 +40,7 @@ type VariantInput = {
   id?: string;
   name: string;
   colorHex?: string;
+  price?: number | null;
   quantity: number;
   imageUrls: string[];
   /** True when the provider changed photos for this colour in the form. */
@@ -51,16 +52,24 @@ function parseVariants(raw: string): VariantInput[] {
     const list = JSON.parse(raw) as VariantInput[];
     if (!Array.isArray(list)) return [];
     return list
-      .map((v) => ({
-        id: v.id ? String(v.id).trim() : undefined,
-        name: String(v.name ?? "").trim(),
-        colorHex: String(v.colorHex ?? "").trim() || undefined,
-        quantity: Math.max(0, Math.round(Number(v.quantity) || 0)),
-        imageUrls: Array.isArray(v.imageUrls)
-          ? v.imageUrls.map((u) => String(u).trim()).filter(Boolean)
-          : [],
-        photosDirty: Boolean(v.photosDirty)
-      }))
+      .map((v) => {
+        const priceRaw = v.price;
+        const priceNum =
+          priceRaw === null || priceRaw === undefined || priceRaw === ("" as never)
+            ? null
+            : Math.max(0, Math.round(Number(priceRaw) || 0));
+        return {
+          id: v.id ? String(v.id).trim() : undefined,
+          name: String(v.name ?? "").trim(),
+          colorHex: String(v.colorHex ?? "").trim() || undefined,
+          price: priceNum && priceNum > 0 ? priceNum : null,
+          quantity: Math.max(0, Math.round(Number(v.quantity) || 0)),
+          imageUrls: Array.isArray(v.imageUrls)
+            ? v.imageUrls.map((u) => String(u).trim()).filter(Boolean)
+            : [],
+          photosDirty: Boolean(v.photosDirty)
+        };
+      })
       .filter((v) => v.name);
   } catch {
     return [];
@@ -154,6 +163,7 @@ export async function saveProduct(
           data: {
             name: v.name,
             colorHex: v.colorHex ?? null,
+            price: v.price ?? null,
             quantity: v.quantity,
             sortOrder: idx
           }
@@ -171,6 +181,7 @@ export async function saveProduct(
             data: {
               name: v.name,
               colorHex: v.colorHex ?? null,
+              price: v.price ?? null,
               quantity: v.quantity,
               sortOrder: idx
             }
@@ -181,6 +192,7 @@ export async function saveProduct(
               productId,
               name: v.name,
               colorHex: v.colorHex ?? null,
+              price: v.price ?? null,
               quantity: v.quantity,
               sortOrder: idx
             }

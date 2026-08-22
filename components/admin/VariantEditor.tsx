@@ -8,6 +8,7 @@ export type VariantRow = {
   id?: string;
   name: string;
   colorHex: string;
+  price?: number | null;
   quantity: number;
   imageUrls: string[];
   photosDirty?: boolean;
@@ -140,17 +141,35 @@ export function VariantEditor({
                     <input type="hidden" name={`variant_id_${i}`} value={row.id} />
                   )}
 
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="block">
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <label className="block sm:col-span-1">
                       <span className="text-xs font-semibold uppercase tracking-[0.1em] text-white/45">
-                        Colour name
+                        Option name
                       </span>
                       <input
                         value={row.name}
                         onChange={(e) => update(i, { name: e.target.value })}
                         className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-950 px-3 py-2.5 text-sm text-white outline-none focus:border-brand/50"
-                        placeholder="e.g. White"
+                        placeholder="e.g. White or 3-way · 3m"
                         required
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-semibold uppercase tracking-[0.1em] text-white/45">
+                        Option price (ZMW)
+                      </span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={row.price ?? ""}
+                        onChange={(e) => {
+                          const raw = e.target.value;
+                          update(i, {
+                            price: raw === "" ? null : Math.max(0, Number(raw) || 0)
+                          });
+                        }}
+                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-950 px-3 py-2.5 text-sm text-white outline-none focus:border-brand/50"
+                        placeholder="Leave empty = product price"
                       />
                     </label>
                     <label className="block">

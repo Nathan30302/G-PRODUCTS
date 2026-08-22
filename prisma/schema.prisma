@@ -105,13 +105,15 @@ model ProductImage {
   sortOrder Int             @default(0)
 }
 
-/// Color / option variants with their own quantity
+/// Colour / size / option variants with their own quantity (and optional price)
 model ProductVariant {
   id        String         @id @default(cuid())
   productId String
   product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name      String // e.g. Black, White, Blue
-  colorHex  String? // e.g. #111111 for swatch
+  name      String // e.g. Black, or "3-way · 3m"
+  colorHex  String? // e.g. #111111 for colour swatch
+  /// When set, this option has its own price (ZMW). Otherwise product.price is used.
+  price     Int?
   quantity  Int            @default(0)
   sortOrder Int            @default(0)
   images    ProductImage[]

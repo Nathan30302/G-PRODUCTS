@@ -26,6 +26,7 @@ function toVariants(rows: DbVariant[]): ProductVariant[] {
       id: v.id,
       name: v.name,
       colorHex: v.colorHex ?? undefined,
+      price: v.price ?? undefined,
       quantity: v.quantity,
       available: v.quantity > 0
     }));

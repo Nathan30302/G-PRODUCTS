@@ -74,6 +74,7 @@ export default async function EditProductPage({
             name: v.name,
             colorHex: v.colorHex ?? "",
             quantity: v.quantity,
+            price: v.price ?? null,
             imageUrls:
               variantImages.length > 0
                 ? variantImages

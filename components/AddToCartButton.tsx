@@ -1,23 +1,25 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/components/Toast";
 import { Icon } from "@/components/Icons";
-import { Product, ProductVariant } from "@/lib/types";
+import { Product, ProductVariant, hasPricedOptions } from "@/lib/types";
 import { coverImageForProduct } from "@/lib/product-images";
 
 export function AddToCartButton({
   product,
   variant,
+  qty = 1,
   compact = false,
   requireOptions = false
 }: {
   product: Product;
   variant?: ProductVariant | null;
+  qty?: number;
   compact?: boolean;
-  /** On cards: if multiple colors, link to product page instead of adding */
+  /** On cards: if multiple options, link to product page instead of adding */
   requireOptions?: boolean;
 }) {
   const { add } = useCart();
@@ -27,6 +29,7 @@ export function AddToCartButton({
   const multiOptions = product.variants.length > 1;
   const soldOut = product.stock === "sold_out";
   const variantSoldOut = variant ? !variant.available : false;
+  const chooseLabel = hasPricedOptions(product) ? "Choose option" : "Choose colour";
 
   if (soldOut || variantSoldOut) {
     return (
@@ -49,7 +52,7 @@ export function AddToCartButton({
           compact ? "px-4 py-2 text-sm" : "px-4 py-3"
         }`}
       >
-        Choose colour
+        {chooseLabel}
       </Link>
     );
   }
@@ -60,10 +63,11 @@ export function AddToCartButton({
       product.variants.find((v) => v.available) ??
       product.variants[0];
     if (product.variants.length > 0 && (!chosen || !chosen.available)) return;
-    add(product, chosen);
+    const n = Math.max(1, Math.round(qty));
+    add(product, chosen, n);
     setAdded(true);
     toast({
-      title: "Added to cart",
+      title: n > 1 ? `Added ×${n}` : "Added to cart",
       description: chosen
         ? `${product.name} · ${chosen.name}`
         : product.name,

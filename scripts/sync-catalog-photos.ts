@@ -76,7 +76,8 @@ async function syncProduct(slug: string): Promise<boolean> {
         data: {
           productId: row.id,
           name: v.name,
-          colorHex: v.colorHex,
+          colorHex: v.colorHex ?? null,
+          price: v.price ?? null,
           quantity: v.quantity ?? 8,
           sortOrder: i
         }

@@ -17,6 +17,8 @@ export type ProductVariant = {
   id: string;
   name: string;
   colorHex?: string;
+  /** Per-option price in ZMW. When missing, use the product price. */
+  price?: number;
   quantity: number;
   available: boolean;
 };
@@ -37,6 +39,29 @@ export type Product = {
   hotDeal?: boolean;
   variants: ProductVariant[];
 };
+
+/** Unit price for a chosen variant (falls back to product price). */
+export function unitPrice(
+  product: Pick<Product, "price">,
+  variant?: Pick<ProductVariant, "price"> | null
+): number {
+  return variant?.price ?? product.price;
+}
+
+/** Lowest sellable price — for cards when options have different prices. */
+export function fromPrice(product: Product): number {
+  const priced = product.variants
+    .map((v) => v.price)
+    .filter((p): p is number => typeof p === "number" && p > 0);
+  if (priced.length === 0) return product.price;
+  return Math.min(product.price, ...priced);
+}
+
+export function hasPricedOptions(product: Product): boolean {
+  return product.variants.some(
+    (v) => typeof v.price === "number" && v.price > 0
+  );
+}
 
 export function stockFromQuantity(qty: number): StockStatus {
   if (qty <= 0) return "sold_out";

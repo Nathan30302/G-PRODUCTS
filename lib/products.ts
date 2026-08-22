@@ -216,9 +216,13 @@ export const products: SeedProduct[] = [
     name: "Multi-Function Phone Stand",
     categorySlug: "phone-accessories",
     price: 50,
-    specs: ["Multi-angle adjustable", "Sturdy metal build", "Universal compatibility"],
+    specs: [
+      "Multi-angle adjustable",
+      "Sturdy metal build",
+      "Universal compatibility"
+    ],
     description:
-      "Silver metal phone stand with a round base and hinged neck. Multi-angle, sturdy metal build, and universal compatibility. Pick a colour on the product page.",
+      "Multi-function metal phone stand with a round base and hinged neck. Multi-angle adjustable, sturdy metal build and universal compatibility for most phones. Pick a finish on the product page.",
     featured: true
   }),
   p({
@@ -344,9 +348,13 @@ export const products: SeedProduct[] = [
     brand: "Logitech",
     categorySlug: "computers",
     price: 75,
-    specs: ["M186", "Plug-and-play wireless", "USB receiver included"],
+    specs: [
+      "M186",
+      "Plug-and-play wireless plus comfort",
+      "USB nano receiver included"
+    ],
     description:
-      "Logitech M186 wireless mouse — plug-and-play wireless plus comfort. USB nano receiver in the pack. Pick black or white.",
+      "Logitech M186 wireless mouse — plug-and-play wireless plus comfort. Compact shape with a USB nano receiver in the pack. Pick black or white.",
     featured: true,
     hotDeal: true
   }),
@@ -406,13 +414,14 @@ export const products: SeedProduct[] = [
     categorySlug: "chargers",
     price: 100,
     specs: [
-      "2A fast charging",
+      "2A Fast-Charging & Stable Performance",
       "UK Type G plug",
-      "AniFast™",
-      "Fire-proof durable build"
+      "AniFast™ Technology",
+      "Fire-proof & anti-slip build",
+      "Multi-protection system"
     ],
     description:
-      "Oraimo wall charger with UK Type G plug and cable. 2A fast charging and stable performance, fire-proof anti-slip build, multi-protection system, compact AniFast™ design.",
+      "Oraimo wall charger with UK Type G plug and cable. 2A fast charging and stable performance, fire-proof anti-slip durable build, multi-protection system for safe charging, AniFast™ technology and a compact portable design.",
     featured: true
   }),
   p({
@@ -441,9 +450,15 @@ export const products: SeedProduct[] = [
     brand: "Oraimo",
     categorySlug: "chargers",
     price: 50,
-    specs: ["Duraline 2", "Micro USB / Lightning", "5V 2A", "1 metre"],
+    specs: [
+      "Duraline 2",
+      "Micro USB / Lightning",
+      "5V 2A Fast Charge & Sync",
+      "1 metre",
+      "OD4.0 thicker wire"
+    ],
     description:
-      "Oraimo Duraline 2 fast charging cable, 1 metre. 5V 2A charge and sync. Thicker OD4.0 wire and stronger joints so it stands twist, tug and tangle."
+      "Oraimo Duraline 2 fast charging cable (1m). Superior copper varnished core for fast charging and high-speed data. Upgraded OD4.0 thicker wire and stronger joints that withstand twist, tug and tangle. Micro USB / Lightning, 5V 2A Fast Charge & Sync."
   }),
   p({
     id: "p-samsung-ctc",
@@ -475,9 +490,16 @@ export const products: SeedProduct[] = [
     brand: "Oraimo",
     categorySlug: "audio",
     price: 60,
-    specs: ["OEP-E17", "Deeper bass", "Comfortable eartips", "3.5mm jack"],
+    specs: [
+      "OEP-E17 / Conch 2",
+      "Deeper bass",
+      "Comfortable eartips",
+      "Stylish design",
+      "Improved durability",
+      "3.5mm jack"
+    ],
     description:
-      "Oraimo Lite Conch 2 (OEP-E17) wired in-ear earphones. Deeper bass, comfortable eartips, stylish design and improved durability. 3.5mm jack."
+      "Oraimo Lite Conch 2 (OEP-E17) wired in-ear earphones with deeper bass, comfortable eartips, stylish design and improved durability. Standard 3.5mm jack — plug in and play."
   }),
   p({
     id: "p-akg",
@@ -516,25 +538,24 @@ export const products: SeedProduct[] = [
     price: 200,
     specs: ["Power pack only — HP, Dell, Lenovo, Acer, Asus, Toshiba, Samsung"]
   }),
-  ...([
-    ["3-way", "3m", 50],
-    ["3-way", "5m", 55],
-    ["4-way", "3m", 60],
-    ["4-way", "5m", 65],
-    ["5-way", "3m", 70],
-    ["5-way", "5m", 75],
-    ["6-way", "3m", 80],
-    ["6-way", "5m", 85]
-  ] as const).map(([ways, len, price]) =>
-    p({
-      id: `p-ext-${ways}-${len}`,
-      slug: `extension-${ways}-${len}`,
-      name: `Extension Cable ${ways} (${len})`,
-      categorySlug: "power",
-      price,
-      specs: [ways, len]
-    })
-  ),
+  p({
+    id: "p-extension",
+    slug: "extension-cable",
+    name: "Extension Cable",
+    brand: "Power King",
+    categorySlug: "power",
+    price: 50,
+    specs: [
+      "Heavy-duty build",
+      "Extended reach",
+      "Multiple outlets",
+      "Built-in surge protection",
+      "Choose ways + length"
+    ],
+    description:
+      "Power King UK Type G extension cables. Heavy-duty build, extended reach, multiple outlets and built-in surge protection. Pick the size you need: 3-way, 4-way, 5-way or 6-way — each in 3m or 5m. Price depends on the option you choose.",
+    featured: true
+  }),
 
   // —— Audio / pods ——
   p({
@@ -657,13 +678,14 @@ export const products: SeedProduct[] = [
     price: 250,
     specs: [
       "2.09 inch HD display",
-      "45mm",
+      "45mm case",
       "Bluetooth calling",
       "Wireless charging",
-      "Sports & health modes"
+      "Sports Mode",
+      "Health Mode (SpO2 & sleep)"
     ],
     description:
-      "T900 Ultra smart watch: 2.09 inch HD display, 45mm case, Bluetooth calling, wireless charging, sports mode and health mode (SpO2 and sleep). Orange or black strap.",
+      "T900 Ultra smart watch with a 2.09 inch HD display and 45mm case. Bluetooth calling, wireless charging, Sports Mode and Health Mode including SpO2 and sleep monitoring. Pick Orange, White, Green or Black.",
     featured: true
   }),
   p({
@@ -772,9 +794,13 @@ export const products: SeedProduct[] = [
     brand: "JBL",
     categorySlug: "audio",
     price: 300,
-    specs: ["ANC", "Google Fast Pair", "30+ hours battery"],
+    specs: [
+      "Active Noise Cancelling (ANC)",
+      "Fast Pair with Google",
+      "30+ hours battery life"
+    ],
     description:
-      "JBL over-ear headphones with active noise cancelling, Google Fast Pair and 30+ hours of battery life.",
+      "JBL over-ear headphones with Active Noise Cancelling for immersive listening, Google Fast Pair for seamless connectivity, and over 30 hours of battery life.",
     featured: true
   })
 ];

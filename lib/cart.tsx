@@ -9,7 +9,7 @@ import {
   useState,
   ReactNode
 } from "react";
-import { Product, ProductVariant } from "@/lib/types";
+import { Product, ProductVariant, unitPrice } from "@/lib/types";
 import { coverImageForProduct } from "@/lib/product-images";
 
 export type CartItem = {
@@ -29,6 +29,7 @@ type CartState = { items: CartItem[] };
 type AddPayload = {
   product: Product;
   variant?: ProductVariant;
+  qty?: number;
 };
 
 type CartAction =
@@ -48,15 +49,17 @@ function reducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "add": {
       const { product, variant } = action.payload;
+      const addQty = Math.max(1, Math.round(action.payload.qty ?? 1));
       const id = cartLineId(product.id, variant?.id);
       const displayName = variant
         ? `${product.name} (${variant.name})`
         : product.name;
+      const linePrice = unitPrice(product, variant);
       const existing = state.items.find((i) => i.id === id);
       if (existing) {
         return {
           items: state.items.map((i) =>
-            i.id === id ? { ...i, qty: i.qty + 1 } : i
+            i.id === id ? { ...i, qty: i.qty + addQty, price: linePrice } : i
           )
         };
       }
@@ -70,9 +73,9 @@ function reducer(state: CartState, action: CartAction): CartState {
             slug: product.slug,
             name: displayName,
             variantName: variant?.name,
-            price: product.price,
+            price: linePrice,
             image: coverImageForProduct(product, variant),
-            qty: 1
+            qty: addQty
           }
         ]
       };
@@ -98,7 +101,7 @@ type CartContextValue = {
   items: CartItem[];
   count: number;
   total: number;
-  add: (product: Product, variant?: ProductVariant) => void;
+  add: (product: Product, variant?: ProductVariant, qty?: number) => void;
   remove: (id: string) => void;
   setQty: (id: string, qty: number) => void;
   clear: () => void;
@@ -142,8 +145,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items: state.items,
       count,
       total,
-      add: (product, variant) =>
-        dispatch({ type: "add", payload: { product, variant } }),
+      add: (product, variant, qty) =>
+        dispatch({ type: "add", payload: { product, variant, qty } }),
       remove: (id) => dispatch({ type: "remove", id }),
       setQty: (id, qty) => dispatch({ type: "setQty", id, qty }),
       clear: () => dispatch({ type: "clear" })

@@ -6,7 +6,7 @@ import { useToast } from "@/components/Toast";
 import { productWhatsAppLink } from "@/lib/whatsapp";
 import { formatPrice } from "@/lib/format";
 import { Icon } from "@/components/Icons";
-import { Product } from "@/lib/types";
+import { Product, unitPrice, hasPricedOptions } from "@/lib/types";
 import { useProductVariant } from "@/components/ProductVariantContext";
 import { coverImageForProduct } from "@/lib/product-images";
 
@@ -18,6 +18,8 @@ export function MobileBuyBar({ product }: { product: Product }) {
   const soldOut = product.stock === "sold_out";
   const multi = product.variants.length > 1;
   const chosen = selected ?? product.variants.find((v) => v.available) ?? null;
+  const displayPrice = unitPrice(product, chosen);
+  const chooseLabel = hasPricedOptions(product) ? "Choose option" : "Choose colour";
   const waLink = productWhatsAppLink(
     product,
     typeof window !== "undefined" ? window.location.href : undefined,
@@ -48,7 +50,7 @@ export function MobileBuyBar({ product }: { product: Product }) {
             Price
           </p>
           <p className="truncate text-lg font-extrabold text-white">
-            {formatPrice(product.price)}
+            {formatPrice(displayPrice)}
           </p>
         </div>
         <a
@@ -72,7 +74,7 @@ export function MobileBuyBar({ product }: { product: Product }) {
             href="#buy"
             className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950"
           >
-            Choose colour
+            {chooseLabel}
           </Link>
         ) : (
           <button
