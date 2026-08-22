@@ -15,8 +15,8 @@ export async function ServicesBand() {
             Need more than gadgets?
           </h2>
           <p className="mt-2 max-w-xl text-sm text-white/50">
-            Key cutting, G-Loans, and printing — order online, pick up at UNZA,
-            Kalingalinga or Balastone — or get it delivered by Yango.
+            Key cutting, collateral loans, and document printing — upload from
+            home, pay with Mobile Money, pick up or get Yango delivery.
           </p>
         </div>
         <Link
