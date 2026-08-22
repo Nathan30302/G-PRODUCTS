@@ -44,9 +44,21 @@ export const categories: Category[] = [
     icon: "sparkles"
   },
   {
+    slug: "phones",
+    name: "Phones",
+    tagline: "Feature phones for everyday use",
+    icon: "phone"
+  },
+  {
+    slug: "home",
+    name: "Home & Personal",
+    tagline: "Kettles, clippers and household extras",
+    icon: "sparkles"
+  },
+  {
     slug: "watches",
     name: "Smart Watches",
-    tagline: "T900, KT8 and more",
+    tagline: "T900, KT8, A58 Plus and more",
     icon: "sparkles"
   },
   {

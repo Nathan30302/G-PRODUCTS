@@ -95,6 +95,23 @@ async function syncProduct(slug: string): Promise<boolean> {
       photoCount += files.length;
     }
 
+    const extras = existingCatalogFiles(
+      (def.files ?? []).filter(
+        (file) => !def.variants?.some((v) => v.files.includes(file))
+      )
+    );
+    if (extras.length > 0) {
+      await prisma.productImage.createMany({
+        data: extras.map((file, idx) => ({
+          productId: row.id,
+          url: catalogUrl(file),
+          alt: `${row.name} — details`,
+          sortOrder: 40 + idx
+        }))
+      });
+      photoCount += extras.length;
+    }
+
     const leftoverUploads = await prisma.productImage.findMany({
       where: { productId: row.id, url: { startsWith: "/api/media/" } }
     });

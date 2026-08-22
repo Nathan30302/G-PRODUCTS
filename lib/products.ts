@@ -40,19 +40,25 @@ export const products: SeedProduct[] = [
   p({
     id: "p-ex-192",
     slug: "exercise-book-192",
-    name: "Exercise Book 192 pages",
+    name: "Hardcover Counter Book 192 pages",
+    brand: "Aafrin Hyperlux",
     categorySlug: "stationery",
-    price: 16,
-    specs: ["192 pages"],
+    price: 18,
+    specs: ["192 pages", "Premium hardcover", "Proudly Zambian"],
+    description:
+      "Aafrin Hyperlux hardcover counter book, 192 pages. Name, subject, school and grade lines on the cover. Back-to-school stock at G-Products.",
     featured: true
   }),
   p({
     id: "p-ex-288",
     slug: "exercise-book-288",
-    name: "Exercise Book 288 pages",
+    name: "Hardcover Counter Book 288 pages",
+    brand: "Professor",
     categorySlug: "stationery",
     price: 40,
-    specs: ["288 pages"]
+    specs: ["288 pages", "Premium hardcover"],
+    description:
+      "Professor hardcover counter book, 288 pages. Thick hardcover with a red spine — the 288-page option from the back-to-school offer."
   }),
   p({
     id: "p-tipex",
@@ -166,18 +172,22 @@ export const products: SeedProduct[] = [
     brand: "Casio",
     categorySlug: "stationery",
     price: 200,
-    specs: ["Original Casio"],
+    specs: ["Original Casio", "fx-82MS", "240 functions", "2-line display"],
+    description:
+      "Original Casio scientific calculator as stocked in the shop (fx-82MS style: 2-line display, 240 functions). Built for school and exam work.",
     featured: true,
     hotDeal: true
   }),
   p({
     id: "p-sharp-calc",
     slug: "sharp-scientific-calculator",
-    name: "Scientific Calculator (Sharp Original)",
+    name: "Sharp EL-531WH Scientific Calculator",
     brand: "Sharp",
     categorySlug: "stationery",
     price: 200,
-    specs: ["Original Sharp"]
+    specs: ["EL-531WH", "Advanced D.A.L.", "Entry-level scientific"],
+    description:
+      "Sharp EL-531WH scientific calculator with Advanced D.A.L. An entry-level scientific calculator for high school and university — durable enough for everyday use."
   }),
 
   // —— Locks ——
@@ -203,9 +213,12 @@ export const products: SeedProduct[] = [
   p({
     id: "p-stand-50",
     slug: "phone-stand-50",
-    name: "Phone Stand / Holder",
+    name: "Multi-Function Phone Stand",
     categorySlug: "phone-accessories",
     price: 50,
+    specs: ["Multi-angle adjustable", "Sturdy metal build", "Universal compatibility"],
+    description:
+      "Silver metal phone stand with a round base and hinged neck. Multi-angle, sturdy metal build, and universal compatibility. Pick a colour on the product page.",
     featured: true
   }),
   p({
@@ -240,12 +253,12 @@ export const products: SeedProduct[] = [
   p({
     id: "p-pouch",
     slug: "phone-pouch",
-    name: "Phone Pouch — pick a colour",
+    name: "iPhone Silicone Pouch — pick a colour",
     categorySlug: "phone-accessories",
     price: 80,
-    specs: ["Pick Black or Blue", "Belt-clip pouch"],
+    specs: ["K80 for all colours", "Soft silicone", "Black or Blue on the page"],
     description:
-      "Choose the colour you want. Photos show the pouch itself — pick Black or Blue on the product page."
+      "Sleek silicone iPhone pouches — soft, stylish and protective. Pick Black or Blue here. Other colours from the shop flyer (teal, red, pink, navy) can be requested on WhatsApp."
   }),
 
   // —— Memory cards ——
@@ -327,9 +340,13 @@ export const products: SeedProduct[] = [
   p({
     id: "p-wireless-mouse",
     slug: "wireless-mouse",
-    name: "Wireless Mouse",
+    name: "Logitech M186 Wireless Mouse",
+    brand: "Logitech",
     categorySlug: "computers",
     price: 75,
+    specs: ["M186", "Plug-and-play wireless", "USB receiver included"],
+    description:
+      "Logitech M186 wireless mouse — plug-and-play wireless plus comfort. USB nano receiver in the pack. Pick black or white.",
     featured: true,
     hotDeal: true
   }),
@@ -384,10 +401,18 @@ export const products: SeedProduct[] = [
   p({
     id: "p-oraimo-full",
     slug: "oraimo-normal-full-charger",
-    name: "Oraimo Normal Full Charger",
+    name: "Oraimo Full Charger (Type G)",
     brand: "Oraimo",
     categorySlug: "chargers",
     price: 100,
+    specs: [
+      "2A fast charging",
+      "UK Type G plug",
+      "AniFast™",
+      "Fire-proof durable build"
+    ],
+    description:
+      "Oraimo wall charger with UK Type G plug and cable. 2A fast charging and stable performance, fire-proof anti-slip build, multi-protection system, compact AniFast™ design.",
     featured: true
   }),
   p({
@@ -401,10 +426,24 @@ export const products: SeedProduct[] = [
   p({
     id: "p-mango-ctc",
     slug: "mango-c-to-c-full-charger",
-    name: "Mango C to C Full Charger",
+    name: "Mango 67W PD Super Fast Charger",
     brand: "Mango",
     categorySlug: "chargers",
     price: 150,
+    specs: ["67W PD", "MG-NC06", "USB-C to USB-C cable", "UK Type G plug"],
+    description:
+      "Mango MG-NC06 67W USB-C PD super fast wall charger with USB-C to USB-C cable. UK Type G fused plug. Safe and reliable charge for phones and small laptops."
+  }),
+  p({
+    id: "p-oraimo-cable",
+    slug: "oraimo-duraline-2-cable",
+    name: "Oraimo Duraline 2 Fast Charging Cable",
+    brand: "Oraimo",
+    categorySlug: "chargers",
+    price: 50,
+    specs: ["Duraline 2", "Micro USB / Lightning", "5V 2A", "1 metre"],
+    description:
+      "Oraimo Duraline 2 fast charging cable, 1 metre. 5V 2A charge and sync. Thicker OD4.0 wire and stronger joints so it stands twist, tug and tangle."
   }),
   p({
     id: "p-samsung-ctc",
@@ -432,10 +471,13 @@ export const products: SeedProduct[] = [
   p({
     id: "p-oraimo-headset",
     slug: "oraimo-original-headset",
-    name: "Oraimo Original Headset",
+    name: "Oraimo Lite Conch 2 Headset",
     brand: "Oraimo",
     categorySlug: "audio",
     price: 60,
+    specs: ["OEP-E17", "Deeper bass", "Comfortable eartips", "3.5mm jack"],
+    description:
+      "Oraimo Lite Conch 2 (OEP-E17) wired in-ear earphones. Deeper bass, comfortable eartips, stylish design and improved durability. 3.5mm jack."
   }),
   p({
     id: "p-akg",
@@ -598,9 +640,12 @@ export const products: SeedProduct[] = [
   p({
     id: "p-r800",
     slug: "r800-speaker",
-    name: "R800 Bluetooth Speaker",
+    name: "Luvstar / R800 Bluetooth Speaker",
     categorySlug: "audio",
     price: 250,
+    specs: ["LED ring controls", "Volume + light modes"],
+    description:
+      "Portable cylindrical Bluetooth speaker with a top LED control ring (Luvstar-style unit as photographed). Compact party speaker at K250."
   }),
 
   // —— Watches ——
@@ -610,6 +655,15 @@ export const products: SeedProduct[] = [
     name: "T900 Ultra Smart Watch",
     categorySlug: "watches",
     price: 250,
+    specs: [
+      "2.09 inch HD display",
+      "45mm",
+      "Bluetooth calling",
+      "Wireless charging",
+      "Sports & health modes"
+    ],
+    description:
+      "T900 Ultra smart watch: 2.09 inch HD display, 45mm case, Bluetooth calling, wireless charging, sports mode and health mode (SpO2 and sleep). Orange or black strap.",
     featured: true
   }),
   p({
@@ -619,6 +673,109 @@ export const products: SeedProduct[] = [
     categorySlug: "watches",
     price: 300,
     hotDeal: true
+  }),
+  p({
+    id: "p-a58-plus",
+    slug: "a58-plus-set",
+    name: "A58 Plus Watch & Jewellery Set",
+    categorySlug: "watches",
+    price: 250,
+    specs: ["2.02 inch smartwatch", "Analog watch", "Necklace, ring, earrings, bracelet"],
+    description:
+      "A58 Plus gift set: 2.02 inch big-screen smartwatch with extra strap, plus a matching analog watch, bracelet, necklace, ring and earrings. Photos show the set in the box."
+  }),
+
+  // —— Phones ——
+  p({
+    id: "p-momofly-v101",
+    slug: "momofly-v101",
+    name: "Momofly V101 Feature Phone",
+    brand: "Momofly",
+    categorySlug: "phones",
+    price: 150,
+    specs: ["Wireless FM", "Physical keypad"],
+    description:
+      "Momofly V101 candybar feature phone with a physical keypad and wireless FM. Exact unit as on the shop shelf."
+  }),
+  p({
+    id: "p-calus-c3730c",
+    slug: "calus-spark-c3730c",
+    name: "CALUS SPARK C3730c",
+    brand: "CALUS",
+    categorySlug: "phones",
+    price: 180,
+    specs: ["Type-C", "King Voice", "1000 contacts", "400 messages"],
+    description:
+      "CALUS SPARK C3730c feature phone. Type-C charging, King Voice, 1000 contacts and 400 messages. Triple-camera look on the back as on the box."
+  }),
+  p({
+    id: "p-kgtel-k2160",
+    slug: "kgtel-k2160",
+    name: "KGTEL K2160 Feature Phone",
+    brand: "KGTEL",
+    categorySlug: "phones",
+    price: 160,
+    specs: ["13 days standby", "1150mAh", "Type-C charger"],
+    description:
+      "KGTEL K2160 new-design feature phone. 13 days standby, 1150mAh battery and Type-C charging."
+  }),
+  p({
+    id: "p-calus-c316",
+    slug: "calus-c316",
+    name: "CALUS C316 Feature Phone",
+    brand: "CALUS",
+    categorySlug: "phones",
+    price: 140,
+    specs: ["Dual SIM", "Type-C", "FM loud speaker", "Camera", "Torch"],
+    description:
+      "CALUS C316 Smart Live feature phone. Dual SIM, Type-C, FM loud speaker, camera and built-in torch. Photo of the real unit is in the gallery."
+  }),
+
+  // —— Home ——
+  p({
+    id: "p-kettle",
+    slug: "winning-star-kettle",
+    name: "Winning Star ST-6037 Electric Kettle",
+    brand: "Winning Star",
+    categorySlug: "home",
+    price: 350,
+    specs: ["3 litres", "Boil-dry protection", "ST-6037"],
+    description:
+      "Winning Star ST-6037 3 litre electric kettle with boil-dry protection. Dark blue metal body and black handle. UK-market kettle for home and campus.",
+    featured: true
+  }),
+  p({
+    id: "p-clipper",
+    slug: "sundar-clipper",
+    name: "Sundar SD-8828 Professional Clipper",
+    brand: "Sundar",
+    categorySlug: "home",
+    price: 280,
+    specs: ["SD-8828", "Adjustable blade", "Corded clipper"],
+    description:
+      "Sundar SD-8828 professional clipper. Powerful motor, adjustable blade, full-material safety body. Box lists both corded clipper and cordless-style battery icon — ask in the shop if you need cordless use."
+  }),
+  p({
+    id: "p-heater",
+    slug: "water-heating-element",
+    name: "Water Heating Element 1500W",
+    categorySlug: "home",
+    price: 60,
+    specs: ["1500W", "Portable immersion heater", "Hook + two-pole plug"],
+    description:
+      "Portable 1500W immersion water heating element for buckets and basins. Reliable hook and two-pole plug. Home, office and travel."
+  }),
+  p({
+    id: "p-jbl-hp",
+    slug: "jbl-headphones",
+    name: "JBL Over-Ear Headphones",
+    brand: "JBL",
+    categorySlug: "audio",
+    price: 300,
+    specs: ["ANC", "Google Fast Pair", "30+ hours battery"],
+    description:
+      "JBL over-ear headphones with active noise cancelling, Google Fast Pair and 30+ hours of battery life.",
+    featured: true
   })
 ];
 

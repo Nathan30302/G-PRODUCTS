@@ -5,11 +5,11 @@ export function imagesForVariant(
   images: ProductImage[],
   variantId?: string | null
 ): ProductImage[] {
+  const shared = images.filter((i) => !i.variantId);
   if (variantId) {
     const forVariant = images.filter((i) => i.variantId === variantId);
-    if (forVariant.length > 0) return forVariant;
+    if (forVariant.length > 0) return [...forVariant, ...shared];
   }
-  const shared = images.filter((i) => !i.variantId);
   if (shared.length > 0) return shared;
   return images;
 }

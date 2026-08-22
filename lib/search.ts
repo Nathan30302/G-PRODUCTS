@@ -9,6 +9,10 @@ const ALIASES: [RegExp, string][] = [
   [/\bfedlock\b/g, "fieldex"],
   [/\bmortis\b/g, "mortice"],
   [/\bair ?pods?\b/g, "airpods"],
+  [/\bconch\b/g, "oraimo"],
+  [/\bmomofly\b/g, "momofly"],
+  [/\bkgtel\b/g, "kgtel"],
+  [/\ba58\b/g, "a58 plus"],
   [/\bextention\b/g, "extension"]
 ];
 

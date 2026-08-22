@@ -81,7 +81,8 @@ const COLOUR_PRODUCTS: Record<
   ],
   "bic-crystal-pen": [
     { name: "Blue", colorHex: "#1d4ed8", quantity: 20 },
-    { name: "Black", colorHex: "#111111", quantity: 16 }
+    { name: "Black", colorHex: "#111111", quantity: 16 },
+    { name: "Red", colorHex: "#dc2626", quantity: 12 }
   ],
   "phone-stand-50": [
     { name: "Black", colorHex: "#111111", quantity: 8 },
@@ -177,22 +178,64 @@ const ALL_SLUGS = [
   "calus-s39-speaker",
   "r800-speaker",
   "t900-ultra",
-  "kt8-ultra-max"
+  "kt8-ultra-max",
+  "a58-plus-set",
+  "momofly-v101",
+  "calus-spark-c3730c",
+  "kgtel-k2160",
+  "calus-c316",
+  "winning-star-kettle",
+  "sundar-clipper",
+  "water-heating-element",
+  "jbl-headphones",
+  "oraimo-duraline-2-cable"
 ];
+
+const FLYER_SLUGS = new Set([
+  "exercise-book-192",
+  "exercise-book-288",
+  "sharp-scientific-calculator",
+  "phone-stand-50",
+  "phone-pouch",
+  "wireless-mouse",
+  "oraimo-normal-full-charger",
+  "mango-c-to-c-full-charger",
+  "oraimo-duraline-2-cable",
+  "oraimo-original-headset",
+  "memory-card-32gb",
+  "flash-disk-32gb",
+  "extension-3-way-3m",
+  "extension-6-way-5m",
+  "t900-ultra",
+  "a58-plus-set",
+  "momofly-v101",
+  "calus-spark-c3730c",
+  "kgtel-k2160",
+  "calus-c316",
+  "winning-star-kettle",
+  "sundar-clipper",
+  "water-heating-element",
+  "jbl-headphones"
+]);
 
 export const catalogProducts: CatalogProductDef[] = ALL_SLUGS.map((slug) => {
   const colours = COLOUR_PRODUCTS[slug];
+  const flyer = FLYER_SLUGS.has(slug) ? [`${slug}-flyer.jpg`] : [];
   if (colours) {
     return {
       slug,
-      files: angles(slug),
+      files: flyer,
       variants: colours.map((c) => ({
         ...c,
-        files: colorAngles(slug, c.name)
+        files: colorAngles(
+          slug,
+          c.name,
+          slug === "phone-pouch" ? 4 : 3
+        )
       }))
     };
   }
-  return { slug, files: angles(slug) };
+  return { slug, files: [...angles(slug), ...flyer] };
 });
 
 export function catalogDefForSlug(slug: string): CatalogProductDef | undefined {

@@ -26,9 +26,9 @@ export type ServiceSettings = {
 };
 
 export const DEFAULT_PRINT_MENU = [
-  { id: "bw-copy", name: "Black & White Photocopying", price: 1.5 },
+  { id: "bw-copy", name: "Black & White Photocopying", price: 1 },
   { id: "color-copy", name: "Colour Photocopying", price: 5 },
-  { id: "bw-print", name: "Printing (B&W)", price: 2 },
+  { id: "bw-print", name: "Printing (B&W)", price: 1 },
   { id: "color-print", name: "Colour Printing", price: 5 },
   { id: "nrc-copy", name: "NRC Photocopying", price: 3 },
   { id: "scan", name: "Scanning", price: 3 },
@@ -91,9 +91,8 @@ export const services: ServiceDef[] = [
     description:
       "Upload your documents or choose a service (photocopy, print, scan, laminate, bind). Pay with Mobile Money, then pick up at UNZA / Kalingalinga / Balastone or get Yango delivery.",
     icon: "printer",
-    image:
-      "https://images.unsplash.com/photo-1562564055-71e051d33c19?auto=format&fit=crop&w=1200&q=80",
-    priceLabel: "From K 1.5",
+    image: "/services/printing-menu.jpg",
+    priceLabel: "From K 1",
     payable: true,
     settings: { ...DEFAULT_SETTINGS }
   }
