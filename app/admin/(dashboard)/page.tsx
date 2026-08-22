@@ -150,10 +150,10 @@ export default async function AdminDashboard() {
                   const width = Math.round(
                     (p.revenue / maxProductRevenue) * 100
                   );
-                  return (
-                    <li key={p.name} className="px-5 py-3.5">
+                  const row = (
+                    <>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="truncate text-sm text-white/85">
+                        <span className="truncate text-sm text-white/85 group-hover:text-brand">
                           {p.name}
                         </span>
                         <span className="shrink-0 text-xs font-semibold text-white/45">
@@ -166,6 +166,20 @@ export default async function AdminDashboard() {
                           style={{ width: `${Math.max(width, 6)}%` }}
                         />
                       </div>
+                    </>
+                  );
+                  return (
+                    <li key={p.name} className="px-5 py-3.5">
+                      {p.id ? (
+                        <Link
+                          href={`/admin/products/${p.id}`}
+                          className="group block rounded-xl transition-colors hover:bg-white/[0.02]"
+                        >
+                          {row}
+                        </Link>
+                      ) : (
+                        row
+                      )}
                     </li>
                   );
                 })}

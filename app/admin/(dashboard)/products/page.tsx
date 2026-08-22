@@ -43,7 +43,7 @@ export default async function AdminProducts() {
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/55">
               {total} item{total === 1 ? "" : "s"} across{" "}
               {categories.filter((c) => c.products.length > 0).length} categories
-              · tap Edit to update prices, colours, and photos.
+              · tap any product to edit prices, colours, and photos.
             </p>
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
               <span className="rounded-pill border border-white/10 bg-white/[0.03] px-3 py-1.5 font-semibold text-white/70">

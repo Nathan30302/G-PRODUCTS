@@ -197,6 +197,19 @@ export async function POST(req: Request) {
     return res;
   } catch (err) {
     console.error("[api/auth/signup]", err);
+    const code =
+      err && typeof err === "object" && "code" in err
+        ? String((err as { code?: string }).code)
+        : "";
+    if (code === "P2002") {
+      return NextResponse.json(
+        {
+          error:
+            "An account with that phone or email already exists. Sign in instead."
+        },
+        { status: 409 }
+      );
+    }
     const message =
       err instanceof Error ? err.message : "Could not create the account.";
     return NextResponse.json(

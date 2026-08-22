@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { existsSync } from "node:fs";
-import { prisma } from "@/lib/db";
+import { existsSync, statfsSync } from "node:fs";
+import { prisma, tuneSqliteForConcurrency } from "@/lib/db";
 import { MIN_PRODUCTS } from "@/lib/ensure-catalog";
 import { uploadsRoot } from "@/lib/uploads";
 import { legacyUploadRoots } from "@/lib/upload-resolve";
@@ -14,9 +14,47 @@ function maskEmail(email: string): string {
   return `${user.slice(0, keep)}***@${domain}`;
 }
 
+function diskReport(target: string) {
+  try {
+    if (!existsSync(target)) {
+      return { path: target, ok: false, error: "missing" };
+    }
+    const s = statfsSync(target);
+    const block = Number(s.bsize);
+    const totalBytes = Number(s.blocks) * block;
+    const freeBytes = Number(s.bavail) * block;
+    const usedBytes = totalBytes - freeBytes;
+    const freeGb = freeBytes / 1024 ** 3;
+    const totalGb = totalBytes / 1024 ** 3;
+    const usedPct =
+      totalBytes > 0 ? Math.round((usedBytes / totalBytes) * 100) : 0;
+    return {
+      path: target,
+      ok: freeGb >= 0.5,
+      freeGb: Math.round(freeGb * 100) / 100,
+      totalGb: Math.round(totalGb * 100) / 100,
+      usedPct,
+      warn:
+        freeGb < 1
+          ? "Under 1 GB free — expand the Railway volume soon."
+          : freeGb < 2
+            ? "Under 2 GB free — monitor photo uploads."
+            : null
+    };
+  } catch (err) {
+    return {
+      path: target,
+      ok: false,
+      error: err instanceof Error ? err.message : "statfs failed"
+    };
+  }
+}
+
 /** Lightweight public probe — no secrets. */
 export async function GET() {
   try {
+    await tuneSqliteForConcurrency();
+
     const [products, categories, services, users, customers, owner] =
       await Promise.all([
         prisma.product.count(),
@@ -36,10 +74,13 @@ export async function GET() {
       : null;
     const uploadRoots = legacyUploadRoots();
     const hasDataVolume = existsSync("/data");
+    const disk = hasDataVolume
+      ? diskReport("/data")
+      : diskReport(process.cwd());
 
     return NextResponse.json(
       {
-        ok,
+        ok: ok && (disk.ok !== false || !hasDataVolume),
         products,
         categories,
         services,
@@ -55,6 +96,15 @@ export async function GET() {
           activeRoot: uploadsRoot(),
           hasDataVolume,
           roots: uploadRoots
+        },
+        disk,
+        readiness: {
+          accounts: "Customer signup uses unique email+phone; concurrent signups are safe.",
+          database: hasDataVolume
+            ? "SQLite on /data volume with WAL mode — fine for thousands of accounts and typical shop traffic."
+            : "WARNING: no /data volume — DB/uploads may reset on redeploy. Attach a Railway volume at /data.",
+          storageAdvice:
+            "Keep the Railway volume at ≥5 GB for photos+DB. Grow to 10–20 GB before heavy catalog photo uploads. Switch to Postgres + object storage if you outgrow one server."
         }
       },
       { status: ok ? 200 : 503 }

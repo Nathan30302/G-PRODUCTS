@@ -60,17 +60,19 @@ export async function getAdminAnalytics() {
 
   const productStats = new Map<
     string,
-    { name: string; qty: number; revenue: number }
+    { id: string | null; name: string; qty: number; revenue: number }
   >();
   for (const item of orderItems) {
     const key = item.productId ?? item.name;
     const row = productStats.get(key) ?? {
+      id: item.productId,
       name: item.name,
       qty: 0,
       revenue: 0
     };
     row.qty += item.qty;
     row.revenue += item.qty * item.price;
+    if (!row.id && item.productId) row.id = item.productId;
     productStats.set(key, row);
   }
 

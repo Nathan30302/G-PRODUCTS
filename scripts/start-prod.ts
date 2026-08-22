@@ -73,6 +73,22 @@ function resolveDatabaseUrl() {
   console.log(`[start] DATABASE_URL → ${url}`);
 }
 
+/** WAL + busy_timeout so concurrent signups/orders don't hit "database is locked". */
+async function tuneSqlite() {
+  if (!process.env.DATABASE_URL?.startsWith("file:")) return;
+  try {
+    const { PrismaClient } = await import("@prisma/client");
+    const p = new PrismaClient();
+    await p.$executeRawUnsafe("PRAGMA journal_mode=WAL;");
+    await p.$executeRawUnsafe("PRAGMA busy_timeout=8000;");
+    await p.$executeRawUnsafe("PRAGMA synchronous=NORMAL;");
+    await p.$disconnect();
+    console.log("[start] sqlite WAL mode ready");
+  } catch (err) {
+    console.warn("[start] sqlite tune:", err);
+  }
+}
+
 /** Move legacy runtime uploads onto /data so product photos survive redeploys. */
 function migrateUploadsToVolume() {
   if (!existsSync("/data")) return;
@@ -296,6 +312,7 @@ async function ensureCatalog() {
 
 async function main() {
   resolveDatabaseUrl();
+  await tuneSqlite();
 
   if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 16) {
     console.warn(
