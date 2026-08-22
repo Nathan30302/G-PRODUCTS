@@ -12,12 +12,15 @@ import {
   type PayMethod
 } from "@/components/services/PaymentPicker";
 import { ServiceResult } from "@/components/services/ServiceResult";
+import { ServiceSteps } from "@/components/services/ServiceSteps";
 import { siteConfig } from "@/config/site";
 
 const field =
   "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
 
 type Phase = "form" | "submitting" | "done" | "pending";
+
+const STEPS = ["Key", "How", "Pay"];
 
 export function KeyCuttingForm({
   settings
@@ -52,6 +55,13 @@ export function KeyCuttingForm({
     () => cutFee + yangoToStore + yangoReturn,
     [cutFee, yangoToStore, yangoReturn]
   );
+
+  const stepIndex = useMemo(() => {
+    if (!keyType) return 0;
+    if (flow === "YANGO_ROUNDTRIP" && !address.trim()) return 1;
+    if (!name || !phone) return 1;
+    return 2;
+  }, [keyType, flow, address, name, phone]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -141,6 +151,7 @@ export function KeyCuttingForm({
         message={message}
         total={total}
         pending={phase === "pending"}
+        trackHref={`/services/track/${refCode}`}
         waLines={[
           `*Key Cutting* — ${refCode}`,
           `Type: ${keyType} × ${qty}`,
@@ -162,7 +173,9 @@ export function KeyCuttingForm({
 
   return (
     <form onSubmit={submit} className="space-y-6">
-      <div className="rounded-card border border-ink-800 bg-ink-900 p-4 text-sm text-white/60">
+      <ServiceSteps steps={STEPS} current={stepIndex} />
+
+      <div className="rounded-[1.15rem] border border-ink-800 bg-ink-900 p-4 text-sm text-white/60">
         <p className="font-semibold text-white">How key cutting works</p>
         <ol className="mt-2 list-decimal space-y-1.5 pl-5">
           <li>
@@ -171,9 +184,9 @@ export function KeyCuttingForm({
             (or after you order online).
           </li>
           <li>
-            <span className="text-white/80">From home (e.g. Kamwala):</span>{" "}
-            order online → Yango collects your key → we cut a copy → Yango
-            returns your original + the new key. You pay for{" "}
+            <span className="text-white/80">From home:</span> order online →
+            Yango collects your key → we cut a copy → Yango returns original +
+            new key. You pay{" "}
             <span className="text-brand">the cut + both Yango trips</span>.
           </li>
         </ol>
@@ -210,10 +223,10 @@ export function KeyCuttingForm({
               key={k.id}
               type="button"
               onClick={() => setKeyType(k.id)}
-              className={`rounded-xl border p-3 text-left text-sm font-semibold ${
+              className={`rounded-xl border p-3 text-left text-sm font-semibold transition-colors ${
                 keyType === k.id
                   ? "border-brand bg-brand/10 text-white"
-                  : "border-ink-700 bg-ink-900 text-white/70"
+                  : "border-ink-700 bg-ink-900 text-white/70 hover:border-ink-600"
               }`}
             >
               {k.label}

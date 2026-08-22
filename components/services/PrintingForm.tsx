@@ -13,6 +13,8 @@ import {
   type PayMethod
 } from "@/components/services/PaymentPicker";
 import { ServiceResult } from "@/components/services/ServiceResult";
+import { ServiceSteps } from "@/components/services/ServiceSteps";
+import { FileUploadField } from "@/components/services/FileUploadField";
 
 const field =
   "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
@@ -28,6 +30,8 @@ const NEEDS_FILE = new Set([
   "certificate"
 ]);
 
+const STEPS = ["Job", "Upload", "Delivery", "Pay"];
+
 export function PrintingForm({ settings }: { settings: ServiceSettings }) {
   const menu = settings.printMenu?.length
     ? settings.printMenu
@@ -42,7 +46,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
   const [pages, setPages] = useState(1);
   const [copies, setCopies] = useState(1);
   const [notes, setNotes] = useState("");
-  const [files, setFiles] = useState<FileList | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [delivery, setDelivery] = useState<DeliveryMethod>("PICKUP");
   const [address, setAddress] = useState("");
   const [pay, setPay] = useState<PayMethod>("mtn");
@@ -51,6 +55,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
   const [refCode, setRefCode] = useState("");
   const [total, setTotal] = useState(0);
   const [message, setMessage] = useState("");
+  const [fileCount, setFileCount] = useState(0);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -66,11 +71,19 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
   );
   const needsFile = NEEDS_FILE.has(jobId);
 
+  const stepIndex = useMemo(() => {
+    if (!jobId) return 0;
+    if (needsFile && files.length === 0) return 1;
+    if (!name || !phone) return 1;
+    if (delivery === "YANGO" && !address.trim()) return 2;
+    return 3;
+  }, [jobId, needsFile, files.length, name, phone, delivery, address]);
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (needsFile && (!files || files.length === 0)) {
-      setError("Please upload at least one document.");
+    if (needsFile && files.length === 0) {
+      setError("Please upload at least one document or photo.");
       return;
     }
     setPhase("submitting");
@@ -93,7 +106,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         notes
       })
     );
-    if (files) Array.from(files).forEach((f) => form.append("files", f));
+    files.forEach((f) => form.append("files", f));
 
     try {
       const res = await fetch("/api/services/request", {
@@ -108,10 +121,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       }
       setRefCode(data.ref);
       setTotal(data.total ?? estimate);
+      setFileCount(typeof data.files === "number" ? data.files : files.length);
       setMessage(
         data.mode === "manual"
-          ? "Print order received. Pay with Mobile Money and confirm on WhatsApp — we'll prepare your job for pickup or Yango delivery."
-          : "Approve the payment on your phone. Once paid, we'll process your job."
+          ? "Print order received. Your files are with Gift’s team — pay with Mobile Money and we’ll prepare your job for pickup or Yango."
+          : "Approve the payment on your phone. Once paid, we’ll process your uploaded files."
       );
       if (data.mode === "live" && data.paymentStatus === "PENDING") {
         setPhase("pending");
@@ -127,7 +141,9 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
               if (pollRef.current) clearInterval(pollRef.current);
               if (j.paymentStatus === "SUCCESS") {
                 setPhase("done");
-                setMessage("Payment received. We'll prepare your print job.");
+                setMessage(
+                  "Payment received. Your files are on the desk — we’ll prepare your print job."
+                );
               } else {
                 setError("Payment failed. You can try again.");
                 setPhase("form");
@@ -155,9 +171,14 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         message={message}
         total={total}
         pending={phase === "pending"}
+        trackHref={`/services/track/${refCode}`}
+        fileCount={fileCount}
         waLines={[
           `*Printing* — ${refCode}`,
           `${job?.name ?? "Print"} · ${pages} × ${copies}`,
+          fileCount > 0
+            ? `Files uploaded in app: ${fileCount}`
+            : "No files uploaded",
           `Total: ${formatPrice(total)}`,
           `Delivery: ${
             delivery === "YANGO"
@@ -171,6 +192,17 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
 
   return (
     <form onSubmit={submit} className="space-y-6">
+      <ServiceSteps steps={STEPS} current={stepIndex} />
+
+      <div className="rounded-[1.15rem] border border-brand/20 bg-brand/[0.06] px-4 py-3 text-sm text-white/65">
+        <p className="font-semibold text-white">Print from home</p>
+        <p className="mt-1 text-xs leading-relaxed text-white/50">
+          Upload photos or documents here in full quality. Gift’s team sees them
+          on the desk and downloads HD originals to print — no need to resend on
+          WhatsApp.
+        </p>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="text-sm text-white/60">Full name</span>
@@ -194,17 +226,17 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-white">Service</p>
+        <p className="text-sm font-semibold text-white">What do you need?</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {menu.map((m) => (
             <button
               key={m.id}
               type="button"
               onClick={() => setJobId(m.id)}
-              className={`rounded-xl border p-3 text-left ${
+              className={`rounded-xl border p-3 text-left transition-colors ${
                 jobId === m.id
                   ? "border-brand bg-brand/10"
-                  : "border-ink-700 bg-ink-900"
+                  : "border-ink-700 bg-ink-900 hover:border-ink-600"
               }`}
             >
               <span className="block text-sm font-bold text-white">{m.name}</span>
@@ -216,25 +248,17 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         </div>
       </div>
 
-      <label className="block">
-        <span className="text-sm text-white/60">
-          Upload documents (PDF, Word, images — max 12MB each)
-          {needsFile ? "" : " — optional for this service"}
-        </span>
-        <input
-          type="file"
-          multiple
-          accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp"
-          onChange={(e) => setFiles(e.target.files)}
-          className="mt-1 block w-full text-sm text-white/70 file:mr-4 file:rounded-pill file:border-0 file:bg-brand file:px-4 file:py-2 file:text-sm file:font-bold file:text-ink-950"
-          required={needsFile}
-        />
-        {files && files.length > 0 && (
-          <p className="mt-2 text-xs text-white/40">
-            {files.length} file{files.length === 1 ? "" : "s"} selected
-          </p>
-        )}
-      </label>
+      <FileUploadField
+        files={files}
+        onChange={setFiles}
+        required={needsFile}
+        label="Upload documents or photos"
+        hint={
+          needsFile
+            ? "Required for this job — clear photos of pages work great from your phone."
+            : "Optional for this service — add files if you already have them."
+        }
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">

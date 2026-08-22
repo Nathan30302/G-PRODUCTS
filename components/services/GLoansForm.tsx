@@ -4,9 +4,13 @@ import { useMemo, useState } from "react";
 import type { ServiceSettings } from "@/lib/services";
 import { formatPrice } from "@/lib/format";
 import { ServiceResult } from "@/components/services/ServiceResult";
+import { ServiceSteps } from "@/components/services/ServiceSteps";
+import { FileUploadField } from "@/components/services/FileUploadField";
 
 const field =
   "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
+
+const STEPS = ["Details", "Collateral", "NRC", "Send"];
 
 export function GLoansForm({ settings }: { settings: ServiceSettings }) {
   const LOAN_MIN = settings.loanMin;
@@ -17,12 +21,15 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
   const [weeks, setWeeks] = useState(1);
   const [collateral, setCollateral] = useState("");
   const [hasNrc, setHasNrc] = useState(false);
+  const [nrcFiles, setNrcFiles] = useState<File[]>([]);
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [done, setDone] = useState<{ ref: string; message: string } | null>(
-    null
-  );
+  const [done, setDone] = useState<{
+    ref: string;
+    message: string;
+    files: number;
+  } | null>(null);
 
   const rate = LOAN_RATES.find((r) => r.weeks === weeks)?.rate ?? 15;
   const interest = useMemo(
@@ -31,11 +38,22 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
   );
   const repay = amount + interest;
 
+  const stepIndex = useMemo(() => {
+    if (!name || !phone || !amount) return 0;
+    if (!collateral.trim()) return 1;
+    if (!hasNrc || nrcFiles.length === 0) return 2;
+    return 3;
+  }, [name, phone, amount, collateral, hasNrc, nrcFiles.length]);
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     if (!hasNrc) {
-      setError("A copy of your original NRC is required.");
+      setError("Confirm that you can provide your NRC.");
+      return;
+    }
+    if (nrcFiles.length === 0) {
+      setError("Please upload a clear photo or scan of your NRC.");
       return;
     }
     if (!collateral.trim()) {
@@ -52,6 +70,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
       "details",
       JSON.stringify({ amount, weeks, rate, collateral, hasNrc, notes })
     );
+    nrcFiles.forEach((f) => form.append("files", f));
 
     try {
       const res = await fetch("/api/services/request", {
@@ -68,7 +87,8 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         ref: data.ref,
         message:
           data.message ??
-          "Loan request received. We'll review and contact you on WhatsApp."
+          "Loan request received. We'll review and contact you on WhatsApp.",
+        files: typeof data.files === "number" ? data.files : nrcFiles.length
       });
     } catch {
       setError("Network error. Please try again.");
@@ -83,25 +103,30 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         refCode={done.ref}
         message={done.message}
         total={amount}
+        trackHref={`/services/track/${done.ref}`}
+        fileCount={done.files}
         waLines={[
           `*G-Loans request* — ${done.ref}`,
           `Amount: ${formatPrice(amount)}`,
           `Term: ${weeks} week(s) @ ${rate}%`,
           `Est. interest: ${formatPrice(interest)}`,
           `Est. repay: ${formatPrice(repay)}`,
-          `Collateral: ${collateral}`
-        ]}
+          `Collateral: ${collateral}`,
+          done.files > 0 ? `NRC files uploaded: ${done.files}` : ""
+        ].filter(Boolean)}
       />
     );
   }
 
   return (
     <form onSubmit={submit} className="space-y-6">
-      <div className="rounded-card border border-ink-800 bg-ink-900 p-5">
+      <ServiceSteps steps={STEPS} current={stepIndex} />
+
+      <div className="rounded-[1.15rem] border border-ink-800 bg-ink-900 p-5">
         <h3 className="font-bold text-white">Requirements</h3>
         <ul className="mt-3 space-y-2 text-sm text-white/60">
           <li>• Collateral more valuable than the money borrowed</li>
-          <li>• Copy of original NRC</li>
+          <li>• Clear photo or scan of your original NRC</li>
           <li>• Least amount: {formatPrice(LOAN_MIN)}</li>
         </ul>
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -189,6 +214,17 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         />
       </label>
 
+      <FileUploadField
+        files={nrcFiles}
+        onChange={setNrcFiles}
+        required
+        multiple={false}
+        maxFiles={2}
+        label="Upload NRC"
+        hint="Clear front (and back if needed) of your original NRC — kept for review only."
+        accept=".pdf,.png,.jpg,.jpeg,.webp"
+      />
+
       <label className="flex items-start gap-3 text-sm text-white/70">
         <input
           type="checkbox"
@@ -196,7 +232,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
           onChange={(e) => setHasNrc(e.target.checked)}
           className="mt-1 h-4 w-4 accent-[#f6d400]"
         />
-        I can provide a copy of my original NRC
+        I confirm this is a copy of my original NRC
       </label>
 
       <label className="block">

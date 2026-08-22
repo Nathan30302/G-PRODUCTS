@@ -3,6 +3,7 @@ import { siteConfig } from "@/config/site";
 import { Icon } from "@/components/Icons";
 import type { CustomerSession } from "@/lib/customer-auth";
 import { formatPrice, formatDateTime } from "@/lib/format";
+import { parseServiceFileUrls } from "@/lib/service-files";
 import { LocationForm } from "@/components/profile/LocationForm";
 import { LogoutButton } from "@/components/LogoutButton";
 import {
@@ -24,6 +25,8 @@ type ServiceRow = {
   ref: string;
   serviceType: string;
   status: string;
+  amount: number | null;
+  fileUrls: string | null;
   createdAt: Date;
 };
 
@@ -178,20 +181,40 @@ export function AccountHome({
           </div>
         ) : (
           <ul className="mt-4 space-y-3">
-            {services.map((s) => (
-              <li
-                key={s.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-[1.15rem] border border-white/[0.08] bg-ink-900/40 px-4 py-4 transition-colors hover:border-white/[0.12]"
-              >
-                <div className="min-w-0">
-                  <p className="font-semibold text-white">{s.ref}</p>
-                  <p className="mt-0.5 text-xs capitalize text-white/40">
-                    {s.serviceType.replace(/_/g, " ").toLowerCase()}
-                  </p>
-                </div>
-                <ShopStatusPill status={s.status} />
-              </li>
-            ))}
+            {services.map((s) => {
+              const n = parseServiceFileUrls(s.fileUrls).length;
+              return (
+                <li key={s.id}>
+                  <Link
+                    href={`/services/track/${s.ref}`}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-[1.15rem] border border-white/[0.08] bg-ink-900/40 px-4 py-4 transition-colors hover:border-brand/35"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-semibold text-white">{s.ref}</p>
+                      <p className="mt-0.5 text-xs capitalize text-white/40">
+                        {s.serviceType.replace(/_/g, " ").toLowerCase()}
+                        {n > 0
+                          ? ` · ${n} file${n === 1 ? "" : "s"}`
+                          : ""}
+                        {typeof s.amount === "number"
+                          ? ` · ${formatPrice(s.amount)}`
+                          : ""}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-white/30">
+                        {formatDateTime(s.createdAt)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ShopStatusPill status={s.status} />
+                      <Icon
+                        name="chevron-right"
+                        className="h-4 w-4 text-white/30"
+                      />
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

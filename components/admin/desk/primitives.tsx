@@ -234,15 +234,21 @@ export function DeskFilterBar({
   active: string | null;
   options: { value: string; label: string; count?: number }[];
 }) {
+  function hrefFor(value: string): string {
+    const [path, existing = ""] = basePath.split("?");
+    const q = new URLSearchParams(existing);
+    if (value === "ALL") q.delete(param);
+    else q.set(param, value);
+    const s = q.toString();
+    return s ? `${path}?${s}` : path;
+  }
+
   return (
     <div className="flex flex-wrap gap-2">
       {options.map((opt) => {
         const isActive =
           (opt.value === "ALL" && !active) || active === opt.value;
-        const href =
-          opt.value === "ALL"
-            ? basePath
-            : `${basePath}?${param}=${encodeURIComponent(opt.value)}`;
+        const href = hrefFor(opt.value);
         return (
           <Link
             key={opt.value}

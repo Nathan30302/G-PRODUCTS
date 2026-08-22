@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getPaymentStatus, type PaymentProvider } from "@/lib/payments";
+import { describeServiceFiles } from "@/lib/service-files";
 
 export async function GET(
   _req: Request,
@@ -12,6 +13,9 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
+  let status = request.status;
+  let paymentStatus = request.paymentStatus;
+
   if (
     request.paymentStatus === "PENDING" &&
     request.paymentRef &&
@@ -22,6 +26,8 @@ export async function GET(
       request.paymentRef
     );
     if (result.status !== "PENDING") {
+      status = result.status === "SUCCESS" ? "CONFIRMED" : request.status;
+      paymentStatus = result.status;
       await prisma.serviceRequest.update({
         where: { id: request.id },
         data: {
@@ -29,17 +35,34 @@ export async function GET(
           ...(result.status === "SUCCESS" ? { status: "CONFIRMED" } : {})
         }
       });
-      return NextResponse.json({
-        ref: request.ref,
-        paymentStatus: result.status,
-        status: result.status === "SUCCESS" ? "CONFIRMED" : request.status
-      });
     }
   }
 
+  let details: Record<string, unknown> = {};
+  try {
+    details = JSON.parse(request.details);
+  } catch {
+    details = {};
+  }
+
+  const files = describeServiceFiles(request.fileUrls);
+
   return NextResponse.json({
     ref: request.ref,
-    paymentStatus: request.paymentStatus,
-    status: request.status
+    serviceType: request.serviceType,
+    paymentStatus,
+    status,
+    amount: request.amount,
+    deliveryMethod: request.deliveryMethod,
+    address: request.address,
+    customerName: request.customerName,
+    createdAt: request.createdAt,
+    details,
+    files: files.map((f) => ({
+      filename: f.filename,
+      kind: f.kind,
+      url: f.url,
+      downloadUrl: f.downloadUrl
+    }))
   });
 }

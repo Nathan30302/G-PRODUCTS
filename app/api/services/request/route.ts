@@ -85,6 +85,16 @@ export async function POST(req: Request) {
           { status: 400 }
         );
       }
+      const uploadFiles = form
+        .getAll("files")
+        .filter((f): f is File => typeof f !== "string" && f instanceof File);
+      const fileUrls = await saveUploads(uploadFiles);
+      if (fileUrls.length === 0) {
+        return NextResponse.json(
+          { error: "Please upload a clear photo or scan of your NRC." },
+          { status: 400 }
+        );
+      }
       const ref = newRef("GL");
       const request = await prisma.serviceRequest.create({
         data: {
@@ -99,8 +109,9 @@ export async function POST(req: Request) {
             amount,
             weeks,
             collateral: details.collateral ?? "",
-            hasNrc: Boolean(details.hasNrc)
+            hasNrc: Boolean(details.hasNrc) || fileUrls.length > 0
           }),
+          fileUrls: JSON.stringify(fileUrls),
           amount,
           status: "NEW",
           paymentStatus: null
@@ -109,7 +120,9 @@ export async function POST(req: Request) {
       return NextResponse.json({
         ref: request.ref,
         mode: "request",
-        message: "Loan request received. We'll contact you on WhatsApp."
+        message:
+          "Loan request received with your NRC. We'll review and contact you on WhatsApp.",
+        files: fileUrls.length
       });
     }
 
