@@ -19,6 +19,15 @@ import { isUploadUrl } from "../lib/uploads";
 
 const prisma = new PrismaClient();
 const force = process.argv.includes("--force");
+const refreshCopy = process.argv.includes("--refresh-copy");
+const onlyArg = process.argv.find((a) => a.startsWith("--only="));
+const onlySlugs = onlyArg
+  ? onlyArg
+      .slice("--only=".length)
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+  : null;
 const CATALOG_DIR = path.join(process.cwd(), "public", "products", "catalog");
 
 function existingCatalogFiles(files: string[]): string[] {
@@ -33,6 +42,24 @@ async function syncProduct(slug: string): Promise<boolean> {
     include: { images: true, variants: true }
   });
   if (!row) return false;
+
+  if (refreshCopy) {
+    const def = products.find((p) => p.slug === slug);
+    if (def) {
+      await prisma.product.update({
+        where: { id: row.id },
+        data: {
+          name: def.name,
+          brand: def.brand ?? null,
+          description: def.description,
+          shortSpecs: JSON.stringify(def.shortSpecs),
+          featured: def.featured ?? false,
+          hotDeal: def.hotDeal ?? false
+        }
+      });
+      console.log(`  ↻ copy ${slug}`);
+    }
+  }
 
   const uploadImages = row.images.filter((i) => isUploadUrl(i.url));
   const onlyUploads =
@@ -184,10 +211,18 @@ async function syncProduct(slug: string): Promise<boolean> {
 }
 
 async function main() {
-  console.log(`Syncing unique catalog photos${force ? " (force, keep /api/media)" : ""}…`);
+  console.log(
+    `Syncing unique catalog photos${force ? " (force)" : ""}${
+      refreshCopy ? " + refresh copy" : ""
+    }${onlySlugs ? ` · only ${onlySlugs.join(", ")}` : ""}…`
+  );
   let updated = 0;
 
-  for (const p of products) {
+  const list = onlySlugs
+    ? products.filter((p) => onlySlugs.includes(p.slug))
+    : products;
+
+  for (const p of list) {
     if (await syncProduct(p.slug)) updated++;
   }
 

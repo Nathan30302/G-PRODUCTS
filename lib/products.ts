@@ -271,13 +271,13 @@ export const products: SeedProduct[] = [
     categorySlug: "phone-accessories",
     price: 80,
     specs: [
-      "K80 for all",
-      "Soft silicone",
-      "Navy · Pink · Red · Teal · Black",
-      "Choose your iPhone model"
+      "K80 for all colours",
+      "Soft liquid silicone",
+      "16 colours",
+      "iPhone 6 through 16 Pro Max"
     ],
     description:
-      "Upgrade your iPhone with sleek silicone cases — soft, stylish and protective. Pick your colour (navy, pink, red, teal or black) and your iPhone model from 6 through 16. K80 for all."
+      "Soft liquid-silicone iPhone pouches — matte, protective and colourful. Pick a colour, then your iPhone model from 6 / 6 Plus through 16 Pro Max. K80 for every colour."
   }),
 
   // —— Memory cards ——
@@ -579,18 +579,18 @@ export const products: SeedProduct[] = [
     id: "p-extension",
     slug: "extension-cable",
     name: "Extension Cable",
-    brand: "Power King",
+    brand: "PK TRUSTS",
     categorySlug: "power",
     price: 50,
     specs: [
-      "Heavy-duty build",
-      "Extended reach",
-      "Multiple outlets",
-      "Built-in surge protection",
-      "Choose ways + length"
+      "PK TRUSTS Quality Electrical Products",
+      "13A fused sleeved UK Type G plug",
+      "3-way · 4-way · 5-way · 6-way",
+      "3m or 5m cable",
+      "Max load 3000W"
     ],
     description:
-      "Power King UK Type G extension cables. Heavy-duty build, extended reach, multiple outlets and built-in surge protection. Pick the size you need: 3-way, 4-way, 5-way or 6-way — each in 3m or 5m. Price depends on the option you choose.",
+      "PK TRUSTS UK Type G extension sockets — the same Quality Electrical Products brand you know in shop. Heavy-duty white strip, 13A fused sleeved plug, up to 3000W. Choose how many ways (3, 4, 5 or 6) and cable length (3m or 5m); price updates with your pick.",
     featured: true
   }),
 

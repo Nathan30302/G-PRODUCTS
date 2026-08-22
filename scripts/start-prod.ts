@@ -397,6 +397,13 @@ async function main() {
   try {
     console.log("[start] syncing HD catalog photos");
     await run("npx", ["tsx", "scripts/sync-catalog-photos.ts"]);
+    // Refresh pouches + PK TRUSTS extensions (new colours / brand copy)
+    await run("npx", [
+      "tsx",
+      "scripts/sync-catalog-photos.ts",
+      "--refresh-copy",
+      "--only=phone-pouch,extension-cable"
+    ]);
   } catch (err) {
     console.warn("[start] catalog photo sync:", err);
   }
