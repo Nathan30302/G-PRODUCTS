@@ -112,10 +112,11 @@ export function DeskPanel({
 }) {
   return (
     <div
-      className={`overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 shadow-card ${
+      className={`relative overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-gradient-to-b from-ink-850/80 to-ink-900/70 shadow-card ${
         flush ? "" : ""
       } ${className}`}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/25 to-transparent" />
       {children}
     </div>
   );

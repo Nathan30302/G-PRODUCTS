@@ -219,11 +219,12 @@ export function AdminShell({
     <div className="relative min-h-screen overflow-x-hidden bg-ink-950 text-white">
       <LaunchSplash variant="admin" />
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.07),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.05),_transparent_45%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.09),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.07),_transparent_45%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,32,0)_0%,rgba(15,23,32,0.35)_100%)]" />
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/80 shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
@@ -288,8 +289,9 @@ export function AdminShell({
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:flex-row lg:py-10">
         <aside className="hidden lg:block lg:w-64 lg:shrink-0">
-          <div className="sticky top-24 overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-3 shadow-card">
-            <nav className="space-y-4">
+          <div className="relative sticky top-24 overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-3 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.65)] ring-1 ring-white/[0.04]">
+            <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
+            <nav className="relative space-y-4">
               {groups.map((group) => (
                 <div key={group.label}>
                   <p className="mb-1.5 px-3.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">

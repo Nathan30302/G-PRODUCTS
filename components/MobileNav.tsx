@@ -22,7 +22,7 @@ export function MobileNav() {
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-12 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
       {/* Plug-sized compact floating pill */}
-      <div className="pointer-events-auto flex items-center gap-0 rounded-pill border border-white/10 bg-ink-950/92 px-1 py-0.5 shadow-[0_8px_28px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+      <div className="pointer-events-auto flex items-center gap-0.5 rounded-pill border border-white/10 bg-ink-950/92 px-1.5 py-1 shadow-[0_12px_40px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.04] backdrop-blur-2xl">
         {items.map((it) => {
           const active =
             it.href === "/"
@@ -33,8 +33,10 @@ export function MobileNav() {
             <Link
               key={it.href}
               href={it.href}
-              className={`relative flex w-[2.85rem] flex-col items-center gap-px rounded-pill px-0.5 py-1.5 text-[7.5px] font-bold tracking-wide transition-colors ${
-                active ? "text-brand" : "text-white/40"
+              className={`relative flex w-[2.95rem] flex-col items-center gap-0.5 rounded-pill px-0.5 py-1.5 text-[7.5px] font-bold tracking-wide transition-all duration-300 ${
+                active
+                  ? "bg-brand/15 text-brand"
+                  : "text-white/40 hover:text-white/70"
               }`}
             >
               <span className="relative grid h-[1.1rem] w-[1.1rem] place-items-center">

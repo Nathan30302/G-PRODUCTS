@@ -224,8 +224,9 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
         </ul>
       </div>
 
-      <div className="relative overflow-hidden rounded-[1.85rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-1.5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
-        <div className="grid grid-cols-2 gap-1 rounded-[1.35rem] bg-ink-950/60 p-1">
+      <div className="relative overflow-hidden rounded-[1.85rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-1.5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.04]">
+        <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
+        <div className="relative grid grid-cols-2 gap-1 rounded-[1.35rem] bg-ink-950/60 p-1">
           <button
             type="button"
             onClick={() => switchMode("signin")}

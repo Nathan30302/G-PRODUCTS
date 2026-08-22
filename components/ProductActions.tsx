@@ -37,18 +37,18 @@ export function ProductActions({ product }: { product: Product }) {
         />
       ) : (
         <>
-          <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5">
+          <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3">
             <span className="text-xs font-semibold uppercase tracking-wide text-white/45">
               Quantity
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 rounded-pill border border-white/10 bg-ink-900/80 p-1">
               <button
                 type="button"
                 aria-label="Decrease quantity"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
-                className="grid h-9 w-9 place-items-center rounded-full border border-white/15 text-lg text-white/80 hover:border-brand/40 hover:text-brand"
+                className="grid h-9 w-9 place-items-center rounded-full text-white/80 transition-colors hover:bg-white/[0.08] hover:text-brand"
               >
-                −
+                <Icon name="minus" className="h-4 w-4" />
               </button>
               <span className="min-w-[2ch] text-center text-base font-bold tabular-nums text-white">
                 {qty}
@@ -57,9 +57,9 @@ export function ProductActions({ product }: { product: Product }) {
                 type="button"
                 aria-label="Increase quantity"
                 onClick={() => setQty((q) => Math.min(99, q + 1))}
-                className="grid h-9 w-9 place-items-center rounded-full border border-white/15 text-lg text-white/80 hover:border-brand/40 hover:text-brand"
+                className="grid h-9 w-9 place-items-center rounded-full text-white/80 transition-colors hover:bg-white/[0.08] hover:text-brand"
               >
-                +
+                <Icon name="plus" className="h-4 w-4" />
               </button>
             </div>
           </div>

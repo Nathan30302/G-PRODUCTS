@@ -89,12 +89,12 @@ function OptionChips({
               onClick={() => onSelect(v.id)}
               aria-pressed={active}
               disabled={out}
-              className={`flex w-full items-center justify-between gap-3 rounded-xl border px-3.5 py-3 text-left text-sm transition-colors ${
+              className={`flex w-full items-center justify-between gap-3 rounded-2xl border px-3.5 py-3.5 text-left text-sm transition-all duration-300 ease-out-expo ${
                 active
-                  ? "border-brand/50 bg-brand/10 text-white"
+                  ? "border-brand/50 bg-brand/10 text-white shadow-[0_0_0_1px_rgba(246,212,0,0.15)]"
                   : out
                     ? "cursor-not-allowed border-white/[0.06] bg-white/[0.02] text-white/35"
-                    : "border-white/10 bg-white/[0.03] text-white/80 hover:border-white/25"
+                    : "border-white/10 bg-white/[0.03] text-white/80 hover:-translate-y-0.5 hover:border-white/25"
               }`}
             >
               <span className="font-semibold">

@@ -19,7 +19,7 @@ export function DeskOrderCard({ order }: { order: DeskOrderSummary }) {
   return (
     <Link
       href={`/admin/orders/${order.id}`}
-      className="block rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 transition-all hover:border-brand/35 hover:bg-white/[0.04]"
+      className="block rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/35 hover:bg-white/[0.04] hover:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.55)]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">

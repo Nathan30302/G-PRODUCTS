@@ -85,8 +85,8 @@ export default async function ProductPage({
         </nav>
 
         <ProductVariantProvider product={product}>
-          <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10 xl:gap-12">
-            <div className="mx-auto w-full max-w-[min(100%,20rem)] shrink-0 sm:max-w-xs lg:mx-0 lg:max-w-[22rem]">
+          <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-14">
+            <div className="mx-auto w-full max-w-md shrink-0 sm:max-w-lg lg:mx-0 lg:w-[min(48%,30rem)] lg:max-w-none xl:w-[32rem]">
               <ProductPurchasePanel
                 product={product}
                 badge={off ? `-${off}%` : null}

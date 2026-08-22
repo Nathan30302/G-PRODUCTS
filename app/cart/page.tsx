@@ -134,7 +134,7 @@ export default function CartPage() {
         </div>
 
         <div className="h-fit lg:sticky lg:top-24">
-          <div className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6 shadow-card backdrop-blur-sm">
+          <div className="rounded-[1.35rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/80 to-ink-900/70 p-6 shadow-card ring-1 ring-white/[0.03] backdrop-blur-sm">
             <h2 className="text-lg font-bold text-white">Order summary</h2>
             <div className="mt-4 flex justify-between text-sm text-white/60">
               <span>Subtotal</span>

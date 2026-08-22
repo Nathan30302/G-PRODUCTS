@@ -63,7 +63,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-2xl border border-white/10 bg-ink-850/95 p-3 pr-4 shadow-card backdrop-blur"
+              className="pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-2xl border border-white/10 bg-ink-850/95 p-3 pr-4 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.04] backdrop-blur-xl"
             >
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
                 {t.image ? (

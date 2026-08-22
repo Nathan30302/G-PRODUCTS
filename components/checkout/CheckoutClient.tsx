@@ -170,13 +170,14 @@ export function CheckoutClient({
 
     return (
       <div className="container-g py-12 sm:py-16">
-        <div className="mx-auto max-w-lg rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6 text-left shadow-card sm:p-8">
+        <div className="relative mx-auto max-w-lg overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/90 to-ink-900/95 p-6 text-left shadow-[0_30px_80px_-36px_rgba(0,0,0,0.75)] ring-1 ring-white/[0.04] sm:p-8">
+          <div className="pointer-events-none absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
           <div className="text-center">
             <div
               className={`mx-auto grid h-16 w-16 place-items-center rounded-full ${
                 phase === "success"
                   ? "bg-accent/15 text-accent shadow-accent-glow"
-                  : "bg-brand/15 text-brand"
+                  : "bg-brand/15 text-brand shadow-brand-glow"
               }`}
             >
               {phase === "success" ? (
