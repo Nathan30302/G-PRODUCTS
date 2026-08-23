@@ -26,10 +26,11 @@ export async function tuneSqliteForConcurrency() {
     return;
   }
   try {
-    await prisma.$executeRawUnsafe("PRAGMA journal_mode=WAL;");
-    await prisma.$executeRawUnsafe("PRAGMA busy_timeout=8000;");
-    await prisma.$executeRawUnsafe("PRAGMA synchronous=NORMAL;");
-    await prisma.$executeRawUnsafe("PRAGMA foreign_keys=ON;");
+    // PRAGMAs return a result row — must use $queryRawUnsafe on SQLite.
+    await prisma.$queryRawUnsafe("PRAGMA journal_mode=WAL;");
+    await prisma.$queryRawUnsafe("PRAGMA busy_timeout=8000;");
+    await prisma.$queryRawUnsafe("PRAGMA synchronous=NORMAL;");
+    await prisma.$queryRawUnsafe("PRAGMA foreign_keys=ON;");
     globalForPrisma.sqliteTuned = true;
   } catch (err) {
     console.warn("[db] sqlite tune skipped:", err);

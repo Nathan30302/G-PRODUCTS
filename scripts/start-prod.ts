@@ -91,9 +91,10 @@ async function tuneSqlite() {
   try {
     const { PrismaClient } = await import("@prisma/client");
     const p = new PrismaClient();
-    await p.$executeRawUnsafe("PRAGMA journal_mode=WAL;");
-    await p.$executeRawUnsafe("PRAGMA busy_timeout=8000;");
-    await p.$executeRawUnsafe("PRAGMA synchronous=NORMAL;");
+    // PRAGMAs return a result row — must use $queryRawUnsafe on SQLite.
+    await p.$queryRawUnsafe("PRAGMA journal_mode=WAL;");
+    await p.$queryRawUnsafe("PRAGMA busy_timeout=8000;");
+    await p.$queryRawUnsafe("PRAGMA synchronous=NORMAL;");
     await p.$disconnect();
     console.log("[start] sqlite WAL mode ready");
   } catch (err) {
