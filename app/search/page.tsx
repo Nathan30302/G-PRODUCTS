@@ -8,16 +8,18 @@ export const metadata = { title: "Search" };
 export default async function SearchPage({
   searchParams
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; deals?: string }>;
 }) {
-  const [{ q }, products, categories] = await Promise.all([
+  const [{ q, deals }, products, categories] = await Promise.all([
     searchParams,
     getAllProducts(),
     getAllCategories()
   ]);
+  const list =
+    deals === "1" ? products.filter((p) => p.hotDeal || p.compareAtPrice) : products;
   return (
     <SearchClient
-      products={products}
+      products={list}
       categories={categories}
       initialQuery={q ?? ""}
     />

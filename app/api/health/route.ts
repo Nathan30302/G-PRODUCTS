@@ -4,6 +4,12 @@ import { prisma, tuneSqliteForConcurrency } from "@/lib/db";
 import { MIN_PRODUCTS } from "@/lib/ensure-catalog";
 import { uploadsRoot } from "@/lib/uploads";
 import { legacyUploadRoots } from "@/lib/upload-resolve";
+import {
+  hasPersistentDataVolume,
+  isEphemeralSqlite,
+  persistenceWarning,
+  persistentMountPath
+} from "@/lib/persist-data";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +42,7 @@ function diskReport(target: string) {
       usedPct,
       warn:
         freeGb < 1
-          ? "Under 1 GB free — expand the Railway volume soon."
+          ? "Under 1 GB free — expand the volume soon."
           : freeGb < 2
             ? "Under 2 GB free — monitor photo uploads."
             : null
@@ -68,19 +74,22 @@ export async function GET() {
         })
       ]);
 
-    const ok = products >= MIN_PRODUCTS && categories > 0;
+    const catalogOk = products >= MIN_PRODUCTS && categories > 0;
     const dbPath = process.env.DATABASE_URL?.startsWith("file:")
       ? process.env.DATABASE_URL.slice("file:".length).split("?")[0]
       : null;
     const uploadRoots = legacyUploadRoots();
-    const hasDataVolume = existsSync("/data");
-    const disk = hasDataVolume
-      ? diskReport("/data")
-      : diskReport(process.cwd());
+    const mount = persistentMountPath();
+    const hasVolume = hasPersistentDataVolume();
+    const ephemeral = isEphemeralSqlite();
+    const disk = mount ? diskReport(mount) : diskReport(process.cwd());
+    const persistWarn = persistenceWarning();
 
     return NextResponse.json(
       {
-        ok: ok && (disk.ok !== false || !hasDataVolume),
+        // Keep HTTP 200 when catalog is fine so deploys don't flap — persistence
+        // issues are surfaced in `persistentStorage` / `readiness` for operators.
+        ok: catalogOk && (disk.ok !== false || !hasVolume),
         products,
         categories,
         services,
@@ -92,22 +101,29 @@ export async function GET() {
         ),
         dbPath,
         minProducts: MIN_PRODUCTS,
+        persistentStorage: !ephemeral,
+        volumeMount: mount,
         uploads: {
           activeRoot: uploadsRoot(),
-          hasDataVolume,
+          hasDataVolume: hasVolume,
           roots: uploadRoots
         },
         disk,
         readiness: {
-          accounts: "Customer signup uses unique email+phone; concurrent signups are safe.",
-          database: hasDataVolume
-            ? "SQLite on /data volume with WAL mode — fine for thousands of accounts and typical shop traffic."
-            : "WARNING: no /data volume — DB/uploads may reset on redeploy. Attach a Railway volume at /data.",
+          accounts:
+            "Customer signup uses unique email+phone; concurrent signups are safe.",
+          database: ephemeral
+            ? persistWarn
+            : hasVolume
+              ? `SQLite on volume ${mount} with WAL mode — survives redeploys.`
+              : "Non-SQLite DATABASE_URL — assumed durable (Postgres/Neon).",
+          ownerPassword:
+            "OWNER_PASSWORD only applies when the owner account is first created. Set OWNER_SYNC_PASSWORD=1 only for intentional recovery.",
           storageAdvice:
-            "Keep the Railway volume at ≥5 GB for photos+DB. Grow to 10–20 GB before heavy catalog photo uploads. Switch to Postgres + object storage if you outgrow one server."
+            "Attach a Volume at /data (≥5 GB), set DATABASE_URL=file:/data/gproducts.db, keep AUTH_SECRET stable. Or use managed Postgres. Grow to 10–20 GB before heavy photo uploads."
         }
       },
-      { status: ok ? 200 : 503 }
+      { status: catalogOk ? 200 : 503 }
     );
   } catch (err) {
     const message = err instanceof Error ? err.message : "db error";

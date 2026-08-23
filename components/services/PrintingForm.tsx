@@ -127,7 +127,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       setFileCount(typeof data.files === "number" ? data.files : files.length);
       setMessage(
         data.mode === "manual"
-          ? "Print order received. Your files are with Gift's team — pay with Mobile Money and we'll prepare your job for pickup or Yango."
+          ? "Print order received. Your files are with our printing team — pay with Mobile Money and we'll prepare your job for pickup or Yango."
           : "Approve the payment on your phone. Once paid, we'll process your uploaded files."
       );
       if (data.mode === "live" && data.paymentStatus === "PENDING") {
@@ -186,7 +186,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
           `Delivery: ${
             delivery === "YANGO"
               ? `Yango — ${address}`
-              : `Pickup (${siteConfig.locations[0]})`
+              : `Pickup (${siteConfig.locations[0]?.name ?? siteConfig.branch})`
           }`
         ]}
       />
@@ -200,8 +200,8 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       <div className="rounded-[1.15rem] border border-brand/20 bg-brand/[0.06] px-4 py-3 text-sm text-white/65">
         <p className="font-semibold text-white">Print from home</p>
         <p className="mt-1 text-xs leading-relaxed text-white/50">
-          Upload photos or documents here in full quality. Gift&apos;s team sees
-          them on the desk and downloads HD originals to print — no need to
+          Upload photos or documents here in full quality. Your original-quality
+          files are securely sent directly to our printing team — no need to
           resend on WhatsApp.
         </p>
       </div>
@@ -272,7 +272,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
           label="Documents or photos"
           hint={
             needsFile
-              ? "Full quality — Gift downloads HD originals from the desk."
+              ? "Your original-quality files are securely sent directly to our printing team."
               : "Add files if helpful for typing, scan, laminate, or bind."
           }
         />

@@ -61,7 +61,7 @@ import {
   coverFromImages
 } from "@/lib/service-media";
 
-/** Fallback / seed catalog — curated HD workshop galleries */
+/** Fallback / seed catalog — one cover photo each (Gift can upload more) */
 export const services: ServiceDef[] = [
   {
     slug: "key-cutting",

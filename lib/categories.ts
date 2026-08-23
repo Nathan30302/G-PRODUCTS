@@ -1,10 +1,14 @@
 import { Category } from "@/lib/types";
 
+/**
+ * Leaf categories stored in the DB / product.categorySlug.
+ * Display names refined for a clearer catalogue; slugs stay stable.
+ */
 export const categories: Category[] = [
   {
     slug: "stationery",
-    name: "Stationery",
-    tagline: "Pens, books, paper & office supplies",
+    name: "Stationery & School",
+    tagline: "Books, pens, paper, calculators & office supplies",
     icon: "sparkles"
   },
   {
@@ -27,20 +31,20 @@ export const categories: Category[] = [
   },
   {
     slug: "power",
-    name: "Power",
+    name: "Power & Extensions",
     tagline: "Laptop chargers & extension cables",
     icon: "battery"
   },
   {
     slug: "audio",
     name: "Audio",
-    tagline: "AirPods, headsets & speakers",
+    tagline: "Earbuds, headsets & speakers",
     icon: "headphones"
   },
   {
     slug: "phone-accessories",
     name: "Phone Accessories",
-    tagline: "Stands, protectors & pouches",
+    tagline: "Cases, stands, protectors & pouches",
     icon: "sparkles"
   },
   {
@@ -53,7 +57,7 @@ export const categories: Category[] = [
     slug: "home",
     name: "Home & Personal",
     tagline: "Kettles, clippers and household extras",
-    icon: "sparkles"
+    icon: "home"
   },
   {
     slug: "watches",

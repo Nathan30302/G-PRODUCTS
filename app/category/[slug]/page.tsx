@@ -4,6 +4,10 @@ import Link from "next/link";
 import { getCategoryBySlug, getProductsByCategory } from "@/lib/queries";
 import { CategoryBrowser } from "@/components/CategoryBrowser";
 import { Icon } from "@/components/Icons";
+import {
+  childCategoriesForGroup,
+  getCatalogGroup
+} from "@/lib/catalog-taxonomy";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +21,7 @@ export async function generateMetadata({
   if (!category) return { title: "Category" };
   return {
     title: category.name,
-    description: `${category.name} - ${category.tagline}. Shop at G-Products.`
+    description: `${category.name} — ${category.tagline}. Shop genuine products at G-Products.`
   };
 }
 
@@ -31,6 +35,8 @@ export default async function CategoryPage({
   if (!category) notFound();
 
   const items = await getProductsByCategory(slug);
+  const group = getCatalogGroup(slug);
+  const children = group ? childCategoriesForGroup(group) : [];
 
   return (
     <div className="container-g py-8 sm:py-10">
@@ -48,7 +54,7 @@ export default async function CategoryPage({
         </span>
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
-            Category
+            {group ? "Department" : "Category"}
           </p>
           <h1 className="mt-1 text-3xl font-black tracking-tight text-white sm:text-4xl">
             {category.name}
@@ -56,6 +62,20 @@ export default async function CategoryPage({
           <p className="mt-1.5 text-white/50">{category.tagline}</p>
         </div>
       </header>
+
+      {children.length > 1 ? (
+        <div className="mt-6 flex flex-wrap gap-2">
+          {children.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/category/${c.slug}`}
+              className="rounded-pill border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
+            >
+              {c.name}
+            </Link>
+          ))}
+        </div>
+      ) : null}
 
       {items.length === 0 ? (
         <div className="mt-10 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
@@ -66,10 +86,10 @@ export default async function CategoryPage({
             No products here yet
           </p>
           <p className="mt-1 text-sm text-white/50">
-            Check back soon - we&apos;re restocking this category.
+            Check back soon — we&apos;re restocking this category.
           </p>
           <Link href="/search" className="btn-brand mt-5 px-5 py-2.5">
-            Browse all tech
+            Browse the catalogue
           </Link>
         </div>
       ) : (

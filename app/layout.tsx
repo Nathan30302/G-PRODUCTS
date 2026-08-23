@@ -6,6 +6,7 @@ import { CartProvider } from "@/lib/cart";
 import { ToastProvider } from "@/components/Toast";
 import { SiteChrome } from "@/components/SiteChrome";
 import { siteConfig } from "@/config/site";
+import { siteUrl } from "@/lib/site-url";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -15,7 +16,7 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gproducts.zm"),
+  metadataBase: new URL(siteUrl()),
   title: {
     default: `${siteConfig.name} - ${siteConfig.tagline}`,
     template: `%s | ${siteConfig.name}`
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
     title: `${siteConfig.name} - ${siteConfig.tagline}`,
     description: siteConfig.description,
     type: "website",
+    url: siteUrl(),
     images: [
       {
         url: siteConfig.logo,
@@ -37,6 +39,9 @@ export const metadata: Metadata = {
         alt: siteConfig.legalName
       }
     ]
+  },
+  alternates: {
+    canonical: "/"
   }
 };
 

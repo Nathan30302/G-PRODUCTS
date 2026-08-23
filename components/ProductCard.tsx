@@ -140,13 +140,27 @@ export function ProductCard({
         <h3 className="line-clamp-2 text-[12px] font-semibold leading-snug text-white transition-colors group-hover:text-brand sm:text-[13px]">
           {product.name}
         </h3>
-        <div className="mt-auto flex items-baseline justify-between gap-2 pt-0.5">
-          <span className="text-[13px] font-bold tabular-nums text-white sm:text-sm">
-            {hasPricedOptions(product)
-              ? `From ${formatPrice(fromPrice(product))}`
-              : formatPrice(product.price)}
-          </span>
-          <StockPill status={product.stock} />
+        <div className="mt-auto flex flex-col gap-1 pt-0.5">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="text-[13px] font-bold tabular-nums text-white sm:text-sm">
+              {hasPricedOptions(product)
+                ? `From ${formatPrice(fromPrice(product))}`
+                : formatPrice(product.price)}
+            </span>
+            <StockPill status={product.stock} />
+          </div>
+          {product.compareAtPrice &&
+          product.compareAtPrice > product.price &&
+          !hasPricedOptions(product) ? (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] tabular-nums text-white/35 line-through">
+                {formatPrice(product.compareAtPrice)}
+              </span>
+              <span className="rounded-pill bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
+                Save {formatPrice(product.compareAtPrice - product.price)}
+              </span>
+            </div>
+          ) : null}
         </div>
       </Link>
     </article>

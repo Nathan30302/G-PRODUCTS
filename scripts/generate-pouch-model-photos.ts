@@ -1,11 +1,11 @@
 /**
- * Generate silicone pouch photos per camera layout + per iPhone model tag.
- * Model-tagged files are copies of the matching layout master so each phone
- * resolves to the correct cutout (and can be replaced with unique shots later).
+ * Generate slim Apple-style silicone iPhone CASE photos (NOT leather pouches).
+ * Per camera layout + per-model tags. Model files mirror the layout master.
  *
  * Usage:
  *   npx tsx scripts/generate-pouch-model-photos.ts
  *   npx tsx scripts/generate-pouch-model-photos.ts --improve
+ *   npx tsx scripts/generate-pouch-model-photos.ts --fresh --improve
  */
 import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -39,41 +39,58 @@ const COLORS = [
   "grey"
 ];
 
+/** Precise camera cutout language for each layout family. */
 const LAYOUT_PROMPT: Record<string, string> = {
   single:
-    "single centered rear camera lens with flash beside it, classic home-button era iPhone 7 style cutout",
+    "one centered rear camera lens cutout with small flash hole beside it, iPhone 7 / 8 style",
   plus:
-    "vertical dual camera lenses with flash, iPhone 7 Plus style camera bump cutout",
-  x: "vertical dual camera lenses in tall oval module, iPhone X style cutout",
-  xr: "large single rear camera lens upper left, iPhone XR style cutout",
+    "vertical dual camera lenses in a raised oval bump cutout with flash, iPhone 7 Plus / 8 Plus style",
+  x: "tall vertical dual camera lenses in an oval module cutout, iPhone X / XS style",
+  xr: "one large single camera lens cutout in the upper left, iPhone XR / 11 style",
   "11pro":
-    "square camera module with three lenses and flash, iPhone 11 Pro style cutout",
+    "square camera module cutout with three lenses arranged in a triangle and a flash, iPhone 11 Pro style",
   "12dual":
-    "diagonal dual camera lenses in square module, iPhone 13 style cutout",
+    "square camera module cutout with two diagonal lenses, iPhone 12 / 13 / 14 non-Pro style",
   "12pro":
-    "diagonal triple camera lenses in square module, iPhone 13 Pro style cutout",
+    "large square camera module cutout with three diagonal lenses, iPhone 12 Pro / 13 Pro style",
   "14pro":
-    "pill-shaped camera island with two lenses and separate circle lens, iPhone 14 Pro style cutout",
+    "pill-shaped Dynamic Island camera cutout with dual lenses plus a separate circular lens, iPhone 14 Pro style",
   "15dual":
-    "vertical dual camera lenses in elongated module, iPhone 15 style cutout",
+    "vertical dual camera lenses in an elongated rounded rectangle module, iPhone 15 / 16 non-Pro style",
   "15pro":
-    "vertical triple camera lenses in elongated titanium module, iPhone 15 Pro Max style cutout",
+    "vertical triple camera lenses in an elongated rounded rectangle titanium-style module, iPhone 15 Pro / 16 Pro style",
   "17dual":
-    "modern vertical dual camera module for iPhone 17 style silicone case cutout",
+    "modern dual camera module cutout for iPhone 17 non-Pro style slim silicone case",
   "17pro":
-    "modern triple camera plateau module for iPhone 17 Pro Max style silicone case cutout"
+    "wide horizontal camera plateau bar across the upper back with three camera lens cutouts in a row, iPhone 17 Pro Max style, NOT a vertical island"
 };
 
+const FORBIDDEN =
+  "not a leather belt pouch, not a wallet case, not a holster, not a flip cover, " +
+  "not a rugged armor case, not a thick OtterBox, not a hand holding the phone, " +
+  "not front screen view, not Android phone, back of case only";
+
 function seedFor(color: string, layout: string): number {
-  let h = 9200;
-  for (const ch of `${color}-${layout}`) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return 9000 + (h % 8000);
+  let h = 11200;
+  for (const ch of `${color}-${layout}-silicone-v2`) {
+    h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  }
+  return 11000 + (h % 9000);
+}
+
+function siliconePrompt(color: string, layout: string): string {
+  const colorName = color.replace(/-/g, " ");
+  return (
+    `slim soft silicone iPhone case protective cover, matte ${colorName} finish, ` +
+    `Apple-style liquid silicone, precise camera cutout for ${LAYOUT_PROMPT[layout] ?? layout}, ` +
+    `product shot of the BACK of the empty case only, centered, ` +
+    `professional e-commerce studio photography, pure seamless white background, ` +
+    `sharp HD, even soft lighting, no text, no watermark, no person, no hands, ${FORBIDDEN}`
+  );
 }
 
 function pollinationsUrl(prompt: string, seed: number): string {
-  const q = encodeURIComponent(
-    `${prompt}, professional e-commerce studio product photography, pure seamless white background, sharp HD, even soft lighting, no text, no watermark, no person, no hands`
-  );
+  const q = encodeURIComponent(prompt);
   return `https://image.pollinations.ai/prompt/${q}?width=1200&height=1200&nologo=true&seed=${seed}`;
 }
 
@@ -111,64 +128,60 @@ async function main() {
   await mkdir(CAT, { recursive: true });
   const fresh = process.argv.includes("--fresh");
   const improve = process.argv.includes("--improve") || fresh;
-
-  console.log("Seeding layout files from legacy cutouts…");
-  for (const color of COLORS) {
-    for (const layout of CAMERA_FAMILIES) {
-      const dest = path.join(CAT, `phone-pouch-${color}-${layout}-1.jpg`);
-      if (existsSync(dest) && !fresh) continue;
-      const legacyPath = path.join(
-        CAT,
-        `phone-pouch-${color}-${legacyFamilyForLayout(layout)}-1.jpg`
-      );
-      if (existsSync(legacyPath)) {
-        await copyFile(legacyPath, dest);
-        console.log(`  ↳ ${path.basename(dest)}`);
-      }
-    }
-  }
+  const onlyLayout = process.argv
+    .find((a) => a.startsWith("--layout="))
+    ?.slice("--layout=".length);
 
   if (improve) {
-    console.log("Generating layout-accurate masters…");
+    console.log("Generating slim silicone case masters (Apple-style)…");
     const jobs: Array<() => Promise<void>> = [];
     for (const color of COLORS) {
       for (const layout of CAMERA_FAMILIES) {
-        if (layout === "single" || layout === "plus") continue;
+        if (onlyLayout && layout !== onlyLayout) continue;
         jobs.push(async () => {
           const dest = path.join(CAT, `phone-pouch-${color}-${layout}-1.jpg`);
-          const legacyPath = path.join(
-            CAT,
-            `phone-pouch-${color}-${legacyFamilyForLayout(layout)}-1.jpg`
-          );
-          if (
-            !fresh &&
-            existsSync(dest) &&
-            !(await sameBytes(dest, legacyPath))
-          ) {
-            return;
+          if (!fresh && existsSync(dest) && !onlyLayout) {
+            // Still regenerate when --improve and file looks like a shared legacy seed
+            const legacyPath = path.join(
+              CAT,
+              `phone-pouch-${color}-${legacyFamilyForLayout(layout)}-1.jpg`
+            );
+            if (
+              existsSync(legacyPath) &&
+              !(await sameBytes(dest, legacyPath)) &&
+              !process.argv.includes("--force-all")
+            ) {
+              // keep unique existing unless --force-all
+              return;
+            }
           }
-          const prompt = `soft matte ${color.replace(/-/g, " ")} silicone iPhone case back view showing ${LAYOUT_PROMPT[layout] ?? "accurate camera cutout"}, slim protective cover product shot`;
-          await download(
-            pollinationsUrl(prompt, seedFor(color, layout)),
+          const ok = await download(
+            pollinationsUrl(siliconePrompt(color, layout), seedFor(color, layout)),
             dest
           );
+          if (!ok) {
+            console.warn(`  keep existing if any: ${path.basename(dest)}`);
+          }
         });
       }
     }
     const concurrency = 1;
     for (let i = 0; i < jobs.length; i += concurrency) {
       await Promise.all(jobs.slice(i, i + concurrency).map((fn) => fn()));
-      await new Promise((r) => setTimeout(r, 1200));
+      await new Promise((r) => setTimeout(r, 1500));
     }
+  } else {
+    console.log("Skip generation (pass --improve to download). Tagging only…");
   }
 
-  console.log("Tagging per-model files…");
+  console.log("Tagging per-model silicone case files…");
   const models = FITMENT_BY_SLUG["phone-pouch"]?.options ?? [];
   for (const color of COLORS) {
     for (const model of models) {
       const slug = modelSlug(model);
       const layout = cameraFamilyForModel(model);
       if (!slug || !layout) continue;
+      if (onlyLayout && layout !== onlyLayout) continue;
       const dest = path.join(CAT, `phone-pouch-${color}-${slug}-1.jpg`);
       const master = path.join(CAT, `phone-pouch-${color}-${layout}-1.jpg`);
       const legacy = path.join(
@@ -181,7 +194,6 @@ async function main() {
           ? legacy
           : null;
       if (!src) continue;
-      // Model tags always mirror the current layout master
       await copyFile(src, dest);
     }
   }

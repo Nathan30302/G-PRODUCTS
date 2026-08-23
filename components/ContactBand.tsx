@@ -1,8 +1,10 @@
 import { Icon } from "@/components/Icons";
 import { Reveal } from "@/components/Reveal";
+import { siteConfig, whatsappHref } from "@/config/site";
 import { SmokeBackdrop } from "@/components/SmokeBackdrop";
-import { siteConfig } from "@/config/site";
+import Link from "next/link";
 
+/** Compact contact strip — prefer LocationsBand on the homepage. */
 export function ContactBand() {
   return (
     <section id="contact" className="container-g mt-24 mb-8 scroll-mt-24">
@@ -11,14 +13,6 @@ export function ContactBand() {
           <SmokeBackdrop />
           <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-accent/20 blur-[110px]" />
           <div className="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-brand/15 blur-[100px]" />
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.8) 1px, transparent 0)",
-              backgroundSize: "22px 22px"
-            }}
-          />
 
           <div className="relative flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-xl">
@@ -39,17 +33,17 @@ export function ContactBand() {
                     className="mt-0.5 h-4 w-4 shrink-0 text-brand"
                   />
                   <span className="leading-relaxed">
-                    {siteConfig.locations.join(" · ")}
+                    {siteConfig.locationLabels.join(" · ")}
                   </span>
                 </p>
                 <p className="flex flex-wrap gap-x-4 gap-y-1 pl-7 font-semibold text-white/80">
-                  {siteConfig.phones.map((ph) => (
+                  {siteConfig.contacts.map((c) => (
                     <a
-                      key={ph}
-                      href={`tel:${ph.replace(/\s/g, "")}`}
+                      key={c.tel}
+                      href={`tel:${c.tel}`}
                       className="transition-colors hover:text-brand"
                     >
-                      {ph}
+                      {c.display}
                     </a>
                   ))}
                 </p>
@@ -58,7 +52,7 @@ export function ContactBand() {
 
             <div className="flex w-full shrink-0 flex-col gap-3 sm:w-auto sm:flex-row lg:flex-col">
               <a
-                href={`https://wa.me/${siteConfig.whatsappNumber}`}
+                href={whatsappHref()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-pill bg-accent px-8 py-3.5 text-sm font-bold text-ink-950 shadow-accent-glow transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:brightness-110"
@@ -66,13 +60,10 @@ export function ContactBand() {
                 <Icon name="whatsapp" className="h-5 w-5" />
                 Chat on WhatsApp
               </a>
-              <a
-                href={`tel:${siteConfig.phoneDisplay.replace(/\s/g, "")}`}
-                className="btn-ghost px-8 py-3.5"
-              >
-                <Icon name="phone" className="h-5 w-5" />
-                Call us
-              </a>
+              <Link href="/#locations" className="btn-ghost px-8 py-3.5">
+                <Icon name="map-pin" className="h-5 w-5" />
+                Our locations
+              </Link>
             </div>
           </div>
         </div>

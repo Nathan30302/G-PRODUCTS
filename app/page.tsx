@@ -1,67 +1,47 @@
 import { Hero } from "@/components/Hero";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { ServicesBand } from "@/components/ServicesBand";
-import { ContactBand } from "@/components/ContactBand";
+import { LocationsBand } from "@/components/LocationsBand";
+import { StoreReviewsSection } from "@/components/ReviewsSection";
+import { HomeCatalogSections } from "@/components/home/HomeLayouts";
 import {
-  HomeDesktop,
-  HomeMobileSections
-} from "@/components/home/HomeLayouts";
-import {
-  getAllCategories,
   getAllProducts,
   getFeatured,
   getHotDeals
 } from "@/lib/queries";
-import { getAllServiceOffers } from "@/lib/service-queries";
+import type { Metadata } from "next";
+import { siteConfig } from "@/config/site";
 
 export const dynamic = "force-dynamic";
 
+export const metadata: Metadata = {
+  title: {
+    absolute: `${siteConfig.name} — ${siteConfig.headline}`
+  },
+  description: `${siteConfig.headline} ${siteConfig.subheading}. ${siteConfig.description}`
+};
+
 export default async function HomePage() {
-  const [categories, hotDeals, featured, all, services] = await Promise.all([
-    getAllCategories(),
+  const [hotDeals, featured, all] = await Promise.all([
     getHotDeals(),
     getFeatured(),
-    getAllProducts(),
-    getAllServiceOffers()
+    getAllProducts()
   ]);
 
   const newest = all.slice(0, 8);
-  const serviceLinks = services.map((s) => ({
-    slug: s.slug,
-    name: s.name,
-    tagline: s.tagline
-  }));
 
   return (
     <>
       <Hero />
-
-      <HomeDesktop
-        categories={categories}
-        hotDeals={hotDeals}
-        featured={featured}
-        newest={newest}
-        services={serviceLinks}
-      />
-
-      <HomeMobileSections
-        categories={categories}
+      <HomeCatalogSections
         hotDeals={hotDeals}
         featured={featured}
         newest={newest}
       />
-
-      <div className="lg:hidden">
-        <WhyGProducts />
-        <ServicesBand />
-        <ContactBand />
-      </div>
-
-      {/* Desktop: trust strip only — services already in hero + /services link */}
-      <div className="hidden lg:block">
-        <WhyGProducts />
-        <ContactBand />
-      </div>
+      <ServicesBand />
+      <WhyGProducts />
+      <StoreReviewsSection />
+      <LocationsBand />
     </>
   );
 }

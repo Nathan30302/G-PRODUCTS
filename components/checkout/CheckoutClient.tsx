@@ -264,9 +264,9 @@ export function CheckoutClient({
                 <li>We confirm your payment</li>
                 <li>Order is prepared at our shop</li>
                 <li>
-                  Pickup at {siteConfig.locations[0]} or{" "}
-                  {siteConfig.locations[1]} — or Yango delivery. We update you
-                  on WhatsApp
+                  Pickup at {siteConfig.locations[0]?.name} or{" "}
+                  {siteConfig.locations[1]?.name} — or Yango delivery. We update
+                  you on WhatsApp
                 </li>
               </ol>
             </div>

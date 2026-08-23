@@ -11,7 +11,7 @@ export function legacyUploadRoots(): string[] {
   const roots = [
     uploadsRoot(),
     path.join(cwd, ".uploads"),
-    path.join("/data", "uploads"),
+    path.join("/data", "uploads"), // legacy / ephemeral Docker mkdir
     path.join(cwd, "public", "uploads")
   ];
   return [...new Set(roots)];

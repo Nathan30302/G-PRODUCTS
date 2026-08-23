@@ -1,21 +1,36 @@
 import Link from "next/link";
-import { categories } from "@/lib/categories";
-import { siteConfig } from "@/config/site";
+import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
+import { siteConfig, whatsappHref } from "@/config/site";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
 
 const serviceLinks = [
-  { slug: "key-cutting", name: "Key Cutting" },
-  { slug: "g-loans", name: "G-Loans" },
-  { slug: "printing", name: "Printing" }
+  { href: "/services/printing", name: "Upload & Print" },
+  { href: "/services/key-cutting", name: "Key Cutting" },
+  { href: "/services/g-loans", name: "G-Loans" },
+  { href: "/services", name: "All services" }
+];
+
+const helpLinks = [
+  { href: "/delivery", name: "Delivery & Pickup" },
+  { href: "/returns", name: "Returns & Refunds" },
+  { href: "/warranty", name: "Warranty" },
+  { href: "/search", name: "Search products" }
+];
+
+const companyLinks = [
+  { href: "/about", name: "About Us" },
+  { href: "/privacy", name: "Privacy Policy" },
+  { href: "/terms", name: "Terms of Use" },
+  { href: "/terms/g-loans", name: "G-Loans Terms" }
 ];
 
 export function Footer() {
   return (
-    <footer className="relative mt-24 border-t border-white/[0.06] bg-ink-950/80">
+    <footer className="relative mt-20 border-t border-white/[0.06] bg-ink-950/80 sm:mt-24">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
-      <div className="container-g grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-5">
-        <div>
+      <div className="container-g grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-6">
+        <div className="lg:col-span-2">
           <Logo size="lg" />
           <p className="mt-4 text-sm font-semibold text-brand/90">
             {siteConfig.tagline}
@@ -40,16 +55,18 @@ export function Footer() {
             Shop
           </h4>
           <ul className="mt-4 space-y-2.5 text-sm text-white/55">
-            {categories.map((c) => (
-              <li key={c.slug}>
-                <Link
-                  href={`/category/${c.slug}`}
-                  className="transition-colors hover:text-brand"
-                >
-                  {c.name}
-                </Link>
-              </li>
-            ))}
+            {catalogGroups
+              .filter((g) => !g.href)
+              .map((g) => (
+                <li key={g.slug}>
+                  <Link
+                    href={hrefForCatalogGroup(g)}
+                    className="transition-colors hover:text-brand"
+                  >
+                    {g.name}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </div>
 
@@ -59,67 +76,85 @@ export function Footer() {
           </h4>
           <ul className="mt-4 space-y-2.5 text-sm text-white/55">
             {serviceLinks.map((s) => (
-              <li key={s.slug}>
+              <li key={s.href}>
                 <Link
-                  href={`/services/${s.slug}`}
+                  href={s.href}
                   className="transition-colors hover:text-brand"
                 >
                   {s.name}
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="/services"
-                className="transition-colors hover:text-brand"
-              >
-                All services
-              </Link>
-            </li>
           </ul>
-        </div>
-
-        <div>
-          <h4 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
-            <Icon name="clock" className="h-3.5 w-3.5 text-brand" />
-            Hours
-          </h4>
-          <ul className="mt-4 space-y-2.5 text-sm text-white/55">
-            {siteConfig.hours.map((h) => (
-              <li key={h.days} className="flex justify-between gap-3">
-                <span>{h.days}</span>
-                <span className="font-medium text-white/80">{h.time}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 flex items-start gap-1.5 text-xs text-white/40">
-            <Icon name="map-pin" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            <span className="leading-relaxed">
-              {siteConfig.locations.join(" · ")}
-            </span>
-          </p>
         </div>
 
         <div>
           <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
-            Get in touch
+            Help
           </h4>
-          <p className="mt-4 text-sm text-white/55">
-            Message us on WhatsApp for products, key cutting, loans or printing.
-          </p>
-          <p className="mt-3 space-y-1 text-sm font-semibold text-white">
-            {siteConfig.phones.map((ph) => (
-              <a
-                key={ph}
-                href={`tel:${ph.replace(/\s/g, "")}`}
-                className="block transition-colors hover:text-brand"
-              >
-                {ph}
-              </a>
+          <ul className="mt-4 space-y-2.5 text-sm text-white/55">
+            {helpLinks.map((s) => (
+              <li key={s.href}>
+                <Link
+                  href={s.href}
+                  className="transition-colors hover:text-brand"
+                >
+                  {s.name}
+                </Link>
+              </li>
             ))}
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+            Company
+          </h4>
+          <ul className="mt-4 space-y-2.5 text-sm text-white/55">
+            {companyLinks.map((s) => (
+              <li key={s.href}>
+                <Link
+                  href={s.href}
+                  className="transition-colors hover:text-brand"
+                >
+                  {s.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <h4 className="mt-8 text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+            Connect
+          </h4>
+          <p className="mt-3 text-sm text-white/55">
+            Message us for stock, printing and services.
           </p>
+          <div className="mt-3 space-y-2">
+            {siteConfig.contacts.map((c) => (
+              <div key={c.tel} className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-semibold tabular-nums text-white">
+                  {c.display}
+                </span>
+                <a
+                  href={`tel:${c.tel}`}
+                  className="text-xs font-semibold text-brand hover:underline"
+                >
+                  Call
+                </a>
+                <span className="text-white/20">·</span>
+                <a
+                  href={`https://wa.me/${c.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold text-accent hover:underline"
+                >
+                  WhatsApp
+                </a>
+              </div>
+            ))}
+          </div>
           <a
-            href={`https://wa.me/${siteConfig.whatsappNumber}`}
+            href={whatsappHref()}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-whatsapp mt-4"
@@ -127,16 +162,6 @@ export function Footer() {
             <Icon name="whatsapp" className="h-4 w-4" />
             Chat on WhatsApp
           </a>
-          {siteConfig.whatsappCatalogue && (
-            <a
-              href={siteConfig.whatsappCatalogue}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 block text-sm text-brand hover:underline"
-            >
-              WhatsApp catalogue
-            </a>
-          )}
         </div>
       </div>
 
@@ -147,7 +172,7 @@ export function Footer() {
             reserved.
           </p>
           <p className="text-center sm:text-right">
-            {siteConfig.locations.join(" · ")}
+            {siteConfig.locationLabels.join(" · ")}
           </p>
         </div>
       </div>

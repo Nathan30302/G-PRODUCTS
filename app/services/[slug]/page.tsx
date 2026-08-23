@@ -102,7 +102,7 @@ export default async function ServiceDetailPage({
               </h2>
               <p className="mt-0.5 text-sm text-white/50">
                 {slug === "printing"
-                  ? "Choose a job → upload files → pay → track status."
+                  ? "Upload → choose options → pay → we print → collect or delivery."
                   : slug === "key-cutting"
                     ? "Pick key type → in-store or Yango → pay → we cut."
                     : "Details → collateral → NRC → we review on WhatsApp."}

@@ -1,7 +1,8 @@
-import { existsSync, mkdirSync } from "node:fs";
+import { mkdirSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
+import { persistentUploadsRoot } from "@/lib/persist-data";
 
 const MAX_BYTES = 15 * 1024 * 1024; // 15MB
 const ALLOWED = new Set([
@@ -13,13 +14,12 @@ const ALLOWED = new Set([
 ]);
 
 /**
- * Prefer Railway volume (/data). Fall back to a writable runtime folder
+ * Prefer a real persistent volume. Fall back to a writable runtime folder
  * outside `public/` — Next production often won't pick up files added to
  * `public/` after `next start` has already booted.
  */
 export function uploadsRoot(): string {
-  if (existsSync("/data")) return path.join("/data", "uploads");
-  return path.join(process.cwd(), ".uploads");
+  return persistentUploadsRoot();
 }
 
 export function ensureUploadsDir(...segments: string[]): string {

@@ -9,10 +9,10 @@ export function productWhatsAppLink(
   fitment?: string
 ): string {
   const bits = [variant?.name, fitment].filter(Boolean).join(" · ");
-  const spec = bits ? ` (${bits})` : "";
+  const name = bits ? `${product.name} (${bits})` : product.name;
+  const price = formatPrice(variant?.price ?? product.price);
   const lines = [
-    `Hi G-Products, I'm interested in:`,
-    `*${product.name}${spec}* - ${formatPrice(variant?.price ?? product.price)}`,
+    `Hi G-Products, I'm interested in the ${name} at ${price}. Is it available?`,
     url ? `Link: ${url}` : ""
   ].filter(Boolean);
   const text = encodeURIComponent(lines.join("\n"));

@@ -1,32 +1,18 @@
-/** Curated HD galleries under /public/services — first item is the default cover. */
-export const SERVICE_GALLERIES: Record<string, string[]> = {
-  "key-cutting": [
-    "/services/key-cutting/03-car-key-cut.jpg",
-    "/services/key-cutting/01-machine.jpg",
-    "/services/key-cutting/04-bq-cutter.jpg",
-    "/services/key-cutting/02-duplicator.jpg",
-    "/services/key-cutting/06-transponder.jpg",
-    "/services/key-cutting/05-ford-fob.jpg"
-  ],
-  printing: [
-    "/services/printing/01-photocopier.jpg",
-    "/services/printing/03-lexmark.jpg",
-    "/services/printing/08-uganda-copier.jpg",
-    "/services/printing/04-inkjet.jpg",
-    "/services/printing/02-sharp-copier.jpg",
-    "/services/printing/05-documents.jpg",
-    "/services/printing/06-imagerunner.jpg",
-    "/services/printing/07-menu.jpg"
-  ],
-  "g-loans": [
-    "/services/g-loans/01-kwacha.jpg",
-    "/services/g-loans/02-mobile-money.jpg",
-    "/services/g-loans/03-check.jpg",
-    "/services/g-loans/04-brand.jpg"
-  ]
+/** Curated service cover under /public/services — one photo by default. */
+export const SERVICE_COVERS: Record<string, string> = {
+  "key-cutting": "/services/key-cutting-cover.jpg",
+  printing: "/services/printing-cover.jpg",
+  "g-loans": "/services/g-loans-cover.jpg"
 };
 
-/** Old flyer / Unsplash covers we replace with the curated gallery when alone in DB. */
+/** @deprecated use SERVICE_COVERS — kept as single-item galleries for callers. */
+export const SERVICE_GALLERIES: Record<string, string[]> = {
+  "key-cutting": [SERVICE_COVERS["key-cutting"]],
+  printing: [SERVICE_COVERS.printing],
+  "g-loans": [SERVICE_COVERS["g-loans"]]
+};
+
+/** Old flyer / Unsplash covers we replace with the curated cover when alone in DB. */
 const LEGACY_COVERS = new Set([
   "/services/key-cutting.png",
   "/services/g-loans.png",
@@ -50,51 +36,40 @@ export function serializeServiceImageUrls(urls: string[]): string {
 function isLegacyCover(url: string): boolean {
   if (LEGACY_COVERS.has(url)) return true;
   if (url.includes("images.unsplash.com")) return true;
+  // Old multi-shot gallery paths — treat as legacy so we fall back to cover-only
+  if (/\/services\/(key-cutting|printing|g-loans)\//.test(url)) return true;
   return false;
 }
 
 /**
- * Resolve gallery for a service offer.
- * - Multiple DB urls (newline-separated imageUrl) win — Gift's cover picker.
- * - Single custom upload stays cover, curated shots fill the rest.
- * - Legacy flyer / Unsplash alone → full curated gallery.
+ * Resolve images for a service offer.
+ * Default: one cover photo. Gift can upload more via Admin → Service pages.
  */
 export function resolveServiceImages(
   slug: string,
   imageUrl: string | null | undefined
 ): string[] {
-  const defaults =
-    SERVICE_GALLERIES[slug] ??
-    (imageUrl ? parseServiceImageUrls(imageUrl) : []);
-  const fromDb = parseServiceImageUrls(imageUrl);
+  const cover =
+    SERVICE_COVERS[slug] ??
+    (imageUrl ? parseServiceImageUrls(imageUrl)[0] : "") ??
+    "";
+  const fromDb = parseServiceImageUrls(imageUrl).filter((u) => !isLegacyCover(u));
 
-  if (fromDb.length > 1) return fromDb;
-
-  if (fromDb.length === 1) {
-    const cover = fromDb[0];
-    if (isLegacyCover(cover) || defaults.includes(cover)) {
-      return defaults.length ? defaults : [cover];
-    }
-    return [cover, ...defaults.filter((u) => u !== cover)];
-  }
-
-  return defaults;
+  if (fromDb.length > 0) return fromDb;
+  return cover ? [cover] : [];
 }
 
 export function coverFromImages(images: string[]): string {
   return images[0] ?? "";
 }
 
-/** Admin editor: seed uploader with DB urls, or curated gallery when still on legacy. */
+/** Admin editor: show Gift's uploads, or the single cover when still on defaults. */
 export function adminInitialServiceImages(
   slug: string,
   imageUrl: string | null | undefined
 ): string[] {
-  const fromDb = parseServiceImageUrls(imageUrl);
-  if (fromDb.length > 1) return fromDb;
-  if (fromDb.length === 1 && !isLegacyCover(fromDb[0])) {
-    const defaults = SERVICE_GALLERIES[slug] ?? [];
-    return [fromDb[0], ...defaults.filter((u) => u !== fromDb[0])];
-  }
-  return SERVICE_GALLERIES[slug] ?? fromDb;
+  const fromDb = parseServiceImageUrls(imageUrl).filter((u) => !isLegacyCover(u));
+  if (fromDb.length > 0) return fromDb;
+  const cover = SERVICE_COVERS[slug];
+  return cover ? [cover] : [];
 }

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/cart";
-import { categories } from "@/lib/categories";
+import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
 import { Icon } from "@/components/Icons";
 import { Logo } from "@/components/Logo";
 
@@ -34,6 +34,8 @@ export function Navbar() {
       q.trim() ? `/search?q=${encodeURIComponent(q.trim())}` : "/search"
     );
   }
+
+  const shopGroups = catalogGroups.filter((g) => !g.href);
 
   return (
     <header
@@ -100,12 +102,13 @@ export function Navbar() {
           >
             Shop
           </Link>
-          {categories.slice(0, 4).map((c) => {
-            const active = pathname === `/category/${c.slug}`;
+          {shopGroups.slice(0, 3).map((c) => {
+            const href = hrefForCatalogGroup(c);
+            const active = pathname === href;
             return (
               <Link
                 key={c.slug}
-                href={`/category/${c.slug}`}
+                href={href}
                 className={`rounded-pill px-3.5 py-2 font-medium transition-colors ${
                   active
                     ? "bg-white/[0.06] text-white"
@@ -117,11 +120,22 @@ export function Navbar() {
             );
           })}
           <Link
-            href="/services"
+            href="/services/printing"
             className={`rounded-pill px-3.5 py-2 font-semibold transition-colors ${
-              pathname?.startsWith("/services")
+              pathname === "/services/printing"
                 ? "bg-brand text-ink-950 shadow-brand-glow"
                 : "text-brand hover:bg-brand/10"
+            }`}
+          >
+            Upload &amp; Print
+          </Link>
+          <Link
+            href="/services"
+            className={`rounded-pill px-3.5 py-2 font-semibold transition-colors ${
+              pathname?.startsWith("/services") &&
+              pathname !== "/services/printing"
+                ? "bg-brand/15 text-brand"
+                : "text-white/65 hover:bg-white/[0.04] hover:text-white"
             }`}
           >
             Services
@@ -185,12 +199,13 @@ export function Navbar() {
 
       <div className="hidden border-t border-white/[0.04] lg:block">
         <div className="container-g no-scrollbar flex gap-1 overflow-x-auto py-2">
-          {categories.map((c) => {
-            const active = pathname === `/category/${c.slug}`;
+          {catalogGroups.map((c) => {
+            const href = hrefForCatalogGroup(c);
+            const active = pathname === href;
             return (
               <Link
                 key={c.slug}
-                href={`/category/${c.slug}`}
+                href={href}
                 className={`shrink-0 rounded-pill px-3.5 py-1.5 text-xs font-semibold transition-all ${
                   active
                     ? "bg-brand text-ink-950 shadow-brand-glow"
@@ -226,10 +241,10 @@ export function Navbar() {
                 </button>
               </form>
               <div className="grid grid-cols-2 gap-2.5">
-                {categories.map((c, idx) => (
+                {catalogGroups.map((c, idx) => (
                   <Link
                     key={c.slug}
-                    href={`/category/${c.slug}`}
+                    href={hrefForCatalogGroup(c)}
                     className="flex items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3 text-sm font-semibold text-white/85 transition-colors hover:border-brand/30"
                   >
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-brand/10 text-[10px] font-black text-brand">
@@ -239,11 +254,11 @@ export function Navbar() {
                   </Link>
                 ))}
                 <Link
-                  href="/services"
-                  className="col-span-2 flex items-center gap-2.5 rounded-2xl border border-brand/40 bg-brand/10 px-3.5 py-3.5 text-sm font-bold text-brand"
+                  href="/services/printing"
+                  className="col-span-2 flex items-center gap-2.5 rounded-2xl border border-brand/40 bg-brand px-3.5 py-3.5 text-sm font-bold text-ink-950"
                 >
-                  <Icon name="services" className="h-4 w-4" />
-                  Services — Keys, Loans, Printing
+                  <Icon name="printer" className="h-4 w-4" />
+                  Upload &amp; Print Now
                 </Link>
               </div>
             </div>

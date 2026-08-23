@@ -93,8 +93,12 @@ export async function getAllCategories(): Promise<Category[]> {
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   try {
+    const { resolveShopCategory } = await import("@/lib/catalog-taxonomy");
+    const virtual = resolveShopCategory(slug);
+    // Prefer live DB leaf category when present (admin may rename taglines)
     const c = await prisma.category.findUnique({ where: { slug } });
-    return c ? toCategory(c) : null;
+    if (c) return toCategory(c);
+    return virtual;
   } catch (err) {
     console.error("[queries] getCategoryBySlug failed:", err);
     return null;
@@ -131,8 +135,11 @@ export async function getProductsByCategory(
   categorySlug: string
 ): Promise<Product[]> {
   try {
+    const { productCategorySlugsFor } = await import("@/lib/catalog-taxonomy");
+    const slugs = productCategorySlugsFor(categorySlug);
+    if (slugs.length === 0) return [];
     const items = await prisma.product.findMany({
-      where: { category: { slug: categorySlug } },
+      where: { category: { slug: { in: slugs } } },
       include: withRelations,
       orderBy: { createdAt: "desc" }
     });

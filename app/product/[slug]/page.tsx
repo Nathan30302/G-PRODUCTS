@@ -13,6 +13,8 @@ import { ProductVariantProvider } from "@/components/ProductVariantContext";
 import { ProductRail } from "@/components/ProductRail";
 import { Icon } from "@/components/Icons";
 import { relatedProducts } from "@/lib/related-products";
+import { getProductExtras } from "@/lib/product-extras";
+import { ProductReviewsSection } from "@/components/ReviewsSection";
 
 export const dynamic = "force-dynamic";
 
@@ -119,7 +121,7 @@ export default async function ProductPage({
           ))}
         </div>
 
-        {product.shortSpecs.length > 0 && (
+        {product.shortSpecs.length > 0 && !getProductExtras(product).features && (
           <div className="mt-10">
             <h2 className="display text-xl">Specifications</h2>
             <dl className="mt-4 overflow-hidden rounded-[1.25rem] border border-white/[0.07] bg-ink-900/40">
@@ -140,6 +142,11 @@ export default async function ProductPage({
             </dl>
           </div>
         )}
+
+        <ProductReviewsSection
+          productSlug={product.slug}
+          productName={product.name}
+        />
       </div>
 
       {related.length > 0 && (

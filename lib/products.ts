@@ -28,7 +28,7 @@ function p(
     shortSpecs: partial.specs ?? [],
     description:
       partial.description ??
-      `${partial.name} — available at G-Products. Heart gladdening products.`,
+      `${partial.name} from G-Products. Genuine stock, fair prices, and pickup or campus delivery where applicable. Message us on WhatsApp to confirm availability.`,
     stock: partial.stock ?? "in_stock",
     featured: partial.featured,
     hotDeal: partial.hotDeal
@@ -66,6 +66,9 @@ export const products: SeedProduct[] = [
     name: "Tipex",
     categorySlug: "stationery",
     price: 10,
+    specs: ["Correction fluid / tape style as stocked"],
+    description:
+      "Correction fluid for clean fixes on homework, notes and office paperwork. Everyday stationery staple at G-Products."
   }),
   p({
     id: "p-glue",
@@ -73,6 +76,9 @@ export const products: SeedProduct[] = [
     name: "Glue",
     categorySlug: "stationery",
     price: 3,
+    specs: ["School & craft use"],
+    description:
+      "Handy glue for school projects, crafts and light office sticking. Affordable everyday stationery."
   }),
   p({
     id: "p-corms",
@@ -80,6 +86,8 @@ export const products: SeedProduct[] = [
     name: "Corms",
     categorySlug: "stationery",
     price: 3,
+    description:
+      "Corms as stocked in-store for school and office use. Ask on WhatsApp if you need a specific size."
   }),
   p({
     id: "p-bic-crystal",
@@ -88,6 +96,9 @@ export const products: SeedProduct[] = [
     brand: "Bic",
     categorySlug: "stationery",
     price: 5,
+    specs: ["Classic Bic write", "Reliable everyday ballpoint"],
+    description:
+      "Classic Bic Crystal ballpoint — smooth everyday writing for class, exams and the office.",
     featured: true
   }),
   p({
@@ -97,6 +108,9 @@ export const products: SeedProduct[] = [
     brand: "Bic",
     categorySlug: "stationery",
     price: 7,
+    specs: ["Fine tip", "Colour options"],
+    description:
+      "Bic fine-tip pen with colour options. Choose your colour on the product page for notes and neat handwriting."
   }),
   p({
     id: "p-nataraj",
@@ -105,6 +119,8 @@ export const products: SeedProduct[] = [
     brand: "Nataraj",
     categorySlug: "stationery",
     price: 3,
+    description:
+      "Affordable Nataraj ballpoint for everyday school and office writing."
   }),
   p({
     id: "p-pencil",
@@ -112,6 +128,9 @@ export const products: SeedProduct[] = [
     name: "Pencil",
     categorySlug: "stationery",
     price: 3,
+    specs: ["HB / standard as stocked"],
+    description:
+      "Standard pencil for school, sketching and exam work. Pair with our sharpeners and erasers."
   }),
   p({
     id: "p-ruler",
@@ -119,6 +138,8 @@ export const products: SeedProduct[] = [
     name: "Ruler",
     categorySlug: "stationery",
     price: 8,
+    description:
+      "Straight edge ruler for maths, technical drawing and classroom work."
   }),
   p({
     id: "p-sharpener",
@@ -126,6 +147,8 @@ export const products: SeedProduct[] = [
     name: "Sharpener",
     categorySlug: "stationery",
     price: 3,
+    description:
+      "Compact pencil sharpener for school bags and desk drawers."
   }),
   p({
     id: "p-marker",
@@ -133,6 +156,8 @@ export const products: SeedProduct[] = [
     name: "Marker",
     categorySlug: "stationery",
     price: 5,
+    description:
+      "Marker for labels, posters and general marking. Check colour options in store or on WhatsApp."
   }),
   p({
     id: "p-keyholder-5",
@@ -159,6 +184,8 @@ export const products: SeedProduct[] = [
     name: "Envelope",
     categorySlug: "stationery",
     price: 5,
+    description:
+      "Plain envelope for letters, forms and school submissions. Ask for available sizes in store."
   }),
   p({
     id: "p-ream",
@@ -166,7 +193,9 @@ export const products: SeedProduct[] = [
     name: "Ream Paper",
     categorySlug: "stationery",
     price: 115,
-    specs: ["Full ream"],
+    specs: ["Full ream", "A4 as stocked"],
+    description:
+      "Full ream of printing / photocopy paper for school, office and our print services. Confirm GSM/brand on WhatsApp if you need a specific pack.",
     featured: true
   }),
   p({
@@ -241,6 +270,9 @@ export const products: SeedProduct[] = [
     name: "Phone Stand / Holder (Plus)",
     categorySlug: "phone-accessories",
     price: 60,
+    specs: ["Desk / bedside stand", "Holds most phones"],
+    description:
+      "Sturdy phone stand for desks and bedside tables. Keeps your phone upright for video calls, watching and charging."
   }),
   p({
     id: "p-stand-200",
@@ -248,6 +280,9 @@ export const products: SeedProduct[] = [
     name: "Phone Stand / Holder (Premium)",
     categorySlug: "phone-accessories",
     price: 200,
+    specs: ["Premium build", "Multi-angle"],
+    description:
+      "Premium phone holder with a more solid build for everyday desk use. Confirm finish options with our team."
   }),
   p({
     id: "p-full-glue",
@@ -255,6 +290,9 @@ export const products: SeedProduct[] = [
     name: "Screen Protector — Full Glue",
     categorySlug: "phone-accessories",
     price: 50,
+    specs: ["Full-glue fit", "Model-specific — confirm your phone"],
+    description:
+      "Full-glue screen protector for clearer edge-to-edge coverage. Tell us your phone model so we fit the right sheet."
   }),
   p({
     id: "p-privacy",
@@ -262,6 +300,9 @@ export const products: SeedProduct[] = [
     name: "Screen Protector — Privacy",
     categorySlug: "phone-accessories",
     price: 80,
+    specs: ["Privacy filter", "Confirm your phone model"],
+    description:
+      "Privacy screen protector that limits side viewing angles — useful on campus and in public. Share your phone model for the correct size.",
     hotDeal: true
   }),
   p({

@@ -5,39 +5,39 @@ import { siteConfig } from "@/config/site";
 const reasons = [
   {
     icon: "shield",
-    title: "Quality you can trust",
-    body: "Genuine stationery, electronics and accessories at student-friendly prices."
+    title: "Genuine products",
+    body: "Quality electronics, stationery and accessories you can trust — not mystery stock."
   },
   {
     icon: "wallet",
-    title: "Pay the way you know",
-    body: "MTN MoMo, Airtel Money, Zamtel — or confirm on WhatsApp."
+    title: "Fair prices",
+    body: "Clear pricing for students and everyday shoppers, with Mobile Money at checkout."
+  },
+  {
+    icon: "map-pin",
+    title: "Physical locations",
+    body: "Visit us at UNZA, Kalingalinga and Balastone — real shops you can walk into."
   },
   {
     icon: "truck",
-    title: "Free delivery in school",
-    body: "Quick campus delivery, plus pickup at UNZA, Kalingalinga or Balastone."
-  },
-  {
-    icon: "printer",
-    title: "Print & services too",
-    body: "Photocopying, printing, key cutting and G-Loans under one roof."
+    title: "Fast support & delivery",
+    body: "Free campus delivery where applicable, easy pickup, and quick WhatsApp help."
   }
 ];
 
 export function WhyGProducts() {
   return (
-    <section className="relative mt-24 overflow-hidden border-y border-white/[0.05] bg-gradient-to-b from-ink-900/40 to-transparent py-16 sm:py-20">
+    <section className="relative mt-20 overflow-hidden border-y border-white/[0.05] bg-gradient-to-b from-ink-900/40 to-transparent py-14 sm:mt-24 sm:py-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.06),_transparent_55%)]" />
       <div className="container-g relative">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow">Why shop with us</p>
+          <p className="eyebrow">Why choose G-Products</p>
           <h2 className="display mt-3 text-3xl sm:text-4xl">
-            The G-Products difference
+            Why trust G-Products?
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-white/50 sm:text-base">
-            {siteConfig.legalName} — powering your devices and perfecting your
-            prints, all in one place.
+            {siteConfig.legalName} — genuine products, fair prices, physical
+            shops, Mobile Money, and service that gets you sorted.
           </p>
         </Reveal>
 
@@ -56,6 +56,15 @@ export function WhyGProducts() {
             </StaggerItem>
           ))}
         </Stagger>
+
+        <ul className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-white/40">
+          {siteConfig.promise.map((p) => (
+            <li key={p} className="flex items-center gap-1.5">
+              <Icon name="check" className="h-3.5 w-3.5 text-accent" />
+              {p}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

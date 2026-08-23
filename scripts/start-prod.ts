@@ -6,6 +6,12 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import { copyFileSync, cpSync, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
+import {
+  hasPersistentDataVolume,
+  persistenceWarning,
+  persistentDbFilePath,
+  persistentMountPath
+} from "../lib/persist-data";
 
 function run(cmd: string, args: string[]) {
   return new Promise<void>((resolve, reject) => {
@@ -23,14 +29,13 @@ function run(cmd: string, args: string[]) {
 
 /**
  * Prisma resolves relative SQLite paths against the schema directory (prisma/),
- * which is easy to get wrong across Docker/Nixpacks. On Railway, always store
- * the database on the /data volume so redeploys keep products, customers, and orders.
+ * which is easy to get wrong across Docker/Nixpacks. On Railway, store the
+ * database on a *real* volume (RAILWAY_VOLUME_MOUNT_PATH), not a plain /data
+ * directory created by the image — that still wipes on redeploy.
  */
 function resolveDatabaseUrl() {
-  const hasDataVolume = existsSync("/data");
-  const persistentDb = hasDataVolume
-    ? path.join("/data", "gproducts.db")
-    : path.join(process.cwd(), "prisma", "gproducts.db");
+  const mount = persistentMountPath();
+  const persistentDb = persistentDbFilePath();
 
   let url = process.env.DATABASE_URL?.trim();
   let configuredAbs: string | null = null;
@@ -45,7 +50,7 @@ function resolveDatabaseUrl() {
 
   mkdirSync(path.dirname(persistentDb), { recursive: true });
 
-  if (hasDataVolume) {
+  if (mount) {
     if (
       !existsSync(persistentDb) &&
       configuredAbs &&
@@ -58,8 +63,10 @@ function resolveDatabaseUrl() {
     url = `file:${persistentDb}`;
     if (configuredAbs && configuredAbs !== persistentDb) {
       console.log(
-        `[start] using persistent DB on volume (was ${configuredAbs})`
+        `[start] using persistent DB on volume ${mount} (was ${configuredAbs})`
       );
+    } else {
+      console.log(`[start] persistent volume OK at ${mount}`);
     }
   } else if (!url) {
     url = `file:${persistentDb}`;
@@ -71,6 +78,11 @@ function resolveDatabaseUrl() {
 
   process.env.DATABASE_URL = url;
   console.log(`[start] DATABASE_URL → ${url}`);
+
+  const warn = persistenceWarning();
+  if (warn) {
+    console.error(`[start] ${warn}`);
+  }
 }
 
 /** WAL + busy_timeout so concurrent signups/orders don't hit "database is locked". */
@@ -89,20 +101,23 @@ async function tuneSqlite() {
   }
 }
 
-/** Move legacy runtime uploads onto /data so product photos survive redeploys. */
+/** Move legacy runtime uploads onto the volume so product photos survive redeploys. */
 function migrateUploadsToVolume() {
-  if (!existsSync("/data")) return;
+  const mount = persistentMountPath();
+  if (!mount) return;
 
-  const target = path.join("/data", "uploads");
+  const target = path.join(mount, "uploads");
   const legacySources = [
     path.join(process.cwd(), ".uploads"),
-    path.join(process.cwd(), "public", "uploads")
+    path.join(process.cwd(), "public", "uploads"),
+    // Old Docker image created an empty /data that was still ephemeral
+    ...(mount !== "/data" ? [path.join("/data", "uploads")] : [])
   ];
 
   mkdirSync(target, { recursive: true });
 
   for (const legacy of legacySources) {
-    if (!existsSync(legacy)) continue;
+    if (!existsSync(legacy) || legacy === target) continue;
     try {
       cpSync(legacy, target, { recursive: true, force: false });
       console.log(`[start] merged ${legacy} → ${target}`);
@@ -162,8 +177,9 @@ function startNext(port: string): Promise<never> {
 
 /**
  * Exactly one provider (OWNER). Created as gift@gproducts.zm / changeme123
- * (overridable via OWNER_*). Password is only reset from OWNER_PASSWORD when
- * OWNER_SYNC_PASSWORD=1 — otherwise in-app password changes stick across deploys.
+ * (overridable via OWNER_*). Password is NEVER reset from OWNER_PASSWORD when
+ * the owner already exists — set OWNER_SYNC_PASSWORD=1 only for an intentional
+ * one-shot recovery, then remove it.
  */
 async function ensureOwnerAccount() {
   const { PrismaClient } = await import("@prisma/client");
@@ -181,10 +197,10 @@ async function ensureOwnerAccount() {
   const syncPassword = process.env.OWNER_SYNC_PASSWORD === "1";
 
   try {
-    const passwordHash = await bcrypt.hash(password, 10);
     const existing = await prisma.user.findUnique({ where: { email } });
 
     if (!existing) {
+      const passwordHash = await bcrypt.hash(password, 10);
       await prisma.user.create({
         data: {
           email,
@@ -195,6 +211,11 @@ async function ensureOwnerAccount() {
         }
       });
       console.log(`[start] created provider login: ${email}`);
+      if (!hasPersistentDataVolume()) {
+        console.error(
+          "[start] owner was created on ephemeral storage — this login will vanish on the next deploy until a volume (or Postgres) is configured"
+        );
+      }
     } else {
       await prisma.user.update({
         where: { email },
@@ -202,12 +223,16 @@ async function ensureOwnerAccount() {
           name,
           role: "OWNER",
           ...(ownerPhone && !existing.phone ? { phone: ownerPhone } : {}),
-          ...(syncPassword ? { passwordHash } : {})
+          ...(syncPassword
+            ? { passwordHash: await bcrypt.hash(password, 10) }
+            : {})
         }
       });
       console.log(
         `[start] provider login ready: ${email}${
-          syncPassword ? " (password synced from OWNER_PASSWORD)" : ""
+          syncPassword
+            ? " (password FORCE-synced from OWNER_PASSWORD — unset OWNER_SYNC_PASSWORD after recovery)"
+            : " (password unchanged)"
         }`
       );
     }

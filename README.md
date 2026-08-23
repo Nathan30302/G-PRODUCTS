@@ -88,16 +88,18 @@ TypeScript** at build time. Those packages are now in `dependencies`, and
    merge to `main` when ready).
 2. Open the service → **Variables** and set at least:
    - `AUTH_SECRET` — long random string
-   - `NEXT_PUBLIC_BASE_URL` — your Railway public URL (e.g. `https://….up.railway.app`)
+   - `NEXT_PUBLIC_BASE_URL` — `https://www.g-products.store`
    - `OWNER_EMAIL` / `OWNER_NAME` / `OWNER_PASSWORD` — first admin account (seed)
    - `OWNER_SYNC_PASSWORD` — set to `1` only if you want redeploys to force-reset the owner password from `OWNER_PASSWORD`. Leave unset so password changes in Account stick.
-3. **Optional but recommended:** add a **Volume** mounted at `/data`, then set:
+3. **Required for data to survive deploys:** add a **Volume** mounted at `/data` (≥5 GB), then set:
    - `DATABASE_URL=file:/data/gproducts.db`  
-   Without a volume, SQLite lives on the container disk and is wiped on redeploy.
+   Without a real attached volume, SQLite lives on the container disk and is wiped on every redeploy (customers vanish; owner password looks like it “reset” to `OWNER_PASSWORD`). Check `/api/health` → `persistentStorage` should be `true` after this.
 4. Settings → Deploy:
    - Start command should be `npm run start:prod` (already in `railway.toml`)
    - Or set Builder to **Dockerfile** if Nixpacks still fails
 5. Redeploy. First boot runs `prisma db push` and seeds the catalog if empty.
+   - Do **not** set `OWNER_SYNC_PASSWORD` unless recovering a lost desk password (then remove it).
+   - Keep `AUTH_SECRET` unchanged forever once set — rotating it logs everyone out.
 
 Admin: `https://YOUR-DOMAIN/admin` with the owner credentials above.
 

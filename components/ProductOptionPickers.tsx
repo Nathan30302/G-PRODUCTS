@@ -58,7 +58,15 @@ export function ColourPicker({
     <div className={`mt-5 ${locked ? "opacity-55" : ""}`}>
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/40">
-          Colour
+          {swatchesOnly ? (
+            <>
+              <span className="text-brand">2</span>
+              <span className="mx-1.5 text-white/20">·</span>
+              Colour
+            </>
+          ) : (
+            "Colour"
+          )}
         </p>
         {locked ? (
           <p className="text-xs text-white/35">{lockHint ?? "Select model first"}</p>
@@ -393,6 +401,7 @@ export function FitmentPicker({
   onChange: (v: string | null) => void;
 }) {
   const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(!value);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -400,32 +409,36 @@ export function FitmentPicker({
     return fitment.options.filter((opt) => {
       const full = opt.toLowerCase();
       const short = shortModelLabel(opt).toLowerCase();
-      return full.includes(q) || short.includes(q) || short.replace(/\s+/g, "").includes(q.replace(/\s+/g, ""));
+      return (
+        full.includes(q) ||
+        short.includes(q) ||
+        short.replace(/\s+/g, "").includes(q.replace(/\s+/g, ""))
+      );
     });
   }, [fitment.options, query]);
+
+  function pick(opt: string) {
+    onChange(opt);
+    setQuery("");
+    setOpen(false);
+  }
 
   return (
     <div className="mt-5">
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/40">
-          {fitment.label}
+          <span className="text-brand">1</span>
+          <span className="mx-1.5 text-white/20">·</span>
+          Choose your iPhone
         </p>
-        {value ? (
-          <button
-            type="button"
-            onClick={() => onChange(null)}
-            className="text-xs font-semibold text-white/40 transition hover:text-white/70"
-          >
-            Clear
-          </button>
-        ) : (
+        {!value ? (
           <p className="text-xs text-white/35">Required</p>
-        )}
+        ) : null}
       </div>
 
-      {value ? (
+      {value && !open ? (
         <div className="mt-3 flex items-center gap-2 rounded-2xl border border-brand/40 bg-brand/10 px-3.5 py-3">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand text-ink-950">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand text-ink-950">
             <Icon name="check" className="h-4 w-4" />
           </span>
           <div className="min-w-0 flex-1">
@@ -434,69 +447,90 @@ export function FitmentPicker({
             </p>
             <p className="truncate text-sm font-bold text-white">{value}</p>
           </div>
-        </div>
-      ) : null}
-
-      <label className="relative mt-3 block">
-        <span className="sr-only">Search iPhone model</span>
-        <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-white/35">
-          <svg
-            viewBox="0 0 24 24"
-            className="h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(true);
+              setQuery("");
+            }}
+            className="shrink-0 rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/70 transition hover:border-brand/40 hover:text-brand"
           >
-            <circle cx="11" cy="11" r="7" />
-            <path d="M20 20l-3-3" strokeLinecap="round" />
-          </svg>
-        </span>
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search your iPhone… e.g. 15 Pro Max"
-          autoComplete="off"
-          className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-10 pr-3.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-brand/50 focus:ring-1 focus:ring-brand/30"
-        />
-      </label>
-
-      <div
-        className="mt-2 max-h-52 overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-white/[0.02] sm:max-h-64"
-        role="listbox"
-        aria-label={fitment.label}
-      >
-        {filtered.length === 0 ? (
-          <p className="px-4 py-6 text-center text-sm text-white/40">
-            No model matches “{query}”
-          </p>
-        ) : (
-          filtered.map((opt) => {
-            const on = value === opt;
-            return (
-              <button
-                key={opt}
-                type="button"
-                role="option"
-                aria-selected={on}
-                onClick={() => {
-                  onChange(opt);
-                  setQuery("");
-                }}
-                className={`flex w-full items-center justify-between gap-3 border-b border-white/[0.04] px-4 py-3 text-left text-sm transition last:border-0 ${
-                  on
-                    ? "bg-brand/15 font-bold text-brand"
-                    : "text-white/75 hover:bg-white/[0.04] hover:text-white"
-                }`}
+            Change
+          </button>
+        </div>
+      ) : (
+        <>
+          <label className="relative mt-3 block">
+            <span className="sr-only">Search iPhone model</span>
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-white/35">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden
               >
-                <span>{opt}</span>
-                {on ? <Icon name="check" className="h-4 w-4 shrink-0" /> : null}
-              </button>
-            );
-          })
-        )}
-      </div>
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3-3" strokeLinecap="round" />
+              </svg>
+            </span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Type model… e.g. 17 Pro Max"
+              autoComplete="off"
+              autoFocus={open && Boolean(value)}
+              className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-10 pr-3.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-brand/50 focus:ring-1 focus:ring-brand/30"
+            />
+          </label>
+
+          <div
+            className="mt-2 max-h-48 overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-white/[0.02] sm:max-h-56"
+            role="listbox"
+            aria-label={fitment.label}
+          >
+            {filtered.length === 0 ? (
+              <p className="px-4 py-6 text-center text-sm text-white/40">
+                No model matches “{query}”
+              </p>
+            ) : (
+              filtered.map((opt) => {
+                const on = value === opt;
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    role="option"
+                    aria-selected={on}
+                    onClick={() => pick(opt)}
+                    className={`flex w-full items-center justify-between gap-3 border-b border-white/[0.04] px-4 py-3 text-left text-sm transition last:border-0 ${
+                      on
+                        ? "bg-brand/15 font-bold text-brand"
+                        : "text-white/75 hover:bg-white/[0.04] hover:text-white"
+                    }`}
+                  >
+                    <span>{opt}</span>
+                    {on ? (
+                      <Icon name="check" className="h-4 w-4 shrink-0" />
+                    ) : null}
+                  </button>
+                );
+              })
+            )}
+          </div>
+          {value && open ? (
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="mt-2 text-xs font-semibold text-white/40 hover:text-white/70"
+            >
+              Cancel
+            </button>
+          ) : null}
+        </>
+      )}
     </div>
   );
 }

@@ -75,10 +75,9 @@ export default async function EditServicePage({
             initialUrls={initialPhotos}
           />
           <p className="mt-2 text-xs text-white/40">
-            First photo is the cover on tiles and the gallery. Use{" "}
-            <span className="text-brand">Make cover</span> to choose which
-            customers see first. Add workshop / print-shop shots — swipe gallery
-            on the public page.
+            One cover photo is enough by default. Upload more if you want a
+            swipe gallery. First photo is the cover — use{" "}
+            <span className="text-brand">Make cover</span> to change it.
           </p>
         </div>
         <div>
