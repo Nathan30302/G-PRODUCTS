@@ -5,6 +5,7 @@
  *
  * Usage: npx tsx scripts/sync-catalog-photos.ts
  *        npx tsx scripts/sync-catalog-photos.ts --force
+ *        npx tsx scripts/sync-catalog-photos.ts --verbose
  */
 import { existsSync } from "node:fs";
 import path from "node:path";
@@ -21,6 +22,7 @@ const prisma = new PrismaClient();
 const force = process.argv.includes("--force");
 const forceIfCatalogOnly = process.argv.includes("--force-if-catalog-only");
 const refreshCopy = process.argv.includes("--refresh-copy");
+const verbose = process.argv.includes("--verbose");
 const onlyArg = process.argv.find((a) => a.startsWith("--only="));
 const onlySlugs = onlyArg
   ? onlyArg
@@ -30,6 +32,24 @@ const onlySlugs = onlyArg
       .filter(Boolean)
   : null;
 const CATALOG_DIR = path.join(process.cwd(), "public", "products", "catalog");
+
+type SkipReason =
+  | "already_has_photos"
+  | "provider_uploads_only"
+  | "has_provider_uploads"
+  | "not_found";
+
+const skipCounts: Record<SkipReason, number> = {
+  already_has_photos: 0,
+  provider_uploads_only: 0,
+  has_provider_uploads: 0,
+  not_found: 0
+};
+
+function skip(slug: string, reason: SkipReason, message: string) {
+  skipCounts[reason]++;
+  if (verbose) console.log(`  skip ${slug} (${message})`);
+}
 
 function existingCatalogFiles(files: string[]): string[] {
   return files.filter((file) => existsSync(path.join(CATALOG_DIR, file)));
@@ -42,7 +62,10 @@ async function syncProduct(slug: string): Promise<boolean> {
     where: { slug },
     include: { images: true, variants: true }
   });
-  if (!row) return false;
+  if (!row) {
+    skip(slug, "not_found", "not in database");
+    return false;
+  }
 
   if (refreshCopy) {
     const def = products.find((p) => p.slug === slug);
@@ -69,12 +92,16 @@ async function syncProduct(slug: string): Promise<boolean> {
     uploadImages.length > 0 && row.images.every((i) => isUploadUrl(i.url));
 
   if (onlyUploads) {
-    console.log(`  skip ${slug} (provider uploads only)`);
+    skip(slug, "provider_uploads_only", "provider uploads only");
     return false;
   }
 
   if (uploadImages.length > 0 && !force) {
-    console.log(`  skip ${slug} (has provider uploads; use --force to mix catalog)`);
+    skip(
+      slug,
+      "has_provider_uploads",
+      "has provider uploads; use --force to mix catalog"
+    );
     return false;
   }
 
@@ -84,7 +111,11 @@ async function syncProduct(slug: string): Promise<boolean> {
 
   // Never silently restore old catalog files over a product that already has photos.
   if (!allowCatalogRefresh && row.images.length > 0) {
-    console.log(`  skip ${slug} (already has photos — set --force to replace)`);
+    skip(
+      slug,
+      "already_has_photos",
+      "already has photos — set --force to replace"
+    );
     return false;
   }
 
@@ -237,7 +268,7 @@ async function main() {
       forceIfCatalogOnly ? " (catalog-only refresh)" : ""
     }${refreshCopy ? " + refresh copy" : ""}${
       onlySlugs ? ` · only ${onlySlugs.join(", ")}` : ""
-    }…`
+    }${verbose ? " (verbose)" : ""}…`
   );
   let updated = 0;
 
@@ -250,6 +281,24 @@ async function main() {
   }
 
   console.log(`Updated ${updated} product(s).`);
+  if (skipCounts.already_has_photos > 0) {
+    console.log(
+      `Skipped ${skipCounts.already_has_photos} products that already have photos.`
+    );
+  }
+  if (skipCounts.provider_uploads_only > 0) {
+    console.log(
+      `Skipped ${skipCounts.provider_uploads_only} products with provider uploads only.`
+    );
+  }
+  if (skipCounts.has_provider_uploads > 0) {
+    console.log(
+      `Skipped ${skipCounts.has_provider_uploads} products that have provider uploads (use --force to mix catalog).`
+    );
+  }
+  if (skipCounts.not_found > 0 && verbose) {
+    console.log(`Skipped ${skipCounts.not_found} products not in database.`);
+  }
 }
 
 main()

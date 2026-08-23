@@ -11,12 +11,16 @@ export const prisma =
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"]
   });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Reuse one client in all environments (incl. production / Railway).
+globalForPrisma.prisma = prisma;
 
 /**
  * SQLite handles many readers well in WAL mode, and busy_timeout stops
  * "database is locked" crashes when signups/orders hit at once.
  * Safe no-op on non-SQLite if the provider is ever switched.
+ *
+ * tune-v2: always mark tuned after first attempt (no per-request retry spam);
+ * PRAGMAs via $queryRawUnsafe only (SQLite returns a row).
  */
 export async function tuneSqliteForConcurrency() {
   if (globalForPrisma.sqliteTuned) return;
@@ -31,9 +35,12 @@ export async function tuneSqliteForConcurrency() {
     await prisma.$queryRawUnsafe("PRAGMA busy_timeout=8000;");
     await prisma.$queryRawUnsafe("PRAGMA synchronous=NORMAL;");
     await prisma.$queryRawUnsafe("PRAGMA foreign_keys=ON;");
-    globalForPrisma.sqliteTuned = true;
   } catch (err) {
-    console.warn("[db] sqlite tune skipped:", err);
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn("[db] sqlite tune skipped:", msg.split("\n")[0]);
+  } finally {
+    // Never retry on every request — success or fail, one attempt per process.
+    globalForPrisma.sqliteTuned = true;
   }
 }
 

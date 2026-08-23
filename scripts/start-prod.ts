@@ -139,7 +139,7 @@ function resolveNextBin() {
   throw new Error("Could not find next binary under node_modules/next");
 }
 
-/** Boot Next without nested npx, and forward stop signals for clean Railway redeploys. */
+/** Boot Next without nested npx; exit 0 on Railway stop/redeploy SIGTERM. */
 function startNext(port: string): Promise<never> {
   const nextBin = resolveNextBin();
   const args = ["start", "-H", "0.0.0.0", "-p", port];
@@ -151,25 +151,40 @@ function startNext(port: string): Promise<never> {
     env: process.env
   });
 
-  const forward = (signal: NodeJS.Signals) => {
+  let shuttingDown = false;
+
+  const shutdown = (signal: NodeJS.Signals) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    console.log(`[start] received ${signal} — stopping Next for clean redeploy`);
+
+    const forceTimer = setTimeout(() => {
+      console.warn("[start] Next did not exit in time — forcing exit 0");
+      process.exit(0);
+    }, 8_000);
+    forceTimer.unref?.();
+
     if (child.pid && !child.killed) {
       try {
         child.kill(signal);
       } catch {
         // child may already be gone
       }
+    } else {
+      process.exit(0);
     }
   };
 
-  process.on("SIGTERM", () => forward("SIGTERM"));
-  process.on("SIGINT", () => forward("SIGINT"));
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 
   return new Promise((_, reject) => {
     child.on("error", reject);
     child.on("exit", (code, signal) => {
-      if (signal) {
-        process.kill(process.pid, signal);
-        return;
+      // Railway / platform stop: treat as clean shutdown so npm doesn't look crashed.
+      if (shuttingDown || signal === "SIGTERM" || signal === "SIGINT") {
+        console.log("[start] Next stopped cleanly");
+        process.exit(0);
       }
       process.exit(code ?? 1);
     });
