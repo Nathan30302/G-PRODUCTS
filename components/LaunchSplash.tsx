@@ -17,8 +17,8 @@ const BRAND = {
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v9",
-  admin: "gproducts-admin-splash-v9"
+  shop: "gproducts-splash-v10",
+  admin: "gproducts-admin-splash-v10"
 } as const;
 
 /** Hold ~4–4.8s so the opening feels intentional, then exit. */

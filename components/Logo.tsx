@@ -1,23 +1,28 @@
-import { BrandMark } from "@/components/BrandMark";
+import Image from "next/image";
 import { siteConfig } from "@/config/site";
+
+const MARK_SRC = siteConfig.logoMark;
 
 /** Pixel box for the G mark — same clean symbol used in the nav. */
 const sizes = {
   sm: 36,
   md: 44,
   lg: 112,
-  /** Intrinsic layout size; splash uses CSS clamp for phone/desktop. */
-  splash: 320
+  /**
+   * Splash displays via CSS clamp; pass a large intrinsic size so Retina
+   * screens get the full 1024 PNG detail (original mark, not redesigned).
+   */
+  splash: 640
 } as const;
 
 /**
- * Brand mark only (G + teardrop). Crisp inline SVG for all UI sizes.
- * Raster PNG remains available via siteConfig.logoMarkPng for favicons / OG.
+ * Brand mark only (G + teardrop). Uses the original PNG asset — do not
+ * replace with a redrawn SVG. Used in nav, splash, auth, and desk.
  */
 export function Logo({
   size = "md",
   className = "",
-  priority: _priority = false
+  priority = false
 }: {
   /** @deprecated Kept for call-site compatibility; UI always shows the G mark. */
   withText?: boolean;
@@ -30,12 +35,18 @@ export function Logo({
 
   return (
     <span
-      className={`relative inline-flex shrink-0 items-center justify-center ${isLarge ? "splash-mark" : ""} ${className}`}
+      className={`relative inline-flex shrink-0 ${isLarge ? "splash-mark" : ""} ${className}`}
       style={isLarge ? undefined : { width: px, height: px }}
     >
-      <BrandMark
-        title={siteConfig.name}
-        className={`h-full w-full ${isLarge ? "p-[1.5%]" : "p-[4%]"}`}
+      <Image
+        src={MARK_SRC}
+        alt="G-Products"
+        width={px}
+        height={px}
+        priority={priority}
+        quality={100}
+        unoptimized
+        className={`h-full w-full object-contain ${isLarge ? "p-[1.5%]" : "p-[4%]"}`}
       />
     </span>
   );

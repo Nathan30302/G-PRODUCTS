@@ -287,9 +287,13 @@ html.splash-open body {
   height: clamp(8.5rem, 26vw + 2rem, 14rem);
 }
 
-.splash-mark svg {
+.splash-mark img {
   display: block;
-  shape-rendering: geometricPrecision;
+  /* Original PNG — keep edges as sharp as the asset allows */
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .splash-logo-halo {

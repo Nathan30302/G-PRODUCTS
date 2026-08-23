@@ -37,10 +37,8 @@ export const siteConfig = {
   /** Full lockup asset (OG / apple icon). In-app UI uses logoMark only. */
   logo: "/brand/g-products-logo.png",
   logoSm: "/brand/g-products-logo-sm.png",
-  /** G mark SVG — crisp UI (nav, splash, auth, desk) via BrandMark; path for reference */
-  logoMark: "/brand/g-products-mark.svg",
-  /** Raster mark — favicons / apple / places that need PNG */
-  logoMarkPng: "/brand/g-products-mark.png",
+  /** Original G mark PNG — nav, splash, hero, auth, desk (do not redraw) */
+  logoMark: "/brand/g-products-mark.png",
   description:
     "G-Products and Services — genuine electronics, stationery, printing, accessories and essential services at fair prices. Free campus delivery where applicable. Pickup across Lusaka.",
   whatsappNumber: "260972500209",

@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     "Mobile Money shop Zambia"
   ],
   icons: {
-    icon: [{ url: siteConfig.logoMarkPng, type: "image/png" }],
+    icon: [{ url: siteConfig.logoMark, type: "image/png" }],
     apple: [{ url: siteConfig.logo, type: "image/png" }]
   },
   openGraph: {
