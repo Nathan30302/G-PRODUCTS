@@ -5,7 +5,8 @@ const flow = [
   { step: "1", title: "Upload", body: "Send original-quality files securely." },
   { step: "2", title: "Options", body: "Choose print type, pages & copies." },
   { step: "3", title: "Pay", body: "MTN, Airtel or Zamtel Mobile Money." },
-  { step: "4", title: "Collect", body: "Pickup or Yango delivery." }
+  { step: "4", title: "Print", body: "We print your job in queue." },
+  { step: "5", title: "Collect", body: "Pickup or Yango delivery." }
 ];
 
 export function UploadPrintCta() {
@@ -22,10 +23,11 @@ export function UploadPrintCta() {
               Print from anywhere. Collect nearby.
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-white/55">
-              Your original-quality files are securely sent directly to our
-              printing team — then pay, print, and pick up or get delivery.
+              Upload original-quality files securely to our printing team —
+              choose options, pay with Mobile Money, we print, then you pick up
+              or request delivery.
             </p>
-            <ol className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <ol className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
               {flow.map((f) => (
                 <li
                   key={f.step}

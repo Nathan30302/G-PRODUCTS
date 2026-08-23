@@ -94,10 +94,10 @@ export const services: ServiceDef[] = [
   {
     slug: "printing",
     type: "PRINTING",
-    name: "Printing",
-    tagline: "Upload documents, pay & print",
+    name: "Upload & Print",
+    tagline: "Upload → Options → Pay → Print → Collect",
     description:
-      "Upload your documents or choose a service (photocopy, print, scan, laminate, bind). Pay with Mobile Money, then pick up at UNZA / Kalingalinga / Balastone or get Yango delivery.",
+      "Upload original-quality documents securely, choose print options, pay with Mobile Money (MTN, Airtel or Zamtel). We print your job, then you pick up at UNZA, Kalingalinga or Balastone — or request Yango delivery.",
     icon: "printer",
     images: SERVICE_GALLERIES.printing,
     image: coverFromImages(SERVICE_GALLERIES.printing),

@@ -48,14 +48,14 @@ export const catalogGroups: CatalogGroup[] = [
   {
     slug: "stationery-school",
     name: "Stationery & School",
-    tagline: "Books, pens, paper & calculators",
+    tagline: "Books, pens, paper, calculators & craft",
     icon: "sparkles",
     children: ["stationery"]
   },
   {
     slug: "home-electrical",
     name: "Home & Electrical",
-    tagline: "Home extras, power & extensions",
+    tagline: "Home extras, laptop power & extensions",
     icon: "home",
     children: ["home", "power"]
   },
@@ -69,7 +69,7 @@ export const catalogGroups: CatalogGroup[] = [
   {
     slug: "services",
     name: "Services",
-    tagline: "Printing, key cutting & G-Loans",
+    tagline: "Upload & Print, key cutting & G-Loans",
     icon: "services",
     children: [],
     href: "/services"

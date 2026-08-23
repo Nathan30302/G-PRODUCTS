@@ -4,7 +4,8 @@ import Link from "next/link";
 import {
   getProductBySlug,
   getProductsByCategory,
-  getCategoryBySlug
+  getCategoryBySlug,
+  getAllProducts
 } from "@/lib/queries";
 import { discountPercent } from "@/lib/format";
 import { ProductPurchasePanel } from "@/components/ProductPurchasePanel";
@@ -28,11 +29,16 @@ export async function generateMetadata({
   if (!product) return { title: "Product" };
   return {
     title: product.name,
-    description: product.description,
+    description:
+      product.description.slice(0, 160) ||
+      `Buy ${product.name} at G-Products — genuine stock, fair prices, pickup across Lusaka.`,
     openGraph: {
-      title: product.name,
-      description: product.description,
-      images: product.images.map((i) => ({ url: i.url })),
+      title: `${product.name} | G-Products`,
+      description: product.description.slice(0, 160),
+      images: product.images.map((i) => ({
+        url: i.url,
+        alt: i.alt || product.name
+      })),
       type: "website"
     }
   };
@@ -54,15 +60,19 @@ export default async function ProductPage({
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const [category, categoryProducts] = await Promise.all([
+  const [category, categoryProducts, allProducts] = await Promise.all([
     getCategoryBySlug(product.categorySlug),
-    getProductsByCategory(product.categorySlug)
+    getProductsByCategory(product.categorySlug),
+    getAllProducts()
   ]);
   const off = discountPercent(product.price, product.compareAtPrice);
   const saved = product.compareAtPrice
     ? product.compareAtPrice - product.price
     : 0;
-  const related = relatedProducts(product, categoryProducts, 8);
+  // Prefer full catalogue for cross-sell (chargers with pouches, mice with laptops…)
+  const relatedPool =
+    allProducts.length > categoryProducts.length ? allProducts : categoryProducts;
+  const related = relatedProducts(product, relatedPool, 8);
 
   return (
     <div>
@@ -151,8 +161,8 @@ export default async function ProductPage({
 
       {related.length > 0 && (
         <ProductRail
-          title="You might also want"
-          subtitle="Similar items customers usually look at together."
+          title="Often bought together"
+          subtitle="Complementary picks — chargers, cases, protectors and more."
           products={related}
           href={category ? `/category/${category.slug}` : "/search"}
         />

@@ -7,15 +7,13 @@ import {
   updateOrderStatus,
   type OrderStatusState
 } from "@/app/admin/(dashboard)/orders/actions";
+import {
+  labelForOrderStatus,
+  orderStatusLabels,
+  type OrderStatusKey
+} from "@/lib/commerce-hooks";
 
-const STATUSES = [
-  "PENDING",
-  "PAID",
-  "PREPARING",
-  "READY",
-  "DELIVERED",
-  "CANCELLED"
-] as const;
+const STATUSES = Object.keys(orderStatusLabels) as OrderStatusKey[];
 
 function SaveButton() {
   const { pending } = useFormStatus();
@@ -42,6 +40,7 @@ export function OrderStatusForm({
     updateOrderStatus,
     undefined
   );
+  const current = labelForOrderStatus(currentStatus);
 
   useEffect(() => {
     if (state?.success) {
@@ -52,6 +51,11 @@ export function OrderStatusForm({
   return (
     <form action={action} className="mt-4 space-y-3">
       <input type="hidden" name="id" value={orderId} />
+      <p className="text-xs text-white/45">
+        Current:{" "}
+        <span className="font-semibold text-white/75">{current.label}</span>
+        {current.hint ? ` — ${current.hint}` : ""}
+      </p>
       <select
         key={currentStatus}
         name="status"
@@ -60,7 +64,7 @@ export function OrderStatusForm({
       >
         {STATUSES.map((s) => (
           <option key={s} value={s}>
-            {s}
+            {orderStatusLabels[s].label} ({s})
           </option>
         ))}
       </select>

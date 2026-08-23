@@ -23,7 +23,7 @@ function p(
     compareAtPrice: partial.compareAtPrice,
     images: galleryFilesForSlug(partial.slug).map((file) => ({
       url: catalogUrl(file),
-      alt: partial.name
+      alt: `${partial.name} — G-Products`
     })),
     shortSpecs: partial.specs ?? [],
     description:
@@ -78,7 +78,7 @@ export const products: SeedProduct[] = [
     price: 3,
     specs: ["School & craft use"],
     description:
-      "Handy glue for school projects, crafts and light office sticking. Affordable everyday stationery."
+      "Handy glue stick for school projects, crafts and light office sticking. Affordable everyday stationery at G-Products."
   }),
   p({
     id: "p-corms",
@@ -130,7 +130,7 @@ export const products: SeedProduct[] = [
     price: 3,
     specs: ["HB / standard as stocked"],
     description:
-      "Standard pencil for school, sketching and exam work. Pair with our sharpeners and erasers."
+      "Standard HB pencil for school, sketching and exam work. Pair with our sharpeners and erasers at G-Products."
   }),
   p({
     id: "p-ruler",
@@ -148,7 +148,7 @@ export const products: SeedProduct[] = [
     categorySlug: "stationery",
     price: 3,
     description:
-      "Compact pencil sharpener for school bags and desk drawers."
+      "Compact metal pencil sharpener for school bags and desk drawers — everyday stationery essential."
   }),
   p({
     id: "p-marker",
@@ -157,7 +157,7 @@ export const products: SeedProduct[] = [
     categorySlug: "stationery",
     price: 5,
     description:
-      "Marker for labels, posters and general marking. Check colour options in store or on WhatsApp."
+      "Permanent-style marker for labels, posters and general marking. Check colour options in store or on WhatsApp."
   }),
   p({
     id: "p-keyholder-5",
@@ -185,7 +185,7 @@ export const products: SeedProduct[] = [
     categorySlug: "stationery",
     price: 5,
     description:
-      "Plain envelope for letters, forms and school submissions. Ask for available sizes in store."
+      "Plain white envelope for letters, forms and school submissions. Ask for available sizes in store or on WhatsApp."
   }),
   p({
     id: "p-ream",
@@ -193,9 +193,9 @@ export const products: SeedProduct[] = [
     name: "Ream Paper",
     categorySlug: "stationery",
     price: 115,
-    specs: ["Full ream", "A4 as stocked"],
+    specs: ["Full ream", "A4 as stocked", "80gsm class as stocked"],
     description:
-      "Full ream of printing / photocopy paper for school, office and our print services. Confirm GSM/brand on WhatsApp if you need a specific pack.",
+      "Full ream of A4 printing / photocopy paper — the everyday Zambia office and school pack. Ideal for our print services too. Confirm brand/GSM on WhatsApp if you need a specific pack.",
     featured: true
   }),
   p({

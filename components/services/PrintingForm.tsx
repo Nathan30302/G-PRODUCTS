@@ -33,7 +33,7 @@ const NEEDS_FILE = new Set([
   "certificate"
 ]);
 
-const STEPS = ["Job", "Upload", "Delivery", "Pay"];
+const STEPS = ["Upload", "Options", "Pay", "Print", "Collect"];
 
 export function PrintingForm({ settings }: { settings: ServiceSettings }) {
   const menu = settings.printMenu?.length
@@ -75,11 +75,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
   const needsFile = NEEDS_FILE.has(jobId);
 
   const stepIndex = useMemo(() => {
-    if (!jobId) return 0;
-    if (needsFile && files.length === 0) return 1;
-    if (!name || !phone) return 1;
-    if (delivery === "YANGO" && !address.trim()) return 2;
-    return 3;
+    // Customer journey: Upload → Options → Pay → (Print → Collect after submit)
+    if (needsFile && files.length === 0) return 0;
+    if (!jobId || !name.trim() || !phone.trim()) return 1;
+    if (delivery === "YANGO" && !address.trim()) return 1;
+    return 2;
   }, [jobId, needsFile, files.length, name, phone, delivery, address]);
 
   async function submit(e: React.FormEvent) {
@@ -198,17 +198,40 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       <ServiceSteps steps={STEPS} current={stepIndex} />
 
       <div className="rounded-[1.15rem] border border-brand/20 bg-brand/[0.06] px-4 py-3 text-sm text-white/65">
-        <p className="font-semibold text-white">Print from home</p>
+        <p className="font-semibold text-white">
+          Upload → Options → Pay → Print → Collect
+        </p>
         <p className="mt-1 text-xs leading-relaxed text-white/50">
-          Upload photos or documents here in full quality. Your original-quality
-          files are securely sent directly to our printing team — no need to
-          resend on WhatsApp.
+          Upload original-quality files securely to our printing team, choose
+          your options, pay with Mobile Money — we print, then you pick up or
+          get delivery. No need to resend files on WhatsApp.
         </p>
       </div>
 
       <FormSection
-        title="1 · What do you need?"
-        hint="Tap a job — prices are per unit / page."
+        title="1 · Upload"
+        hint={
+          needsFile
+            ? "Required for this job — clear phone photos of pages work great."
+            : "Optional for this service — add files if you already have them."
+        }
+      >
+        <FileUploadField
+          files={files}
+          onChange={setFiles}
+          required={needsFile}
+          label="Documents or photos"
+          hint={
+            needsFile
+              ? "Your original-quality files are securely sent directly to our printing team."
+              : "Add files if helpful for typing, scan, laminate, or bind."
+          }
+        />
+      </FormSection>
+
+      <FormSection
+        title="2 · Options"
+        hint="Choose the job, pages and copies — prices are per unit / page."
       >
         <div className="grid gap-2 sm:grid-cols-2">
           {menu.map((m) => (
@@ -255,27 +278,6 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
             />
           </label>
         </div>
-      </FormSection>
-
-      <FormSection
-        title="2 · Upload files"
-        hint={
-          needsFile
-            ? "Required for this job — clear phone photos of pages work great."
-            : "Optional for this service — add files if you already have them."
-        }
-      >
-        <FileUploadField
-          files={files}
-          onChange={setFiles}
-          required={needsFile}
-          label="Documents or photos"
-          hint={
-            needsFile
-              ? "Your original-quality files are securely sent directly to our printing team."
-              : "Add files if helpful for typing, scan, laminate, or bind."
-          }
-        />
         <label className="block">
           <span className="text-sm text-white/60">Notes (optional)</span>
           <textarea
@@ -286,12 +288,6 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
             placeholder="e.g. Staple, double-sided, A4…"
           />
         </label>
-      </FormSection>
-
-      <FormSection
-        title="3 · Delivery & contact"
-        hint="Pickup at the shop or Yango to your area."
-      >
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
             <span className="text-sm text-white/60">Full name</span>
@@ -321,8 +317,16 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         />
       </FormSection>
 
-      <FormSection title="4 · Pay" hint="Choose Mobile Money — then place order.">
+      <FormSection
+        title="3 · Pay"
+        hint="Choose Mobile Money — after payment we print, then you collect."
+      >
         <PaymentPicker method={pay} onChange={setPay} />
+        <p className="text-xs leading-relaxed text-white/40">
+          Next: <span className="text-white/60">4 · Print</span> (we prepare
+          your job) → <span className="text-white/60">5 · Collect</span>{" "}
+          (pickup or Yango).
+        </p>
       </FormSection>
 
       <div className="flex items-center justify-between rounded-xl border border-brand/20 bg-brand/[0.06] px-4 py-3.5">

@@ -29,8 +29,8 @@ export function Footer() {
   return (
     <footer className="relative mt-20 border-t border-white/[0.06] bg-ink-950/80 sm:mt-24">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
-      <div className="container-g grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-6">
-        <div className="lg:col-span-2">
+      <div className="container-g grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-7">
+        <div className="sm:col-span-2 lg:col-span-2">
           <Logo size="lg" />
           <p className="mt-4 text-sm font-semibold text-brand/90">
             {siteConfig.tagline}
@@ -122,12 +122,14 @@ export function Footer() {
               </li>
             ))}
           </ul>
+        </div>
 
-          <h4 className="mt-8 text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+        <div>
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
             Connect
           </h4>
           <p className="mt-3 text-sm text-white/55">
-            Message us for stock, printing and services.
+            Call or WhatsApp for stock, printing and services.
           </p>
           <div className="mt-3 space-y-2">
             {siteConfig.contacts.map((c) => (

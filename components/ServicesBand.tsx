@@ -19,8 +19,9 @@ export async function ServicesBand() {
               Printing &amp; other services
             </h2>
             <p className="mt-2 max-w-xl text-sm text-white/50">
-              Document printing, key cutting and G-Loans — upload from home, pay
-              with Mobile Money, pick up or request delivery.
+              Document printing, key cutting and G-Loans — upload, choose
+              options, pay with Mobile Money, we print, then pick up or request
+              delivery.
             </p>
           </div>
           <Link
