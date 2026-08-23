@@ -99,12 +99,19 @@ function PasswordInput({
   );
 }
 
-export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
+export function AuthPanel({
+  initialMode = "signin",
+  initialReferralCode = ""
+}: {
+  initialMode?: Mode;
+  initialReferralCode?: string;
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(initialMode);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [referralCode, setReferralCode] = useState(initialReferralCode);
 
   function switchMode(next: Mode) {
     setMode(next);
@@ -163,7 +170,8 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
           phone: String(form.get("phone") ?? "").trim(),
           email: String(form.get("email") ?? "").trim(),
           password: String(form.get("password") ?? ""),
-          confirmPassword: String(form.get("confirmPassword") ?? "")
+          confirmPassword: String(form.get("confirmPassword") ?? ""),
+          referralCode: String(form.get("referralCode") ?? "").trim()
         })
       });
       const data = (await res.json()) as {
@@ -333,6 +341,26 @@ export function AuthPanel({ initialMode = "signin" }: { initialMode?: Mode }) {
                   required
                   className="field"
                   placeholder="you@email.com"
+                />
+              </label>
+
+              <label className="block">
+                <span className="field-label">
+                  Referral code{" "}
+                  <span className="font-normal text-white/35">(optional)</span>
+                </span>
+                <input
+                  name="referralCode"
+                  type="text"
+                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  value={referralCode}
+                  onChange={(e) =>
+                    setReferralCode(e.target.value.toUpperCase())
+                  }
+                  className="field uppercase"
+                  placeholder="GP-XXXXXX"
                 />
               </label>
 

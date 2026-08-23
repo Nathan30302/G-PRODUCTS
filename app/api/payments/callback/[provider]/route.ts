@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { onOrderPaymentSuccess } from "@/lib/rewards";
 
 /**
  * Generic payment callback/webhook receiver.
@@ -54,6 +55,9 @@ export async function POST(
       where: { id: order.id },
       data: { paymentStatus: "SUCCESS", status: "PAID" }
     });
+    await onOrderPaymentSuccess(order.id).catch((err) =>
+      console.warn("[payments/callback] rewards:", err)
+    );
   } else if (isFailed) {
     await prisma.order.update({
       where: { id: order.id },

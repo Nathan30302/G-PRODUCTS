@@ -14,6 +14,10 @@ import {
   signDeskToken
 } from "@/lib/session-cookies";
 import { siteConfig } from "@/config/site";
+import {
+  newReferralCode,
+  maybeAwardReferralBonus
+} from "@/lib/rewards";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,6 +33,11 @@ export async function POST(req: Request) {
       .toLowerCase();
     const password = String(body.password ?? "");
     const confirm = String(body.confirmPassword ?? "");
+    const referralFromBody = String(
+      body.referralCode ?? body.referredBy ?? ""
+    )
+      .trim()
+      .toUpperCase();
 
     if (!firstName) {
       return NextResponse.json(
@@ -167,9 +176,14 @@ export async function POST(req: Request) {
         name,
         email: emailRaw,
         phone,
-        passwordHash
+        passwordHash,
+        referralCode: await allocateReferralCode(),
+        referredByCode: await resolveReferredBy(referralFromBody)
       }
     });
+
+    // No-op until first paid order; keeps referral wiring in one place
+    await maybeAwardReferralBonus(customer.id).catch(() => undefined);
 
     const token = await signCustomerToken({
       id: customer.id,
@@ -217,4 +231,25 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+async function allocateReferralCode(): Promise<string> {
+  for (let i = 0; i < 8; i++) {
+    const code = newReferralCode();
+    const clash = await prisma.customer.findUnique({
+      where: { referralCode: code },
+      select: { id: true }
+    });
+    if (!clash) return code;
+  }
+  throw new Error("Could not allocate referral code");
+}
+
+async function resolveReferredBy(code: string): Promise<string | null> {
+  if (!code) return null;
+  const referrer = await prisma.customer.findFirst({
+    where: { referralCode: code },
+    select: { referralCode: true }
+  });
+  return referrer?.referralCode ?? null;
 }

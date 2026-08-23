@@ -50,6 +50,11 @@ const navGroups: NavGroup[] = [
         href: "/admin/customers",
         label: "Customers",
         hint: "Shop users & buyers"
+      },
+      {
+        href: "/admin/reviews",
+        label: "Reviews",
+        hint: "Moderate feedback"
       }
     ]
   },
@@ -72,12 +77,22 @@ const navGroups: NavGroup[] = [
         href: "/admin/service-pages",
         label: "Service pages",
         hint: "Public content"
+      },
+      {
+        href: "/admin/locations",
+        label: "Locations",
+        hint: "Shop photos"
       }
     ]
   },
   {
     label: "Team",
     items: [
+      {
+        href: "/admin/shop-team",
+        label: "Shop team",
+        hint: "Public profiles"
+      },
       {
         href: "/admin/staff",
         label: "Staff",

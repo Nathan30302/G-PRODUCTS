@@ -392,6 +392,7 @@ async function main() {
     const { ensureUploadsDir } = await import("../lib/uploads");
     ensureUploadsDir("products");
     ensureUploadsDir("services");
+    ensureUploadsDir("misc");
     console.log("[start] upload folders ready");
   } catch (err) {
     console.warn("[start] upload folders:", err);

@@ -121,11 +121,18 @@ export const siteConfig = {
   deliveryNote:
     "Free delivery within school / campus where applicable. Pickup at UNZA, Kalingalinga or Balastone — or Yango / Lusaka & nationwide delivery.",
   supportEmail: "hello@gproducts.zm",
-  /** Public social profiles — update URLs when official pages go live */
+  /**
+   * Public social profiles — set full profile URLs when official pages go live.
+   * Empty string or bare network roots (…facebook.com/) = PLACEHOLDER / unset;
+   * the footer only shows links that look like real profiles.
+   */
   social: {
-    facebook: "https://www.facebook.com/",
-    instagram: "https://www.instagram.com/",
-    tiktok: "https://www.tiktok.com/"
+    /** PLACEHOLDER — replace with e.g. https://www.facebook.com/YourPage */
+    facebook: "",
+    /** PLACEHOLDER — replace with e.g. https://www.instagram.com/yourhandle */
+    instagram: "",
+    /** PLACEHOLDER — replace with e.g. https://www.tiktok.com/@yourhandle */
+    tiktok: ""
   },
   /**
    * Hot deals countdown end (ISO). Update this when a promo season ends.
@@ -197,4 +204,34 @@ export type SiteConfig = typeof siteConfig;
 export function whatsappHref(text?: string): string {
   const base = `https://wa.me/${siteConfig.whatsappNumber}`;
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+}
+
+const SOCIAL_PLACEHOLDERS = new Set([
+  "",
+  "https://www.facebook.com/",
+  "https://facebook.com/",
+  "https://www.instagram.com/",
+  "https://instagram.com/",
+  "https://www.tiktok.com/",
+  "https://tiktok.com/"
+]);
+
+/** Links that are ready to show publicly (not empty / bare network roots). */
+export function configuredSocialLinks(): {
+  label: string;
+  href: string;
+}[] {
+  const entries: { label: string; href: string }[] = [
+    { label: "Facebook", href: siteConfig.social.facebook.trim() },
+    { label: "Instagram", href: siteConfig.social.instagram.trim() },
+    { label: "TikTok", href: siteConfig.social.tiktok.trim() }
+  ];
+  return entries.filter((e) => {
+    if (!e.href) return false;
+    const normalized = e.href.replace(/\/$/, "") + "/";
+    if (SOCIAL_PLACEHOLDERS.has(e.href) || SOCIAL_PLACEHOLDERS.has(normalized)) {
+      return false;
+    }
+    return /^https?:\/\//i.test(e.href);
+  });
 }

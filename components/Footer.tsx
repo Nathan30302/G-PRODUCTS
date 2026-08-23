@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
-import { siteConfig, whatsappHref } from "@/config/site";
+import { siteConfig, whatsappHref, configuredSocialLinks } from "@/config/site";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
 
@@ -169,30 +169,17 @@ export function Footer() {
             ))}
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
-            <a
-              href={siteConfig.social.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
-            >
-              Facebook
-            </a>
-            <a
-              href={siteConfig.social.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
-            >
-              Instagram
-            </a>
-            <a
-              href={siteConfig.social.tiktok}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
-            >
-              TikTok
-            </a>
+            {configuredSocialLinks().map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
+              >
+                {s.label}
+              </a>
+            ))}
           </div>
           <a
             href={whatsappHref()}

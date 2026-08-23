@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
+import { onOrderPaymentSuccess } from "@/lib/rewards";
 
 const STATUSES = [
   "PENDING",
@@ -49,6 +50,12 @@ export async function updateOrderStatus(
       ...(status === "CANCELLED" ? { paymentStatus: "FAILED" as const } : {})
     }
   });
+
+  if (status === "PAID" || status === "DELIVERED") {
+    await onOrderPaymentSuccess(id).catch((err) =>
+      console.warn("[admin/orders] rewards:", err)
+    );
+  }
 
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${id}`);

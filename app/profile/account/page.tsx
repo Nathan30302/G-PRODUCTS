@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import { getCustomerSession } from "@/lib/customer-auth";
 import { prisma } from "@/lib/db";
 import { AccountHome } from "@/components/profile/ProfileViews";
-import { siteConfig } from "@/config/site";
 import { phoneVariants } from "@/lib/phone";
+import { ensureReferralCode } from "@/lib/rewards";
+import { siteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -35,13 +36,22 @@ export default async function AccountPage() {
     ]);
   }
 
+  const referralCode = await ensureReferralCode(customer.id).catch(() => "");
+
   const record = await prisma.customer.findUnique({
     where: { id: customer.id },
     select: {
       defaultLocation: true,
-      locationLabel: true
+      locationLabel: true,
+      rewardPoints: true,
+      referralCode: true
     }
   });
+
+  const code = record?.referralCode ?? referralCode;
+  const referralLink = code
+    ? `${siteUrl()}/profile?mode=signup&ref=${encodeURIComponent(code)}`
+    : "";
 
   return (
     <AccountHome
@@ -50,6 +60,9 @@ export default async function AccountPage() {
       services={services}
       defaultLocation={record?.defaultLocation ?? ""}
       locationLabel={record?.locationLabel ?? ""}
+      rewardPoints={record?.rewardPoints ?? 0}
+      referralCode={code}
+      referralLink={referralLink}
     />
   );
 }

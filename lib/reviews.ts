@@ -1,8 +1,9 @@
 /**
- * Seed-friendly reviews foundation.
- * Only genuine reviews should live here — leave empty until real feedback exists.
- * Product pages and the homepage render a clean empty state when none match.
+ * Review helpers — DB-backed published reviews only.
+ * Static seed list stays empty; never invent testimonials.
  */
+
+import { prisma } from "@/lib/db";
 
 export type Review = {
   id: string;
@@ -18,15 +19,59 @@ export type Review = {
   verifiedPurchase?: boolean;
 };
 
-/** Populate with real customer reviews only. Do not invent testimonials. */
+/** @deprecated Prefer getStoreReviews / getProductReviews — kept empty on purpose */
 export const reviews: Review[] = [];
 
-export function getStoreReviews(): Review[] {
-  return reviews.filter((r) => !r.productSlug);
+function mapRow(r: {
+  id: string;
+  productSlug: string;
+  authorName: string;
+  rating: number;
+  title: string | null;
+  body: string;
+  createdAt: Date;
+  verifiedPurchase: boolean;
+}): Review {
+  return {
+    id: r.id,
+    productSlug: r.productSlug,
+    author: r.authorName,
+    rating: r.rating,
+    title: r.title ?? undefined,
+    body: r.body,
+    date: r.createdAt.toISOString(),
+    verifiedPurchase: r.verifiedPurchase
+  };
 }
 
-export function getProductReviews(productSlug: string): Review[] {
-  return reviews.filter((r) => r.productSlug === productSlug);
+export async function getPublishedReviewsForProduct(
+  productSlug: string
+): Promise<Review[]> {
+  const rows = await prisma.productReview.findMany({
+    where: { productSlug, published: true },
+    orderBy: { createdAt: "desc" },
+    take: 40
+  });
+  return rows.map(mapRow);
+}
+
+export async function getPublishedStoreReviews(): Promise<Review[]> {
+  const rows = await prisma.productReview.findMany({
+    where: { published: true },
+    orderBy: { createdAt: "desc" },
+    take: 12
+  });
+  return rows.map(mapRow);
+}
+
+export async function getStoreReviews(): Promise<Review[]> {
+  return getPublishedStoreReviews();
+}
+
+export async function getProductReviews(
+  productSlug: string
+): Promise<Review[]> {
+  return getPublishedReviewsForProduct(productSlug);
 }
 
 export function averageRating(list: Review[]): number | null {

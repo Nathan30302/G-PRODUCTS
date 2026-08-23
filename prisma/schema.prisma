@@ -58,7 +58,14 @@ model Customer {
   /// Saved delivery spot, e.g. "Kalingalinga Block A Room 12" or home address
   defaultLocation String?
   locationLabel   String?
+  /// G-Rewards points (1 point ≈ K1 spent when paid)
+  rewardPoints    Int      @default(0)
+  /// Unique share code for referrals (e.g. GP-A1B2C3)
+  referralCode    String?  @unique
+  /// Code used at signup (who referred this customer)
+  referredByCode  String?
   orders          Order[]
+  reviews         ProductReview[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -90,6 +97,7 @@ model Product {
   images         ProductImage[]
   variants       ProductVariant[]
   stockNotifies  StockNotify[]
+  reviews        ProductReview[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 }
@@ -217,4 +225,49 @@ model ServiceOffer {
   settings    String   @default("{}")
   updatedAt   DateTime @updatedAt
   createdAt   DateTime @default(now())
+}
+
+/// Genuine customer product reviews (optional after purchase or general feedback)
+model ProductReview {
+  id               String    @id @default(cuid())
+  productId        String?
+  product          Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productSlug      String
+  productName      String
+  customerId       String?
+  customer         Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  authorName       String
+  rating           Int
+  title            String?
+  body             String
+  verifiedPurchase Boolean   @default(false)
+  orderRef         String?
+  /// Hidden until owner publishes (spam control)
+  published        Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+
+  @@index([productSlug, published])
+}
+
+/// Extra photos for a physical shop location (keyed to siteConfig.locations[].id)
+model ShopLocationMedia {
+  id        String   @id @default(cuid())
+  /// e.g. unza-main, kalingalinga
+  locationId String  @unique
+  /// JSON string[] of image URLs
+  photoUrls String   @default("[]")
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+/// Public-facing team members (provider desk manages photos & titles)
+model ShopTeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  title     String
+  photoUrl  String?
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

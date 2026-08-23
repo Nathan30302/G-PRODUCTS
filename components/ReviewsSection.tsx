@@ -1,4 +1,5 @@
 import { Icon } from "@/components/Icons";
+import { LeaveReviewForm } from "@/components/LeaveReviewForm";
 import {
   averageRating,
   getProductReviews,
@@ -79,8 +80,8 @@ function EmptyReviews({ context }: { context: "store" | "product" }) {
   );
 }
 
-export function StoreReviewsSection() {
-  const list = getStoreReviews();
+export async function StoreReviewsSection() {
+  const list = await getStoreReviews();
   const avg = averageRating(list);
 
   return (
@@ -119,14 +120,20 @@ export function StoreReviewsSection() {
   );
 }
 
-export function ProductReviewsSection({
+export async function ProductReviewsSection({
   productSlug,
-  productName
+  productName,
+  defaultAuthorName = "",
+  orderRef = "",
+  showLeaveForm = true
 }: {
   productSlug: string;
   productName: string;
+  defaultAuthorName?: string;
+  orderRef?: string;
+  showLeaveForm?: boolean;
 }) {
-  const list = getProductReviews(productSlug);
+  const list = await getProductReviews(productSlug);
   const avg = averageRating(list);
 
   return (
@@ -158,6 +165,17 @@ export function ProductReviewsSection({
           ))}
         </div>
       )}
+
+      {showLeaveForm ? (
+        <div className="mt-6 max-w-lg">
+          <LeaveReviewForm
+            productSlug={productSlug}
+            productName={productName}
+            defaultName={defaultAuthorName}
+            orderRef={orderRef}
+          />
+        </div>
+      ) : null}
     </section>
   );
 }

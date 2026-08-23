@@ -2,13 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Icon } from "@/components/Icons";
+import { getPublishedTeamMembers } from "@/lib/shop-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About Us",
   description: `About ${siteConfig.legalName} — genuine products, fair prices, excellent customer service and fast service across Lusaka.`
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const team = await getPublishedTeamMembers().catch(() => []);
+
   return (
     <div className="container-g py-10 sm:py-14">
       <p className="eyebrow">Company</p>
@@ -44,6 +49,39 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
+
+      {team.length > 0 ? (
+        <section className="mt-12">
+          <h2 className="display text-2xl">Our team</h2>
+          <p className="mt-2 max-w-xl text-sm text-white/50">
+            The people behind the counter and on WhatsApp.
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {team.map((m) => (
+              <article
+                key={m.id}
+                className="overflow-hidden rounded-[1.25rem] border border-white/[0.07] bg-ink-900/50"
+              >
+                {m.photoUrl ? (
+                  <div className="aspect-[4/3] bg-ink-950">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={m.photoUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ) : null}
+                <div className="p-5">
+                  <h3 className="text-base font-bold text-white">{m.name}</h3>
+                  <p className="mt-1 text-sm text-white/50">{m.title}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-12 max-w-2xl">
         <h2 className="display text-2xl">Where to find us</h2>

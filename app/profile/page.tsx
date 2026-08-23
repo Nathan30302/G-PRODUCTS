@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function ProfilePage({
   searchParams
 }: {
-  searchParams?: Promise<{ mode?: string }>;
+  searchParams?: Promise<{ mode?: string; ref?: string }>;
 }) {
   let customer = null;
   let provider = null;
@@ -31,11 +31,16 @@ export default async function ProfilePage({
   if (customer) redirect(siteConfig.apps.customer.home);
 
   const params = searchParams ? await searchParams : {};
-  const initialMode = params.mode === "signup" ? "signup" : "signin";
+  const initialMode =
+    params.mode === "signup" || params.ref ? "signup" : "signin";
+  const initialReferralCode = (params.ref ?? "").trim().toUpperCase();
 
   return (
     <div className="container-g relative overflow-hidden py-12 sm:py-16">
-      <AuthPanel initialMode={initialMode} />
+      <AuthPanel
+        initialMode={initialMode}
+        initialReferralCode={initialReferralCode}
+      />
     </div>
   );
 }

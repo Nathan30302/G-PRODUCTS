@@ -35,13 +35,19 @@ export function AccountHome({
   orders,
   services,
   defaultLocation = "",
-  locationLabel = ""
+  locationLabel = "",
+  rewardPoints = 0,
+  referralCode = "",
+  referralLink = ""
 }: {
   customer: CustomerSession;
   orders: OrderRow[];
   services: ServiceRow[];
   defaultLocation?: string;
   locationLabel?: string;
+  rewardPoints?: number;
+  referralCode?: string;
+  referralLink?: string;
 }) {
   const firstName =
     customer.name.split(" ")[0] || customer.name || "there";
@@ -87,6 +93,50 @@ export function AccountHome({
           subtitle="Checkout when ready"
         />
       </div>
+
+      <section className="mt-12 rounded-[1.35rem] border border-white/[0.08] bg-gradient-to-br from-brand/[0.08] via-white/[0.02] to-accent/[0.06] p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/15 text-brand ring-1 ring-brand/25">
+              <Icon name="star" className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="display text-xl">G-Rewards</h2>
+              <p className="mt-0.5 text-sm text-white/45">
+                Earn ~1 point per K1 when an order is paid. Share your code for
+                a bonus on a friend’s first paid order.
+              </p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-3xl font-extrabold tabular-nums text-brand">
+              {rewardPoints}
+            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-white/40">
+              points
+            </p>
+          </div>
+        </div>
+        {referralCode ? (
+          <div className="mt-5 rounded-2xl border border-white/[0.08] bg-ink-950/50 p-4">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+              Your referral code
+            </p>
+            <p className="mt-1 font-mono text-lg font-bold tracking-wide text-white">
+              {referralCode}
+            </p>
+            {referralLink ? (
+              <p className="mt-2 break-all text-xs text-white/45">
+                Invite link:{" "}
+                <span className="text-brand/90">{referralLink}</span>
+              </p>
+            ) : null}
+            <p className="mt-2 text-xs text-white/35">
+              Friends enter this code when they create an account.
+            </p>
+          </div>
+        ) : null}
+      </section>
 
       <section className="mt-12 rounded-[1.35rem] border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6">
         <div className="flex items-center gap-3">

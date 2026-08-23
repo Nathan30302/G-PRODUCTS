@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getPaymentStatus, type PaymentProvider } from "@/lib/payments";
+import { onOrderPaymentSuccess } from "@/lib/rewards";
 
 export async function GET(
   _req: Request,
@@ -27,6 +28,11 @@ export async function GET(
           status: result.status === "SUCCESS" ? "PAID" : order.status
         }
       });
+      if (result.status === "SUCCESS") {
+        await onOrderPaymentSuccess(order.id).catch((err) =>
+          console.warn("[orders/status] rewards:", err)
+        );
+      }
       return NextResponse.json({
         ref,
         paymentStatus: result.status,

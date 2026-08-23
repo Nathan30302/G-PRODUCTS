@@ -11,8 +11,8 @@ type Props = {
   urls?: string[];
   /** Called when URLs change (for variant editors) */
   onUrlsChange?: (urls: string[]) => void;
-  /** products | services */
-  folder?: "products" | "services";
+  /** products | services | misc (shop locations, team) */
+  folder?: "products" | "services" | "misc";
   /** Allow multiple photos (products & service galleries). First = cover. */
   multiple?: boolean;
   label?: string;

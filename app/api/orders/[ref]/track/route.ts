@@ -5,6 +5,7 @@ import {
   labelForOrderStatus,
   type OrderStatusKey
 } from "@/lib/commerce-hooks";
+import { onOrderPaymentSuccess } from "@/lib/rewards";
 
 const FLOW: OrderStatusKey[] = [
   "PENDING",
@@ -46,6 +47,11 @@ export async function GET(
       });
       paymentStatus = updated.paymentStatus;
       orderStatus = updated.status;
+      if (result.status === "SUCCESS") {
+        await onOrderPaymentSuccess(order.id).catch((err) =>
+          console.warn("[orders/track] rewards:", err)
+        );
+      }
     }
   }
 
