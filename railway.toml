@@ -7,7 +7,8 @@ builder = "NIXPACKS"
 buildCommand = "npm ci && npm run build"
 
 [deploy]
-startCommand = "npm run start:prod"
+# Run tsx directly — `npm run` turns Railway redeploy SIGTERM into a fake "npm error".
+startCommand = "./node_modules/.bin/tsx scripts/start-prod.ts"
 # Give prisma generate / db push / seed time before health checks
 healthcheckPath = "/api/health"
 healthcheckTimeout = 300
