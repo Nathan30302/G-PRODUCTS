@@ -17,8 +17,8 @@ const BRAND = {
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v8",
-  admin: "gproducts-admin-splash-v8"
+  shop: "gproducts-splash-v9",
+  admin: "gproducts-admin-splash-v9"
 } as const;
 
 /** Hold ~4–4.8s so the opening feels intentional, then exit. */
@@ -228,7 +228,7 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
       )}
 
       <div
-        className={`relative z-10 flex w-full max-w-[22rem] flex-col items-center px-5 text-center sm:max-w-md sm:px-8 md:max-w-lg ${
+        className={`relative z-10 flex w-full max-w-[min(100%,20.5rem)] flex-col items-center px-5 text-center sm:max-w-md sm:px-8 md:max-w-xl ${
           reducedMotion ? "" : "splash-content"
         } ${exiting ? "splash-content-exit" : ""}`}
       >
@@ -240,7 +240,7 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
         </div>
 
         <h1
-          className={`display splash-heading mt-6 font-black leading-[0.95] tracking-tight text-white sm:mt-8 ${
+          className={`display splash-heading mt-6 whitespace-nowrap font-black leading-[0.95] tracking-tight text-white sm:mt-8 ${
             reducedMotion ? "" : "splash-title"
           }`}
         >

@@ -258,39 +258,53 @@ html.splash-open body {
 }
 
 .splash-grain {
-  opacity: 0.04;
+  opacity: 0.035;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 160px 160px;
+  /* Keep the mark zone clean — grain falls off toward center stage */
+  -webkit-mask-image: radial-gradient(
+    ellipse 52% 48% at 50% 42%,
+    transparent 0%,
+    transparent 38%,
+    rgba(0, 0, 0, 0.35) 58%,
+    #000 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 52% 48% at 50% 42%,
+    transparent 0%,
+    transparent 38%,
+    rgba(0, 0, 0, 0.35) 58%,
+    #000 78%
+  );
   pointer-events: none;
 }
 
 /* Fluid mark size: phone → tablet → laptop */
 .splash-mark {
-  width: clamp(8.75rem, 28vw + 2rem, 14.5rem);
-  height: clamp(8.75rem, 28vw + 2rem, 14.5rem);
+  width: clamp(8.5rem, 26vw + 2rem, 14rem);
+  height: clamp(8.5rem, 26vw + 2rem, 14rem);
 }
 
-.splash-mark img {
-  /* Keep PNG sharp when scaled down from 1024 source */
-  image-rendering: auto;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  transform: translateZ(0);
+.splash-mark svg {
+  display: block;
+  shape-rendering: geometricPrecision;
 }
 
 .splash-logo-halo {
   position: absolute;
-  inset: -18%;
+  inset: -22%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(246, 212, 0, 0.22) 0%,
-    rgba(34, 201, 138, 0.08) 45%,
-    transparent 70%
+    rgba(246, 212, 0, 0.16) 0%,
+    rgba(34, 201, 138, 0.06) 42%,
+    transparent 68%
   );
-  filter: blur(20px);
+  /* Soft glow behind the mark — keep edges of the SVG crisp */
+  filter: blur(28px);
+  opacity: 0.85;
   z-index: -1;
   pointer-events: none;
   animation: splash-stage-breathe 5s ease-in-out infinite;
@@ -299,16 +313,19 @@ html.splash-open body {
 [data-splash="admin"] .splash-logo-halo {
   background: radial-gradient(
     circle,
-    rgba(34, 201, 138, 0.2) 0%,
-    rgba(246, 212, 0, 0.07) 45%,
-    transparent 70%
+    rgba(34, 201, 138, 0.15) 0%,
+    rgba(246, 212, 0, 0.05) 42%,
+    transparent 68%
   );
 }
 
 .splash-heading {
-  font-size: clamp(1.7rem, 4.2vw + 0.85rem, 3.15rem);
-  letter-spacing: -0.03em;
-  text-wrap: balance;
+  /* One line always — shrink on narrow phones rather than wrap */
+  font-size: clamp(1.45rem, 3.4vw + 0.7rem, 2.85rem);
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  text-wrap: nowrap;
+  max-width: 100%;
 }
 
 .splash-line {
@@ -331,8 +348,8 @@ html.splash-open body {
 
 @media (min-width: 1024px) {
   .splash-mark {
-    width: clamp(13rem, 12vw, 15.5rem);
-    height: clamp(13rem, 12vw, 15.5rem);
+    width: clamp(12.5rem, 11.5vw, 14.75rem);
+    height: clamp(12.5rem, 11.5vw, 14.75rem);
   }
 }
 
