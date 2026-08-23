@@ -156,6 +156,9 @@ export function AdminShell({
     return badges[key] ?? 0;
   }
 
+  const attention =
+    (badges.orders ?? 0) + (badges.services ?? 0) + (badges.stock ?? 0);
+
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
@@ -192,19 +195,23 @@ export function AdminShell({
     return (
       <Link
         href={item.href}
-        className={`relative block rounded-2xl transition-all duration-300 ease-out-expo ${
-          dense ? "px-3.5 py-3" : "px-4 py-4"
+        className={`group relative block rounded-2xl transition-all duration-300 ease-out-expo ${
+          dense ? "px-3 py-2.5" : "px-4 py-3.5"
         } ${
           active
             ? "bg-brand text-ink-950 shadow-brand-glow"
-            : "text-white/70 hover:bg-white/[0.04] hover:text-white"
+            : "text-white/70 hover:bg-white/[0.045] hover:text-white"
         }`}
       >
         {active ? (
-          <span className="absolute left-1.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-ink-950/40" />
+          <span className="absolute left-1.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-ink-950/35" />
         ) : null}
         <span className="flex items-center justify-between gap-2">
-          <span className={`block font-bold ${dense ? "text-sm" : "text-base"}`}>
+          <span
+            className={`block font-semibold tracking-tight ${
+              dense ? "text-[13px]" : "text-[15px]"
+            } ${active ? "font-bold" : ""}`}
+          >
             {item.label}
           </span>
           {count > 0 ? (
@@ -220,8 +227,8 @@ export function AdminShell({
           ) : null}
         </span>
         <span
-          className={`mt-0.5 block text-[11px] ${
-            active ? "text-ink-950/60" : "text-white/35"
+          className={`mt-0.5 block text-[11px] leading-snug ${
+            active ? "text-ink-950/55" : "text-white/32 group-hover:text-white/42"
           }`}
         >
           {item.hint}
@@ -234,18 +241,19 @@ export function AdminShell({
     <div className="relative min-h-screen overflow-x-hidden bg-ink-950 text-white">
       <LaunchSplash variant="admin" />
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.09),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.07),_transparent_45%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,32,0)_0%,rgba(15,23,32,0.35)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.08),_transparent_52%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.06),_transparent_42%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,32,0)_0%,rgba(6,24,28,0.4)_100%)]" />
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/80 shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-2xl">
+      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/85 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/30 to-transparent" />
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/40 hover:text-brand lg:hidden"
+              className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/40 hover:text-brand lg:hidden"
               aria-label="Open menu"
             >
               <svg
@@ -260,15 +268,22 @@ export function AdminShell({
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <line x1="5" y1="16" x2="14" y2="16" />
               </svg>
+              {attention > 0 ? (
+                <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-brand px-1 text-[9px] font-black text-ink-950">
+                  {attention > 9 ? "9+" : attention}
+                </span>
+              ) : null}
             </button>
             <Link href="/admin" className="shrink-0">
               <Logo size="md" priority />
             </Link>
             <div className="hidden min-w-0 sm:block">
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand/80">
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand/85">
                 Provider desk
               </p>
-              <p className="truncate text-sm text-white/45">{current}</p>
+              <p className="truncate text-sm font-medium text-white/50">
+                {current}
+              </p>
             </div>
           </div>
 
@@ -276,12 +291,12 @@ export function AdminShell({
             <span className="hidden rounded-pill border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/50 sm:inline">
               {todayLabel()}
             </span>
-            <div className="hidden items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] py-1.5 pl-1.5 pr-3 md:flex">
-              <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-[11px] font-black text-brand">
+            <div className="hidden items-center gap-2.5 rounded-2xl border border-white/[0.07] bg-white/[0.025] py-1.5 pl-1.5 pr-3 md:flex">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-[11px] font-black text-brand ring-1 ring-brand/20">
                 {initials}
               </span>
               <span className="text-right">
-                <span className="block text-sm font-semibold text-white">
+                <span className="block text-sm font-semibold leading-tight text-white">
                   {user.name}
                 </span>
                 <span className="block text-[10px] uppercase tracking-wider text-white/35">
@@ -302,17 +317,30 @@ export function AdminShell({
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:flex-row lg:py-10">
-        <aside className="hidden lg:block lg:w-64 lg:shrink-0">
-          <div className="relative sticky top-24 overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-3 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.65)] ring-1 ring-white/[0.04]">
-            <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-7 px-4 py-6 sm:gap-8 sm:px-6 lg:flex-row lg:py-9">
+        <aside className="hidden lg:block lg:w-[17rem] lg:shrink-0">
+          <div className="relative sticky top-[5.5rem] overflow-hidden rounded-[1.65rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 via-ink-900/90 to-ink-950/95 p-3 shadow-[0_28px_70px_-30px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.04]">
+            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
+            <div className="mb-3 rounded-2xl border border-white/[0.05] bg-white/[0.02] px-3.5 py-3">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
+                Signed in
+              </p>
+              <p className="mt-1 truncate text-sm font-semibold text-white">
+                {user.name}
+              </p>
+              <p className="mt-0.5 text-[11px] text-white/40">
+                {user.role === "OWNER"
+                  ? "Owner access"
+                  : user.staffTitle?.trim() || "Staff access"}
+              </p>
+            </div>
             <nav className="relative space-y-4">
               {groups.map((group) => (
                 <div key={group.label}>
-                  <p className="mb-1.5 px-3.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
+                  <p className="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/28">
                     {group.label}
                   </p>
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {group.items.map((i) => (
                       <NavLink key={i.href} item={i} dense />
                     ))}
@@ -323,34 +351,57 @@ export function AdminShell({
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 animate-fade-up pb-12">{children}</main>
+        <main className="min-w-0 flex-1 animate-fade-up pb-14">{children}</main>
       </div>
 
       {menuOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-ink-950/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-ink-950/82 backdrop-blur-md"
             aria-label="Close menu"
             onClick={() => setMenuOpen(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 max-h-[90vh] overflow-y-auto rounded-t-[1.75rem] border border-white/10 bg-gradient-to-b from-ink-850 to-ink-950 p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] animate-fade-up">
+          <div className="absolute inset-x-0 bottom-0 max-h-[92vh] overflow-y-auto rounded-t-[1.85rem] border border-white/10 bg-gradient-to-b from-ink-850 to-ink-950 p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-24px_70px_rgba(0,0,0,0.55)] animate-fade-up">
             <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-white/15" />
             <div className="mb-5 flex items-start justify-between gap-3">
-              <div>
+              <div className="min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand">
                   Provider menu
                 </p>
-                <p className="display mt-1 text-xl">Where to next?</p>
+                <p className="display mt-1 text-xl leading-tight">
+                  Where to next?
+                </p>
+                {attention > 0 ? (
+                  <p className="mt-1.5 text-xs text-white/45">
+                    {attention} item{attention === 1 ? "" : "s"} need attention
+                  </p>
+                ) : null}
               </div>
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
-                className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/60"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/60"
                 aria-label="Close"
               >
                 ✕
               </button>
+            </div>
+
+            <div className="mb-5 flex items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/15 text-xs font-black text-brand ring-1 ring-brand/20">
+                {initials}
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-white">
+                  {user.name}
+                </p>
+                <p className="text-[11px] uppercase tracking-wider text-white/35">
+                  {user.role === "OWNER"
+                    ? "Owner"
+                    : user.staffTitle?.trim() || "Staff"}
+                </p>
+              </div>
             </div>
 
             <div className="space-y-5">
@@ -367,14 +418,14 @@ export function AdminShell({
                         <Link
                           key={i.href}
                           href={i.href}
-                          className={`rounded-2xl border px-4 py-4 transition-all ${
+                          className={`rounded-2xl border px-4 py-3.5 transition-all ${
                             active
-                              ? "border-brand/50 bg-brand/10"
+                              ? "border-brand/50 bg-brand/10 shadow-[0_0_0_1px_rgba(246,212,0,0.12)]"
                               : "border-white/[0.06] bg-white/[0.02]"
                           }`}
                         >
                           <span className="flex items-center justify-between gap-2">
-                            <span className="block text-base font-bold text-white">
+                            <span className="block text-[15px] font-bold text-white">
                               {i.label}
                             </span>
                             {count > 0 ? (

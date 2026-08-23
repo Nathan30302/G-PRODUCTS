@@ -55,21 +55,21 @@ export default async function AdminDashboard() {
   );
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 sm:space-y-10">
       <DeskHero>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
             <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-brand">
               Provider desk
             </p>
-            <h1 className="display mt-3 max-w-xl text-3xl sm:text-4xl">
+            <h1 className="display mt-2.5 max-w-xl text-[1.85rem] leading-[1.1] sm:mt-3 sm:text-4xl">
               {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
             </h1>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/55 sm:text-base">
               Clear the queue, restock fast, keep customers happy — here&apos;s
               what needs you today.
             </p>
-            <div className="mt-6 flex flex-wrap gap-2">
+            <div className="mt-5 flex flex-wrap gap-2 sm:mt-6">
               <Link
                 href="/admin/products/new"
                 className="rounded-pill bg-brand px-5 py-2.5 text-sm font-bold text-ink-950 shadow-brand-glow transition-all hover:bg-brand-soft"
@@ -84,20 +84,20 @@ export default async function AdminDashboard() {
               </Link>
             </div>
           </div>
-          <div className="grid w-full max-w-sm grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-brand/25 bg-brand/[0.08] p-4">
+          <div className="grid w-full max-w-sm grid-cols-2 gap-2.5 sm:gap-3">
+            <div className="rounded-2xl border border-brand/30 bg-brand/[0.09] p-3.5 sm:p-4">
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-brand/80">
                 Paid revenue
               </p>
-              <p className="mt-2 text-xl font-black tabular-nums text-white">
+              <p className="mt-2 text-lg font-black tabular-nums text-white sm:text-xl">
                 {formatPrice(revenue)}
               </p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3.5 sm:p-4">
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">
                 Pending queue
               </p>
-              <p className="mt-2 text-xl font-black tabular-nums text-white">
+              <p className="mt-2 text-lg font-black tabular-nums text-white sm:text-xl">
                 {pending}
               </p>
             </div>

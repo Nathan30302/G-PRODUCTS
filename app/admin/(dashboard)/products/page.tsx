@@ -32,14 +32,17 @@ export default async function AdminProducts() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-[1.85rem] border border-white/[0.07] bg-gradient-to-br from-ink-850 via-ink-900 to-ink-950 p-6 shadow-card sm:p-8">
+      <section className="relative overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-gradient-to-br from-ink-850 via-ink-900 to-ink-950 p-6 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.03] sm:p-8">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-brand/15 blur-[80px]" />
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-brand">
               Catalogue
             </p>
-            <h1 className="display mt-2 text-3xl sm:text-4xl">Products</h1>
+            <h1 className="display mt-2 text-[1.85rem] leading-[1.1] sm:text-4xl">
+              Products
+            </h1>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/55">
               {total} item{total === 1 ? "" : "s"} across{" "}
               {categories.filter((c) => c.products.length > 0).length} categories

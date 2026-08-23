@@ -9,7 +9,7 @@ const sizes = {
   md: 44,
   lg: 112,
   /** Intrinsic source size; splash layout uses CSS clamp for phone/desktop. */
-  splash: 220
+  splash: 320
 } as const;
 
 /**
