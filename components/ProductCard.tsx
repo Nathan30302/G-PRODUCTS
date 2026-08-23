@@ -7,6 +7,8 @@ import { Product, fromPrice, hasPricedOptions } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 import { SafeImage } from "@/components/SafeImage";
 import { coverImageForProduct } from "@/lib/product-images";
+import { DealCountdown } from "@/components/DealCountdown";
+import { siteConfig } from "@/config/site";
 
 function StockPill({ status }: { status: Product["stock"] }) {
   if (status === "sold_out") {
@@ -119,6 +121,11 @@ export function ProductCard({
             </motion.div>
           </AnimatePresence>
         </Link>
+        {product.hotDeal ? (
+          <span className="pointer-events-none absolute left-2 top-2 z-[2] rounded-pill bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink-950 shadow-sm">
+            Hot deal
+          </span>
+        ) : null}
         {photos.length > 1 && (
           <div className="pointer-events-none absolute inset-x-0 bottom-2 z-[2] flex justify-center gap-1">
             {photos.map((_, i) => (
@@ -159,7 +166,12 @@ export function ProductCard({
               <span className="rounded-pill bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent">
                 Save {formatPrice(product.compareAtPrice - product.price)}
               </span>
+              {product.hotDeal ? (
+                <DealCountdown endsAt={siteConfig.dealSeasonEndsAt} />
+              ) : null}
             </div>
+          ) : product.hotDeal ? (
+            <DealCountdown endsAt={siteConfig.dealSeasonEndsAt} />
           ) : null}
         </div>
       </Link>

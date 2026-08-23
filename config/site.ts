@@ -121,6 +121,17 @@ export const siteConfig = {
   deliveryNote:
     "Free delivery within school / campus where applicable. Pickup at UNZA, Kalingalinga or Balastone — or Yango / Lusaka & nationwide delivery.",
   supportEmail: "hello@gproducts.zm",
+  /** Public social profiles — update URLs when official pages go live */
+  social: {
+    facebook: "https://www.facebook.com/",
+    instagram: "https://www.instagram.com/",
+    tiktok: "https://www.tiktok.com/"
+  },
+  /**
+   * Hot deals countdown end (ISO). Update this when a promo season ends.
+   * Shown on deal cards while compareAt / hotDeal savings apply.
+   */
+  dealSeasonEndsAt: "2026-09-30T23:59:59+02:00",
   mobileMoney: {
     mtn: { label: "MTN MoMo", number: "0765812843", accountName: "G-Products" },
     airtel: {

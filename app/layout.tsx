@@ -5,6 +5,7 @@ import "./globals.css";
 import { CartProvider } from "@/lib/cart";
 import { ToastProvider } from "@/components/Toast";
 import { SiteChrome } from "@/components/SiteChrome";
+import { AbandonedCartNudge } from "@/components/AbandonedCartNudge";
 import { siteConfig } from "@/config/site";
 import { siteUrl } from "@/lib/site-url";
 
@@ -22,6 +23,16 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`
   },
   description: siteConfig.description,
+  keywords: [
+    "G-Products",
+    "printing near UNZA",
+    "stationery UNZA",
+    "phone accessories Lusaka",
+    "laptop chargers Lusaka",
+    "flash drives Zambia",
+    "key cutting Lusaka",
+    "Mobile Money shop Zambia"
+  ],
   icons: {
     icon: [{ url: siteConfig.logoMark, type: "image/png" }],
     apple: [{ url: siteConfig.logo, type: "image/png" }]
@@ -62,6 +73,7 @@ export default function RootLayout({
         <CartProvider>
           <ToastProvider>
             <SiteChrome>{children}</SiteChrome>
+            <AbandonedCartNudge />
           </ToastProvider>
         </CartProvider>
       </body>

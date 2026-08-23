@@ -1,13 +1,12 @@
 /**
- * Light architecture hooks for future commerce features.
- * Not wired into checkout yet — safe placeholders for loyalty,
- * discount codes, and customer-facing order status labels.
+ * Commerce feature flags / labels.
+ * Promo codes are live via lib/promo-codes.ts + checkout.
+ * Loyalty remains opt-in for a later launch.
  */
 
-/** Future loyalty programme points / tiers (not active). */
+/** Future loyalty programme points / tiers. */
 export type LoyaltyHook = {
-  enabled: false;
-  /** Points per ZMW spent once launched */
+  enabled: boolean;
   pointsPerKwacha: number;
 };
 
@@ -16,15 +15,14 @@ export const loyaltyHook: LoyaltyHook = {
   pointsPerKwacha: 1
 };
 
-/** Future discount / promo code validation (not active). */
+/** Promo codes are active at checkout. */
 export type PromoCodeHook = {
-  enabled: false;
-  /** Reserved code field name for checkout forms */
+  enabled: true;
   fieldName: "promoCode";
 };
 
 export const promoCodeHook: PromoCodeHook = {
-  enabled: false,
+  enabled: true,
   fieldName: "promoCode"
 };
 

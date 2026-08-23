@@ -12,6 +12,8 @@ const serviceLinks = [
 ];
 
 const helpLinks = [
+  { href: "/orders/track", name: "Track order" },
+  { href: "/faq", name: "FAQs" },
   { href: "/delivery", name: "Delivery & Pickup" },
   { href: "/returns", name: "Returns & Refunds" },
   { href: "/warranty", name: "Warranty" },
@@ -20,6 +22,7 @@ const helpLinks = [
 
 const companyLinks = [
   { href: "/about", name: "About Us" },
+  { href: "/bundles", name: "Bundles & packs" },
   { href: "/privacy", name: "Privacy Policy" },
   { href: "/terms", name: "Terms of Use" },
   { href: "/terms/g-loans", name: "G-Loans Terms" }
@@ -67,6 +70,16 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+            <li>
+              <Link href="/search?deals=1" className="transition-colors hover:text-brand">
+                Hot Deals
+              </Link>
+            </li>
+            <li>
+              <Link href="/bundles" className="transition-colors hover:text-brand">
+                Bundles &amp; packs
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -154,6 +167,32 @@ export function Footer() {
                 </a>
               </div>
             ))}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a
+              href={siteConfig.social.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
+            >
+              Facebook
+            </a>
+            <a
+              href={siteConfig.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
+            >
+              Instagram
+            </a>
+            <a
+              href={siteConfig.social.tiktok}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
+            >
+              TikTok
+            </a>
           </div>
           <a
             href={whatsappHref()}

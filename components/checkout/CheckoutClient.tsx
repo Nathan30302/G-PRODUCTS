@@ -8,6 +8,7 @@ import { orderWhatsAppLink } from "@/lib/whatsapp";
 import { Icon } from "@/components/Icons";
 import { siteConfig } from "@/config/site";
 import { ShopEmptyState, ShopStickyBar } from "@/components/shop/ui";
+import { applyPromoCode, listPublicPromoHints } from "@/lib/promo-codes";
 
 type PayMethod = "mtn" | "airtel" | "zamtel";
 type Phase = "idle" | "submitting" | "manual" | "pending" | "success" | "failed";
@@ -33,6 +34,9 @@ const payOptions: { id: PayMethod; label: string; number: string }[] = [
 type Snapshot = {
   items: { name: string; qty: number; price: number }[];
   total: number;
+  subtotal: number;
+  discount: number;
+  promoCode?: string;
 };
 
 export type CheckoutPrefill = {
@@ -60,6 +64,16 @@ export function CheckoutClient({
     phone: "",
     address: ""
   });
+  const [promoInput, setPromoInput] = useState("");
+  const [promoApplied, setPromoApplied] = useState<{
+    code: string;
+    label: string;
+    discountZmw: number;
+  } | null>(null);
+  const [promoError, setPromoError] = useState("");
+
+  const discount = promoApplied?.discountZmw ?? 0;
+  const payTotal = Math.max(0, total - discount);
 
   useEffect(() => {
     if (prefilled.current || !prefill) return;
@@ -111,7 +125,10 @@ export function CheckoutClient({
     setPhase("submitting");
     const snap: Snapshot = {
       items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
-      total
+      total: payTotal,
+      subtotal: total,
+      discount,
+      promoCode: promoApplied?.code
     };
     setSnapshot(snap);
 
@@ -131,7 +148,8 @@ export function CheckoutClient({
             phone: form.phone,
             address: form.address
           },
-          method
+          method,
+          promoCode: promoApplied?.code
         })
       });
       const data = await res.json();
@@ -231,7 +249,22 @@ export function CheckoutClient({
                 <span>Total to pay</span>
                 <span className="text-brand">{formatPrice(snapshot.total)}</span>
               </p>
+              {snapshot.discount > 0 ? (
+                <p className="mt-1 text-xs text-accent">
+                  Promo saved {formatPrice(snapshot.discount)}
+                  {snapshot.promoCode ? ` (${snapshot.promoCode})` : ""}
+                </p>
+              ) : null}
             </div>
+          )}
+
+          {(phase === "success" || phase === "manual") && (
+            <Link
+              href={`/orders/track?ref=${encodeURIComponent(orderRef)}`}
+              className="mt-4 block text-center text-sm font-semibold text-brand hover:underline"
+            >
+              Track this order
+            </Link>
           )}
 
           {phase === "manual" && momo && (
@@ -501,9 +534,81 @@ export function CheckoutClient({
                 </div>
               ))}
             </div>
+
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/40">
+                Promo code
+              </p>
+              <div className="mt-2 flex gap-2">
+                <input
+                  value={promoInput}
+                  onChange={(e) => {
+                    setPromoInput(e.target.value.toUpperCase());
+                    setPromoError("");
+                  }}
+                  placeholder="WELCOME50"
+                  className="min-w-0 flex-1 rounded-xl border border-white/10 bg-ink-900 px-3 py-2.5 text-sm uppercase text-white outline-none focus:border-brand"
+                />
+                <button
+                  type="button"
+                  className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold text-white/80 hover:border-brand/40 hover:text-brand"
+                  onClick={() => {
+                    const result = applyPromoCode(promoInput, total);
+                    if (!result.ok) {
+                      setPromoApplied(null);
+                      setPromoError(result.error);
+                      return;
+                    }
+                    setPromoApplied({
+                      code: result.code,
+                      label: result.label,
+                      discountZmw: result.discountZmw
+                    });
+                    setPromoError("");
+                  }}
+                >
+                  Apply
+                </button>
+              </div>
+              {promoError ? (
+                <p className="mt-1.5 text-xs text-red-300">{promoError}</p>
+              ) : null}
+              {promoApplied ? (
+                <p className="mt-1.5 text-xs text-accent">
+                  {promoApplied.code}: −{formatPrice(promoApplied.discountZmw)}{" "}
+                  <button
+                    type="button"
+                    className="underline"
+                    onClick={() => {
+                      setPromoApplied(null);
+                      setPromoInput("");
+                    }}
+                  >
+                    Remove
+                  </button>
+                </p>
+              ) : (
+                <p className="mt-1.5 text-[10px] text-white/30">
+                  {listPublicPromoHints().join(" · ")}
+                </p>
+              )}
+            </div>
+
+            {discount > 0 ? (
+              <div className="mt-3 flex justify-between text-sm text-white/50">
+                <span>Subtotal</span>
+                <span className="tabular-nums">{formatPrice(total)}</span>
+              </div>
+            ) : null}
+            {discount > 0 ? (
+              <div className="mt-1 flex justify-between text-sm text-accent">
+                <span>Discount</span>
+                <span className="tabular-nums">−{formatPrice(discount)}</span>
+              </div>
+            ) : null}
             <div className="mt-4 flex justify-between border-t border-white/10 pt-4 text-lg font-black text-white">
               <span>Total</span>
-              <span>{formatPrice(total)}</span>
+              <span>{formatPrice(payTotal)}</span>
             </div>
 
             {error && (
@@ -554,7 +659,7 @@ export function CheckoutClient({
             <div className="min-w-0">
               <p className="text-[11px] text-white/45">Total</p>
               <p className="text-lg font-extrabold tabular-nums text-white">
-                {formatPrice(total)}
+              {formatPrice(payTotal)}
               </p>
             </div>
             <button

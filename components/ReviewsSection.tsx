@@ -5,6 +5,7 @@ import {
   getStoreReviews,
   type Review
 } from "@/lib/reviews";
+import { whatsappHref } from "@/config/site";
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -58,13 +59,22 @@ function EmptyReviews({ context }: { context: "store" | "product" }) {
       </span>
       <p className="mt-4 text-sm font-semibold text-white">
         {context === "store"
-          ? "Customer reviews coming soon"
+          ? "Be the first to leave a review"
           : "No reviews for this product yet"}
       </p>
       <p className="mx-auto mt-2 max-w-sm text-sm text-white/45">
-        We only publish genuine customer feedback. After your next purchase,
-        tell us how we did on WhatsApp.
+        We only publish genuine customer feedback — never fake ratings.
       </p>
+      <a
+        href={whatsappHref(
+          "Hi G-Products, I'd like to leave a review after my purchase."
+        )}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-whatsapp mt-5 inline-flex"
+      >
+        Share feedback on WhatsApp
+      </a>
     </div>
   );
 }
