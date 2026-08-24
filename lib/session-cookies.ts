@@ -49,28 +49,89 @@ export function sessionCookieOptions(maxAge: number): Partial<ResponseCookie> {
   return opts;
 }
 
-/** Host-only + any configured/legacy Domain scopes to clear. */
+function isSecureCookie(): boolean {
+  return process.env.NODE_ENV === "production";
+}
+
+function expireCookieOptions(domain?: string): Partial<ResponseCookie> {
+  const opts: Partial<ResponseCookie> = {
+    httpOnly: true,
+    secure: isSecureCookie(),
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+    expires: new Date(0)
+  };
+  if (domain) opts.domain = domain;
+  return opts;
+}
+
+/**
+ * Host-only last. Next.js `cookies.set()` keeps one entry per name, so the
+ * last write is what the browser actually receives.
+ */
 function cookieDomainScopes(): (string | undefined)[] {
-  const scopes = new Set<string | undefined>([undefined]);
+  const scopes = new Set<string | undefined>();
+  for (const d of LEGACY_COOKIE_DOMAINS) scopes.add(d);
   const configured = process.env.COOKIE_DOMAIN?.trim();
   if (configured) scopes.add(configured);
-  for (const d of LEGACY_COOKIE_DOMAINS) scopes.add(d);
+  scopes.add(undefined);
   return [...scopes];
 }
 
 function clearCookieAllScopes(jar: CookieJar, name: string): void {
   for (const domain of cookieDomainScopes()) {
-    // Build options without inheriting Domain — host-only clear must omit it.
-    const opts: Partial<ResponseCookie> = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0
-    };
-    if (domain) opts.domain = domain;
-    jar.set(name, "", opts);
+    jar.set(name, "", expireCookieOptions(domain));
   }
+}
+
+function expiredCookieHeader(name: string, domain?: string): string {
+  const parts = [
+    `${name}=`,
+    "Path=/",
+    "Max-Age=0",
+    "Expires=Thu, 01 Jan 1970 00:00:00 GMT",
+    "HttpOnly",
+    "SameSite=Lax"
+  ];
+  if (isSecureCookie()) parts.push("Secure");
+  if (domain) parts.push(`Domain=${domain}`);
+  return parts.join("; ");
+}
+
+/**
+ * Expire a session cookie on a Response by appending one Set-Cookie per
+ * domain scope. `cookies.set()` cannot do this — it overwrites by name, so
+ * a host-only login cookie would survive a Domain= clear (and vice versa).
+ */
+export function expireSessionCookieHeader(
+  headers: Headers,
+  name: string
+): void {
+  for (const domain of cookieDomainScopes()) {
+    headers.append("Set-Cookie", expiredCookieHeader(name, domain));
+  }
+}
+
+export function expireAllSessionCookieHeaders(headers: Headers): void {
+  expireSessionCookieHeader(headers, DESK_COOKIE);
+  expireSessionCookieHeader(headers, CUSTOMER_COOKIE);
+}
+
+/** Build an absolute URL on the public host (Railway proxy-safe). */
+export function requestAbsoluteUrl(request: Request, path: string): URL {
+  const url = new URL(path, request.url);
+  const host = request.headers
+    .get("x-forwarded-host")
+    ?.split(",")[0]
+    ?.trim();
+  const proto = request.headers
+    .get("x-forwarded-proto")
+    ?.split(",")[0]
+    ?.trim();
+  if (host) url.host = host;
+  if (proto) url.protocol = `${proto}:`;
+  return url;
 }
 
 /** Set a session cookie after wiping host-only + legacy Domain copies. */

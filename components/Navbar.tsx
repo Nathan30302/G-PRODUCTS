@@ -8,8 +8,10 @@ import { useCart } from "@/lib/cart";
 import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
 import { Icon } from "@/components/Icons";
 import { Logo } from "@/components/Logo";
+import { LogoutButton } from "@/components/LogoutButton";
+import type { ShopAuth } from "@/components/SiteChrome";
 
-export function Navbar() {
+export function Navbar({ auth = null }: { auth?: ShopAuth }) {
   const { count } = useCart();
   const router = useRouter();
   const pathname = usePathname();
@@ -184,16 +186,27 @@ export function Navbar() {
           </Link>
 
           <Link
-            href="/profile"
+            href={auth?.home ?? "/profile"}
             className={`grid h-10 w-10 place-items-center rounded-xl border bg-white/[0.03] transition-colors sm:rounded-2xl ${
-              pathname?.startsWith("/profile")
+              pathname?.startsWith("/profile") ||
+              (auth?.kind === "provider" && pathname?.startsWith("/admin"))
                 ? "border-brand/40 text-brand"
                 : "border-white/[0.08] text-white/75 hover:border-brand/35 hover:text-brand"
             }`}
-            aria-label="Profile"
+            aria-label={auth ? "Account" : "Sign in"}
+            title={auth ? "Account" : "Sign in"}
           >
             <Icon name="user" className="h-5 w-5" />
           </Link>
+          {auth ? (
+            <>
+              <LogoutButton
+                variant="icon"
+                className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/70 transition-colors hover:border-red-400/35 hover:text-red-300 sm:hidden"
+              />
+              <LogoutButton className="hidden rounded-pill border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/55 transition-colors hover:border-red-400/35 hover:text-red-300 sm:block" />
+            </>
+          ) : null}
         </div>
       </div>
 
@@ -260,6 +273,26 @@ export function Navbar() {
                   <Icon name="printer" className="h-4 w-4" />
                   Upload &amp; Print Now
                 </Link>
+                {auth ? (
+                  <div className="col-span-2 flex gap-2">
+                    <Link
+                      href={auth.home}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3 text-sm font-semibold text-white/80"
+                    >
+                      <Icon name="user" className="h-4 w-4 text-brand" />
+                      {auth.kind === "provider" ? "Provider desk" : "Your account"}
+                    </Link>
+                    <LogoutButton className="flex-1 rounded-2xl border border-red-400/20 bg-red-400/10 px-3.5 py-3 text-sm font-semibold text-red-300" />
+                  </div>
+                ) : (
+                  <Link
+                    href="/profile"
+                    className="col-span-2 flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3.5 text-sm font-semibold text-white/80"
+                  >
+                    <Icon name="user" className="h-4 w-4 text-brand" />
+                    Sign in
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>
