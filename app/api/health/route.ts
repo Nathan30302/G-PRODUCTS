@@ -59,7 +59,12 @@ function diskReport(target: string) {
 /** Lightweight public probe — no secrets. */
 export async function GET() {
   try {
-    await tuneSqliteForConcurrency();
+    // Never let SQLite PRAGMA tuning fail / flap the healthcheck.
+    try {
+      await tuneSqliteForConcurrency();
+    } catch {
+      /* tune is best-effort; DB counts below are the real readiness signal */
+    }
 
     const [products, categories, services, users, customers, owner] =
       await Promise.all([
@@ -84,12 +89,13 @@ export async function GET() {
     const ephemeral = isEphemeralSqlite();
     const disk = mount ? diskReport(mount) : diskReport(process.cwd());
     const persistWarn = persistenceWarning();
+    // Disk / volume warnings are for operators only — never flap deploy health.
+    const diskHealthy = !hasVolume || disk.ok !== false;
 
     return NextResponse.json(
       {
-        // Keep HTTP 200 when catalog is fine so deploys don't flap — persistence
-        // issues are surfaced in `persistentStorage` / `readiness` for operators.
-        ok: catalogOk && (disk.ok !== false || !hasVolume),
+        // HTTP status follows catalog only. Persistence/disk live in the body.
+        ok: catalogOk && diskHealthy,
         products,
         categories,
         services,

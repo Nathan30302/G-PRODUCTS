@@ -14,7 +14,6 @@ export async function createTeamMember(
 
   const name = String(formData.get("name") ?? "").trim();
   const title = String(formData.get("title") ?? "").trim();
-  const photoUrl = String(formData.get("photoUrl") ?? "").trim() || null;
   const sortOrder = Number(formData.get("sortOrder") ?? 0);
 
   if (!name) return { error: "Name is required." };
@@ -24,7 +23,7 @@ export async function createTeamMember(
     data: {
       name,
       title,
-      photoUrl,
+      photoUrl: null,
       sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
       published: true
     }
@@ -46,7 +45,6 @@ export async function updateTeamMember(
   const id = String(formData.get("id") ?? "").trim();
   const name = String(formData.get("name") ?? "").trim();
   const title = String(formData.get("title") ?? "").trim();
-  const photoUrl = String(formData.get("photoUrl") ?? "").trim() || null;
   const sortOrder = Number(formData.get("sortOrder") ?? 0);
   const published = String(formData.get("published") ?? "") === "1";
 
@@ -59,7 +57,6 @@ export async function updateTeamMember(
     data: {
       name,
       title,
-      photoUrl,
       sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
       published
     }

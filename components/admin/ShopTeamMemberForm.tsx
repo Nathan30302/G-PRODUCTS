@@ -1,14 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { ImageUploader } from "@/components/admin/ImageUploader";
+import { useActionState } from "react";
 import {
   createTeamMember,
   type TeamActionState
 } from "@/app/admin/(dashboard)/shop-team/actions";
 
 export function ShopTeamMemberForm() {
-  const [photoUrl, setPhotoUrl] = useState<string[]>([]);
   const [state, action, pending] = useActionState<
     TeamActionState | undefined,
     FormData
@@ -43,15 +41,6 @@ export function ShopTeamMemberForm() {
           className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-950 px-3 py-2.5 text-sm text-white outline-none focus:border-brand"
         />
       </label>
-      <input type="hidden" name="photoUrl" value={photoUrl[0] ?? ""} />
-      <ImageUploader
-        folder="misc"
-        multiple={false}
-        label="Photo (optional)"
-        urls={photoUrl}
-        onUrlsChange={setPhotoUrl}
-        downloadPrefix="team"
-      />
       {state?.error ? (
         <p className="text-sm text-red-300">{state.error}</p>
       ) : null}

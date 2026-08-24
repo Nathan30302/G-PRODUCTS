@@ -115,11 +115,11 @@ export function DeskPanel({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[1.45rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/85 via-ink-900/75 to-ink-950/60 shadow-[0_20px_50px_-28px_rgba(0,0,0,0.65)] ring-1 ring-white/[0.03] ${
+      className={`relative overflow-hidden rounded-[1.45rem] border border-white/[0.09] bg-gradient-to-b from-ink-850/90 via-ink-900/78 to-ink-950/65 shadow-[0_20px_50px_-28px_rgba(0,0,0,0.65)] ring-1 ring-white/[0.035] ${
         flush ? "" : ""
       } ${className}`}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/30 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
       {children}
     </div>
   );

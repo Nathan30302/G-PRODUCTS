@@ -91,12 +91,12 @@ const navGroups: NavGroup[] = [
       {
         href: "/admin/shop-team",
         label: "Shop team",
-        hint: "Public profiles"
+        hint: "Names & roles"
       },
       {
         href: "/admin/staff",
         label: "Staff",
-        hint: "Team access",
+        hint: "Desk logins",
         ownerOnly: true
       },
       {
@@ -246,9 +246,9 @@ export function AdminShell({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,32,0)_0%,rgba(6,24,28,0.4)_100%)]" />
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/85 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/30 to-transparent" />
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <header className="sticky top-0 z-40 border-b border-white/[0.07] bg-ink-950/88 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
@@ -319,9 +319,9 @@ export function AdminShell({
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-7 px-4 py-6 sm:gap-8 sm:px-6 lg:flex-row lg:py-9">
         <aside className="hidden lg:block lg:w-[17rem] lg:shrink-0">
-          <div className="relative sticky top-[5.5rem] overflow-hidden rounded-[1.65rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 via-ink-900/90 to-ink-950/95 p-3 shadow-[0_28px_70px_-30px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.04]">
-            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
-            <div className="mb-3 rounded-2xl border border-white/[0.05] bg-white/[0.02] px-3.5 py-3">
+          <div className="relative sticky top-[5.75rem] overflow-hidden rounded-[1.65rem] border border-white/[0.09] bg-gradient-to-b from-ink-850/95 via-ink-900/90 to-ink-950/95 p-3 shadow-[0_28px_70px_-30px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.04]">
+            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-brand/45 to-transparent" />
+            <div className="mb-3 rounded-2xl border border-white/[0.06] bg-white/[0.025] px-3.5 py-3">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
                 Signed in
               </p>

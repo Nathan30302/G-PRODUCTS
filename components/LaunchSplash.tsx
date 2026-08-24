@@ -17,8 +17,8 @@ const BRAND = {
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v10",
-  admin: "gproducts-admin-splash-v10"
+  shop: "gproducts-splash-v11",
+  admin: "gproducts-admin-splash-v11"
 } as const;
 
 /** Hold ~4–4.8s so the opening feels intentional, then exit. */
@@ -63,11 +63,7 @@ function AnimatedBackdrop({ variant }: { variant: "shop" | "admin" }) {
         style={{ backgroundColor: shopLed ? BRAND.green : BRAND.yellow }}
       />
 
-      {/* Center stage glow behind the mark */}
-      <div className="splash-stage" />
-      <div className="splash-sweep" aria-hidden />
-
-      {/* Fine grid + vignette + grain for HD atmosphere */}
+      {/* Fine grid + vignette + grain for HD atmosphere (grain masked off the mark) */}
       <div className="splash-mesh absolute inset-0" aria-hidden />
       <div className="splash-vignette absolute inset-0" />
       <div className="splash-grain absolute inset-0" aria-hidden />
@@ -86,12 +82,6 @@ function StaticBackdrop({ variant }: { variant: "shop" | "admin" }) {
           background: shopLed
             ? `radial-gradient(ellipse 90% 70% at 50% 40%, ${BRAND.inkLift} 0%, ${BRAND.inkMid} 45%, ${BRAND.ink} 100%)`
             : `radial-gradient(ellipse 90% 70% at 50% 40%, #0c333a 0%, ${BRAND.inkMid} 48%, ${BRAND.ink} 100%)`
-        }}
-      />
-      <div
-        className="absolute left-1/2 top-[36%] h-[min(68vw,26rem)] w-[min(68vw,26rem)] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-55 blur-[100px]"
-        style={{
-          backgroundColor: shopLed ? `${BRAND.yellow}36` : `${BRAND.green}32`
         }}
       />
       <div
@@ -233,9 +223,8 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
         } ${exiting ? "splash-content-exit" : ""}`}
       >
         <div
-          className={`relative ${reducedMotion ? "" : "splash-logo-wrap"}`}
+          className={`relative isolate ${reducedMotion ? "" : "splash-logo-wrap"}`}
         >
-          <div className="splash-logo-halo" aria-hidden />
           <Logo size="splash" priority />
         </div>
 

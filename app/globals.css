@@ -168,67 +168,6 @@ html.splash-open body {
   animation-delay: -5s;
 }
 
-.splash-stage {
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  width: min(70vw, 24rem);
-  height: min(70vw, 24rem);
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(246, 212, 0, 0.18) 0%,
-    rgba(34, 201, 138, 0.07) 40%,
-    transparent 70%
-  );
-  filter: blur(24px);
-  animation: splash-stage-breathe 5s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.splash-backdrop-admin .splash-stage {
-  background: radial-gradient(
-    circle,
-    rgba(34, 201, 138, 0.16) 0%,
-    rgba(246, 212, 0, 0.06) 40%,
-    transparent 70%
-  );
-}
-
-/* Soft light sweep across the stage — intentional motion #3 */
-.splash-sweep {
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  width: min(56vw, 20rem);
-  height: min(56vw, 20rem);
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(246, 212, 0, 0.12) 40deg,
-    transparent 90deg,
-    transparent 360deg
-  );
-  filter: blur(18px);
-  opacity: 0.55;
-  animation: splash-sweep-spin 12s linear infinite;
-  pointer-events: none;
-  mix-blend-mode: screen;
-}
-
-.splash-backdrop-admin .splash-sweep {
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(34, 201, 138, 0.14) 40deg,
-    transparent 90deg,
-    transparent 360deg
-  );
-}
-
 .splash-mesh {
   opacity: 0.035;
   background-image:
@@ -281,46 +220,22 @@ html.splash-open body {
   pointer-events: none;
 }
 
-/* Fluid mark size: phone → tablet → laptop */
+/* Fluid mark size: slightly larger on phone for perceived sharpness */
 .splash-mark {
-  width: clamp(8.5rem, 26vw + 2rem, 14rem);
-  height: clamp(8.5rem, 26vw + 2rem, 14rem);
+  width: clamp(9.75rem, 30vw + 1.5rem, 14.25rem);
+  height: clamp(9.75rem, 30vw + 1.5rem, 14.25rem);
+  isolation: isolate;
 }
 
 .splash-mark img {
   display: block;
-  /* Original PNG — keep edges as sharp as the asset allows */
+  /* Original PNG — sharp edges, no soft filters on the mark */
   image-rendering: auto;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translateZ(0);
-}
-
-.splash-logo-halo {
-  position: absolute;
-  inset: -22%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(246, 212, 0, 0.16) 0%,
-    rgba(34, 201, 138, 0.06) 42%,
-    transparent 68%
-  );
-  /* Soft glow behind the mark — keep edges of the SVG crisp */
-  filter: blur(28px);
-  opacity: 0.85;
-  z-index: -1;
-  pointer-events: none;
-  animation: splash-stage-breathe 5s ease-in-out infinite;
-}
-
-[data-splash="admin"] .splash-logo-halo {
-  background: radial-gradient(
-    circle,
-    rgba(34, 201, 138, 0.15) 0%,
-    rgba(246, 212, 0, 0.05) 42%,
-    transparent 68%
-  );
+  opacity: 1;
+  filter: none;
 }
 
 .splash-heading {
@@ -342,11 +257,6 @@ html.splash-open body {
   .splash-blob-1,
   .splash-blob-2 {
     filter: blur(100px);
-  }
-
-  .splash-stage {
-    width: min(52vw, 26rem);
-    height: min(52vw, 26rem);
   }
 }
 
@@ -420,27 +330,6 @@ html.splash-open body {
   }
 }
 
-@keyframes splash-stage-breathe {
-  0%,
-  100% {
-    opacity: 0.72;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes splash-sweep-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes splash-logo-in {
   0% {
     opacity: 0;
@@ -509,10 +398,7 @@ html.splash-open body {
   .splash-blob-2,
   .splash-well-a,
   .splash-well-b,
-  .splash-well-c,
-  .splash-stage,
-  .splash-sweep,
-  .splash-logo-halo {
+  .splash-well-c {
     animation: none;
   }
 

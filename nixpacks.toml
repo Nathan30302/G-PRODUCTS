@@ -7,7 +7,8 @@ cmds = ["npm ci"]
 cmds = ["npm run build"]
 
 [start]
-cmd = "npm run start:prod"
+# Direct tsx — avoid `npm run` so Railway redeploy SIGTERM is not a fake npm crash.
+cmd = "./node_modules/.bin/tsx scripts/start-prod.ts"
 
 [variables]
 NPM_CONFIG_PRODUCTION = "false"

@@ -139,34 +139,29 @@ function resolveNextBin() {
   throw new Error("Could not find next binary under node_modules/next");
 }
 
-/** Boot Next without nested npx; exit 0 on Railway stop/redeploy SIGTERM. */
-function startNext(port: string): Promise<never> {
-  const nextBin = resolveNextBin();
-  const args = ["start", "-H", "0.0.0.0", "-p", port];
+/** Set once at process start so mid-boot SIGTERM also exits 0 (no fake crash). */
+let shuttingDown = false;
+let nextChild: ChildProcess | null = null;
 
-  console.log(`[start] node ${nextBin} ${args.join(" ")}`);
-
-  const child: ChildProcess = spawn(process.execPath, [nextBin, ...args], {
-    stdio: "inherit",
-    env: process.env
-  });
-
-  let shuttingDown = false;
-
+function installCleanShutdownHandlers() {
   const shutdown = (signal: NodeJS.Signals) => {
     if (shuttingDown) return;
     shuttingDown = true;
-    console.log(`[start] received ${signal} — stopping Next for clean redeploy`);
+    console.log(
+      `[start] received ${signal} — clean exit${
+        nextChild ? " (stopping Next)" : " (during boot)"
+      }`
+    );
 
     const forceTimer = setTimeout(() => {
-      console.warn("[start] Next did not exit in time — forcing exit 0");
+      console.warn("[start] forced exit 0 after stop timeout");
       process.exit(0);
     }, 8_000);
     forceTimer.unref?.();
 
-    if (child.pid && !child.killed) {
+    if (nextChild?.pid && !nextChild.killed) {
       try {
-        child.kill(signal);
+        nextChild.kill(signal);
       } catch {
         // child may already be gone
       }
@@ -177,11 +172,24 @@ function startNext(port: string): Promise<never> {
 
   process.on("SIGTERM", () => shutdown("SIGTERM"));
   process.on("SIGINT", () => shutdown("SIGINT"));
+}
+
+/** Boot Next without nested npm/npx; exit 0 on Railway stop/redeploy SIGTERM. */
+function startNext(port: string): Promise<never> {
+  const nextBin = resolveNextBin();
+  const args = ["start", "-H", "0.0.0.0", "-p", port];
+
+  console.log(`[start] node ${nextBin} ${args.join(" ")}`);
+
+  nextChild = spawn(process.execPath, [nextBin, ...args], {
+    stdio: "inherit",
+    env: process.env
+  });
 
   return new Promise((_, reject) => {
-    child.on("error", reject);
-    child.on("exit", (code, signal) => {
-      // Railway / platform stop: treat as clean shutdown so npm doesn't look crashed.
+    nextChild!.on("error", reject);
+    nextChild!.on("exit", (code, signal) => {
+      // Railway / platform stop: treat as clean shutdown (never a "crash").
       if (shuttingDown || signal === "SIGTERM" || signal === "SIGINT") {
         console.log("[start] Next stopped cleanly");
         process.exit(0);
@@ -352,6 +360,7 @@ async function ensureCatalog() {
 }
 
 async function main() {
+  installCleanShutdownHandlers();
   resolveDatabaseUrl();
   await tuneSqlite();
 

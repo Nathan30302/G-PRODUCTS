@@ -60,23 +60,10 @@ export default async function AboutPage() {
             {team.map((m) => (
               <article
                 key={m.id}
-                className="overflow-hidden rounded-[1.25rem] border border-white/[0.07] bg-ink-900/50"
+                className="rounded-[1.25rem] border border-white/[0.07] bg-ink-900/50 p-5"
               >
-                {m.photoUrl ? (
-                  <div className="aspect-[4/3] bg-ink-950">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={m.photoUrl}
-                      alt=""
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                ) : null}
-                <div className="p-5">
-                  <h3 className="text-base font-bold text-white">{m.name}</h3>
-                  <p className="mt-1 text-sm text-white/50">{m.title}</p>
-                </div>
+                <h3 className="text-base font-bold text-white">{m.name}</h3>
+                <p className="mt-1 text-sm text-white/50">{m.title}</p>
               </article>
             ))}
           </div>

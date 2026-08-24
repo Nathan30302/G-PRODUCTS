@@ -11,7 +11,6 @@ type Member = {
   id: string;
   name: string;
   title: string;
-  photoUrl: string | null;
   sortOrder: number;
   published: boolean;
 };
@@ -26,26 +25,17 @@ export function ShopTeamMemberRow({ member }: { member: Member }) {
     FormData
   >(deleteTeamMember, undefined);
 
+  const initials = member.name
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <li className="flex flex-wrap items-center gap-4 px-5 py-4 sm:px-6">
-      <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-ink-950">
-        {member.photoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={member.photoUrl}
-            alt=""
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="grid h-full w-full place-items-center text-xs font-bold text-brand">
-            {member.name
-              .split(" ")
-              .map((p) => p[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase()}
-          </div>
-        )}
+      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-white/[0.08] bg-brand/10 text-xs font-black text-brand">
+        {initials}
       </div>
       <div className="min-w-0 flex-1">
         <p className="font-semibold text-white">{member.name}</p>

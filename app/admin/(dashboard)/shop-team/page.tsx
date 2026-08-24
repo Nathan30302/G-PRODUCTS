@@ -24,7 +24,7 @@ export default async function AdminShopTeamPage() {
       <DeskPageHeader
         eyebrow="Storefront"
         title="Shop team"
-        description="Public-facing names and photos for the About page. Desk login accounts are managed under Staff."
+        description="Names and roles shown on the About page. Desk login accounts are managed under Staff."
       />
 
       <DeskPanel>
@@ -35,7 +35,7 @@ export default async function AdminShopTeamPage() {
         {members.length === 0 ? (
           <DeskEmpty
             title="No public profiles yet"
-            description="Add people who should appear on About — name, role, optional photo."
+            description="Add people who should appear on About — name and role only."
           />
         ) : (
           <ul className="divide-y divide-white/[0.05]">
@@ -46,7 +46,6 @@ export default async function AdminShopTeamPage() {
                   id: m.id,
                   name: m.name,
                   title: m.title,
-                  photoUrl: m.photoUrl,
                   sortOrder: m.sortOrder,
                   published: m.published
                 }}
@@ -61,6 +60,9 @@ export default async function AdminShopTeamPage() {
           Add
         </p>
         <h2 className="mt-1 text-xl font-black text-white">New team member</h2>
+        <p className="mt-1.5 text-sm text-white/45">
+          Name, title, and publish — no photo upload needed.
+        </p>
         <div className="mt-5">
           <ShopTeamMemberForm />
         </div>

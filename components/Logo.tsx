@@ -9,10 +9,10 @@ const sizes = {
   md: 44,
   lg: 112,
   /**
-   * Splash displays via CSS clamp; pass a large intrinsic size so Retina
-   * screens get the full 1024 PNG detail (original mark, not redesigned).
+   * Splash displays via CSS clamp; pass full 1024 intrinsic so phones
+   * and Retina screens get the original PNG detail (not redesigned).
    */
-  splash: 640
+  splash: 1024
 } as const;
 
 /**
@@ -46,7 +46,7 @@ export function Logo({
         priority={priority}
         quality={100}
         unoptimized
-        className={`h-full w-full object-contain ${isLarge ? "p-[1.5%]" : "p-[4%]"}`}
+        className={`h-full w-full object-contain ${isLarge ? "" : "p-[4%]"}`}
       />
     </span>
   );

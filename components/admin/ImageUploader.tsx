@@ -20,6 +20,8 @@ type Props = {
   allowDownload?: boolean;
   /** Prefix for downloaded filenames */
   downloadPrefix?: string;
+  /** Override the shop-preview helper copy under the uploader */
+  previewHint?: string;
 };
 
 function downloadHref(url: string, filename: string): string {
@@ -35,7 +37,8 @@ export function ImageUploader({
   multiple = true,
   label = "Photos",
   allowDownload = true,
-  downloadPrefix = "product"
+  downloadPrefix = "product",
+  previewHint
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [internalUrls, setInternalUrls] = useState<string[]>(
@@ -252,10 +255,13 @@ export function ImageUploader({
             Shop preview
           </p>
           <p className="mt-1 text-xs text-white/45">
-            Cover photo is what customers see first
-            {folder === "services"
-              ? " on tiles and as gallery photo 1."
-              : ". White background, full product in frame."}
+            {previewHint
+              ? previewHint
+              : folder === "services"
+                ? "Cover photo is what customers see first on tiles and as gallery photo 1."
+                : folder === "misc"
+                  ? "Cover photo is what customers see first on the locations band."
+                  : "Cover photo is what customers see first. White background, full product in frame."}
           </p>
           <div className="mt-3 max-w-[11rem]">
             <div className="overflow-hidden rounded-2xl border border-white/[0.06]">

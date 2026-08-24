@@ -43,4 +43,5 @@ COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/tsconfig.json ./
 
 EXPOSE 3000
-CMD ["npm", "run", "start:prod"]
+# Direct tsx — avoid nested `npm run` SIGTERM noise on redeploy.
+CMD ["./node_modules/.bin/tsx", "scripts/start-prod.ts"]
