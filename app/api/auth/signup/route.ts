@@ -4,12 +4,14 @@ import { hashPassword } from "@/lib/auth";
 import { passwordError } from "@/lib/password";
 import { normalizePhone, phoneVariants } from "@/lib/phone";
 import { isProviderSignupEmail } from "@/lib/provider-emails";
+import { findUserByEmail } from "@/lib/user-lookup";
 import {
   CUSTOMER_COOKIE,
   CUSTOMER_MAX_AGE,
   DESK_COOKIE,
   DESK_MAX_AGE,
-  sessionCookieOptions,
+  clearSessionCookie,
+  setSessionCookie,
   signCustomerToken,
   signDeskToken
 } from "@/lib/session-cookies";
@@ -79,9 +81,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const existingUser = await prisma.user.findFirst({
-      where: { email: { equals: emailRaw } }
-    });
+    const existingUser = await findUserByEmail(emailRaw);
     if (existingUser) {
       return NextResponse.json(
         {
@@ -151,11 +151,8 @@ export async function POST(req: Request) {
         redirectTo: siteConfig.apps.provider.home,
         name: user.name
       });
-      res.cookies.set(CUSTOMER_COOKIE, "", {
-        ...sessionCookieOptions(0),
-        maxAge: 0
-      });
-      res.cookies.set(DESK_COOKIE, token, sessionCookieOptions(DESK_MAX_AGE));
+      clearSessionCookie(res.cookies, CUSTOMER_COOKIE);
+      setSessionCookie(res.cookies, DESK_COOKIE, token, DESK_MAX_AGE);
       return res;
     }
 
@@ -199,14 +196,12 @@ export async function POST(req: Request) {
       name: customer.name,
       customerId: customer.id
     });
-    res.cookies.set(DESK_COOKIE, "", {
-      ...sessionCookieOptions(0),
-      maxAge: 0
-    });
-    res.cookies.set(
+    clearSessionCookie(res.cookies, DESK_COOKIE);
+    setSessionCookie(
+      res.cookies,
       CUSTOMER_COOKIE,
       token,
-      sessionCookieOptions(CUSTOMER_MAX_AGE)
+      CUSTOMER_MAX_AGE
     );
     return res;
   } catch (err) {

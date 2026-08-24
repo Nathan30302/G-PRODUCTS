@@ -53,7 +53,11 @@ export function LoginForm() {
               <input
                 name="email"
                 type="email"
-                autoComplete="email"
+                autoComplete="username"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                enterKeyHint="next"
                 required
                 className="field"
                 placeholder="you@gproducts.zm"
@@ -66,6 +70,7 @@ export function LoginForm() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
+                  enterKeyHint="go"
                   required
                   className="field pr-14"
                   placeholder="••••••••"
@@ -73,7 +78,7 @@ export function LoginForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white/40 hover:text-brand"
+                  className="absolute right-2 top-1/2 z-10 min-h-11 min-w-11 -translate-y-1/2 rounded-lg px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white/40 hover:text-brand"
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>

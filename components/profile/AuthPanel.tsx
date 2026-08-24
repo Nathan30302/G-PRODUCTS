@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
+import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { passwordChecks } from "@/lib/password";
@@ -8,6 +8,12 @@ import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
 
 type Mode = "signin" | "signup";
+
+function hardNavigate(path: string) {
+  // Full page load so the session cookie is always sent on the next request
+  // (client router transitions were flaky on mobile Safari after Set-Cookie).
+  window.location.assign(path);
+}
 
 function PasswordInput({
   name,
@@ -37,6 +43,7 @@ function PasswordInput({
           type={show ? "text" : "password"}
           autoComplete={autoComplete}
           required
+          enterKeyHint={showMeter ? "next" : "go"}
           {...(onChange
             ? {
                 value: value ?? "",
@@ -50,7 +57,7 @@ function PasswordInput({
         <button
           type="button"
           onClick={() => setShow((v) => !v)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white/40 hover:text-brand"
+          className="absolute right-2 top-1/2 z-10 min-h-11 min-w-11 -translate-y-1/2 rounded-lg px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white/40 hover:text-brand"
         >
           {show ? "Hide" : "Show"}
         </button>
@@ -107,6 +114,7 @@ export function AuthPanel({
   initialReferralCode?: string;
 }) {
   const router = useRouter();
+  const errorRef = useRef<HTMLParagraphElement>(null);
   const [mode, setMode] = useState<Mode>(initialMode);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -122,6 +130,14 @@ export function AuthPanel({
     });
   }
 
+  function showError(message: string) {
+    setError(message);
+    setPending(false);
+    requestAnimationFrame(() => {
+      errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
   async function onLogin(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -131,7 +147,8 @@ export function AuthPanel({
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
+        credentials: "include",
+        cache: "no-store",
         body: JSON.stringify({
           identifier: String(form.get("identifier") ?? "").trim(),
           password: String(form.get("password") ?? "")
@@ -142,15 +159,12 @@ export function AuthPanel({
         redirectTo?: string;
       };
       if (!res.ok) {
-        setError(data.error ?? "Sign in failed.");
-        setPending(false);
+        showError(data.error ?? "Sign in failed.");
         return;
       }
-      router.push(data.redirectTo ?? "/");
-      router.refresh();
+      hardNavigate(data.redirectTo ?? "/");
     } catch {
-      setError("Network error. Check your connection and try again.");
-      setPending(false);
+      showError("Network error. Check your connection and try again.");
     }
   }
 
@@ -163,7 +177,8 @@ export function AuthPanel({
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
+        credentials: "include",
+        cache: "no-store",
         body: JSON.stringify({
           firstName: String(form.get("firstName") ?? "").trim(),
           lastName: String(form.get("lastName") ?? "").trim(),
@@ -179,21 +194,17 @@ export function AuthPanel({
         redirectTo?: string;
       };
       if (!res.ok) {
-        setError(data.error ?? "Could not create account.");
-        setPending(false);
+        showError(data.error ?? "Could not create account.");
         return;
       }
-      // Account created + session cookie set — go straight in
-      router.push(data.redirectTo ?? "/profile/account");
-      router.refresh();
+      hardNavigate(data.redirectTo ?? "/profile/account");
     } catch {
-      setError("Network error. Check your connection and try again.");
-      setPending(false);
+      showError("Network error. Check your connection and try again.");
     }
   }
 
   return (
-    <div className="relative mx-auto w-full max-w-md">
+    <div className="relative mx-auto w-full max-w-md pb-[max(2rem,env(safe-area-inset-bottom))]">
       <div className="pointer-events-none absolute -left-16 -top-10 h-48 w-48 rounded-full bg-brand/15 blur-[90px]" />
       <div className="pointer-events-none absolute -right-10 top-32 h-40 w-40 rounded-full bg-accent/10 blur-[80px]" />
 
@@ -266,6 +277,8 @@ export function AuthPanel({
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
+                  inputMode="email"
+                  enterKeyHint="next"
                   required
                   className="field"
                   placeholder="0972… or you@email.com"
@@ -278,7 +291,10 @@ export function AuthPanel({
               />
 
               {error ? (
-                <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                <p
+                  ref={errorRef}
+                  className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+                >
                   {error}
                 </p>
               ) : null}
@@ -286,7 +302,7 @@ export function AuthPanel({
               <button
                 type="submit"
                 disabled={pending}
-                className="btn-brand mt-1 w-full py-3.5 text-sm disabled:opacity-60"
+                className="btn-brand mt-1 min-h-12 w-full py-3.5 text-sm disabled:opacity-60"
               >
                 {pending ? "Signing in…" : "Sign in"}
               </button>
@@ -300,6 +316,7 @@ export function AuthPanel({
                     name="firstName"
                     type="text"
                     autoComplete="given-name"
+                    enterKeyHint="next"
                     required
                     className="field"
                     placeholder="Gift"
@@ -311,6 +328,7 @@ export function AuthPanel({
                     name="lastName"
                     type="text"
                     autoComplete="family-name"
+                    enterKeyHint="next"
                     required
                     className="field"
                     placeholder="Mbumwae"
@@ -325,6 +343,7 @@ export function AuthPanel({
                   type="tel"
                   autoComplete="tel"
                   inputMode="tel"
+                  enterKeyHint="next"
                   required
                   className="field"
                   placeholder="0972 500 209"
@@ -338,6 +357,9 @@ export function AuthPanel({
                   type="email"
                   autoComplete="email"
                   autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  enterKeyHint="next"
                   required
                   className="field"
                   placeholder="you@email.com"
@@ -355,6 +377,7 @@ export function AuthPanel({
                   autoCapitalize="characters"
                   autoCorrect="off"
                   spellCheck={false}
+                  enterKeyHint="next"
                   value={referralCode}
                   onChange={(e) =>
                     setReferralCode(e.target.value.toUpperCase())
@@ -380,7 +403,10 @@ export function AuthPanel({
               />
 
               {error ? (
-                <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                <p
+                  ref={errorRef}
+                  className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+                >
                   {error}
                 </p>
               ) : null}
@@ -388,7 +414,7 @@ export function AuthPanel({
               <button
                 type="submit"
                 disabled={pending}
-                className="btn-brand mt-1 w-full py-3.5 text-sm disabled:opacity-60"
+                className="btn-brand mt-1 min-h-12 w-full py-3.5 text-sm disabled:opacity-60"
               >
                 {pending ? "Creating…" : "Create account"}
               </button>

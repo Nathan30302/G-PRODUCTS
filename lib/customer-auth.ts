@@ -5,7 +5,9 @@ import { hashPassword, verifyPassword } from "@/lib/auth";
 import {
   CUSTOMER_COOKIE,
   CUSTOMER_MAX_AGE,
-  sessionCookieOptions,
+  DESK_COOKIE,
+  clearSessionCookie,
+  setSessionCookie,
   signCustomerToken,
   verifyCustomerToken
 } from "@/lib/session-cookies";
@@ -24,15 +26,13 @@ export async function createCustomerSession(
 ): Promise<void> {
   const token = await signCustomerToken(customer);
   const store = await cookies();
-  store.set(CUSTOMER_COOKIE, token, sessionCookieOptions(CUSTOMER_MAX_AGE));
+  clearSessionCookie(store, DESK_COOKIE);
+  setSessionCookie(store, CUSTOMER_COOKIE, token, CUSTOMER_MAX_AGE);
 }
 
 export async function destroyCustomerSession(): Promise<void> {
   const store = await cookies();
-  store.set(CUSTOMER_COOKIE, "", {
-    ...sessionCookieOptions(0),
-    maxAge: 0
-  });
+  clearSessionCookie(store, CUSTOMER_COOKIE);
 }
 
 export async function getCustomerSession(): Promise<CustomerSession | null> {

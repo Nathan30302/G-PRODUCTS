@@ -8,7 +8,8 @@ import {
   CUSTOMER_MAX_AGE,
   DESK_COOKIE,
   DESK_MAX_AGE,
-  sessionCookieOptions,
+  clearSessionCookie,
+  setSessionCookie,
   signCustomerToken,
   signDeskToken
 } from "@/lib/session-cookies";
@@ -18,9 +19,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 async function resolveDeskUser(identifier: string) {
-  let deskUser = await findDeskUserByIdentifier(identifier);
+  const deskUser = await findDeskUserByIdentifier(identifier);
   if (deskUser) return deskUser;
 
+  // Fallback: allowlisted provider emails resolve to the sole OWNER row
+  // (covers rare email casing / env vs DB mismatches without stealing staff logins).
   const ownerEmail =
     process.env.OWNER_EMAIL?.trim().toLowerCase() ?? "gift@gproducts.zm";
   const id = identifier.trim().toLowerCase();
@@ -29,10 +32,7 @@ async function resolveDeskUser(identifier: string) {
     ...siteConfig.providerSignupEmails.map((e) => e.toLowerCase())
   ]);
 
-  if (
-    id.includes("@") &&
-    (providerEmails.has(id) || id.endsWith("@gproducts.zm"))
-  ) {
+  if (id.includes("@") && providerEmails.has(id)) {
     const owner = await prisma.user.findFirst({ where: { role: "OWNER" } });
     if (owner) return owner;
   }
@@ -77,11 +77,8 @@ export async function POST(req: Request) {
         redirectTo: siteConfig.apps.provider.home,
         name: deskUser.name
       });
-      res.cookies.set(CUSTOMER_COOKIE, "", {
-        ...sessionCookieOptions(0),
-        maxAge: 0
-      });
-      res.cookies.set(DESK_COOKIE, token, sessionCookieOptions(DESK_MAX_AGE));
+      clearSessionCookie(res.cookies, CUSTOMER_COOKIE);
+      setSessionCookie(res.cookies, DESK_COOKIE, token, DESK_MAX_AGE);
       return res;
     }
 
@@ -110,14 +107,12 @@ export async function POST(req: Request) {
         redirectTo: siteConfig.apps.customer.home,
         name: customer.name
       });
-      res.cookies.set(DESK_COOKIE, "", {
-        ...sessionCookieOptions(0),
-        maxAge: 0
-      });
-      res.cookies.set(
+      clearSessionCookie(res.cookies, DESK_COOKIE);
+      setSessionCookie(
+        res.cookies,
         CUSTOMER_COOKIE,
         token,
-        sessionCookieOptions(CUSTOMER_MAX_AGE)
+        CUSTOMER_MAX_AGE
       );
       return res;
     }

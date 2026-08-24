@@ -16,13 +16,13 @@ const BRAND = {
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v12",
-  admin: "gproducts-admin-splash-v12"
+  shop: "gproducts-splash-v13",
+  admin: "gproducts-admin-splash-v13"
 } as const;
 
-/** Hold ~4–4.8s so the opening feels intentional, then exit. */
-const MIN_MS = 4000;
-const MAX_MS = 4800;
+/** Hold a bit longer so the live fluid motion reads clearly. */
+const MIN_MS = 5200;
+const MAX_MS = 6000;
 const EXIT_MS = 780;
 
 const COPY = {
@@ -37,8 +37,7 @@ const COPY = {
 } as const;
 
 /**
- * Soft ethereal fluid backdrop — wellness-app vibe, G-Products yellow / green / mint
- * (no purple / pink). Soft misty edges; deep enough center for the original mark PNG.
+ * Soft ethereal fluid backdrop — live drifting blobs with yellow↔green color shift.
  */
 function AnimatedBackdrop({ variant }: { variant: "shop" | "admin" }) {
   const shopLed = variant === "shop";
@@ -51,43 +50,26 @@ function AnimatedBackdrop({ variant }: { variant: "shop" | "admin" }) {
     >
       <div className="splash-ethereal-base absolute inset-0" />
 
+      {/* Primary yellow / green pair — swap lead by variant */}
       <div
-        className="splash-fluid splash-fluid-a"
-        style={{
-          background: shopLed
-            ? `radial-gradient(ellipse at center, ${BRAND.yellow} 0%, transparent 68%)`
-            : `radial-gradient(ellipse at center, ${BRAND.green} 0%, transparent 68%)`
-        }}
+        className={`splash-fluid splash-fluid-a ${shopLed ? "splash-fluid-yellow" : "splash-fluid-green"}`}
       />
       <div
-        className="splash-fluid splash-fluid-b"
-        style={{
-          background: shopLed
-            ? `radial-gradient(ellipse at center, ${BRAND.green} 0%, transparent 70%)`
-            : `radial-gradient(ellipse at center, ${BRAND.yellow} 0%, transparent 70%)`
-        }}
+        className={`splash-fluid splash-fluid-b ${shopLed ? "splash-fluid-green" : "splash-fluid-yellow"}`}
+      />
+      <div className="splash-fluid splash-fluid-c splash-fluid-mint" />
+      <div
+        className={`splash-fluid splash-fluid-d ${shopLed ? "splash-fluid-yellow-soft" : "splash-fluid-green-soft"}`}
       />
       <div
-        className="splash-fluid splash-fluid-c"
-        style={{
-          background: `radial-gradient(ellipse at center, ${BRAND.mint} 0%, transparent 72%)`
-        }}
+        className={`splash-fluid splash-fluid-e ${shopLed ? "splash-fluid-green-soft" : "splash-fluid-yellow-soft"}`}
+      />
+      {/* Extra crossing ribbons so color mixes read clearly while drifting */}
+      <div
+        className={`splash-fluid splash-fluid-f ${shopLed ? "splash-fluid-yellow" : "splash-fluid-green"}`}
       />
       <div
-        className="splash-fluid splash-fluid-d"
-        style={{
-          background: shopLed
-            ? `radial-gradient(ellipse at center, ${BRAND.yellowSoft} 0%, transparent 70%)`
-            : `radial-gradient(ellipse at center, ${BRAND.greenSoft} 0%, transparent 70%)`
-        }}
-      />
-      <div
-        className="splash-fluid splash-fluid-e"
-        style={{
-          background: shopLed
-            ? `radial-gradient(ellipse at center, ${BRAND.greenSoft} 0%, transparent 72%)`
-            : `radial-gradient(ellipse at center, ${BRAND.yellowSoft} 0%, transparent 72%)`
-        }}
+        className={`splash-fluid splash-fluid-g ${shopLed ? "splash-fluid-green" : "splash-fluid-yellow"}`}
       />
 
       <div className="splash-ethereal-veil absolute inset-0" aria-hidden />

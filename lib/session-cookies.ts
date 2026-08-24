@@ -5,10 +5,21 @@ import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 const ALG = "HS256";
 const FALLBACK_SECRET = "change-me-in-railway-variables";
 
+/** Historical Domain= values that can shadow host-only cookies on Safari. */
+const LEGACY_COOKIE_DOMAINS = [".g-products.store", "g-products.store"] as const;
+
 export const DESK_COOKIE = "gp_session";
 export const CUSTOMER_COOKIE = "gp_customer";
 export const DESK_MAX_AGE = 60 * 60 * 24 * 7;
 export const CUSTOMER_MAX_AGE = 60 * 60 * 24 * 30;
+
+type CookieJar = {
+  set: (
+    name: string,
+    value: string,
+    options?: Partial<ResponseCookie>
+  ) => unknown;
+};
 
 export function authSecret(): Uint8Array {
   const raw = process.env.AUTH_SECRET?.trim();
@@ -16,7 +27,11 @@ export function authSecret(): Uint8Array {
   return new TextEncoder().encode(s);
 }
 
-/** Cookie options that survive mobile browsers + www/apex host mixups. */
+/**
+ * Host-only cookies by default (most reliable on mobile Safari).
+ * Set COOKIE_DOMAIN only if you intentionally need a shared parent domain.
+ * Apex → www middleware already keeps a single hostname.
+ */
 export function sessionCookieOptions(maxAge: number): Partial<ResponseCookie> {
   const opts: Partial<ResponseCookie> = {
     httpOnly: true,
@@ -26,13 +41,52 @@ export function sessionCookieOptions(maxAge: number): Partial<ResponseCookie> {
     maxAge
   };
 
-  // Share session across www and apex if we're on the live domain
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-  if (base.includes("g-products.store") || process.env.COOKIE_DOMAIN) {
-    opts.domain = process.env.COOKIE_DOMAIN?.trim() || ".g-products.store";
+  const domain = process.env.COOKIE_DOMAIN?.trim();
+  if (domain) {
+    opts.domain = domain;
   }
 
   return opts;
+}
+
+/** Host-only + any configured/legacy Domain scopes to clear. */
+function cookieDomainScopes(): (string | undefined)[] {
+  const scopes = new Set<string | undefined>([undefined]);
+  const configured = process.env.COOKIE_DOMAIN?.trim();
+  if (configured) scopes.add(configured);
+  for (const d of LEGACY_COOKIE_DOMAINS) scopes.add(d);
+  return [...scopes];
+}
+
+function clearCookieAllScopes(jar: CookieJar, name: string): void {
+  for (const domain of cookieDomainScopes()) {
+    // Build options without inheriting Domain — host-only clear must omit it.
+    const opts: Partial<ResponseCookie> = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 0
+    };
+    if (domain) opts.domain = domain;
+    jar.set(name, "", opts);
+  }
+}
+
+/** Set a session cookie after wiping host-only + legacy Domain copies. */
+export function setSessionCookie(
+  jar: CookieJar,
+  name: string,
+  value: string,
+  maxAge: number
+): void {
+  clearCookieAllScopes(jar, name);
+  jar.set(name, value, sessionCookieOptions(maxAge));
+}
+
+/** Clear a session cookie across host-only + legacy Domain scopes. */
+export function clearSessionCookie(jar: CookieJar, name: string): void {
+  clearCookieAllScopes(jar, name);
 }
 
 export async function signDeskToken(user: {

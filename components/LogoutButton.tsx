@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export function LogoutButton({
   className,
@@ -10,7 +9,6 @@ export function LogoutButton({
   className?: string;
   label?: string;
 }) {
-  const router = useRouter();
   const [pending, setPending] = useState(false);
 
   async function logout() {
@@ -18,13 +16,13 @@ export function LogoutButton({
     try {
       await fetch("/api/auth/logout", {
         method: "POST",
-        credentials: "same-origin"
+        credentials: "include",
+        cache: "no-store"
       });
     } catch {
       // still leave
     }
-    router.push("/profile");
-    router.refresh();
+    window.location.assign("/profile");
   }
 
   return (

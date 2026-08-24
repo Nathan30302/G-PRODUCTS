@@ -73,6 +73,7 @@ html.splash-open body {
   background:
     radial-gradient(ellipse 90% 75% at 50% 40%, #0f333a 0%, #06181c 58%, #041214 100%),
     linear-gradient(165deg, #072022 0%, #06181c 45%, #05161a 100%);
+  animation: splash-base-breathe 10s ease-in-out infinite;
 }
 
 .splash-backdrop-admin .splash-ethereal-base {
@@ -81,85 +82,166 @@ html.splash-open body {
     linear-gradient(168deg, #061c1a 0%, #06181c 48%, #05161a 100%);
 }
 
+/* Color tokens for live morph (same brand family, visible shifts) */
+.splash-fluid-yellow {
+  background: radial-gradient(
+    ellipse at center,
+    #f6d400 0%,
+    rgba(246, 212, 0, 0.55) 42%,
+    transparent 70%
+  );
+}
+.splash-fluid-yellow-soft {
+  background: radial-gradient(
+    ellipse at center,
+    #ffe24d 0%,
+    rgba(255, 226, 77, 0.45) 45%,
+    transparent 72%
+  );
+}
+.splash-fluid-green {
+  background: radial-gradient(
+    ellipse at center,
+    #22c98a 0%,
+    rgba(34, 201, 138, 0.55) 42%,
+    transparent 70%
+  );
+}
+.splash-fluid-green-soft {
+  background: radial-gradient(
+    ellipse at center,
+    #4ade9f 0%,
+    rgba(74, 222, 159, 0.45) 45%,
+    transparent 72%
+  );
+}
+.splash-fluid-mint {
+  background: radial-gradient(
+    ellipse at center,
+    #7decc0 0%,
+    rgba(125, 236, 192, 0.4) 48%,
+    transparent 72%
+  );
+}
+
 .splash-fluid {
   position: absolute;
   border-radius: 50%;
-  filter: blur(110px);
-  opacity: 0.7;
-  will-change: transform, border-radius;
+  filter: blur(88px);
+  opacity: 0.75;
+  will-change: transform, border-radius, opacity, filter;
   pointer-events: none;
+  mix-blend-mode: screen;
 }
 
 .splash-fluid-a {
-  width: min(95vw, 34rem);
-  height: min(110vw, 38rem);
-  top: 6%;
+  width: min(110vw, 38rem);
+  height: min(120vw, 42rem);
+  top: 4%;
   left: 50%;
-  translate: -52% -18%;
+  margin-left: min(-55vw, -19rem);
   border-radius: 58% 42% 55% 45% / 48% 52% 48% 52%;
-  opacity: 0.5;
-  animation: splash-fluid-drift-a 18s ease-in-out infinite;
+  animation:
+    splash-fluid-drift-a 9s ease-in-out infinite,
+    splash-fluid-pulse 5.5s ease-in-out infinite,
+    splash-fluid-hue-warm 8s ease-in-out infinite;
 }
 
 .splash-fluid-b {
-  width: min(88vw, 30rem);
-  height: min(88vw, 30rem);
-  top: -8%;
-  left: -18%;
+  width: min(100vw, 34rem);
+  height: min(100vw, 34rem);
+  top: -12%;
+  left: -22%;
   border-radius: 42% 58% 48% 52% / 55% 45% 55% 45%;
-  opacity: 0.42;
-  animation: splash-fluid-drift-b 22s ease-in-out infinite;
-  animation-delay: -4s;
+  animation:
+    splash-fluid-drift-b 11s ease-in-out infinite,
+    splash-fluid-pulse 6.5s ease-in-out infinite reverse,
+    splash-fluid-hue-cool 9s ease-in-out infinite;
+  animation-delay: -2s, -1s, -3s;
 }
 
 .splash-fluid-c {
-  width: min(80vw, 26rem);
-  height: min(92vw, 30rem);
-  right: -16%;
-  bottom: -6%;
+  width: min(95vw, 30rem);
+  height: min(105vw, 34rem);
+  right: -20%;
+  bottom: -10%;
   border-radius: 48% 52% 42% 58% / 52% 48% 55% 45%;
-  opacity: 0.38;
-  animation: splash-fluid-drift-c 20s ease-in-out infinite;
-  animation-delay: -7s;
+  animation:
+    splash-fluid-drift-c 10s ease-in-out infinite,
+    splash-fluid-pulse 7s ease-in-out infinite,
+    splash-fluid-hue-warm 11s ease-in-out infinite reverse;
+  animation-delay: -4s, -2s, -1s;
 }
 
 .splash-fluid-d {
-  width: min(70vw, 22rem);
-  height: min(70vw, 22rem);
-  top: 42%;
-  right: 4%;
+  width: min(85vw, 26rem);
+  height: min(85vw, 26rem);
+  top: 38%;
+  right: -4%;
   border-radius: 55% 45% 58% 42% / 45% 55% 45% 55%;
-  opacity: 0.36;
-  animation: splash-fluid-drift-a 16s ease-in-out infinite reverse;
-  animation-delay: -2s;
+  animation:
+    splash-fluid-drift-d 8s ease-in-out infinite,
+    splash-fluid-pulse 4.8s ease-in-out infinite reverse,
+    splash-fluid-hue-cool 7.5s ease-in-out infinite;
+  animation-delay: -1s, -0.5s, -2s;
 }
 
 .splash-fluid-e {
-  width: min(75vw, 24rem);
-  height: min(65vw, 20rem);
-  bottom: 12%;
-  left: 2%;
+  width: min(90vw, 28rem);
+  height: min(75vw, 24rem);
+  bottom: 8%;
+  left: -8%;
   border-radius: 45% 55% 52% 48% / 58% 42% 58% 42%;
-  opacity: 0.34;
-  animation: splash-fluid-drift-b 24s ease-in-out infinite;
-  animation-delay: -9s;
+  animation:
+    splash-fluid-drift-e 12s ease-in-out infinite,
+    splash-fluid-pulse 5.2s ease-in-out infinite,
+    splash-fluid-hue-warm 10s ease-in-out infinite;
+  animation-delay: -5s, -3s, -4s;
 }
 
-/* Soft misty edges (ethereal fade) — keeps center clear for the mark */
+.splash-fluid-f {
+  width: min(70vw, 22rem);
+  height: min(95vw, 28rem);
+  top: 18%;
+  left: 55%;
+  border-radius: 60% 40% 45% 55% / 40% 60% 40% 60%;
+  opacity: 0.55;
+  animation:
+    splash-fluid-drift-f 7.5s ease-in-out infinite,
+    splash-fluid-pulse 4.2s ease-in-out infinite,
+    splash-fluid-hue-cool 6.5s ease-in-out infinite reverse;
+  animation-delay: -0.5s, 0s, -1.5s;
+}
+
+.splash-fluid-g {
+  width: min(78vw, 24rem);
+  height: min(78vw, 24rem);
+  top: 52%;
+  left: 8%;
+  border-radius: 40% 60% 55% 45% / 55% 45% 60% 40%;
+  opacity: 0.5;
+  animation:
+    splash-fluid-drift-g 8.5s ease-in-out infinite,
+    splash-fluid-pulse 5.8s ease-in-out infinite reverse,
+    splash-fluid-hue-warm 7s ease-in-out infinite;
+  animation-delay: -3.5s, -2s, -0.8s;
+}
+
+/* Soft misty edges — lighter center so moving color reads clearly */
 .splash-ethereal-veil {
   background:
     radial-gradient(
-      ellipse 70% 60% at 50% 42%,
-      transparent 15%,
-      rgba(6, 24, 28, 0.25) 55%,
-      rgba(6, 24, 28, 0.82) 100%
+      ellipse 75% 65% at 50% 42%,
+      transparent 20%,
+      rgba(6, 24, 28, 0.2) 58%,
+      rgba(6, 24, 28, 0.78) 100%
     ),
     linear-gradient(
       180deg,
-      rgba(6, 24, 28, 0.45) 0%,
-      transparent 16%,
-      transparent 78%,
-      rgba(6, 24, 28, 0.55) 100%
+      rgba(6, 24, 28, 0.35) 0%,
+      transparent 14%,
+      transparent 80%,
+      rgba(6, 24, 28, 0.5) 100%
     );
   pointer-events: none;
 }
@@ -200,7 +282,7 @@ html.splash-open body {
 
 @media (min-width: 640px) {
   .splash-fluid {
-    filter: blur(120px);
+    filter: blur(100px);
   }
 }
 
@@ -235,50 +317,178 @@ html.splash-open body {
 }
 
 .splash-progress-bar {
-  animation: splash-progress 4.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: splash-progress 5.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .splash-content-exit {
   animation: splash-content-out 0.55s ease-in forwards;
 }
 
-@keyframes splash-fluid-drift-a {
+@keyframes splash-base-breathe {
   0%,
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes splash-fluid-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.92;
+  }
+}
+
+/* Shift within yellow ↔ green family so color change is visible */
+@keyframes splash-fluid-hue-warm {
+  0%,
+  100% {
+    filter: blur(88px) hue-rotate(0deg) saturate(1.15);
+  }
+  50% {
+    filter: blur(96px) hue-rotate(38deg) saturate(1.35);
+  }
+}
+
+@keyframes splash-fluid-hue-cool {
+  0%,
+  100% {
+    filter: blur(88px) hue-rotate(0deg) saturate(1.1);
+  }
+  50% {
+    filter: blur(100px) hue-rotate(-32deg) saturate(1.3);
+  }
+}
+
+@keyframes splash-fluid-drift-a {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 58% 42% 55% 45% / 48% 52% 48% 52%;
+  }
+  25% {
+    transform: translate3d(48px, -56px, 0) scale(1.14) rotate(8deg);
+    border-radius: 42% 58% 48% 52% / 60% 40% 55% 45%;
+  }
+  50% {
+    transform: translate3d(-36px, 40px, 0) scale(0.92) rotate(-6deg);
+    border-radius: 52% 48% 60% 40% / 40% 60% 42% 58%;
+  }
+  75% {
+    transform: translate3d(60px, 24px, 0) scale(1.1) rotate(4deg);
+    border-radius: 48% 52% 42% 58% / 55% 45% 58% 42%;
+  }
   100% {
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
     border-radius: 58% 42% 55% 45% / 48% 52% 48% 52%;
   }
-  33% {
-    transform: translate3d(28px, -36px, 0) scale(1.08) rotate(4deg);
-    border-radius: 48% 52% 42% 58% / 55% 45% 58% 42%;
-  }
-  66% {
-    transform: translate3d(-22px, 18px, 0) scale(0.96) rotate(-3deg);
-    border-radius: 52% 48% 58% 42% / 42% 58% 45% 55%;
-  }
 }
 
 @keyframes splash-fluid-drift-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
     border-radius: 42% 58% 48% 52% / 55% 45% 55% 45%;
   }
-  50% {
-    transform: translate3d(40px, 28px, 0) scale(1.12);
-    border-radius: 55% 45% 52% 48% / 45% 55% 42% 58%;
+  33% {
+    transform: translate3d(72px, 48px, 0) scale(1.18) rotate(-7deg);
+    border-radius: 58% 42% 55% 45% / 42% 58% 48% 52%;
+  }
+  66% {
+    transform: translate3d(-44px, -60px, 0) scale(0.9) rotate(9deg);
+    border-radius: 45% 55% 40% 60% / 58% 42% 60% 40%;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 42% 58% 48% 52% / 55% 45% 55% 45%;
   }
 }
 
 @keyframes splash-fluid-drift-c {
-  0%,
-  100% {
+  0% {
     transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
     border-radius: 48% 52% 42% 58% / 52% 48% 55% 45%;
   }
   50% {
-    transform: translate3d(-34px, -24px, 0) scale(1.1) rotate(-5deg);
-    border-radius: 58% 42% 55% 45% / 48% 52% 42% 58%;
+    transform: translate3d(-68px, -52px, 0) scale(1.2) rotate(-10deg);
+    border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 48% 52% 42% 58% / 52% 48% 55% 45%;
+  }
+}
+
+@keyframes splash-fluid-drift-d {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 55% 45% 58% 42% / 45% 55% 45% 55%;
+  }
+  40% {
+    transform: translate3d(-52px, 36px, 0) scale(1.16) rotate(12deg);
+    border-radius: 40% 60% 45% 55% / 58% 42% 55% 45%;
+  }
+  80% {
+    transform: translate3d(40px, -44px, 0) scale(0.88) rotate(-5deg);
+    border-radius: 52% 48% 60% 40% / 42% 58% 48% 52%;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 55% 45% 58% 42% / 45% 55% 45% 55%;
+  }
+}
+
+@keyframes splash-fluid-drift-e {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 45% 55% 52% 48% / 58% 42% 58% 42%;
+  }
+  50% {
+    transform: translate3d(56px, -40px, 0) scale(1.15) rotate(8deg);
+    border-radius: 58% 42% 48% 52% / 40% 60% 45% 55%;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 45% 55% 52% 48% / 58% 42% 58% 42%;
+  }
+}
+
+@keyframes splash-fluid-drift-f {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 60% 40% 45% 55% / 40% 60% 40% 60%;
+  }
+  50% {
+    transform: translate3d(-64px, 50px, 0) scale(1.22) rotate(-14deg);
+    border-radius: 42% 58% 55% 45% / 55% 45% 58% 42%;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 60% 40% 45% 55% / 40% 60% 40% 60%;
+  }
+}
+
+@keyframes splash-fluid-drift-g {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 40% 60% 55% 45% / 55% 45% 60% 40%;
+  }
+  35% {
+    transform: translate3d(54px, -48px, 0) scale(1.12) rotate(11deg);
+    border-radius: 55% 45% 40% 60% / 48% 52% 42% 58%;
+  }
+  70% {
+    transform: translate3d(-30px, 38px, 0) scale(0.94) rotate(-8deg);
+    border-radius: 48% 52% 58% 42% / 60% 40% 55% 45%;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 40% 60% 55% 45% / 55% 45% 60% 40%;
   }
 }
 
@@ -378,12 +588,15 @@ html.splash-open body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .splash-ethereal-base,
   .splash-fluid-a,
   .splash-fluid-b,
   .splash-fluid-c,
   .splash-fluid-d,
-  .splash-fluid-e {
-    animation: none;
+  .splash-fluid-e,
+  .splash-fluid-f,
+  .splash-fluid-g {
+    animation: none !important;
   }
 
   .splash-logo-wrap,
@@ -572,7 +785,7 @@ html.splash-open body {
   }
 
   .field {
-    @apply mt-2 w-full rounded-2xl border border-white/10 bg-ink-950/70 px-4 py-3.5 text-white outline-none transition-all placeholder:text-white/30 focus:border-brand/60 focus:bg-ink-950 focus:shadow-[0_0_0_3px_rgba(246,212,0,0.12)];
+    @apply mt-2 w-full rounded-2xl border border-white/10 bg-ink-950/70 px-4 py-3.5 text-base text-white outline-none transition-all placeholder:text-white/30 focus:border-brand/60 focus:bg-ink-950 focus:shadow-[0_0_0_3px_rgba(246,212,0,0.12)];
   }
 
   .field-label {

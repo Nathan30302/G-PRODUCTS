@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/db";
 import { verifyPassword, createSession } from "@/lib/auth";
+import { findDeskUserByIdentifier } from "@/lib/user-lookup";
 
 export type LoginState = { error?: string };
 
@@ -10,16 +10,16 @@ export async function loginAction(
   _prev: LoginState | undefined,
   formData: FormData
 ): Promise<LoginState> {
-  const email = String(formData.get("email") ?? "")
-    .trim()
-    .toLowerCase();
+  const identifier = String(
+    formData.get("email") ?? formData.get("identifier") ?? ""
+  ).trim();
   const password = String(formData.get("password") ?? "");
 
-  if (!email || !password) {
-    return { error: "Please enter your email and password." };
+  if (!identifier || !password) {
+    return { error: "Please enter your email or phone, and password." };
   }
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await findDeskUserByIdentifier(identifier);
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
     return { error: "Invalid email or password." };
   }

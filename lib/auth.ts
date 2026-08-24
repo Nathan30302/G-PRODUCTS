@@ -3,9 +3,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import {
+  CUSTOMER_COOKIE,
   DESK_COOKIE,
   DESK_MAX_AGE,
-  sessionCookieOptions,
+  clearSessionCookie,
+  setSessionCookie,
   signDeskToken,
   verifyDeskToken
 } from "@/lib/session-cookies";
@@ -28,12 +30,13 @@ export function verifyPassword(plain: string, hash: string): Promise<boolean> {
 export async function createSession(user: SessionUser): Promise<void> {
   const token = await signDeskToken(user);
   const store = await cookies();
-  store.set(DESK_COOKIE, token, sessionCookieOptions(DESK_MAX_AGE));
+  clearSessionCookie(store, CUSTOMER_COOKIE);
+  setSessionCookie(store, DESK_COOKIE, token, DESK_MAX_AGE);
 }
 
 export async function destroySession(): Promise<void> {
   const store = await cookies();
-  store.set(DESK_COOKIE, "", { ...sessionCookieOptions(0), maxAge: 0 });
+  clearSessionCookie(store, DESK_COOKIE);
 }
 
 export async function getSession(): Promise<SessionUser | null> {
