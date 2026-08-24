@@ -10,7 +10,7 @@ import {
   CUSTOMER_MAX_AGE,
   DESK_COOKIE,
   DESK_MAX_AGE,
-  clearSessionCookie,
+  expireSessionCookieHeader,
   setSessionCookie,
   signCustomerToken,
   signDeskToken
@@ -151,8 +151,8 @@ export async function POST(req: Request) {
         redirectTo: siteConfig.apps.provider.home,
         name: user.name
       });
-      clearSessionCookie(res.cookies, CUSTOMER_COOKIE);
       setSessionCookie(res.cookies, DESK_COOKIE, token, DESK_MAX_AGE);
+      expireSessionCookieHeader(res.headers, CUSTOMER_COOKIE);
       return res;
     }
 
@@ -196,13 +196,13 @@ export async function POST(req: Request) {
       name: customer.name,
       customerId: customer.id
     });
-    clearSessionCookie(res.cookies, DESK_COOKIE);
     setSessionCookie(
       res.cookies,
       CUSTOMER_COOKIE,
       token,
       CUSTOMER_MAX_AGE
     );
+    expireSessionCookieHeader(res.headers, DESK_COOKIE);
     return res;
   } catch (err) {
     console.error("[api/auth/signup]", err);

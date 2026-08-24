@@ -8,7 +8,7 @@ import {
   CUSTOMER_MAX_AGE,
   DESK_COOKIE,
   DESK_MAX_AGE,
-  clearSessionCookie,
+  expireSessionCookieHeader,
   setSessionCookie,
   signCustomerToken,
   signDeskToken
@@ -77,8 +77,8 @@ export async function POST(req: Request) {
         redirectTo: siteConfig.apps.provider.home,
         name: deskUser.name
       });
-      clearSessionCookie(res.cookies, CUSTOMER_COOKIE);
       setSessionCookie(res.cookies, DESK_COOKIE, token, DESK_MAX_AGE);
+      expireSessionCookieHeader(res.headers, CUSTOMER_COOKIE);
       return res;
     }
 
@@ -107,13 +107,13 @@ export async function POST(req: Request) {
         redirectTo: siteConfig.apps.customer.home,
         name: customer.name
       });
-      clearSessionCookie(res.cookies, DESK_COOKIE);
       setSessionCookie(
         res.cookies,
         CUSTOMER_COOKIE,
         token,
         CUSTOMER_MAX_AGE
       );
+      expireSessionCookieHeader(res.headers, DESK_COOKIE);
       return res;
     }
 

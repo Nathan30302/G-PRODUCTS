@@ -315,6 +315,14 @@ export function Icon({ name, className }: { name: string; className?: string }) 
           <path d="m21 15-4.5-4.5L7 20" />
         </svg>
       );
+    case "logout":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <path d="M10 17 15 12 10 7" />
+          <path d="M15 12H3" />
+        </svg>
+      );
     default:
       return (
         <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>

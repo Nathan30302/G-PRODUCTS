@@ -7,7 +7,19 @@ import { Footer } from "@/components/Footer";
 import { MobileNav } from "@/components/MobileNav";
 import { LaunchSplash } from "@/components/LaunchSplash";
 
-export function SiteChrome({ children }: { children: ReactNode }) {
+export type ShopAuth = {
+  kind: "provider" | "customer";
+  name: string;
+  home: string;
+} | null;
+
+export function SiteChrome({
+  children,
+  auth
+}: {
+  children: ReactNode;
+  auth: ShopAuth;
+}) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
   // Auth forms need taps immediately — don't cover them with the launch splash.
@@ -24,10 +36,10 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.06),_transparent_55%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.05),_transparent_45%)]" />
       </div>
-      <Navbar />
+      <Navbar auth={auth} />
       <main className="min-h-[70vh] pb-20 md:pb-0">{children}</main>
       <Footer />
-      <MobileNav />
+      <MobileNav auth={auth} />
     </div>
   );
 }

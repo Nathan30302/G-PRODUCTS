@@ -312,7 +312,7 @@ export function AdminShell({
             >
               Live shop
             </Link>
-            <LogoutButton className="hidden rounded-pill px-3 py-2 text-xs font-semibold text-white/40 transition-colors hover:text-red-400 sm:block" />
+            <LogoutButton className="rounded-pill px-3 py-2 text-xs font-semibold text-white/40 transition-colors hover:text-red-400" />
           </div>
         </div>
       </header>
