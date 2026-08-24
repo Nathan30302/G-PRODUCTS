@@ -64,159 +64,103 @@ html.splash-open body {
   overflow: hidden;
 }
 
-/* Launch splash — premium ink / yellow / green atmosphere */
+/* Launch splash — soft ethereal fluid (G-Products yellow / green / mint) */
 .splash-backdrop {
   background: #06181c;
 }
 
-.splash-depth {
+.splash-ethereal-base {
   background:
-    radial-gradient(ellipse 120% 90% at 50% -10%, #123b43 0%, transparent 55%),
-    radial-gradient(ellipse 80% 60% at 80% 100%, #0a2429 0%, transparent 50%),
-    radial-gradient(ellipse 70% 50% at 10% 85%, #0e2e34 0%, transparent 45%),
-    linear-gradient(165deg, #06181c 0%, #0a2429 42%, #06181c 100%);
+    radial-gradient(ellipse 90% 75% at 50% 40%, #0f333a 0%, #06181c 58%, #041214 100%),
+    linear-gradient(165deg, #072022 0%, #06181c 45%, #05161a 100%);
 }
 
-.splash-backdrop-shop .splash-depth {
+.splash-backdrop-admin .splash-ethereal-base {
   background:
-    radial-gradient(ellipse 115% 88% at 50% -6%, #1b4e58 0%, transparent 54%),
-    radial-gradient(ellipse 72% 58% at 90% 94%, #0e2e34 0%, transparent 50%),
-    radial-gradient(ellipse 58% 48% at 6% 80%, #123b43 0%, transparent 44%),
-    linear-gradient(158deg, #06181c 0%, #0a2429 40%, #06181c 100%);
+    radial-gradient(ellipse 90% 75% at 50% 40%, #0c3834 0%, #06181c 58%, #041214 100%),
+    linear-gradient(168deg, #061c1a 0%, #06181c 48%, #05161a 100%);
 }
 
-.splash-backdrop-admin .splash-depth {
-  background:
-    radial-gradient(ellipse 115% 88% at 50% -6%, #0e2e34 0%, transparent 54%),
-    radial-gradient(ellipse 68% 52% at 92% 90%, #123b43 0%, transparent 48%),
-    radial-gradient(ellipse 52% 42% at 5% 82%, #0a2429 0%, transparent 42%),
-    linear-gradient(168deg, #06181c 0%, #072022 42%, #06181c 100%);
-}
-
-.splash-well {
+.splash-fluid {
   position: absolute;
   border-radius: 50%;
   filter: blur(110px);
+  opacity: 0.7;
+  will-change: transform, border-radius;
   pointer-events: none;
-  will-change: transform, opacity;
 }
 
-.splash-well-a {
-  width: min(92vw, 36rem);
-  height: min(92vw, 36rem);
-  top: 20%;
+.splash-fluid-a {
+  width: min(95vw, 34rem);
+  height: min(110vw, 38rem);
+  top: 6%;
   left: 50%;
-  translate: -50% -28%;
-  background: radial-gradient(circle, rgba(246, 212, 0, 0.26) 0%, transparent 70%);
-  animation: splash-well-pulse 6.5s ease-in-out infinite;
+  translate: -52% -18%;
+  border-radius: 58% 42% 55% 45% / 48% 52% 48% 52%;
+  opacity: 0.5;
+  animation: splash-fluid-drift-a 18s ease-in-out infinite;
 }
 
-.splash-backdrop-admin .splash-well-a {
-  background: radial-gradient(circle, rgba(34, 201, 138, 0.24) 0%, transparent 70%);
+.splash-fluid-b {
+  width: min(88vw, 30rem);
+  height: min(88vw, 30rem);
+  top: -8%;
+  left: -18%;
+  border-radius: 42% 58% 48% 52% / 55% 45% 55% 45%;
+  opacity: 0.42;
+  animation: splash-fluid-drift-b 22s ease-in-out infinite;
+  animation-delay: -4s;
 }
 
-.splash-well-b {
-  width: min(68vw, 24rem);
-  height: min(68vw, 24rem);
-  top: -6%;
-  left: -14%;
-  background: radial-gradient(circle, rgba(246, 212, 0, 0.14) 0%, transparent 68%);
-  animation: splash-float-1 20s ease-in-out infinite;
+.splash-fluid-c {
+  width: min(80vw, 26rem);
+  height: min(92vw, 30rem);
+  right: -16%;
+  bottom: -6%;
+  border-radius: 48% 52% 42% 58% / 52% 48% 55% 45%;
+  opacity: 0.38;
+  animation: splash-fluid-drift-c 20s ease-in-out infinite;
+  animation-delay: -7s;
 }
 
-.splash-backdrop-admin .splash-well-b {
-  background: radial-gradient(circle, rgba(34, 201, 138, 0.13) 0%, transparent 68%);
+.splash-fluid-d {
+  width: min(70vw, 22rem);
+  height: min(70vw, 22rem);
+  top: 42%;
+  right: 4%;
+  border-radius: 55% 45% 58% 42% / 45% 55% 45% 55%;
+  opacity: 0.36;
+  animation: splash-fluid-drift-a 16s ease-in-out infinite reverse;
+  animation-delay: -2s;
 }
 
-.splash-well-c {
-  width: min(62vw, 22rem);
-  height: min(62vw, 22rem);
-  right: -12%;
-  bottom: -4%;
-  background: radial-gradient(circle, rgba(34, 201, 138, 0.16) 0%, transparent 68%);
-  animation: splash-float-2 22s ease-in-out infinite;
-  animation-delay: -6s;
+.splash-fluid-e {
+  width: min(75vw, 24rem);
+  height: min(65vw, 20rem);
+  bottom: 12%;
+  left: 2%;
+  border-radius: 45% 55% 52% 48% / 58% 42% 58% 42%;
+  opacity: 0.34;
+  animation: splash-fluid-drift-b 24s ease-in-out infinite;
+  animation-delay: -9s;
 }
 
-.splash-backdrop-admin .splash-well-c {
-  background: radial-gradient(circle, rgba(246, 212, 0, 0.13) 0%, transparent 68%);
-}
-
-.splash-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(88px);
-  opacity: 0.52;
-  will-change: transform, opacity;
-  pointer-events: none;
-}
-
-.splash-blob-1 {
-  width: min(82vw, 26rem);
-  height: min(82vw, 26rem);
-  top: 2%;
-  left: 0%;
-  animation: splash-float-1 16s ease-in-out infinite;
-}
-
-.splash-blob-2 {
-  width: min(74vw, 22rem);
-  height: min(74vw, 22rem);
-  bottom: 4%;
-  right: 0%;
-  animation: splash-float-2 18s ease-in-out infinite;
-  animation-delay: -5s;
-}
-
-.splash-mesh {
-  opacity: 0.035;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.55) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.55) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 20%, transparent 75%);
-  pointer-events: none;
-}
-
-.splash-vignette {
+/* Soft misty edges (ethereal fade) — keeps center clear for the mark */
+.splash-ethereal-veil {
   background:
     radial-gradient(
-      ellipse 80% 70% at 50% 48%,
-      transparent 22%,
-      rgba(6, 24, 28, 0.5) 72%,
-      rgba(6, 24, 28, 0.9) 100%
+      ellipse 70% 60% at 50% 42%,
+      transparent 15%,
+      rgba(6, 24, 28, 0.25) 55%,
+      rgba(6, 24, 28, 0.82) 100%
     ),
     linear-gradient(
       180deg,
-      rgba(6, 24, 28, 0.4) 0%,
+      rgba(6, 24, 28, 0.45) 0%,
       transparent 16%,
-      transparent 80%,
-      rgba(6, 24, 28, 0.6) 100%
+      transparent 78%,
+      rgba(6, 24, 28, 0.55) 100%
     );
-  pointer-events: none;
-}
-
-.splash-grain {
-  opacity: 0.035;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 160px 160px;
-  /* Keep the mark zone clean — grain falls off toward center stage */
-  -webkit-mask-image: radial-gradient(
-    ellipse 52% 48% at 50% 42%,
-    transparent 0%,
-    transparent 38%,
-    rgba(0, 0, 0, 0.35) 58%,
-    #000 78%
-  );
-  mask-image: radial-gradient(
-    ellipse 52% 48% at 50% 42%,
-    transparent 0%,
-    transparent 38%,
-    rgba(0, 0, 0, 0.35) 58%,
-    #000 78%
-  );
   pointer-events: none;
 }
 
@@ -229,13 +173,14 @@ html.splash-open body {
 
 .splash-mark img {
   display: block;
-  /* Original PNG — sharp edges, no soft filters on the mark */
+  /* Original PNG — sharp edges, no soft filters / no blend halo */
   image-rendering: auto;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translateZ(0);
   opacity: 1;
   filter: none;
+  mix-blend-mode: normal;
 }
 
 .splash-heading {
@@ -254,9 +199,8 @@ html.splash-open body {
 }
 
 @media (min-width: 640px) {
-  .splash-blob-1,
-  .splash-blob-2 {
-    filter: blur(100px);
+  .splash-fluid {
+    filter: blur(120px);
   }
 }
 
@@ -296,6 +240,46 @@ html.splash-open body {
 
 .splash-content-exit {
   animation: splash-content-out 0.55s ease-in forwards;
+}
+
+@keyframes splash-fluid-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 58% 42% 55% 45% / 48% 52% 48% 52%;
+  }
+  33% {
+    transform: translate3d(28px, -36px, 0) scale(1.08) rotate(4deg);
+    border-radius: 48% 52% 42% 58% / 55% 45% 58% 42%;
+  }
+  66% {
+    transform: translate3d(-22px, 18px, 0) scale(0.96) rotate(-3deg);
+    border-radius: 52% 48% 58% 42% / 42% 58% 45% 55%;
+  }
+}
+
+@keyframes splash-fluid-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    border-radius: 42% 58% 48% 52% / 55% 45% 55% 45%;
+  }
+  50% {
+    transform: translate3d(40px, 28px, 0) scale(1.12);
+    border-radius: 55% 45% 52% 48% / 45% 55% 42% 58%;
+  }
+}
+
+@keyframes splash-fluid-drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    border-radius: 48% 52% 42% 58% / 52% 48% 55% 45%;
+  }
+  50% {
+    transform: translate3d(-34px, -24px, 0) scale(1.1) rotate(-5deg);
+    border-radius: 58% 42% 55% 45% / 48% 52% 42% 58%;
+  }
 }
 
 @keyframes splash-float-1 {
@@ -394,11 +378,11 @@ html.splash-open body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .splash-blob-1,
-  .splash-blob-2,
-  .splash-well-a,
-  .splash-well-b,
-  .splash-well-c {
+  .splash-fluid-a,
+  .splash-fluid-b,
+  .splash-fluid-c,
+  .splash-fluid-d,
+  .splash-fluid-e {
     animation: none;
   }
 

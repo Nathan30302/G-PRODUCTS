@@ -5,20 +5,19 @@ import { motion } from "framer-motion";
 import { Logo } from "@/components/Logo";
 import { siteConfig } from "@/config/site";
 
-/** From tailwind / logo — brand yellow, accent green, ink base */
+/** G-Products brand — ethereal splash uses yellow / green soft fluids */
 const BRAND = {
   yellow: "#f6d400",
   yellowSoft: "#ffe24d",
   green: "#22c98a",
   greenSoft: "#4ade9f",
-  ink: "#06181c",
-  inkMid: "#0a2429",
-  inkLift: "#0e2e34"
+  mint: "#7decc0",
+  ink: "#06181c"
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v11",
-  admin: "gproducts-admin-splash-v11"
+  shop: "gproducts-splash-v12",
+  admin: "gproducts-admin-splash-v12"
 } as const;
 
 /** Hold ~4–4.8s so the opening feels intentional, then exit. */
@@ -37,6 +36,10 @@ const COPY = {
   }
 } as const;
 
+/**
+ * Soft ethereal fluid backdrop — wellness-app vibe, G-Products yellow / green / mint
+ * (no purple / pink). Soft misty edges; deep enough center for the original mark PNG.
+ */
 function AnimatedBackdrop({ variant }: { variant: "shop" | "admin" }) {
   const shopLed = variant === "shop";
 
@@ -46,27 +49,48 @@ function AnimatedBackdrop({ variant }: { variant: "shop" | "admin" }) {
         shopLed ? "splash-backdrop-shop" : "splash-backdrop-admin"
       }`}
     >
-      <div className="splash-depth absolute inset-0" />
+      <div className="splash-ethereal-base absolute inset-0" />
 
-      {/* Soft radial wells — depth without clutter */}
-      <div className="splash-well splash-well-a" />
-      <div className="splash-well splash-well-b" />
-      <div className="splash-well splash-well-c" />
-
-      {/* Two drifting brand lights (intentional motion) */}
       <div
-        className="splash-blob splash-blob-1"
-        style={{ backgroundColor: shopLed ? BRAND.yellow : BRAND.green }}
+        className="splash-fluid splash-fluid-a"
+        style={{
+          background: shopLed
+            ? `radial-gradient(ellipse at center, ${BRAND.yellow} 0%, transparent 68%)`
+            : `radial-gradient(ellipse at center, ${BRAND.green} 0%, transparent 68%)`
+        }}
       />
       <div
-        className="splash-blob splash-blob-2"
-        style={{ backgroundColor: shopLed ? BRAND.green : BRAND.yellow }}
+        className="splash-fluid splash-fluid-b"
+        style={{
+          background: shopLed
+            ? `radial-gradient(ellipse at center, ${BRAND.green} 0%, transparent 70%)`
+            : `radial-gradient(ellipse at center, ${BRAND.yellow} 0%, transparent 70%)`
+        }}
+      />
+      <div
+        className="splash-fluid splash-fluid-c"
+        style={{
+          background: `radial-gradient(ellipse at center, ${BRAND.mint} 0%, transparent 72%)`
+        }}
+      />
+      <div
+        className="splash-fluid splash-fluid-d"
+        style={{
+          background: shopLed
+            ? `radial-gradient(ellipse at center, ${BRAND.yellowSoft} 0%, transparent 70%)`
+            : `radial-gradient(ellipse at center, ${BRAND.greenSoft} 0%, transparent 70%)`
+        }}
+      />
+      <div
+        className="splash-fluid splash-fluid-e"
+        style={{
+          background: shopLed
+            ? `radial-gradient(ellipse at center, ${BRAND.greenSoft} 0%, transparent 72%)`
+            : `radial-gradient(ellipse at center, ${BRAND.yellowSoft} 0%, transparent 72%)`
+        }}
       />
 
-      {/* Fine grid + vignette + grain for HD atmosphere (grain masked off the mark) */}
-      <div className="splash-mesh absolute inset-0" aria-hidden />
-      <div className="splash-vignette absolute inset-0" />
-      <div className="splash-grain absolute inset-0" aria-hidden />
+      <div className="splash-ethereal-veil absolute inset-0" aria-hidden />
     </div>
   );
 }
@@ -75,32 +99,27 @@ function StaticBackdrop({ variant }: { variant: "shop" | "admin" }) {
   const shopLed = variant === "shop";
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+      style={{ backgroundColor: BRAND.ink }}
+    >
       <div
-        className="absolute inset-0"
-        style={{
-          background: shopLed
-            ? `radial-gradient(ellipse 90% 70% at 50% 40%, ${BRAND.inkLift} 0%, ${BRAND.inkMid} 45%, ${BRAND.ink} 100%)`
-            : `radial-gradient(ellipse 90% 70% at 50% 40%, #0c333a 0%, ${BRAND.inkMid} 48%, ${BRAND.ink} 100%)`
-        }}
+        className="absolute left-1/2 top-[34%] h-[min(90vw,28rem)] w-[min(90vw,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-45 blur-[120px]"
+        style={{ backgroundColor: shopLed ? BRAND.yellow : BRAND.green }}
       />
       <div
-        className="absolute -left-[10%] top-[6%] h-[min(50vw,20rem)] w-[min(50vw,20rem)] rounded-full opacity-32 blur-[88px]"
-        style={{
-          backgroundColor: shopLed ? `${BRAND.yellow}3a` : `${BRAND.green}36`
-        }}
+        className="absolute -left-[15%] top-[8%] h-[min(70vw,22rem)] w-[min(70vw,22rem)] rounded-full opacity-35 blur-[110px]"
+        style={{ backgroundColor: shopLed ? BRAND.green : BRAND.yellow }}
       />
       <div
-        className="absolute -right-[6%] bottom-[8%] h-[min(48vw,18rem)] w-[min(48vw,18rem)] rounded-full opacity-28 blur-[86px]"
-        style={{
-          backgroundColor: shopLed ? `${BRAND.green}38` : `${BRAND.yellow}34`
-        }}
+        className="absolute -right-[10%] bottom-[10%] h-[min(65vw,20rem)] w-[min(65vw,20rem)] rounded-full opacity-30 blur-[100px]"
+        style={{ backgroundColor: BRAND.mint }}
       />
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 75% 65% at 50% 48%, transparent 32%, rgba(6,24,28,0.78) 100%)"
+            "radial-gradient(ellipse 75% 65% at 50% 45%, transparent 25%, rgba(6,24,28,0.75) 100%)"
         }}
       />
     </div>
@@ -205,7 +224,7 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
       initial={{ opacity: 1 }}
       animate={{
         opacity: exiting ? 0 : 1,
-        scale: exiting ? 1.02 : 1
+        scale: exiting ? 1.015 : 1
       }}
       transition={{ duration: EXIT_MS / 1000, ease: [0.16, 1, 0.3, 1] }}
       className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden"
@@ -247,7 +266,7 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
         />
 
         <p
-          className={`splash-line mt-3 max-w-[15.5rem] font-medium tracking-[0.02em] text-white/58 sm:mt-3.5 sm:max-w-xs ${
+          className={`splash-line mt-3 max-w-[15.5rem] font-medium tracking-[0.02em] text-white/60 sm:mt-3.5 sm:max-w-xs ${
             reducedMotion ? "" : "splash-tagline"
           }`}
         >
@@ -256,10 +275,10 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
       </div>
 
       {!reducedMotion && !exiting ? (
-        <div className="splash-progress absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 z-20 h-[2px] w-[4.5rem] -translate-x-1/2 overflow-hidden rounded-full bg-white/10 sm:w-20">
+        <div className="splash-progress absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 z-20 h-[2px] w-[4.5rem] -translate-x-1/2 overflow-hidden rounded-full bg-white/15 sm:w-20">
           <div
             className="splash-progress-bar h-full w-full origin-left rounded-full"
-            style={{ backgroundColor: `${accent}cc` }}
+            style={{ backgroundColor: accent }}
           />
         </div>
       ) : null}
@@ -267,7 +286,7 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
       <button
         type="button"
         onClick={skip}
-        className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-20 rounded-pill border border-white/12 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white/50 backdrop-blur-md transition-colors hover:border-white/22 hover:text-white/80 sm:right-6 sm:top-[max(1.25rem,env(safe-area-inset-top))]"
+        className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-20 rounded-pill border border-white/15 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white/55 backdrop-blur-md transition-colors hover:border-white/25 hover:text-white/85 sm:right-6 sm:top-[max(1.25rem,env(safe-area-inset-top))]"
       >
         Skip
       </button>
