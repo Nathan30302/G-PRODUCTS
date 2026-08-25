@@ -1,18 +1,8 @@
 import "server-only";
 import { phoneVariants } from "@/lib/phone";
+import { assertAuthSecretConfigured } from "@/lib/auth-secret";
 
-const FALLBACK_AUTH_SECRET = "change-me-in-railway-variables";
-
-/** Reject weak session signing secrets in production. */
-export function assertAuthSecretConfigured(): void {
-  if (process.env.NODE_ENV !== "production") return;
-  const raw = process.env.AUTH_SECRET?.trim() ?? "";
-  if (raw.length < 16 || raw === FALLBACK_AUTH_SECRET) {
-    throw new Error(
-      "AUTH_SECRET must be a long random string (16+ chars) in production."
-    );
-  }
-}
+export { assertAuthSecretConfigured };
 
 export function phoneLast4(phone: string): string {
   const digits = phone.replace(/\D/g, "");

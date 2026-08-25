@@ -365,7 +365,7 @@ async function main() {
   await tuneSqlite();
 
   if (process.env.NODE_ENV === "production") {
-    const { assertAuthSecretConfigured } = await import("../lib/access-control");
+    const { assertAuthSecretConfigured } = await import("../lib/auth-secret");
     assertAuthSecretConfigured();
   } else if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 16) {
     console.warn(
