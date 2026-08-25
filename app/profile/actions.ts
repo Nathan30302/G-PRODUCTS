@@ -7,6 +7,7 @@ import {
   createSession,
   destroySession,
   hashPassword,
+  OWNER_ONLY_DESK_MESSAGE,
   verifyPassword
 } from "@/lib/auth";
 import {
@@ -34,16 +35,19 @@ export async function unifiedLoginAction(
       return { error: "Enter your phone or email, and your password." };
     }
 
-    // Provider desk + staff — email or phone
+    // Provider desk — owner only
     const deskUser = await findDeskUserByIdentifier(identifier);
     if (deskUser) {
+      if (deskUser.role !== "OWNER") {
+        return { error: OWNER_ONLY_DESK_MESSAGE };
+      }
       if (await verifyPassword(password, deskUser.passwordHash)) {
         await destroyCustomerSession().catch(() => undefined);
         await createSession({
           id: deskUser.id,
           email: deskUser.email,
           name: deskUser.name,
-          role: deskUser.role
+          role: "OWNER"
         });
         redirect(siteConfig.apps.provider.home);
       }

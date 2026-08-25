@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getPaymentStatus, type PaymentProvider } from "@/lib/payments";
+import { getCustomerSession } from "@/lib/customer-auth";
+import { canViewOrder } from "@/lib/track-access";
 import {
   labelForOrderStatus,
   type OrderStatusKey
 } from "@/lib/commerce-hooks";
 import { onOrderPaymentSuccess } from "@/lib/rewards";
+
+export const dynamic = "force-dynamic";
 
 const FLOW: OrderStatusKey[] = [
   "PENDING",
@@ -16,17 +20,31 @@ const FLOW: OrderStatusKey[] = [
 ];
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ ref: string }> }
 ) {
   const { ref: raw } = await params;
   const ref = raw.trim().toUpperCase();
+  const phoneLast4 =
+    new URL(req.url).searchParams.get("phoneLast4")?.trim() ?? "";
+
   const order = await prisma.order.findUnique({
     where: { ref },
     include: { items: true }
   });
   if (!order) {
     return NextResponse.json({ error: "Order not found." }, { status: 404 });
+  }
+
+  const customer = await getCustomerSession();
+  if (!canViewOrder(order, { phoneLast4, customer })) {
+    return NextResponse.json(
+      {
+        error:
+          "Enter the last 4 digits of the phone number used at checkout to view this order."
+      },
+      { status: 403 }
+    );
   }
 
   let paymentStatus = order.paymentStatus;

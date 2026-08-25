@@ -24,7 +24,12 @@ export default async function AccountPage() {
     const phones = phoneVariants(customer.phone);
     [orders, services] = await Promise.all([
       prisma.order.findMany({
-        where: { customerPhone: { in: phones } },
+        where: {
+          OR: [
+            { customerId: customer.id },
+            { customerId: null, customerPhone: { in: phones } }
+          ]
+        },
         orderBy: { createdAt: "desc" },
         take: 12
       }),

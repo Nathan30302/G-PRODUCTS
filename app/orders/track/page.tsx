@@ -24,8 +24,9 @@ export default async function OrderTrackPage({
           Track your order
         </h1>
         <p className="mt-3 text-sm text-white/55">
-          Enter the reference from checkout (starts with GP-). Signed-in
-          customers can also see recent orders in{" "}
+          Enter the reference from checkout (starts with GP-) and the last 4
+          digits of the phone number you used. Signed-in customers can also see
+          recent orders in{" "}
           <Link href="/profile/account" className="text-brand hover:underline">
             Account
           </Link>

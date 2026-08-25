@@ -364,7 +364,10 @@ async function main() {
   resolveDatabaseUrl();
   await tuneSqlite();
 
-  if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 16) {
+  if (process.env.NODE_ENV === "production") {
+    const { assertAuthSecretConfigured } = await import("../lib/access-control");
+    assertAuthSecretConfigured();
+  } else if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 16) {
     console.warn(
       "[start] AUTH_SECRET missing or short — using a fallback. Set a long AUTH_SECRET in Railway."
     );

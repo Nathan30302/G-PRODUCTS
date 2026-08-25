@@ -136,9 +136,13 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         pollRef.current = setInterval(async () => {
           tries += 1;
           try {
-            const s = await fetch(`/api/services/${data.ref}/status`, {
+            const last4 = phone.replace(/\D/g, "").slice(-4);
+            const s = await fetch(
+              `/api/services/${data.ref}/status?phoneLast4=${encodeURIComponent(last4)}`,
+              {
               cache: "no-store"
-            });
+              }
+            );
             const j = await s.json();
             if (j.paymentStatus === "SUCCESS" || j.paymentStatus === "FAILED") {
               if (pollRef.current) clearInterval(pollRef.current);

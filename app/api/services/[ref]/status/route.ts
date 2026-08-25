@@ -2,15 +2,33 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getPaymentStatus, type PaymentProvider } from "@/lib/payments";
 import { describeServiceFiles } from "@/lib/service-files";
+import { getCustomerSession } from "@/lib/customer-auth";
+import { canViewService } from "@/lib/track-access";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ ref: string }> }
 ) {
   const { ref } = await params;
+  const phoneLast4 =
+    new URL(req.url).searchParams.get("phoneLast4")?.trim() ?? "";
+
   const request = await prisma.serviceRequest.findUnique({ where: { ref } });
   if (!request) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const customer = await getCustomerSession();
+  if (!canViewService(request, { phoneLast4, customer })) {
+    return NextResponse.json(
+      {
+        error:
+          "Enter the last 4 digits of the phone number on this request to view status."
+      },
+      { status: 403 }
+    );
   }
 
   let status = request.status;
@@ -45,7 +63,14 @@ export async function GET(
     details = {};
   }
 
-  const files = describeServiceFiles(request.fileUrls);
+  const accessQuery = phoneLast4
+    ? `?ref=${encodeURIComponent(ref)}&phoneLast4=${encodeURIComponent(phoneLast4)}`
+    : "";
+  const files = describeServiceFiles(request.fileUrls).map((f) => ({
+    ...f,
+    url: `${f.url}${accessQuery}`,
+    downloadUrl: `${f.downloadUrl}${f.downloadUrl.includes("?") ? "&" : "?"}ref=${encodeURIComponent(ref)}&phoneLast4=${encodeURIComponent(phoneLast4)}`
+  }));
 
   return NextResponse.json({
     ref: request.ref,

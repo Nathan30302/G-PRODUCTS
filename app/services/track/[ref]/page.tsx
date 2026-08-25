@@ -7,6 +7,9 @@ import { describeServiceFiles } from "@/lib/service-files";
 import { Icon } from "@/components/Icons";
 import { siteConfig } from "@/config/site";
 import { ShopStatusPill } from "@/components/shop/ui";
+import { getCustomerSession } from "@/lib/customer-auth";
+import { canViewService } from "@/lib/track-access";
+import { ServiceTrackVerify } from "@/components/services/ServiceTrackVerify";
 
 export const dynamic = "force-dynamic";
 
@@ -40,13 +43,21 @@ function statusIndex(status: string): number {
 }
 
 export default async function ServiceTrackPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ ref: string }>;
+  searchParams: Promise<{ phoneLast4?: string }>;
 }) {
   const { ref } = await params;
+  const { phoneLast4 = "" } = await searchParams;
   const request = await prisma.serviceRequest.findUnique({ where: { ref } });
   if (!request) notFound();
+
+  const customer = await getCustomerSession();
+  if (!canViewService(request, { phoneLast4, customer })) {
+    return <ServiceTrackVerify ref={ref} />;
+  }
 
   let details: Record<string, unknown> = {};
   try {
@@ -55,7 +66,14 @@ export default async function ServiceTrackPage({
     details = {};
   }
 
-  const files = describeServiceFiles(request.fileUrls);
+  const accessQuery = phoneLast4
+    ? `?ref=${encodeURIComponent(ref)}&phoneLast4=${encodeURIComponent(phoneLast4)}`
+    : "";
+  const files = describeServiceFiles(request.fileUrls).map((f) => ({
+    ...f,
+    url: `${f.url}${accessQuery}`,
+    downloadUrl: `${f.downloadUrl}${f.downloadUrl.includes("?") ? "&" : "?"}ref=${encodeURIComponent(ref)}&phoneLast4=${encodeURIComponent(phoneLast4)}`
+  }));
   const idx = statusIndex(request.status);
   const jobName =
     typeof details.jobName === "string"
@@ -188,7 +206,7 @@ export default async function ServiceTrackPage({
         <section className="rounded-[1.35rem] border border-white/[0.08] bg-ink-900/50 p-5 sm:p-6">
           <h2 className="display text-xl">Your uploads</h2>
           <p className="mt-1 text-sm text-white/45">
-            Same files our printing team sees on the desk — original quality.
+            Only you and the owner can open these files.
           </p>
           {files.length === 0 ? (
             <p className="mt-6 text-sm text-white/40">

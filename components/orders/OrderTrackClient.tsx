@@ -30,21 +30,30 @@ const FLOW: OrderStatusKey[] = [
 
 export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
   const [ref, setRef] = useState(initialRef);
+  const [phoneLast4, setPhoneLast4] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState<TrackResult | null>(null);
 
-  async function runLookup(value: string) {
+  async function runLookup(value: string, last4: string) {
     const clean = value.trim().toUpperCase();
+    const digits = last4.replace(/\D/g, "").slice(-4);
     if (!clean) {
       setError("Enter your order reference.");
+      return;
+    }
+    if (digits.length !== 4) {
+      setError("Enter the last 4 digits of your checkout phone number.");
       return;
     }
     setLoading(true);
     setError("");
     setData(null);
     try {
-      const res = await fetch(`/api/orders/${encodeURIComponent(clean)}/track`);
+      const qs = new URLSearchParams({ phoneLast4: digits });
+      const res = await fetch(
+        `/api/orders/${encodeURIComponent(clean)}/track?${qs.toString()}`
+      );
       const json = await res.json();
       if (!res.ok) {
         setError(json.error ?? "Order not found.");
@@ -59,34 +68,45 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
   }
 
   useEffect(() => {
-    if (initialRef.trim()) {
-      void runLookup(initialRef);
+    if (initialRef.trim() && phoneLast4.replace(/\D/g, "").length === 4) {
+      void runLookup(initialRef, phoneLast4);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialRef]);
+  }, [initialRef, phoneLast4]);
 
   return (
     <div className="mx-auto max-w-lg">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          void runLookup(ref);
+          void runLookup(ref, phoneLast4);
         }}
-        className="flex flex-col gap-3 sm:flex-row"
+        className="space-y-3"
       >
         <input
           value={ref}
           onChange={(e) => setRef(e.target.value)}
           placeholder="e.g. GP-AB12CD"
           autoCapitalize="characters"
-          className="flex-1 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-brand/50"
+          className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-brand/50"
+        />
+        <input
+          value={phoneLast4}
+          onChange={(e) =>
+            setPhoneLast4(e.target.value.replace(/\D/g, "").slice(0, 4))
+          }
+          inputMode="numeric"
+          autoComplete="off"
+          maxLength={4}
+          placeholder="Last 4 digits of checkout phone"
+          className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-center font-mono text-sm tracking-[0.35em] text-white outline-none placeholder:font-sans placeholder:tracking-normal placeholder:text-white/30 focus:border-brand/50"
         />
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary justify-center sm:px-6"
+          className="btn-primary w-full justify-center py-3.5"
         >
-          {loading ? "Looking up…" : "Track"}
+          {loading ? "Looking up…" : "Track order"}
         </button>
       </form>
 
