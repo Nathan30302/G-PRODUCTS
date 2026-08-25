@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { requireOwner } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { AdminShell } from "@/components/admin/AdminShell";
 
@@ -11,7 +11,7 @@ export default async function DashboardLayout({
 }: {
   children: ReactNode;
 }) {
-  const session = await requireOwner();
+  const session = await requireUser();
   const [profile, pendingOrders, serviceQueue, stockAlerts] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.id },
