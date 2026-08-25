@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
+import { prisma } from "@/lib/db";
 import { resolveUploadFile } from "@/lib/upload-resolve";
 import {
   attachmentContentDisposition,
-  displayFilenameFromUrl
+  displayFilenameFromUrl,
+  parseServiceFileUrls
 } from "@/lib/service-files";
+import { getSession } from "@/lib/auth";
+import { canViewService } from "@/lib/track-access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,6 +26,33 @@ const TYPES: Record<string, string> = {
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 };
 
+const SENSITIVE_PREFIXES = ["services/"] as const;
+
+async function canAccessUpload(
+  relative: string,
+  req: Request
+): Promise<boolean> {
+  const sensitive = SENSITIVE_PREFIXES.some((p) => relative.startsWith(p));
+  if (!sensitive) return true;
+
+  const owner = await getSession();
+  if (owner) return true;
+
+  const url = new URL(req.url);
+  const ref = url.searchParams.get("ref")?.trim();
+  const phoneLast4 = url.searchParams.get("phoneLast4")?.trim();
+  if (!ref || !phoneLast4) return false;
+
+  const service = await prisma.serviceRequest.findUnique({ where: { ref } });
+  if (!service || !canViewService(service, { phoneLast4 })) return false;
+
+  const mediaPath = `/api/media/${relative}`;
+  const urls = parseServiceFileUrls(service.fileUrls);
+  return urls.some(
+    (u) => u === mediaPath || u.endsWith(relative) || u.includes(relative)
+  );
+}
+
 export async function GET(
   req: Request,
   ctx: { params: Promise<{ path: string[] }> }
@@ -36,6 +67,10 @@ export async function GET(
 
   if (!absolute) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  if (!(await canAccessUpload(relative, req))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   try {
@@ -55,8 +90,10 @@ export async function GET(
     const headers: Record<string, string> = {
       "Content-Type": contentType,
       "Cache-Control": forceDownload
-        ? "private, max-age=3600"
-        : "public, max-age=31536000, immutable",
+        ? "private, no-store"
+        : relative.startsWith("services/")
+          ? "private, max-age=3600"
+          : "public, max-age=31536000, immutable",
       "X-Content-Type-Options": "nosniff"
     };
 

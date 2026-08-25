@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { onOrderPaymentSuccess } from "@/lib/rewards";
+import { paymentCallbackAuthorized } from "@/lib/access-control";
 
 /**
  * Generic payment callback/webhook receiver.
@@ -14,7 +15,12 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ provider: string }> }
 ) {
-  await params; // provider is available if provider-specific handling is needed
+  await params;
+
+  if (!paymentCallbackAuthorized(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   let payload: Record<string, unknown> = {};
   try {
     payload = await req.json();

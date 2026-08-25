@@ -16,6 +16,7 @@ import {
   signDeskToken
 } from "@/lib/session-cookies";
 import { siteConfig } from "@/config/site";
+import { clientIp, rateLimitAuth } from "@/lib/access-control";
 import {
   newReferralCode,
   maybeAwardReferralBonus
@@ -26,6 +27,17 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
+    const ip = clientIp(req);
+    const limited = rateLimitAuth(`signup:${ip}`);
+    if (!limited.ok) {
+      return NextResponse.json(
+        {
+          error: `Too many sign-up attempts. Try again in ${limited.retryAfterSec}s.`
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const firstName = String(body.firstName ?? "").trim();
     const lastName = String(body.lastName ?? "").trim();

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCustomerSession } from "@/lib/customer-auth";
+import { orderBelongsToCustomer } from "@/lib/track-access";
 
 export async function POST(req: Request) {
   let body: {
@@ -45,10 +46,14 @@ export async function POST(req: Request) {
   }
 
   const session = await getCustomerSession();
-  let authorName =
-    body.authorName?.trim() ||
-    session?.name?.trim() ||
-    "";
+  if (!session) {
+    return NextResponse.json(
+      { error: "Sign in to leave a review on your account." },
+      { status: 401 }
+    );
+  }
+
+  const authorName = body.authorName?.trim() || session.name.trim();
   if (!authorName) {
     return NextResponse.json(
       { error: "Please enter your name." },
@@ -57,7 +62,7 @@ export async function POST(req: Request) {
   }
 
   let verifiedPurchase = false;
-  let customerId = session?.id ?? null;
+  const customerId = session.id;
 
   if (orderRef) {
     const order = await prisma.order.findUnique({
@@ -66,6 +71,7 @@ export async function POST(req: Request) {
     });
     if (
       order &&
+      orderBelongsToCustomer(order, session) &&
       (order.paymentStatus === "SUCCESS" ||
         order.status === "PAID" ||
         order.status === "PREPARING" ||
@@ -77,13 +83,9 @@ export async function POST(req: Request) {
           i.productId === product.id ||
           i.name.toLowerCase().includes(product.name.toLowerCase().slice(0, 12))
       );
-      if (bought) {
-        verifiedPurchase = true;
-        customerId = order.customerId ?? customerId;
-        if (!body.authorName?.trim()) authorName = order.customerName;
-      }
+      if (bought) verifiedPurchase = true;
     }
-  } else if (customerId) {
+  } else {
     const bought = await prisma.orderItem.findFirst({
       where: {
         productId: product.id,

@@ -31,6 +31,7 @@ export function LeaveReviewForm({
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           productSlug,
           rating,
@@ -68,7 +69,7 @@ export function LeaveReviewForm({
     >
       <h3 className="text-sm font-bold text-white">Leave a review</h3>
       <p className="mt-1 text-xs text-white/45">
-        Optional — tell others how {productName} worked for you.
+        Sign in on your account first. Reviews are tied to your profile.
       </p>
 
       <div className="mt-4 flex gap-1">

@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { verifyPassword } from "@/lib/auth";
+import {
+  OWNER_ONLY_DESK_MESSAGE,
+  verifyPassword
+} from "@/lib/auth";
 import { findCustomerByIdentifier } from "@/lib/customer-lookup";
 import { findDeskUserByIdentifier } from "@/lib/user-lookup";
+import {
+  clientIp,
+  rateLimitAuth
+} from "@/lib/access-control";
 import {
   CUSTOMER_COOKIE,
   CUSTOMER_MAX_AGE,
@@ -18,9 +25,9 @@ import { siteConfig } from "@/config/site";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-async function resolveDeskUser(identifier: string) {
+async function resolveOwnerDeskUser(identifier: string) {
   const deskUser = await findDeskUserByIdentifier(identifier);
-  if (deskUser) return deskUser;
+  if (deskUser?.role === "OWNER") return deskUser;
 
   // Fallback: allowlisted provider emails resolve to the sole OWNER row
   // (covers rare email casing / env vs DB mismatches without stealing staff logins).
@@ -53,7 +60,18 @@ export async function POST(req: Request) {
       );
     }
 
-    const deskUser = await resolveDeskUser(identifier);
+    const ip = clientIp(req);
+    const limited = rateLimitAuth(`login:${ip}:${identifier.toLowerCase()}`);
+    if (!limited.ok) {
+      return NextResponse.json(
+        {
+          error: `Too many sign-in attempts. Try again in ${limited.retryAfterSec}s.`
+        },
+        { status: 429 }
+      );
+    }
+
+    const deskUser = await resolveOwnerDeskUser(identifier);
     if (deskUser) {
       if (!(await verifyPassword(password, deskUser.passwordHash))) {
         return NextResponse.json(
@@ -68,7 +86,7 @@ export async function POST(req: Request) {
         id: deskUser.id,
         email: deskUser.email,
         name: deskUser.name,
-        role: deskUser.role
+        role: "OWNER"
       });
 
       const res = NextResponse.json({
@@ -80,6 +98,11 @@ export async function POST(req: Request) {
       setSessionCookie(res.cookies, DESK_COOKIE, token, DESK_MAX_AGE);
       expireSessionCookieHeader(res.headers, CUSTOMER_COOKIE);
       return res;
+    }
+
+    const blockedStaff = await findDeskUserByIdentifier(identifier);
+    if (blockedStaff?.role === "STAFF") {
+      return NextResponse.json({ error: OWNER_ONLY_DESK_MESSAGE }, { status: 403 });
     }
 
     const customer = await findCustomerByIdentifier(identifier);
