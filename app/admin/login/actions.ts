@@ -1,11 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import {
-  verifyPassword,
-  createSession,
-  OWNER_ONLY_DESK_MESSAGE
-} from "@/lib/auth";
+import { verifyPassword, createSession } from "@/lib/auth";
 import { findDeskUserByIdentifier } from "@/lib/user-lookup";
 
 export type LoginState = { error?: string };
@@ -24,12 +20,7 @@ export async function loginAction(
   }
 
   const user = await findDeskUserByIdentifier(identifier);
-  if (!user || user.role !== "OWNER") {
-    return {
-      error: user?.role === "STAFF" ? OWNER_ONLY_DESK_MESSAGE : "Invalid email or password."
-    };
-  }
-  if (!(await verifyPassword(password, user.passwordHash))) {
+  if (!user || !(await verifyPassword(password, user.passwordHash))) {
     return { error: "Invalid email or password." };
   }
 
@@ -37,7 +28,7 @@ export async function loginAction(
     id: user.id,
     email: user.email,
     name: user.name,
-    role: "OWNER"
+    role: user.role
   });
 
   redirect("/admin");

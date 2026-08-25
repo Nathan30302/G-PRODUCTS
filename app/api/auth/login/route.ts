@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import {
-  OWNER_ONLY_DESK_MESSAGE,
-  verifyPassword
-} from "@/lib/auth";
+import { verifyPassword } from "@/lib/auth";
 import { findCustomerByIdentifier } from "@/lib/customer-lookup";
 import { findDeskUserByIdentifier } from "@/lib/user-lookup";
 import {
@@ -25,9 +22,9 @@ import { siteConfig } from "@/config/site";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-async function resolveOwnerDeskUser(identifier: string) {
+async function resolveDeskUser(identifier: string) {
   const deskUser = await findDeskUserByIdentifier(identifier);
-  if (deskUser?.role === "OWNER") return deskUser;
+  if (deskUser) return deskUser;
 
   // Fallback: allowlisted provider emails resolve to the sole OWNER row
   // (covers rare email casing / env vs DB mismatches without stealing staff logins).
@@ -71,7 +68,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const deskUser = await resolveOwnerDeskUser(identifier);
+    const deskUser = await resolveDeskUser(identifier);
     if (deskUser) {
       if (!(await verifyPassword(password, deskUser.passwordHash))) {
         return NextResponse.json(
@@ -86,7 +83,7 @@ export async function POST(req: Request) {
         id: deskUser.id,
         email: deskUser.email,
         name: deskUser.name,
-        role: "OWNER"
+        role: deskUser.role
       });
 
       const res = NextResponse.json({
@@ -98,11 +95,6 @@ export async function POST(req: Request) {
       setSessionCookie(res.cookies, DESK_COOKIE, token, DESK_MAX_AGE);
       expireSessionCookieHeader(res.headers, CUSTOMER_COOKIE);
       return res;
-    }
-
-    const blockedStaff = await findDeskUserByIdentifier(identifier);
-    if (blockedStaff?.role === "STAFF") {
-      return NextResponse.json({ error: OWNER_ONLY_DESK_MESSAGE }, { status: 403 });
     }
 
     const customer = await findCustomerByIdentifier(identifier);

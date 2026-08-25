@@ -20,9 +20,6 @@ export type SessionUser = {
   role: "OWNER" | "STAFF";
 };
 
-export const OWNER_ONLY_DESK_MESSAGE =
-  "Provider desk sign-in is owner-only. Use your customer account for the shop.";
-
 export function hashPassword(plain: string): Promise<string> {
   return bcrypt.hash(plain, 10);
 }
@@ -32,9 +29,6 @@ export function verifyPassword(plain: string, hash: string): Promise<boolean> {
 }
 
 export async function createSession(user: SessionUser): Promise<void> {
-  if (user.role !== "OWNER") {
-    throw new Error(OWNER_ONLY_DESK_MESSAGE);
-  }
   const token = await signDeskToken(user);
   const store = await cookies();
   clearSessionCookie(store, CUSTOMER_COOKIE);
@@ -46,7 +40,7 @@ export async function destroySession(): Promise<void> {
   clearSessionCookie(store, DESK_COOKIE);
 }
 
-/** Live DB check — only the owner may hold a desk session. */
+/** Live DB check — desk user must still exist (owner or staff). */
 export async function getSession(): Promise<SessionUser | null> {
   const store = await cookies();
   const token = store.get(DESK_COOKIE)?.value;
@@ -57,7 +51,7 @@ export async function getSession(): Promise<SessionUser | null> {
       where: { id: payload.id },
       select: { id: true, email: true, name: true, role: true }
     });
-    if (!user || user.role !== "OWNER") return null;
+    if (!user) return null;
     return user;
   } catch {
     return null;
@@ -71,5 +65,7 @@ export async function requireUser(): Promise<SessionUser> {
 }
 
 export async function requireOwner(): Promise<SessionUser> {
-  return requireUser();
+  const user = await requireUser();
+  if (user.role !== "OWNER") redirect("/admin");
+  return user;
 }
