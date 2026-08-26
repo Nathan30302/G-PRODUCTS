@@ -8,23 +8,31 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session) {
-    return NextResponse.json({ error: "Sign in required." }, { status: 401 });
+    return NextResponse.json(
+      { error: "Sign in required. Open the provider desk again, then retry the upload." },
+      { status: 401 }
+    );
   }
 
   try {
     const form = await req.formData();
     const file = form.get("file");
-    if (!(file instanceof File)) {
+    if (!file || typeof file === "string") {
       return NextResponse.json({ error: "No photo attached." }, { status: 400 });
     }
 
     const folderRaw = String(form.get("folder") ?? "products");
     const folder =
-      folderRaw === "services" || folderRaw === "misc" ? folderRaw : "products";
+      folderRaw === "services" ||
+      folderRaw === "service-pages" ||
+      folderRaw === "misc"
+        ? folderRaw
+        : "products";
 
     const saved = await saveImageUpload(file, folder);
-    return NextResponse.json({ url: saved.url });
+    return NextResponse.json({ ok: true, url: saved.url });
   } catch (err) {
+    console.error("[admin/upload]", err);
     const message =
       err instanceof Error ? err.message : "Could not upload the photo.";
     return NextResponse.json({ error: message }, { status: 400 });

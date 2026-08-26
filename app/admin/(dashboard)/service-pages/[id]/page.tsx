@@ -68,7 +68,7 @@ export default async function EditServicePage({
         <div>
           <ImageUploader
             name="imageUrl"
-            folder="services"
+            folder="service-pages"
             multiple
             label="Service photos"
             downloadPrefix={offer.slug}

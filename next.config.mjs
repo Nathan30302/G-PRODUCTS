@@ -5,6 +5,11 @@ const nextConfig = {
     process.env.RAILWAY_GIT_COMMIT_SHA ||
     process.env.RAILWAY_DEPLOYMENT_ID ||
     undefined,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "20mb"
+    }
+  },
   async rewrites() {
     return [
       {

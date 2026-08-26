@@ -11,8 +11,8 @@ type Props = {
   urls?: string[];
   /** Called when URLs change (for variant editors) */
   onUrlsChange?: (urls: string[]) => void;
-  /** products | services | misc (shop locations, team) */
-  folder?: "products" | "services" | "misc";
+  /** products | services | service-pages | misc (shop locations, team) */
+  folder?: "products" | "services" | "service-pages" | "misc";
   /** Allow multiple photos (products & service galleries). First = cover. */
   multiple?: boolean;
   label?: string;
@@ -96,11 +96,22 @@ export function ImageUploader({
         try {
           const res = await fetch("/api/admin/upload", {
             method: "POST",
-            body
+            body,
+            credentials: "include",
+            cache: "no-store"
           });
-          const data = (await res.json()) as { url?: string; error?: string };
+          const data = (await res.json().catch(() => ({}))) as {
+            url?: string;
+            error?: string;
+          };
           if (!res.ok || !data.url) {
-            setError(data.error ?? "Upload failed.");
+            const fallback =
+              res.status === 401
+                ? "Sign in required. Refresh the provider desk and try again."
+                : res.status === 413
+                  ? "Photo is too large for the server. Try a smaller JPG."
+                  : "Upload failed.";
+            setError(data.error ?? fallback);
             continue;
           }
           if (multiple) next.push(data.url);
@@ -218,7 +229,7 @@ export function ImageUploader({
             {multiple ? "Add photos" : "Add photo"}
           </span>
           <span className="text-xs text-white/35">
-            From your phone · JPG, PNG or WebP
+            From your phone · JPG, PNG or WebP (not HEIC)
           </span>
         </button>
       )}
@@ -257,7 +268,7 @@ export function ImageUploader({
           <p className="mt-1 text-xs text-white/45">
             {previewHint
               ? previewHint
-              : folder === "services"
+              : folder === "services" || folder === "service-pages"
                 ? "Cover photo is what customers see first on tiles and as gallery photo 1."
                 : folder === "misc"
                   ? "Cover photo is what customers see first on the locations band."
@@ -287,7 +298,7 @@ export function ImageUploader({
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
+        accept="image/jpeg,image/png,image/webp,image/gif,image/jpg,.jpg,.jpeg,.png,.webp,.gif"
         multiple={multiple}
         className="hidden"
         onChange={(e) => onPick(e.target.files)}

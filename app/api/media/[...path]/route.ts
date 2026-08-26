@@ -28,6 +28,28 @@ const TYPES: Record<string, string> = {
 
 const SENSITIVE_PREFIXES = ["services/"] as const;
 
+async function isPublicServiceOfferImage(relative: string): Promise<boolean> {
+  // Older desk uploads stored marketing photos under services/ — allow those
+  // when they are attached to a published service offer page.
+  const mediaPath = `/api/media/${relative}`;
+  const offers = await prisma.serviceOffer.findMany({
+    select: { imageUrl: true },
+    take: 50
+  });
+  return offers.some((offer) => {
+    const raw = offer.imageUrl ?? "";
+    return raw
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .some(
+        (u) =>
+          u === mediaPath ||
+          u.endsWith(`/${relative}`) ||
+          u.includes(relative)
+      );
+  });
+}
+
 async function canAccessUpload(
   relative: string,
   req: Request
@@ -37,6 +59,8 @@ async function canAccessUpload(
 
   const owner = await getSession();
   if (owner) return true;
+
+  if (await isPublicServiceOfferImage(relative)) return true;
 
   const url = new URL(req.url);
   const ref = url.searchParams.get("ref")?.trim();
