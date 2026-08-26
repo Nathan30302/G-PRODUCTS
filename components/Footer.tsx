@@ -30,10 +30,10 @@ const companyLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-20 border-t border-white/[0.06] bg-ink-950/80 sm:mt-24">
+    <footer className="relative mt-16 border-t border-white/[0.06] bg-ink-950/80 sm:mt-24">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
-      <div className="container-g grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-7">
-        <div className="sm:col-span-2 lg:col-span-2">
+      <div className="container-g grid grid-cols-2 gap-8 py-12 sm:gap-10 sm:py-14 md:grid-cols-3 lg:grid-cols-12">
+        <div className="col-span-2 md:col-span-3 lg:col-span-4">
           <Logo size="lg" />
           <p className="mt-4 text-sm font-semibold text-brand/90">
             {siteConfig.tagline}
@@ -53,7 +53,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div>
+        <div className="lg:col-span-2">
           <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
             Shop
           </h4>
@@ -83,7 +83,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="lg:col-span-2">
           <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
             Services
           </h4>
@@ -101,7 +101,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="lg:col-span-2">
           <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
             Help
           </h4>
@@ -119,7 +119,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="col-span-2 md:col-span-1 lg:col-span-2">
           <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
             Company
           </h4>
@@ -136,72 +136,87 @@ export function Footer() {
             ))}
           </ul>
         </div>
+      </div>
 
-        <div>
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
-            Connect
-          </h4>
-          <p className="mt-3 text-sm text-white/55">
-            Call or WhatsApp for stock, printing and services.
-          </p>
-          <div className="mt-3 space-y-2">
-            {siteConfig.contacts.map((c) => (
-              <div key={c.tel} className="flex flex-wrap items-center gap-2">
-                <span className="text-sm font-semibold tabular-nums text-white">
-                  {c.display}
-                </span>
-                <a
-                  href={`tel:${c.tel}`}
-                  className="text-xs font-semibold text-brand hover:underline"
+      <div className="container-g border-t border-white/[0.06] pb-6 pt-8">
+        <div className="grid gap-8 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+              Connect
+            </h4>
+            <p className="mt-3 max-w-md text-sm text-white/55">
+              Call or WhatsApp for stock, printing and services.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {siteConfig.contacts.map((c) => (
+                <div
+                  key={c.tel}
+                  className="flex items-center justify-between gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3"
                 >
-                  Call
-                </a>
-                <span className="text-white/20">·</span>
+                  <span className="text-sm font-semibold tabular-nums text-white">
+                    {c.display}
+                  </span>
+                  <span className="flex shrink-0 items-center gap-2">
+                    <a
+                      href={`tel:${c.tel}`}
+                      className="text-xs font-semibold text-brand hover:underline"
+                    >
+                      Call
+                    </a>
+                    <span className="text-white/20">·</span>
+                    <a
+                      href={`https://wa.me/${c.whatsapp}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-semibold text-accent hover:underline"
+                    >
+                      WhatsApp
+                    </a>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col justify-end gap-3 lg:col-span-5 lg:items-end">
+            <div className="flex flex-wrap gap-2">
+              {configuredSocialLinks().map((s) => (
                 <a
-                  href={`https://wa.me/${c.whatsapp}`}
+                  key={s.label}
+                  href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs font-semibold text-accent hover:underline"
+                  className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
                 >
-                  WhatsApp
+                  {s.label}
                 </a>
-              </div>
-            ))}
+              ))}
+            </div>
+            <a
+              href={whatsappHref()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-whatsapp w-full sm:w-auto"
+            >
+              <Icon name="whatsapp" className="h-4 w-4" />
+              Chat on WhatsApp
+            </a>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {configuredSocialLinks().map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
-              >
-                {s.label}
-              </a>
-            ))}
-          </div>
-          <a
-            href={whatsappHref()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-whatsapp mt-4"
-          >
-            <Icon name="whatsapp" className="h-4 w-4" />
-            Chat on WhatsApp
-          </a>
         </div>
       </div>
 
       <div className="border-t border-white/[0.06] py-6">
-        <div className="container-g flex flex-col items-center justify-between gap-2 text-xs text-white/35 sm:flex-row">
-          <p>
+        <div className="container-g flex flex-col items-center justify-between gap-3 text-xs text-white/35 sm:flex-row sm:items-start">
+          <p className="text-center sm:text-left">
             &copy; {new Date().getFullYear()} {siteConfig.legalName}. All rights
             reserved.
           </p>
-          <p className="text-center sm:text-right">
-            {siteConfig.locationLabels.join(" · ")}
-          </p>
+          <ul className="flex max-w-xl flex-wrap justify-center gap-x-2 gap-y-1 text-center sm:justify-end sm:text-right">
+            {siteConfig.locationLabels.map((loc) => (
+              <li key={loc} className="after:ml-2 after:text-white/20 after:content-['·'] last:after:content-none">
+                {loc}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

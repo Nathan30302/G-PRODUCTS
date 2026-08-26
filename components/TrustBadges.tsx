@@ -28,7 +28,7 @@ export function TrustBadges() {
   return (
     <section className="container-g mt-20">
       <Reveal>
-        <div className="grid grid-cols-2 gap-3 rounded-[1.35rem] border border-white/[0.07] bg-ink-900/45 p-3 shadow-card backdrop-blur-sm lg:grid-cols-4 lg:gap-1 lg:p-4">
+        <div className="grid grid-cols-1 gap-3 rounded-[1.35rem] border border-white/[0.07] bg-ink-900/45 p-3 shadow-card backdrop-blur-sm sm:grid-cols-2 lg:grid-cols-4 lg:gap-1 lg:p-4">
           {items.map((t) => (
             <div
               key={t.title}

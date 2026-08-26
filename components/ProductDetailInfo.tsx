@@ -20,7 +20,7 @@ export function ProductDetailInfo({ product }: { product: Product }) {
         </p>
       ) : null}
 
-      <h1 className="display mt-2 text-3xl leading-tight sm:text-4xl">
+      <h1 className="display heading-page mt-2">
         {product.name}
       </h1>
 

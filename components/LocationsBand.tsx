@@ -48,14 +48,14 @@ export async function LocationsBand() {
       <Reveal>
         <div className="mb-8 text-center sm:text-left">
           <p className="eyebrow">Visit us</p>
-          <h2 className="display mt-2 text-2xl sm:text-3xl">Our locations</h2>
+          <h2 className="display heading-section mt-2">Our locations</h2>
           <p className="mt-2 max-w-xl text-sm text-white/50">
             Four pickup points across Lusaka — call or WhatsApp before you
             visit if you need live stock or directions.
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
           {locations.map((loc) => {
             const contact = loc.phone ?? defaultContact;
             const cover = loc.photoUrls[0];

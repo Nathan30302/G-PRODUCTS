@@ -22,7 +22,7 @@ export default async function BundlesPage() {
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand">
           Bundles
         </p>
-        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+        <h1 className="mt-2 display heading-page">
           Packs that just make sense
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-white/55 sm:text-base">

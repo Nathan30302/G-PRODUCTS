@@ -29,7 +29,7 @@ export default async function ServicesPage() {
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
             Services Center
           </p>
-          <h1 className="display mt-1.5 text-3xl sm:text-4xl">
+          <h1 className="display heading-page mt-1.5">
             Keys, loans & printing
           </h1>
           <p className="mt-3 text-base leading-relaxed text-white/55">

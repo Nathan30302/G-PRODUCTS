@@ -36,13 +36,11 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container-g py-8 pb-28 sm:py-10 md:pb-10">
+    <div className="container-g py-8 pb-32 sm:py-10 lg:pb-10">
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
         Bag
       </p>
-      <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
-        Your cart
-      </h1>
+      <h1 className="mt-1.5 display heading-page">Your cart</h1>
       <p className="mt-2 text-sm text-white/50">
         {count} item{count === 1 ? "" : "s"} ready to checkout
       </p>
@@ -58,11 +56,11 @@ export default function CartPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="flex gap-4 rounded-[1.25rem] border border-white/[0.07] bg-ink-900/50 p-4 shadow-card"
+                className="flex gap-3 rounded-[1.25rem] border border-white/[0.07] bg-ink-900/50 p-3 shadow-card sm:gap-4 sm:p-4"
               >
                 <Link
                   href={`/product/${item.slug}`}
-                  className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-ink-900"
+                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-ink-900 sm:h-24 sm:w-24"
                 >
                   {item.image && (
                     <Image
@@ -78,7 +76,7 @@ export default function CartPage() {
                   <div className="flex items-start justify-between gap-3">
                     <Link
                       href={`/product/${item.slug}`}
-                      className="font-semibold text-white transition-colors hover:text-brand"
+                    className="min-w-0 font-semibold text-white transition-colors hover:text-brand"
                     >
                       {item.name}
                     </Link>
@@ -133,7 +131,7 @@ export default function CartPage() {
           </Link>
         </div>
 
-        <div className="h-fit lg:sticky lg:top-24">
+        <div className="h-fit lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
           <div className="rounded-[1.35rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/80 to-ink-900/70 p-6 shadow-card ring-1 ring-white/[0.03] backdrop-blur-sm">
             <h2 className="text-lg font-bold text-white">Order summary</h2>
             <div className="mt-4 flex justify-between text-sm text-white/60">

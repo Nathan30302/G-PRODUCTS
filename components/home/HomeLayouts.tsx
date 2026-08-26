@@ -48,7 +48,7 @@ export function HomeCatalogSections({
       <section className="container-g mt-14 sm:mt-16">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            <h2 className="font-display heading-section font-extrabold tracking-tight text-white">
               Bundles &amp; packs
             </h2>
             <p className="mt-1 text-sm text-white/50">

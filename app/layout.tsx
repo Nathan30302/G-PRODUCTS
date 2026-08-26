@@ -60,7 +60,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#06181c",
   width: "device-width",
-  initialScale: 1
+  initialScale: 1,
+  viewportFit: "cover"
 };
 
 export const dynamic = "force-dynamic";
@@ -79,7 +80,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${GeistSans.variable} ${syne.variable}`}>
-      <body className="min-h-screen bg-ink-950 font-sans text-white antialiased">
+      <body className="min-h-dvh bg-ink-950 font-sans text-white antialiased">
         <CartProvider>
           <ToastProvider>
             <SiteChrome auth={auth}>{children}</SiteChrome>

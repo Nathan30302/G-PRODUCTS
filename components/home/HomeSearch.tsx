@@ -34,7 +34,7 @@ export function HomeSearch() {
         />
         <button
           type="submit"
-          className="btn-brand shrink-0 px-5 py-3 text-sm sm:py-2.5"
+          className="btn-brand shrink-0 px-4 py-3 text-sm sm:px-5 sm:py-2.5"
         >
           Search
         </button>

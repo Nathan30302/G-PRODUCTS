@@ -43,8 +43,8 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
 
   return (
     <>
-      <div className="sticky top-16 z-30 -mx-4 mt-6 border-y border-white/[0.06] bg-ink-950/85 px-4 py-3 backdrop-blur-xl sm:mx-0 sm:rounded-[1.25rem] sm:border sm:border-white/[0.07]">
-        <div className="flex flex-wrap items-center gap-2.5">
+      <div className="sticky top-[var(--chrome-h)] z-30 -mx-4 mt-6 border-y border-white/[0.06] bg-ink-950/85 px-4 py-3 backdrop-blur-xl sm:mx-0 sm:rounded-[1.25rem] sm:border sm:border-white/[0.07]">
+        <div className="no-scrollbar flex items-center gap-2.5 overflow-x-auto sm:flex-wrap">
           <span className="mr-1 hidden items-center gap-1.5 text-sm font-semibold text-white/60 sm:flex">
             <Icon name="sliders" className="h-4 w-4" />
             Filter
@@ -52,7 +52,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
 
           <button
             onClick={() => setInStockOnly((v) => !v)}
-            className={`rounded-pill px-3.5 py-1.5 text-sm font-medium transition-colors ${
+            className={`shrink-0 rounded-pill px-3.5 py-1.5 text-sm font-medium transition-colors ${
               inStockOnly
                 ? "bg-accent/15 text-accent ring-1 ring-accent/40"
                 : "bg-white/[0.04] text-white/70 hover:text-white"
@@ -69,7 +69,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
                 <button
                   key={f}
                   onClick={() => setMaxPrice(activeCap ? null : cap)}
-                  className={`rounded-pill px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                  className={`shrink-0 rounded-pill px-3.5 py-1.5 text-sm font-medium transition-colors ${
                     activeCap
                       ? "bg-brand/20 text-brand ring-1 ring-brand/40"
                       : "bg-white/[0.04] text-white/70 hover:text-white"
@@ -80,7 +80,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
               );
             })}
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-2">
             {hasFilters && (
               <button
                 onClick={reset}
@@ -136,7 +136,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
           </div>
         </div>
       ) : (
-        <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-5 product-grid">
           {results.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

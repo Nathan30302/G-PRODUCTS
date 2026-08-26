@@ -32,7 +32,7 @@ export function WhyGProducts() {
       <div className="container-g relative">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="eyebrow">Why choose G-Products</p>
-          <h2 className="display mt-3 text-3xl sm:text-4xl">
+          <h2 className="display heading-page mt-3">
             Why trust G-Products?
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-white/50 sm:text-base">
@@ -41,7 +41,7 @@ export function WhyGProducts() {
           </p>
         </Reveal>
 
-        <Stagger className="mt-12 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+        <Stagger className="mt-10 grid grid-cols-1 gap-x-8 gap-y-8 sm:mt-12 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
           {reasons.map((r) => (
             <StaggerItem key={r.title}>
               <div className="text-center sm:text-left">

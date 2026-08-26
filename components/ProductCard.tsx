@@ -79,7 +79,7 @@ export function ProductCard({
   }
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-ink-900/70 transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-brand-glow active:scale-[0.97]">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-ink-900/70 transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-brand-glow active:scale-[0.98] sm:active:scale-[0.97]">
       <div
         className="relative aspect-square overflow-hidden bg-[#f4f4f2]"
         onTouchStart={onTouchStart}
@@ -113,8 +113,8 @@ export function ProductCard({
                 fill
                 priority={priority}
                 quality={88}
-                sizes="(max-width: 640px) 46vw, (max-width: 1024px) 30vw, 16rem"
-                className={`object-contain p-2.5 ${
+                sizes="(max-width: 640px) 46vw, (max-width: 768px) 72vw, (max-width: 1024px) 30vw, (max-width: 1536px) 20vw, 16rem"
+                className={`object-contain p-2 sm:p-2.5 ${
                   soldOut ? "opacity-50 saturate-[0.65]" : ""
                 }`}
               />
@@ -142,9 +142,9 @@ export function ProductCard({
 
       <Link
         href={`/product/${product.slug}`}
-        className="flex flex-1 flex-col gap-1 px-2.5 pb-2.5 pt-2"
+        className="flex flex-1 flex-col gap-1 px-2 pb-2.5 pt-2 sm:px-2.5"
       >
-        <h3 className="line-clamp-2 text-[12px] font-semibold leading-snug text-white transition-colors group-hover:text-brand sm:text-[13px]">
+        <h3 className="line-clamp-2 text-[13px] font-semibold leading-snug text-white transition-colors group-hover:text-brand sm:text-sm">
           {product.name}
         </h3>
         <div className="mt-auto flex flex-col gap-1 pt-0.5">

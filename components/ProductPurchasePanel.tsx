@@ -45,7 +45,7 @@ export function ProductPurchasePanel({
     product.variants.some((v) => Boolean(v.colorHex));
 
   return (
-    <div className="lg:sticky lg:top-24">
+    <div className="lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
       <ProductGallery
         key={`${selectedId ?? "default"}-${fitmentValue ?? "nofit"}`}
         images={galleryImages}

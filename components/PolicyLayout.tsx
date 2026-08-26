@@ -21,7 +21,9 @@ export function PolicyLayout({
         <span className="text-white/70">{title}</span>
       </nav>
       <p className="eyebrow mt-6">{eyebrow}</p>
-      <h1 className="display mt-2 text-3xl sm:text-4xl">{title}</h1>
+        <h1 className="display heading-page mt-2">
+          {title}
+        </h1>
       <div className="prose-g mt-8 max-w-3xl space-y-5 text-sm leading-relaxed text-white/60 sm:text-[15px]">
         {children}
       </div>

@@ -95,7 +95,7 @@ export default async function ProductPage({
               <Icon name="chevron-right" className="h-3.5 w-3.5" />
             </>
           )}
-          <span className="truncate text-white/70">{product.name}</span>
+          <span className="min-w-0 truncate text-white/70">{product.name}</span>
         </nav>
 
         <ProductVariantProvider product={product}>
@@ -171,7 +171,7 @@ export default async function ProductPage({
         />
       )}
 
-      <div className="h-16" />
+      <div className="h-24 md:h-0" />
     </div>
   );
 }

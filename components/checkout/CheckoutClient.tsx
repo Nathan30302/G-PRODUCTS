@@ -393,13 +393,11 @@ export function CheckoutClient({
   }
 
   return (
-    <div className="container-g py-8 pb-28 sm:py-10 md:pb-10">
+    <div className="container-g py-8 pb-32 sm:py-10 lg:pb-10">
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
         Secure checkout
       </p>
-      <h1 className="mt-1.5 text-3xl font-black tracking-tight text-white sm:text-4xl">
-        Checkout
-      </h1>
+      <h1 className="mt-1.5 display heading-page">Checkout</h1>
       <p className="mt-2 text-sm text-white/50">
         Delivery details, then pay with Mobile Money.
       </p>
@@ -412,7 +410,7 @@ export function CheckoutClient({
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <section className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6">
+          <section className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-4 sm:p-6">
             <div className="flex items-center gap-3">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
                 1
@@ -469,7 +467,7 @@ export function CheckoutClient({
             ) : null}
           </section>
 
-          <section className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6">
+          <section className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-4 sm:p-6">
             <div className="flex items-center gap-3">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
                 2
@@ -515,8 +513,8 @@ export function CheckoutClient({
           </section>
         </div>
 
-        <div className="h-fit lg:sticky lg:top-24">
-          <div className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-6">
+        <div className="h-fit lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
+          <div className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-4 sm:p-6">
             <h2 className="text-lg font-bold text-white">Order summary</h2>
             <div className="mt-4 space-y-2.5">
               {items.map((i) => (

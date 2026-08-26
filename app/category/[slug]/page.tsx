@@ -56,7 +56,7 @@ export default async function CategoryPage({
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
             {group ? "Department" : "Category"}
           </p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight text-white sm:text-4xl">
+          <h1 className="mt-1 heading-page font-black tracking-tight text-white">
             {category.name}
           </h1>
           <p className="mt-1.5 text-white/50">{category.tagline}</p>

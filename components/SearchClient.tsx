@@ -129,14 +129,18 @@ export function SearchClient({
           <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand/90">
             Catalogue
           </p>
-          <h1 className="display mt-1.5 text-3xl sm:text-4xl">Shop</h1>
+          <h1 className="display heading-page mt-1.5">Shop</h1>
           <p className="mt-2 text-sm leading-relaxed text-white/50">
             Search {products.length} products — stationery, chargers, audio and
-            more. Press{" "}
-            <kbd className="rounded-md border border-white/15 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[11px] text-white/60">
-              /
-            </kbd>{" "}
-            to jump here anytime.
+            more.
+            <span className="hidden sm:inline">
+              {" "}
+              Press{" "}
+              <kbd className="rounded-md border border-white/15 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[11px] text-white/60">
+                /
+              </kbd>{" "}
+              to jump here anytime.
+            </span>
           </p>
         </header>
 
@@ -450,7 +454,7 @@ export function SearchClient({
                     View all
                   </Link>
                 </div>
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                <div className="product-grid">
                   {items.map((p) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
@@ -459,7 +463,7 @@ export function SearchClient({
             ))}
           </div>
         ) : (
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="mt-5 product-grid">
             {results.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

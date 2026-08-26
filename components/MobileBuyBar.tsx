@@ -49,7 +49,10 @@ export function MobileBuyBar({ product }: { product: Product }) {
     chosen?.available && (!multi || selected) && fitmentReady;
 
   return (
-    <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+3.75rem)] z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg md:hidden">
+    <div
+      className="fixed inset-x-0 z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg md:hidden"
+      style={{ bottom: "var(--mobile-nav-offset)" }}
+    >
       <div className="flex items-center gap-3">
         <div className="min-w-0">
           <p className="text-[11px] text-white/45">

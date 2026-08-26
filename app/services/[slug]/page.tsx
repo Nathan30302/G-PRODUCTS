@@ -55,13 +55,15 @@ export default async function ServiceDetailPage({
       </nav>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:items-start">
-        <div className="lg:sticky lg:top-24">
+        <div className="lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
           <ServiceGallery
             images={gallery}
             name={service.name}
             badge={service.priceLabel}
           />
-          <h1 className="display mt-6 text-3xl sm:text-4xl">{service.name}</h1>
+          <h1 className="display heading-page mt-6">
+            {service.name}
+          </h1>
           <p className="mt-2 text-brand">{service.tagline}</p>
           <p className="mt-4 leading-relaxed text-white/60">
             {service.description}

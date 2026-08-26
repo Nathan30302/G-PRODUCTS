@@ -32,11 +32,14 @@ export function Logo({
 }) {
   const px = sizes[size];
   const isLarge = size === "splash";
+  const mdBox = size === "md" && !isLarge;
 
   return (
     <span
-      className={`relative inline-flex shrink-0 ${isLarge ? "splash-mark" : ""} ${className}`}
-      style={isLarge ? undefined : { width: px, height: px }}
+      className={`relative inline-flex shrink-0 ${isLarge ? "splash-mark" : ""} ${
+        mdBox ? "h-10 w-10 sm:h-11 sm:w-11" : ""
+      } ${className}`}
+      style={isLarge || mdBox ? undefined : { width: px, height: px }}
     >
       <Image
         src={MARK_SRC}

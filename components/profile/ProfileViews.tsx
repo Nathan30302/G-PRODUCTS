@@ -54,14 +54,14 @@ export function AccountHome({
 
   return (
     <div className="container-g py-10 sm:py-14">
-      <div className="relative overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-br from-ink-900 via-ink-900/90 to-ink-950 p-6 sm:p-8">
+      <div className="relative overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-br from-ink-900 via-ink-900/90 to-ink-950 p-5 sm:p-8">
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/10 blur-3xl" />
         <div className="relative flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
               Account
             </p>
-            <h1 className="display mt-2 text-3xl sm:text-4xl">
+            <h1 className="display heading-page mt-2">
               Hi, {firstName}
             </h1>
             <p className="mt-2 text-sm text-white/45">

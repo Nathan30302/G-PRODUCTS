@@ -89,7 +89,7 @@ export async function StoreReviewsSection() {
       <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">Reviews</p>
-          <h2 className="display mt-2 text-2xl sm:text-3xl">
+          <h2 className="display heading-section mt-2">
             Customer reviews
           </h2>
           <p className="mt-2 max-w-md text-sm text-white/50">

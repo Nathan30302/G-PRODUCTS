@@ -26,7 +26,7 @@ export function AbandonedCartNudge() {
   if (!show || items.length === 0) return null;
 
   return (
-    <div className="fixed bottom-20 left-3 right-3 z-[60] mx-auto max-w-md rounded-2xl border border-brand/30 bg-ink-900/95 p-4 shadow-brand-glow backdrop-blur sm:left-auto sm:right-6 sm:bottom-6">
+    <div className="fixed bottom-[calc(var(--mobile-nav-offset)+0.75rem)] left-3 right-3 z-[60] mx-auto max-w-md rounded-2xl border border-brand/30 bg-ink-900/95 p-4 shadow-brand-glow backdrop-blur md:bottom-6 md:left-auto md:right-6">
       <p className="text-sm font-bold text-white">Still thinking it over?</p>
       <p className="mt-1 text-xs text-white/55">
         You have {items.length} item{items.length === 1 ? "" : "s"} (

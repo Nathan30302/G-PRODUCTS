@@ -17,7 +17,7 @@ export function ShopSectionHeader({
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div className="min-w-0">
         {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
-        <h2 className={`display ${eyebrow ? "mt-1.5" : ""} text-2xl sm:text-3xl`}>
+        <h2 className={`display heading-section ${eyebrow ? "mt-1.5" : ""}`}>
           {title}
         </h2>
         {subtitle ? (
@@ -56,7 +56,10 @@ export function ShopEmptyState({
 
 export function ShopStickyBar({ children }: { children: ReactNode }) {
   return (
-    <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+3.75rem)] z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg">
+    <div
+      className="fixed inset-x-0 z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg md:pb-[max(0.75rem,var(--safe-bottom))] lg:hidden"
+      style={{ bottom: "var(--mobile-nav-offset)" }}
+    >
       {children}
     </div>
   );

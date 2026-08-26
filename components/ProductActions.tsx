@@ -28,7 +28,7 @@ export function ProductActions({ product }: { product: Product }) {
   const lineTotal = linePrice * qty;
 
   return (
-    <div id="buy" className="scroll-mt-28 space-y-3">
+    <div id="buy" className="scroll-mt-[calc(var(--chrome-h)+1rem)] space-y-3">
       {unavailable ? (
         <NotifyMeForm
           productId={product.id}

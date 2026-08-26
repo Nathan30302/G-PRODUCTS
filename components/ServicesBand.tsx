@@ -15,7 +15,7 @@ export async function ServicesBand() {
         <div className="mb-7 flex items-end justify-between gap-4">
           <div>
             <p className="eyebrow">Services</p>
-            <h2 className="display mt-2 text-2xl sm:text-3xl">
+            <h2 className="display heading-section mt-2">
               Printing &amp; other services
             </h2>
             <p className="mt-2 max-w-xl text-sm text-white/50">
