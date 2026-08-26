@@ -1,27 +1,17 @@
 import "server-only";
-import { getSession } from "@/lib/auth";
 import { getCustomerSession } from "@/lib/customer-auth";
 import { siteConfig } from "@/config/site";
 
+/** Shop chrome only — never expose provider desk links on the storefront. */
 export type PublicAuth = {
-  kind: "provider" | "customer";
+  kind: "customer";
   name: string;
   home: string;
 } | null;
 
 export async function getPublicAuth(): Promise<PublicAuth> {
   try {
-    const [provider, customer] = await Promise.all([
-      getSession(),
-      getCustomerSession()
-    ]);
-    if (provider) {
-      return {
-        kind: "provider",
-        name: provider.name,
-        home: siteConfig.apps.provider.home
-      };
-    }
+    const customer = await getCustomerSession();
     if (customer) {
       return {
         kind: "customer",

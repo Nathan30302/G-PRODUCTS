@@ -24,19 +24,14 @@ export function MobileNav({ auth = null }: { auth?: ShopAuth }) {
 
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-12 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
-      {/* Plug-sized compact floating pill */}
-      <div className="pointer-events-auto flex items-center gap-0.5 rounded-pill border border-white/10 bg-ink-950/92 px-1.5 py-1 shadow-[0_12px_40px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.04] backdrop-blur-2xl">
+      <div className="pointer-events-auto flex items-center gap-0.5 rounded-pill border border-white/[0.1] bg-ink-950/94 px-1.5 py-1 shadow-[0_14px_44px_rgba(0,0,0,0.58)] ring-1 ring-white/[0.05] backdrop-blur-2xl">
         {items.map((it) => {
           const href = it.href === "/profile" ? accountHref : it.href;
           const active =
             it.href === "/"
               ? pathname === "/"
               : it.href === "/profile"
-                ? Boolean(
-                    pathname?.startsWith("/profile") ||
-                      (auth?.kind === "provider" &&
-                        pathname?.startsWith("/admin"))
-                  )
+                ? Boolean(pathname?.startsWith("/profile"))
                 : pathname?.startsWith(it.href);
 
           return (
