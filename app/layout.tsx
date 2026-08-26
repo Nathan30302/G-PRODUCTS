@@ -70,7 +70,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const auth = await getPublicAuth();
+  let auth = null;
+  try {
+    auth = await getPublicAuth();
+  } catch (err) {
+    console.error("[layout] auth read failed:", err);
+  }
 
   return (
     <html lang="en" className={`${GeistSans.variable} ${syne.variable}`}>
