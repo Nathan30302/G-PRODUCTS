@@ -8,8 +8,13 @@ import { useCart } from "@/lib/cart";
 import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
 import { Icon } from "@/components/Icons";
 import { Logo } from "@/components/Logo";
-import { LogoutButton } from "@/components/LogoutButton";
 import type { ShopAuth } from "@/components/SiteChrome";
+
+const iconBtn =
+  "grid h-10 w-10 place-items-center rounded-xl border border-white/[0.09] bg-white/[0.035] text-white/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all duration-300 hover:border-brand/40 hover:bg-brand/[0.08] hover:text-brand sm:rounded-2xl";
+
+const iconBtnActive =
+  "border-brand/45 bg-brand/[0.12] text-brand shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]";
 
 export function Navbar({ auth = null }: { auth?: ShopAuth }) {
   const { count } = useCart();
@@ -38,19 +43,21 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
   }
 
   const shopGroups = catalogGroups.filter((g) => !g.href);
+  const accountHref = auth?.home ?? "/profile";
+  const profileActive = pathname?.startsWith("/profile");
 
   return (
     <header
       className={`sticky top-0 z-50 border-b transition-all duration-300 ${
         scrolled
-          ? "border-white/[0.07] bg-ink-950/90 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+          ? "border-white/[0.08] bg-ink-950/92 shadow-[0_12px_48px_rgba(0,0,0,0.4)] backdrop-blur-2xl"
           : "border-transparent bg-transparent"
       }`}
     >
       <div className="container-g flex h-14 items-center justify-between gap-2.5 sm:h-16 sm:gap-3">
         <div className="flex items-center gap-2">
           <button
-            className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:h-11 sm:w-11 sm:rounded-2xl lg:hidden"
+            className={`${iconBtn} sm:h-11 sm:w-11 lg:hidden`}
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
             aria-expanded={open}
@@ -147,9 +154,9 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
         <div className="flex items-center gap-1.5 sm:gap-2">
           <form
             onSubmit={submitSearch}
-            className="hidden items-center gap-1 rounded-pill border border-white/10 bg-white/[0.03] py-1 pl-3.5 pr-1.5 transition-all focus-within:border-brand/40 focus-within:bg-white/[0.06] focus-within:shadow-brand-glow md:flex"
+            className="hidden items-center gap-1 rounded-pill border border-white/[0.1] bg-white/[0.035] py-1 pl-3.5 pr-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-all focus-within:border-brand/45 focus-within:bg-white/[0.06] focus-within:shadow-brand-glow md:flex"
           >
-            <Icon name="search" className="h-4 w-4 shrink-0 text-brand/80" />
+            <Icon name="search" className="h-4 w-4 shrink-0 text-brand/85" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -166,17 +173,13 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
 
           <Link
             href="/search"
-            className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:rounded-2xl md:hidden"
+            className={`${iconBtn} md:hidden`}
             aria-label="Search"
           >
             <Icon name="search" className="h-5 w-5" />
           </Link>
 
-          <Link
-            href="/cart"
-            className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/35 hover:text-brand sm:rounded-2xl"
-            aria-label="Cart"
-          >
+          <Link href="/cart" className={`relative ${iconBtn}`} aria-label="Cart">
             <Icon name="cart" className="h-5 w-5" />
             {count > 0 && (
               <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-xs font-bold text-ink-950 shadow-brand-glow">
@@ -186,31 +189,17 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
           </Link>
 
           <Link
-            href={auth?.home ?? "/profile"}
-            className={`grid h-10 w-10 place-items-center rounded-xl border bg-white/[0.03] transition-colors sm:rounded-2xl ${
-              pathname?.startsWith("/profile") ||
-              (auth?.kind === "provider" && pathname?.startsWith("/admin"))
-                ? "border-brand/40 text-brand"
-                : "border-white/[0.08] text-white/75 hover:border-brand/35 hover:text-brand"
-            }`}
+            href={accountHref}
+            className={`${iconBtn} ${profileActive ? iconBtnActive : ""}`}
             aria-label={auth ? "Account" : "Sign in"}
             title={auth ? "Account" : "Sign in"}
           >
             <Icon name="user" className="h-5 w-5" />
           </Link>
-          {auth ? (
-            <>
-              <LogoutButton
-                variant="icon"
-                className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/70 transition-colors hover:border-red-400/35 hover:text-red-300 sm:hidden"
-              />
-              <LogoutButton className="hidden rounded-pill border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/55 transition-colors hover:border-red-400/35 hover:text-red-300 sm:block" />
-            </>
-          ) : null}
         </div>
       </div>
 
-      <div className="hidden border-t border-white/[0.04] lg:block">
+      <div className="hidden border-t border-white/[0.05] lg:block">
         <div className="container-g no-scrollbar flex gap-1 overflow-x-auto py-2">
           {catalogGroups.map((c) => {
             const href = hrefForCatalogGroup(c);
@@ -258,7 +247,7 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
                   <Link
                     key={c.slug}
                     href={hrefForCatalogGroup(c)}
-                    className="flex items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3 text-sm font-semibold text-white/85 transition-colors hover:border-brand/30"
+                    className="flex items-center gap-2.5 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-3.5 py-3 text-sm font-semibold text-white/85 transition-colors hover:border-brand/30"
                   >
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-brand/10 text-[10px] font-black text-brand">
                       {String(idx + 1).padStart(2, "0")}
@@ -268,31 +257,18 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
                 ))}
                 <Link
                   href="/services/printing"
-                  className="col-span-2 flex items-center gap-2.5 rounded-2xl border border-brand/40 bg-brand px-3.5 py-3.5 text-sm font-bold text-ink-950"
+                  className="col-span-2 flex items-center gap-2.5 rounded-2xl border border-brand/40 bg-brand px-3.5 py-3.5 text-sm font-bold text-ink-950 shadow-brand-glow"
                 >
                   <Icon name="printer" className="h-4 w-4" />
                   Upload &amp; Print Now
                 </Link>
-                {auth ? (
-                  <div className="col-span-2 flex gap-2">
-                    <Link
-                      href={auth.home}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3 text-sm font-semibold text-white/80"
-                    >
-                      <Icon name="user" className="h-4 w-4 text-brand" />
-                      {auth.kind === "provider" ? "Provider desk" : "Your account"}
-                    </Link>
-                    <LogoutButton className="flex-1 rounded-2xl border border-red-400/20 bg-red-400/10 px-3.5 py-3 text-sm font-semibold text-red-300" />
-                  </div>
-                ) : (
-                  <Link
-                    href="/profile"
-                    className="col-span-2 flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3.5 text-sm font-semibold text-white/80"
-                  >
-                    <Icon name="user" className="h-4 w-4 text-brand" />
-                    Sign in
-                  </Link>
-                )}
+                <Link
+                  href={accountHref}
+                  className="col-span-2 flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3.5 text-sm font-semibold text-white/80 transition-colors hover:border-brand/30 hover:text-white"
+                >
+                  <Icon name="user" className="h-4 w-4 text-brand" />
+                  {auth ? "Your account" : "Sign in"}
+                </Link>
               </div>
             </div>
           </motion.div>
