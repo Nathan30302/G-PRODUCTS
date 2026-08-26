@@ -33,19 +33,24 @@ function diskReport(target: string) {
     const freeGb = freeBytes / 1024 ** 3;
     const totalGb = totalBytes / 1024 ** 3;
     const usedPct =
-      totalBytes > 0 ? Math.round((usedBytes / totalBytes) * 100) : 0;
+      totalGb > 0 ? Math.round((usedBytes / totalBytes) * 100) : 0;
+    // Tiny volumes (<1 GB) are common on Railway starters — treat them as
+    // healthy while mostly empty. Only fail when space is truly exhausted.
+    const criticallyFull = freeGb < 0.05 || usedPct >= 95;
+    const lowHeadroom = freeGb < 1 || (totalGb >= 2 && freeGb < 0.5);
     return {
       path: target,
-      ok: freeGb >= 0.5,
+      ok: !criticallyFull,
       freeGb: Math.round(freeGb * 100) / 100,
       totalGb: Math.round(totalGb * 100) / 100,
       usedPct,
-      warn:
-        freeGb < 1
-          ? "Under 1 GB free — expand the volume soon."
-          : freeGb < 2
-            ? "Under 2 GB free — monitor photo uploads."
-            : null
+      warn: criticallyFull
+        ? "Disk nearly full — expand the Railway volume immediately."
+        : lowHeadroom
+          ? totalGb < 2
+            ? "Volume is under 2 GB — expand to ≥5 GB so uploads and the database stay safe."
+            : "Under 1 GB free — expand the volume soon."
+          : null
     };
   } catch (err) {
     return {
@@ -90,12 +95,12 @@ export async function GET() {
     const disk = mount ? diskReport(mount) : diskReport(process.cwd());
     const persistWarn = persistenceWarning();
     // Disk / volume warnings are for operators only — never flap deploy health.
-    const diskHealthy = !hasVolume || disk.ok !== false;
+    // Railway (and similar) use HTTP status + this `ok` field; keep it catalog-only.
+    const ok = catalogOk;
 
     return NextResponse.json(
       {
-        // HTTP status follows catalog only. Persistence/disk live in the body.
-        ok: catalogOk && diskHealthy,
+        ok,
         products,
         categories,
         services,
@@ -126,10 +131,13 @@ export async function GET() {
           ownerPassword:
             "OWNER_PASSWORD only applies when the owner account is first created. Set OWNER_SYNC_PASSWORD=1 only for intentional recovery.",
           storageAdvice:
-            "Attach a Volume at /data (≥5 GB), set DATABASE_URL=file:/data/gproducts.db, keep AUTH_SECRET stable. Or use managed Postgres. Grow to 10–20 GB before heavy photo uploads."
+            "Attach a Volume at /data (≥5 GB), set DATABASE_URL=file:/data/gproducts.db, keep AUTH_SECRET stable. Or use managed Postgres. Grow to 10–20 GB before heavy photo uploads.",
+          diskNote:
+            disk.warn ??
+            (hasVolume ? "Persistent volume looks healthy." : null)
         }
       },
-      { status: catalogOk ? 200 : 503 }
+      { status: ok ? 200 : 503 }
     );
   } catch (err) {
     const message = err instanceof Error ? err.message : "db error";
