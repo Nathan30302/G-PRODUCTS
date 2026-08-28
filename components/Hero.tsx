@@ -87,6 +87,10 @@ export function Hero() {
             >
               View services
             </Link>
+            {" · "}
+            <Link href="#reviews" className="font-semibold text-brand/85 hover:text-brand">
+              Customer reviews
+            </Link>
           </p>
         </div>
       </div>
