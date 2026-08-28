@@ -33,6 +33,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
+      <StoreReviewsSection />
       <HomeCatalogSections
         hotDeals={hotDeals}
         featured={featured}
@@ -40,7 +41,6 @@ export default async function HomePage() {
       />
       <StoreServicesStrip />
       <WhyGProducts />
-      <StoreReviewsSection />
       <LocationsBand />
     </>
   );

@@ -104,7 +104,40 @@ html.splash-open body {
   overflow: hidden;
 }
 
-/* Launch splash — soft ethereal fluid (G-Products yellow / green / mint) */
+/* Launch splash — shop uses a light electronics canvas; admin stays dark */
+.splash-backdrop-shop-light {
+  background: #fafafa;
+}
+
+.splash-shop-light-base {
+  background:
+    radial-gradient(ellipse 100% 80% at 50% 0%, #ffffff 0%, #fafafa 55%, #f3f4f6 100%),
+    linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.splash-fluid-on-light {
+  opacity: 0.42;
+  filter: blur(88px);
+}
+
+.splash-ethereal-veil-light {
+  background: radial-gradient(
+    ellipse 85% 70% at 50% 45%,
+    transparent 30%,
+    rgba(250, 250, 250, 0.55) 100%
+  );
+}
+
+.splash-tagline-card {
+  background:
+    linear-gradient(145deg, #0a2429 0%, #06181c 48%, #0e2e34 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.splash-tagline-white {
+  text-wrap: balance;
+}
+
 .splash-backdrop {
   background: #06181c;
 }

@@ -9,6 +9,7 @@ export type Review = {
   id: string;
   /** Omit for store-wide reviews shown on the homepage */
   productSlug?: string;
+  productName?: string;
   author: string;
   /** 1–5 */
   rating: number;
@@ -25,6 +26,7 @@ export const reviews: Review[] = [];
 function mapRow(r: {
   id: string;
   productSlug: string;
+  productName: string;
   authorName: string;
   rating: number;
   title: string | null;
@@ -35,6 +37,7 @@ function mapRow(r: {
   return {
     id: r.id,
     productSlug: r.productSlug,
+    productName: r.productName,
     author: r.authorName,
     rating: r.rating,
     title: r.title ?? undefined,

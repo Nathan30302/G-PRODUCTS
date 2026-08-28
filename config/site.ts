@@ -25,8 +25,8 @@ export const siteConfig = {
   name: "G-Products",
   legalName: "G-Products and Services",
   tagline: "Heart Gladdening Products",
-  /** Shown on the launch splash — product categories, not the emotional tagline. */
-  splashLine: "Electronics · Accessories · Stationery · Lusaka",
+  /** Short product-focused line on the launch splash (below the tagline). */
+  splashLine: "New products",
   headline: "Shop genuine electronics & essentials",
   subheading:
     "Phone accessories, chargers, stationery and more — Mobile Money checkout with campus delivery and pickup across Lusaka.",
