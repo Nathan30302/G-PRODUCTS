@@ -15,13 +15,24 @@ const map: Record<StockStatus, { label: string; className: string }> = {
   }
 };
 
-export function StockBadge({ status }: { status: StockStatus }) {
+export function StockBadge({
+  status,
+  size = "default"
+}: {
+  status: StockStatus;
+  size?: "default" | "compact";
+}) {
   const s = map[status];
+  const compact = size === "compact";
   return (
     <span
-      className={`rounded-pill px-2.5 py-1 text-xs font-semibold backdrop-blur ${s.className}`}
+      className={`rounded-pill font-semibold backdrop-blur ${s.className} ${
+        compact
+          ? "px-2 py-0.5 text-[10px] font-medium ring-0"
+          : "px-2.5 py-1 text-xs"
+      }`}
     >
-      {s.label}
+      {compact && status === "in_stock" ? "In stock" : s.label}
     </span>
   );
 }

@@ -60,7 +60,7 @@ export default function CartPage() {
               >
                 <Link
                   href={`/product/${item.slug}`}
-                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-ink-900 sm:h-24 sm:w-24"
+                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[#f4f4f2] sm:h-24 sm:w-24"
                 >
                   {item.image && (
                     <Image
@@ -68,7 +68,7 @@ export default function CartPage() {
                       alt={item.name}
                       fill
                       sizes="96px"
-                      className="object-cover"
+                      className="object-contain p-1.5"
                     />
                   )}
                 </Link>

@@ -1,4 +1,5 @@
 import { Hero } from "@/components/Hero";
+import { HomeSearch } from "@/components/home/HomeSearch";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
 import { LocationsBand } from "@/components/LocationsBand";
@@ -33,12 +34,14 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
-      <StoreReviewsSection />
+      <HomeSearch />
       <HomeCatalogSections
         hotDeals={hotDeals}
         featured={featured}
         newest={newest}
+        allProducts={all}
       />
+      <StoreReviewsSection />
       <StoreServicesStrip />
       <WhyGProducts />
       <LocationsBand />

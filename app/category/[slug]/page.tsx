@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCategoryBySlug, getProductsByCategory } from "@/lib/queries";
 import { CategoryBrowser } from "@/components/CategoryBrowser";
+import { ShopEmptyState } from "@/components/shop/ui";
 import { Icon } from "@/components/Icons";
 import {
   childCategoriesForGroup,
@@ -78,19 +79,17 @@ export default async function CategoryPage({
       ) : null}
 
       {items.length === 0 ? (
-        <div className="mt-10 flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-12 text-center shadow-card">
-          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
-            <Icon name={category.icon} className="h-6 w-6" />
-          </span>
-          <p className="mt-4 font-semibold text-white">
-            No products here yet
-          </p>
-          <p className="mt-1 text-sm text-white/50">
-            Check back soon — we&apos;re restocking this category.
-          </p>
-          <Link href="/search" className="btn-brand mt-5 px-5 py-2.5">
-            Browse the catalogue
-          </Link>
+        <div className="mt-10">
+          <ShopEmptyState
+            icon={category.icon}
+            title="No products here yet"
+            description="Check back soon — we're restocking this category."
+            action={
+              <Link href="/search" className="btn-brand px-5 py-2.5">
+                Browse the catalogue
+              </Link>
+            }
+          />
         </div>
       ) : (
         <CategoryBrowser products={items} />

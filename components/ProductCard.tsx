@@ -6,31 +6,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Product, fromPrice, hasPricedOptions } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 import { SafeImage } from "@/components/SafeImage";
+import { StockBadge } from "@/components/StockBadge";
 import { coverImageForProduct } from "@/lib/product-images";
 import { DealCountdown } from "@/components/DealCountdown";
 import { siteConfig } from "@/config/site";
-
-function StockPill({ status }: { status: Product["stock"] }) {
-  if (status === "sold_out") {
-    return (
-      <span className="shrink-0 text-[10px] font-medium text-white/35">
-        Out of stock
-      </span>
-    );
-  }
-  if (status === "low_stock") {
-    return (
-      <span className="shrink-0 text-[10px] font-medium text-brand">
-        Low stock
-      </span>
-    );
-  }
-  return (
-    <span className="shrink-0 text-[10px] font-medium text-accent/90">
-      In stock
-    </span>
-  );
-}
 
 function peekUrls(product: Product): string[] {
   const seen = new Set<string>();
@@ -154,7 +133,7 @@ export function ProductCard({
                 ? `From ${formatPrice(fromPrice(product))}`
                 : formatPrice(product.price)}
             </span>
-            <StockPill status={product.stock} />
+            <StockBadge status={product.stock} size="compact" />
           </div>
           {product.compareAtPrice &&
           product.compareAtPrice > product.price &&

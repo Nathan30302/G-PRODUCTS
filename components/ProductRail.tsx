@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
+import { ShopSectionHeader } from "@/components/shop/ui";
 import { Icon } from "@/components/Icons";
 
 export function ProductRail({
@@ -14,7 +15,8 @@ export function ProductRail({
   hrefLabel = "View all",
   accent = "brand",
   className = "",
-  embedded = false
+  embedded = false,
+  eyebrow
 }: {
   title: string;
   subtitle?: string;
@@ -23,8 +25,8 @@ export function ProductRail({
   hrefLabel?: string;
   accent?: "brand" | "accent";
   className?: string;
-  /** Skip outer container padding when nested in homepage grid */
   embedded?: boolean;
+  eyebrow?: string;
 }) {
   const scroller = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
@@ -49,38 +51,47 @@ export function ProductRail({
     };
   }, [update, products.length]);
 
-  if (products.length === 0) return null;
+  if (products.length === 0) {
+    return (
+      <section
+        className={`${embedded ? "w-full" : "container-g"} mt-14 sm:mt-16 ${className}`}
+      >
+        <ShopSectionHeader
+          eyebrow={eyebrow ?? (accent === "accent" ? "Deals" : "Shop")}
+          title={title}
+          subtitle={subtitle}
+        />
+        <p className="mt-4 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-5 py-8 text-center text-sm text-white/45">
+          New products coming soon — browse the full shop in the meantime.
+        </p>
+      </section>
+    );
+  }
 
-  const eye = accent === "accent" ? "text-accent" : "text-brand/80";
   const gridItems = products.slice(0, 8);
 
   return (
     <section
-      className={`${embedded ? "w-full" : "container-g"} mt-16 sm:mt-20 lg:mt-24 ${className}`}
+      className={`${embedded ? "w-full" : "container-g"} mt-14 sm:mt-16 lg:mt-20 ${className}`}
     >
-      <div className="mb-5 flex items-end justify-between gap-4 sm:mb-7">
-        <div className="min-w-0">
-          <p className={`text-xs font-semibold uppercase tracking-[0.14em] ${eye}`}>
-            {accent === "accent" ? "Deals" : "Shop"}
-          </p>
-          <h2 className="display heading-section mt-2">{title}</h2>
-          {subtitle ? (
-            <p className="mt-2 max-w-md text-sm text-white/50">{subtitle}</p>
-          ) : null}
-        </div>
-        {href ? (
-          <Link
-            href={href}
-            className="hidden shrink-0 items-center gap-1 rounded-pill border border-white/10 bg-white/[0.02] px-4 py-2 text-sm font-semibold text-white/80 transition-all hover:border-brand/40 hover:text-brand sm:inline-flex"
-          >
-            {hrefLabel}
-            <Icon name="arrow-right" className="h-4 w-4" />
-          </Link>
-        ) : null}
-      </div>
+      <ShopSectionHeader
+        eyebrow={eyebrow ?? (accent === "accent" ? "Deals" : "Shop")}
+        title={title}
+        subtitle={subtitle}
+        action={
+          href ? (
+            <Link
+              href={href}
+              className="hidden shrink-0 items-center gap-1 rounded-pill border border-white/10 bg-white/[0.02] px-4 py-2 text-sm font-semibold text-white/80 transition-all hover:border-brand/40 hover:text-brand sm:inline-flex"
+            >
+              {hrefLabel}
+              <Icon name="arrow-right" className="h-4 w-4" />
+            </Link>
+          ) : undefined
+        }
+      />
 
-      {/* Phone: peeking snap rail */}
-      <div className="relative md:hidden">
+      <div className="relative mt-6 md:hidden">
         <div
           className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-6 bg-gradient-to-r from-ink-950 to-transparent transition-opacity ${
             atStart ? "opacity-0" : "opacity-100"
@@ -106,8 +117,7 @@ export function ProductRail({
         </div>
       </div>
 
-      {/* Tablet & desktop: product grid that reflows */}
-      <div className="hidden md:grid md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+      <div className="mt-6 hidden md:grid md:grid-cols-3 md:gap-4 lg:grid-cols-4">
         {gridItems.map((p, i) => (
           <ProductCard key={p.id} product={p} priority={i < 4} />
         ))}

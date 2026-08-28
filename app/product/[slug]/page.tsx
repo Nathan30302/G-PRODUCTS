@@ -17,6 +17,7 @@ import { relatedProducts } from "@/lib/related-products";
 import { getProductExtras } from "@/lib/product-extras";
 import { ProductReviewsSection } from "@/components/ReviewsSection";
 import { getCustomerSession } from "@/lib/customer-auth";
+import { MobileBuyBar } from "@/components/MobileBuyBar";
 
 export const dynamic = "force-dynamic";
 
@@ -114,6 +115,7 @@ export default async function ProductPage({
             </div>
           </div>
 
+          <MobileBuyBar product={product} />
         </ProductVariantProvider>
 
         <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -171,7 +173,7 @@ export default async function ProductPage({
         />
       )}
 
-      <div className="h-24 md:h-0" />
+      <div className="h-[calc(var(--mobile-nav-offset)+5.5rem)] md:h-0" />
     </div>
   );
 }
