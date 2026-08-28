@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { Icon } from "@/components/Icons";
 import { ShopEmptyState } from "@/components/shop/ui";
 import { filterCatalog, type SortMode, type StockFilter } from "@/lib/search";
+import { pushRecentSearch } from "@/lib/recent-searches";
 import { formatPrice } from "@/lib/format";
 import { coverImageForProduct } from "@/lib/product-images";
 import { SafeImage } from "@/components/SafeImage";
@@ -165,7 +166,11 @@ export function SearchClient({
                 onFocus={() => setFocused(true)}
                 onBlur={() => {
                   // delay so suggestion click registers
-                  window.setTimeout(() => setFocused(false), 160);
+                  window.setTimeout(() => {
+                    setFocused(false);
+                    const trimmed = query.trim();
+                    if (trimmed.length >= 2) pushRecentSearch(trimmed);
+                  }, 160);
                 }}
                 autoFocus={!initialQuery}
                 placeholder="Search — f9-5, 5m extension, union lock…"

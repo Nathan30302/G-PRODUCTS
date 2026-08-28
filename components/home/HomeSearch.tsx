@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@/components/Icons";
+import { getRecentSearches, pushRecentSearch } from "@/lib/recent-searches";
 
 const quickSearches = ["Charger", "Pouch", "Calculator", "Earphones"];
 
@@ -10,20 +11,30 @@ const quickSearches = ["Charger", "Pouch", "Calculator", "Earphones"];
 export function HomeSearch() {
   const router = useRouter();
   const [q, setQ] = useState("");
+  const [recent, setRecent] = useState<string[]>([]);
+
+  useEffect(() => {
+    setRecent(getRecentSearches());
+  }, []);
+
+  function go(term: string) {
+    const trimmed = term.trim();
+    if (!trimmed) {
+      router.push("/search");
+      return;
+    }
+    pushRecentSearch(trimmed);
+    setRecent(getRecentSearches());
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    router.push(
-      q.trim() ? `/search?q=${encodeURIComponent(q.trim())}` : "/search"
-    );
-  }
-
-  function quick(term: string) {
-    router.push(`/search?q=${encodeURIComponent(term)}`);
+    go(q);
   }
 
   return (
-    <section className="container-g -mt-2 sm:mt-0">
+    <section className="container-g -mt-2 sm:mt-0" aria-label="Product search">
       <div className="rounded-[1.75rem] border border-white/[0.08] bg-ink-900/45 p-4 sm:p-5">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/45">
           Find products
@@ -47,11 +58,28 @@ export function HomeSearch() {
           </button>
         </form>
         <div className="mt-3 flex flex-wrap gap-2">
+          {recent.length > 0 ? (
+            <>
+              <span className="w-full text-[10px] font-semibold uppercase tracking-[0.12em] text-white/30">
+                Recent
+              </span>
+              {recent.map((term) => (
+                <button
+                  key={term}
+                  type="button"
+                  onClick={() => go(term)}
+                  className="rounded-pill border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/60 transition-colors hover:border-brand/30 hover:text-brand"
+                >
+                  {term}
+                </button>
+              ))}
+            </>
+          ) : null}
           {quickSearches.map((term) => (
             <button
               key={term}
               type="button"
-              onClick={() => quick(term)}
+              onClick={() => go(term)}
               className="rounded-pill border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/60 transition-colors hover:border-brand/30 hover:text-brand"
             >
               {term}

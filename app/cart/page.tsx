@@ -22,7 +22,7 @@ export default function CartPage() {
           <ShopEmptyState
             icon="cart"
             title="Your cart is empty"
-            description="Add products and they&apos;ll show up here."
+            description="Add products and they'll show up here."
             action={
               <Link href="/search" className="btn-brand">
                 Start shopping

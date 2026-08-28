@@ -14,11 +14,13 @@ export function Hero() {
 
       <div className="container-g relative flex flex-col justify-center py-14 sm:py-16 lg:py-20">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-          <h1 className="hero-rise display max-w-[14ch] text-[2.15rem] leading-[1.1] text-white sm:max-w-none sm:text-[3rem] lg:text-[3.5rem]">
+          <p className="hero-rise eyebrow text-brand/90">{siteConfig.name}</p>
+
+          <h1 className="hero-rise hero-rise-delay-1 display max-w-[14ch] text-[2.15rem] leading-[1.1] text-white sm:max-w-none sm:text-[3rem] lg:text-[3.5rem]">
             {siteConfig.tagline}
           </h1>
 
-          <p className="hero-rise hero-rise-delay-1 mt-5 max-w-2xl text-lg font-medium leading-relaxed text-white/80 sm:text-xl">
+          <p className="hero-rise hero-rise-delay-2 mt-5 max-w-2xl text-lg font-medium leading-relaxed text-white/80 sm:text-xl">
             {siteConfig.splashLine}
           </p>
 

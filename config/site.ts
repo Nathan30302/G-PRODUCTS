@@ -25,7 +25,7 @@ export const siteConfig = {
   name: "G-Products",
   legalName: "G-Products and Services",
   tagline: "Heart Gladdening Products",
-  /** Line under the tagline on splash and hero. */
+/** Primary subline on the homepage hero. */
   splashLine: "Powering your devices and perfecting your prints all in one.",
   headline: "Powering your devices and perfecting your prints all in one.",
   subheading:
@@ -46,7 +46,7 @@ export const siteConfig = {
   /** Full lockup asset (OG / apple icon). In-app UI uses logoMark only. */
   logo: "/brand/g-products-logo.png",
   logoSm: "/brand/g-products-logo-sm.png",
-  /** Original G mark PNG — nav, splash, hero, auth, desk (do not redraw) */
+  /** Original G mark PNG — nav, hero, auth, desk (do not redraw) */
   logoMark: "/brand/g-products-mark.png",
   description:
     "G-Products — genuine electronics, phone accessories and stationery at fair prices in Lusaka. Shop online with Mobile Money, free campus delivery where applicable, and pickup at UNZA, Kalingalinga and Balastone. Printing, key cutting and G-Loans available in-store.",

@@ -8,6 +8,8 @@ import { orderWhatsAppLink } from "@/lib/whatsapp";
 import { Icon } from "@/components/Icons";
 import { siteConfig } from "@/config/site";
 import { ShopEmptyState, ShopStickyBar } from "@/components/shop/ui";
+import { FieldGroup, FieldInput } from "@/components/ui/Field";
+import { Panel } from "@/components/ui/Panel";
 import { applyPromoCode, listPublicPromoHints } from "@/lib/promo-codes";
 
 type PayMethod = "mtn" | "airtel" | "zamtel";
@@ -410,7 +412,7 @@ export function CheckoutClient({
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <section className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-4 sm:p-6">
+          <Panel className="p-4 sm:p-6">
             <div className="flex items-center gap-3">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
                 1
@@ -418,44 +420,44 @@ export function CheckoutClient({
               <h2 className="text-lg font-bold text-white">Delivery details</h2>
             </div>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <label className="block">
-                <span className="text-sm text-white/60">Full name</span>
-                <input
+              <FieldGroup label="Full name" htmlFor="checkout-name">
+                <FieldInput
+                  id="checkout-name"
                   name="name"
                   autoComplete="name"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-3 text-white outline-none transition-colors focus:border-brand"
                   placeholder="Your name"
                 />
-              </label>
-              <label className="block">
-                <span className="text-sm text-white/60">Phone number</span>
-                <input
+              </FieldGroup>
+              <FieldGroup label="Phone number" htmlFor="checkout-phone">
+                <FieldInput
+                  id="checkout-phone"
                   name="phone"
                   autoComplete="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   inputMode="tel"
-                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-3 text-white outline-none transition-colors focus:border-brand"
                   placeholder="09xx xxx xxx"
                 />
-              </label>
-              <label className="block sm:col-span-2">
-                <span className="text-sm text-white/60">
-                  Delivery address / room
-                </span>
-                <input
-                  name="address"
-                  autoComplete="street-address"
-                  value={form.address}
-                  onChange={(e) =>
-                    setForm({ ...form, address: e.target.value })
-                  }
-                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-3 text-white outline-none transition-colors focus:border-brand"
-                  placeholder="e.g. Kalingalinga Block A Room 12"
-                />
-              </label>
+              </FieldGroup>
+              <div className="sm:col-span-2">
+                <FieldGroup
+                  label="Delivery address / room"
+                  htmlFor="checkout-address"
+                >
+                  <FieldInput
+                    id="checkout-address"
+                    name="address"
+                    autoComplete="street-address"
+                    value={form.address}
+                    onChange={(e) =>
+                      setForm({ ...form, address: e.target.value })
+                    }
+                    placeholder="e.g. Kalingalinga Block A Room 12"
+                  />
+                </FieldGroup>
+              </div>
             </div>
             {!prefill?.address ? (
               <p className="mt-4 text-xs text-white/40">
@@ -465,9 +467,9 @@ export function CheckoutClient({
                 to skip typing next time.
               </p>
             ) : null}
-          </section>
+          </Panel>
 
-          <section className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-4 sm:p-6">
+          <Panel className="p-4 sm:p-6">
             <div className="flex items-center gap-3">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
                 2
@@ -510,11 +512,11 @@ export function CheckoutClient({
               Money is configured you&apos;ll get a prompt on your phone;
               otherwise your order is confirmed on WhatsApp.
             </p>
-          </section>
+          </Panel>
         </div>
 
         <div className="h-fit lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
-          <div className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/55 p-4 sm:p-6">
+          <Panel className="p-4 sm:p-6">
             <h2 className="text-lg font-bold text-white">Order summary</h2>
             <div className="mt-4 space-y-2.5">
               {items.map((i) => (
@@ -538,14 +540,14 @@ export function CheckoutClient({
                 Promo code
               </p>
               <div className="mt-2 flex gap-2">
-                <input
+                <FieldInput
                   value={promoInput}
                   onChange={(e) => {
                     setPromoInput(e.target.value.toUpperCase());
                     setPromoError("");
                   }}
                   placeholder="WELCOME50"
-                  className="min-w-0 flex-1 rounded-xl border border-white/10 bg-ink-900 px-3 py-2.5 text-sm uppercase text-white outline-none focus:border-brand"
+                  className="mt-0 min-w-0 flex-1 uppercase"
                 />
                 <button
                   type="button"
@@ -647,7 +649,7 @@ export function CheckoutClient({
               <Icon name="whatsapp" className="h-5 w-5" />
               Order on WhatsApp instead
             </a>
-          </div>
+          </Panel>
         </div>
       </div>
 

@@ -7,17 +7,12 @@ const MARK_SRC = siteConfig.logoMark;
 const sizes = {
   sm: 36,
   md: 44,
-  lg: 112,
-  /**
-   * Splash displays via CSS clamp; pass full 1024 intrinsic so phones
-   * and Retina screens get the original PNG detail (not redesigned).
-   */
-  splash: 1024
+  lg: 112
 } as const;
 
 /**
  * Brand mark only (G + teardrop). Uses the original PNG asset — do not
- * replace with a redrawn SVG. Used in nav, splash, auth, and desk.
+ * replace with a redrawn SVG. Used in nav, auth, and desk.
  */
 export function Logo({
   size = "md",
@@ -31,15 +26,14 @@ export function Logo({
   priority?: boolean;
 }) {
   const px = sizes[size];
-  const isLarge = size === "splash";
-  const mdBox = size === "md" && !isLarge;
+  const mdBox = size === "md";
 
   return (
     <span
-      className={`relative inline-flex shrink-0 ${isLarge ? "splash-mark" : ""} ${
+      className={`relative inline-flex shrink-0 ${
         mdBox ? "h-10 w-10 sm:h-11 sm:w-11" : ""
       } ${className}`}
-      style={isLarge || mdBox ? undefined : { width: px, height: px }}
+      style={mdBox ? undefined : { width: px, height: px }}
     >
       <Image
         src={MARK_SRC}
@@ -49,7 +43,7 @@ export function Logo({
         priority={priority}
         quality={100}
         unoptimized
-        className={`h-full w-full object-contain ${isLarge ? "" : "p-[4%]"}`}
+        className="h-full w-full object-contain p-[4%]"
       />
     </span>
   );
