@@ -14,19 +14,15 @@ export function Hero() {
 
       <div className="container-g relative flex flex-col justify-center py-14 sm:py-16 lg:py-20">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-          <p className="hero-rise text-xs font-semibold uppercase tracking-[0.16em] text-brand sm:text-sm">
-            {siteConfig.splashLine}
-          </p>
-
-          <h1 className="hero-rise hero-rise-delay-1 display mt-5 max-w-[14ch] text-[2.15rem] leading-[1.1] text-white sm:max-w-none sm:text-[3rem] lg:text-[3.5rem]">
+          <h1 className="hero-rise display max-w-[14ch] text-[2.15rem] leading-[1.1] text-white sm:max-w-none sm:text-[3rem] lg:text-[3.5rem]">
             {siteConfig.tagline}
           </h1>
 
-          <p className="hero-rise hero-rise-delay-1 mt-4 text-lg font-semibold text-white/90 sm:text-xl">
-            {siteConfig.headline}
+          <p className="hero-rise hero-rise-delay-1 mt-5 max-w-2xl text-lg font-medium leading-relaxed text-white/80 sm:text-xl">
+            {siteConfig.splashLine}
           </p>
 
-          <p className="hero-rise hero-rise-delay-2 mt-4 max-w-2xl text-sm font-normal leading-relaxed text-white/60 sm:text-base">
+          <p className="hero-rise hero-rise-delay-2 mt-4 max-w-xl text-sm leading-relaxed text-white/50 sm:text-base">
             {siteConfig.subheading}
           </p>
 
