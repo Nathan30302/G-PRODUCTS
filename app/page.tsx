@@ -1,6 +1,6 @@
 import { Hero } from "@/components/Hero";
 import { WhyGProducts } from "@/components/WhyGProducts";
-import { ServicesBand } from "@/components/ServicesBand";
+import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
 import { LocationsBand } from "@/components/LocationsBand";
 import { StoreReviewsSection } from "@/components/ReviewsSection";
 import { HomeCatalogSections } from "@/components/home/HomeLayouts";
@@ -38,7 +38,7 @@ export default async function HomePage() {
         featured={featured}
         newest={newest}
       />
-      <ServicesBand />
+      <StoreServicesStrip />
       <WhyGProducts />
       <StoreReviewsSection />
       <LocationsBand />

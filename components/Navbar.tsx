@@ -119,7 +119,7 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
           >
             Shop
           </Link>
-          {shopGroups.slice(0, 3).map((c) => {
+          {shopGroups.slice(0, 4).map((c) => {
             const href = hrefForCatalogGroup(c);
             const active = pathname === href;
             return (
@@ -137,22 +137,21 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
             );
           })}
           <Link
-            href="/services/printing"
+            href="/search?deals=1"
             className={`rounded-pill px-3 py-2 font-semibold transition-colors xl:px-3.5 ${
-              pathname === "/services/printing"
-                ? "bg-brand text-ink-950 shadow-brand-glow"
-                : "text-brand hover:bg-brand/10"
+              pathname?.includes("deals=1")
+                ? "bg-brand/15 text-brand"
+                : "text-white/65 hover:bg-white/[0.04] hover:text-white"
             }`}
           >
-            Upload &amp; Print
+            Deals
           </Link>
           <Link
             href="/services"
             className={`rounded-pill px-3 py-2 font-semibold transition-colors xl:px-3.5 ${
-              pathname?.startsWith("/services") &&
-              pathname !== "/services/printing"
-                ? "bg-brand/15 text-brand"
-                : "text-white/65 hover:bg-white/[0.04] hover:text-white"
+              pathname?.startsWith("/services")
+                ? "bg-white/[0.06] text-white"
+                : "text-white/55 hover:bg-white/[0.04] hover:text-white"
             }`}
           >
             Services
@@ -209,7 +208,9 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
 
       <div className="hidden border-t border-white/[0.04] lg:block">
         <div className="container-g no-scrollbar flex gap-1 overflow-x-auto py-2">
-          {catalogGroups.map((c) => {
+          {catalogGroups
+            .filter((c) => !c.href)
+            .map((c) => {
             const href = hrefForCatalogGroup(c);
             const active = pathname === href;
             return (
@@ -226,6 +227,16 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
               </Link>
             );
           })}
+          <Link
+            href="/services"
+            className={`shrink-0 rounded-pill px-3.5 py-1.5 text-xs font-semibold transition-all ${
+              pathname?.startsWith("/services")
+                ? "bg-white/[0.08] text-white"
+                : "text-white/40 hover:bg-white/[0.05] hover:text-white"
+            }`}
+          >
+            Services
+          </Link>
         </div>
       </div>
 
@@ -285,7 +296,9 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
                     Departments
                   </p>
                   <div className="grid grid-cols-2 gap-2">
-                    {catalogGroups.map((c) => (
+                    {catalogGroups
+                      .filter((c) => !c.href)
+                      .map((c) => (
                       <Link
                         key={c.slug}
                         href={hrefForCatalogGroup(c)}
@@ -295,11 +308,11 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
                       </Link>
                     ))}
                     <Link
-                      href="/services/printing"
-                      className="col-span-2 flex min-h-12 items-center justify-center gap-2.5 rounded-2xl border border-brand/40 bg-brand px-3.5 py-3.5 text-sm font-bold text-ink-950"
+                      href="/services"
+                      className="col-span-2 flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3 text-sm font-semibold text-white/85"
                     >
-                      <Icon name="printer" className="h-4 w-4" />
-                      Upload &amp; Print Now
+                      <Icon name="services" className="h-4 w-4 text-brand" />
+                      Store services
                     </Link>
                   </div>
                 </div>

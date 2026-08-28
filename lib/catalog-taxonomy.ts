@@ -69,7 +69,7 @@ export const catalogGroups: CatalogGroup[] = [
   {
     slug: "services",
     name: "Services",
-    tagline: "Upload & Print, key cutting & G-Loans",
+    tagline: "Printing, key cutting & G-Loans at our stores",
     icon: "services",
     children: [],
     href: "/services"

@@ -25,14 +25,23 @@ export const siteConfig = {
   name: "G-Products",
   legalName: "G-Products and Services",
   tagline: "Heart Gladdening Products",
-  headline: "Everything You Need. One Trusted Store.",
+  /** Shown on the launch splash — product categories, not the emotional tagline. */
+  splashLine: "Electronics · Accessories · Stationery · Lusaka",
+  headline: "Shop genuine electronics & essentials",
   subheading:
-    "Electronics • Stationery • Printing • Accessories • Essential Services",
+    "Phone accessories, chargers, stationery and more — Mobile Money checkout with campus delivery and pickup across Lusaka.",
+  /** Short chips under the hero headline */
+  heroCategories: [
+    "Chargers",
+    "Phone cases",
+    "Stationery",
+    "Storage",
+    "Audio"
+  ] as const,
   promise: [
-    "Genuine Products",
-    "Fair Prices",
-    "Fast Service",
-    "Excellent Customer Service"
+    "Genuine products",
+    "Fair prices",
+    "Fast delivery"
   ] as const,
   /** Full lockup asset (OG / apple icon). In-app UI uses logoMark only. */
   logo: "/brand/g-products-logo.png",
@@ -40,7 +49,7 @@ export const siteConfig = {
   /** Original G mark PNG — nav, splash, hero, auth, desk (do not redraw) */
   logoMark: "/brand/g-products-mark.png",
   description:
-    "G-Products and Services — genuine electronics, stationery, printing, accessories and essential services at fair prices. Free campus delivery where applicable. Pickup across Lusaka.",
+    "G-Products — genuine electronics, phone accessories and stationery at fair prices in Lusaka. Shop online with Mobile Money, free campus delivery where applicable, and pickup at UNZA, Kalingalinga and Balastone. Printing, key cutting and G-Loans available in-store.",
   whatsappNumber: "260972500209",
   phoneDisplay: "0972 500 209",
   contacts: [

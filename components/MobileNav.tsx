@@ -9,7 +9,6 @@ import type { ShopAuth } from "@/components/SiteChrome";
 const items = [
   { href: "/", label: "Home", icon: "home" as const },
   { href: "/search", label: "Shop", icon: "search" as const },
-  { href: "/services", label: "Services", icon: "services" as const },
   { href: "/cart", label: "Cart", icon: "cart" as const },
   { href: "/profile", label: "Profile", icon: "user" as const }
 ];
@@ -39,7 +38,7 @@ export function MobileNav({ auth = null }: { auth?: ShopAuth }) {
             <Link
               key={it.href}
               href={href}
-              className={`relative flex w-[2.95rem] flex-col items-center gap-0.5 rounded-pill px-0.5 py-1.5 text-[7.5px] font-bold tracking-wide transition-all duration-300 ${
+              className={`relative flex w-[3.1rem] flex-col items-center gap-0.5 rounded-pill px-0.5 py-1.5 text-[9px] font-semibold tracking-normal transition-all duration-300 ${
                 active
                   ? "bg-brand/15 text-brand"
                   : "text-white/40 hover:text-white/70"

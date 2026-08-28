@@ -48,11 +48,12 @@ export function HomeCatalogSections({
       <section className="container-g mt-14 sm:mt-16">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="font-display heading-section font-extrabold tracking-tight text-white">
+            <h2 className="display text-2xl sm:text-3xl">
               Bundles &amp; packs
             </h2>
-            <p className="mt-1 text-sm text-white/50">
-              Student, phone, laptop and printing packs — add a set in one tap.
+            <p className="mt-1 text-sm leading-relaxed text-white/50">
+              Student, phone and laptop essentials — curated product sets in one
+              tap.
             </p>
           </div>
           <Link
@@ -67,7 +68,7 @@ export function HomeCatalogSections({
             "Student Starter Pack",
             "Phone Essentials",
             "Laptop Essentials",
-            "Assignment / Printing"
+            "Campus tech pack"
           ].map((label) => (
             <Link
               key={label}

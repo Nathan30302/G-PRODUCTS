@@ -60,7 +60,7 @@ export function ProductRail({
     >
       <div className="mb-5 flex items-end justify-between gap-4 sm:mb-7">
         <div className="min-w-0">
-          <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${eye}`}>
+          <p className={`text-xs font-semibold uppercase tracking-[0.14em] ${eye}`}>
             {accent === "accent" ? "Deals" : "Shop"}
           </p>
           <h2 className="display heading-section mt-2">{title}</h2>

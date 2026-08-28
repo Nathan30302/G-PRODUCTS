@@ -306,11 +306,10 @@ html.splash-open body {
 }
 
 .splash-heading {
-  /* One line always — shrink on narrow phones rather than wrap */
-  font-size: clamp(1.45rem, 3.4vw + 0.7rem, 2.85rem);
-  letter-spacing: -0.035em;
-  white-space: nowrap;
-  text-wrap: nowrap;
+  font-size: clamp(1.65rem, 4vw + 0.75rem, 2.75rem);
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  text-wrap: balance;
   max-width: 100%;
 }
 
@@ -862,11 +861,11 @@ html.splash-open body {
 
   /* Section eyebrow label */
   .eyebrow {
-    @apply text-[11px] font-bold uppercase tracking-[0.22em] text-brand/80;
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-brand/85;
   }
 
   .display {
-    @apply font-display font-extrabold tracking-tight text-white;
+    @apply font-display font-extrabold tracking-[-0.01em] leading-[1.15] text-white;
   }
 
   .heading-page {

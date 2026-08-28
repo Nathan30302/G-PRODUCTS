@@ -16,19 +16,19 @@ const BRAND = {
 } as const;
 
 const STORAGE = {
-  shop: "gproducts-splash-v13",
-  admin: "gproducts-admin-splash-v13"
+  shop: "gproducts-splash-v14",
+  admin: "gproducts-admin-splash-v14"
 } as const;
 
-/** Hold a bit longer so the live fluid motion reads clearly. */
-const MIN_MS = 5200;
-const MAX_MS = 6000;
-const EXIT_MS = 780;
+/** Hold long enough to read the product line, not a full brand film. */
+const MIN_MS = 2600;
+const MAX_MS = 3200;
+const EXIT_MS = 680;
 
 const COPY = {
   shop: {
     title: siteConfig.name,
-    line: siteConfig.tagline
+    line: siteConfig.splashLine
   },
   admin: {
     title: siteConfig.name,
@@ -50,27 +50,27 @@ function AnimatedBackdrop({ variant }: { variant: "shop" | "admin" }) {
     >
       <div className="splash-ethereal-base absolute inset-0" />
 
-      {/* Primary yellow / green pair — swap lead by variant */}
-      <div
-        className={`splash-fluid splash-fluid-a ${shopLed ? "splash-fluid-yellow" : "splash-fluid-green"}`}
-      />
-      <div
-        className={`splash-fluid splash-fluid-b ${shopLed ? "splash-fluid-green" : "splash-fluid-yellow"}`}
-      />
-      <div className="splash-fluid splash-fluid-c splash-fluid-mint" />
-      <div
-        className={`splash-fluid splash-fluid-d ${shopLed ? "splash-fluid-yellow-soft" : "splash-fluid-green-soft"}`}
-      />
-      <div
-        className={`splash-fluid splash-fluid-e ${shopLed ? "splash-fluid-green-soft" : "splash-fluid-yellow-soft"}`}
-      />
-      {/* Extra crossing ribbons so color mixes read clearly while drifting */}
-      <div
-        className={`splash-fluid splash-fluid-f ${shopLed ? "splash-fluid-yellow" : "splash-fluid-green"}`}
-      />
-      <div
-        className={`splash-fluid splash-fluid-g ${shopLed ? "splash-fluid-green" : "splash-fluid-yellow"}`}
-      />
+      {shopLed ? (
+        <>
+          <div className="splash-fluid splash-fluid-a splash-fluid-yellow" />
+          <div className="splash-fluid splash-fluid-b splash-fluid-yellow-soft" />
+          <div className="splash-fluid splash-fluid-c splash-fluid-yellow-soft" />
+          <div className="splash-fluid splash-fluid-d splash-fluid-yellow" />
+          <div className="splash-fluid splash-fluid-e splash-fluid-yellow-soft" />
+          <div className="splash-fluid splash-fluid-f splash-fluid-yellow" />
+          <div className="splash-fluid splash-fluid-g splash-fluid-yellow-soft" />
+        </>
+      ) : (
+        <>
+          <div className="splash-fluid splash-fluid-a splash-fluid-green" />
+          <div className="splash-fluid splash-fluid-b splash-fluid-yellow" />
+          <div className="splash-fluid splash-fluid-c splash-fluid-mint" />
+          <div className="splash-fluid splash-fluid-d splash-fluid-green-soft" />
+          <div className="splash-fluid splash-fluid-e splash-fluid-yellow-soft" />
+          <div className="splash-fluid splash-fluid-f splash-fluid-green" />
+          <div className="splash-fluid splash-fluid-g splash-fluid-yellow" />
+        </>
+      )}
 
       <div className="splash-ethereal-veil absolute inset-0" aria-hidden />
     </div>
@@ -91,11 +91,11 @@ function StaticBackdrop({ variant }: { variant: "shop" | "admin" }) {
       />
       <div
         className="absolute -left-[15%] top-[8%] h-[min(70vw,22rem)] w-[min(70vw,22rem)] rounded-full opacity-35 blur-[110px]"
-        style={{ backgroundColor: shopLed ? BRAND.green : BRAND.yellow }}
+        style={{ backgroundColor: shopLed ? BRAND.yellowSoft : BRAND.yellow }}
       />
       <div
         className="absolute -right-[10%] bottom-[10%] h-[min(65vw,20rem)] w-[min(65vw,20rem)] rounded-full opacity-30 blur-[100px]"
-        style={{ backgroundColor: BRAND.mint }}
+        style={{ backgroundColor: shopLed ? BRAND.yellowSoft : BRAND.mint }}
       />
       <div
         className="absolute inset-0"
@@ -230,7 +230,7 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
         </div>
 
         <h1
-          className={`display splash-heading mt-6 whitespace-nowrap font-black leading-[0.95] tracking-tight text-white sm:mt-8 ${
+          className={`display splash-heading mt-6 font-extrabold text-white sm:mt-8 ${
             reducedMotion ? "" : "splash-title"
           }`}
         >
@@ -248,7 +248,7 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
         />
 
         <p
-          className={`splash-line mt-3 max-w-[15.5rem] font-medium tracking-[0.02em] text-white/60 sm:mt-3.5 sm:max-w-xs ${
+          className={`splash-line mt-3 max-w-sm font-normal leading-relaxed tracking-normal text-white/60 sm:mt-3.5 sm:max-w-md ${
             reducedMotion ? "" : "splash-tagline"
           }`}
         >

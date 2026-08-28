@@ -11,12 +11,12 @@ export function ShopByCategory() {
       <div className="mb-7">
         <p className="eyebrow">Browse</p>
         <h2 className="display heading-section mt-2">Shop by category</h2>
-        <p className="mt-2 max-w-xl text-sm text-white/50">
-          Clear departments — tap a group to explore products and services.
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/50">
+          Clear departments — tap a group to explore products.
         </p>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {catalogGroups.map((g) => (
+        {catalogGroups.filter((g) => !g.href).map((g) => (
           <Link
             key={g.slug}
             href={hrefForCatalogGroup(g)}

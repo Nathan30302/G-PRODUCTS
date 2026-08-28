@@ -36,8 +36,8 @@ export function WhyGProducts() {
             Why trust G-Products?
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-white/50 sm:text-base">
-            {siteConfig.legalName} — genuine products, fair prices, physical
-            shops, Mobile Money, and service that gets you sorted.
+            Genuine electronics, phone accessories and stationery — fair prices,
+            Mobile Money, and real shops across Lusaka.
           </p>
         </Reveal>
 

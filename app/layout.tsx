@@ -26,13 +26,14 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   keywords: [
     "G-Products",
-    "printing near UNZA",
-    "stationery UNZA",
     "phone accessories Lusaka",
+    "electronics shop Zambia",
     "laptop chargers Lusaka",
     "flash drives Zambia",
-    "key cutting Lusaka",
-    "Mobile Money shop Zambia"
+    "stationery UNZA",
+    "Mobile Money shop Zambia",
+    "printing near UNZA",
+    "key cutting Lusaka"
   ],
   icons: {
     icon: [{ url: siteConfig.logoMark, type: "image/png" }],
