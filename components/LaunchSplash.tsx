@@ -249,14 +249,11 @@ export function LaunchSplash({ variant }: { variant: "shop" | "admin" }) {
             </div>
 
             <p
-              className={`splash-line mt-5 text-lg font-semibold text-brand-dark sm:text-xl ${
+              className={`splash-line mt-5 max-w-sm text-base font-medium leading-relaxed text-ink-700 sm:max-w-md sm:text-lg ${
                 reducedMotion ? "" : "splash-tagline"
               }`}
             >
               {copy.line}
-            </p>
-            <p className="mt-2 text-sm text-ink-600/80">
-              Electronics · phone accessories · stationery
             </p>
           </>
         ) : (
