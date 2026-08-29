@@ -1,5 +1,6 @@
 import { Hero } from "@/components/Hero";
 import { HomeSearch } from "@/components/home/HomeSearch";
+import { ShopSteps } from "@/components/home/ShopSteps";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
 import { LocationsBand } from "@/components/LocationsBand";
@@ -35,6 +36,7 @@ export default async function HomePage() {
     <>
       <Hero />
       <HomeSearch />
+      <ShopSteps />
       <HomeCatalogSections
         hotDeals={hotDeals}
         featured={featured}

@@ -30,6 +30,12 @@ export const siteConfig = {
   headline: "Powering your devices and perfecting your prints all in one.",
   subheading:
     "Shop electronics, accessories and stationery — Mobile Money checkout with campus delivery and pickup across Lusaka.",
+  /** Three-step shop flow shown on the homepage */
+  shopSteps: [
+    { step: "1", title: "Search or browse", hint: "Find chargers, phones, stationery & more" },
+    { step: "2", title: "Add to cart", hint: "Pick what you need — adjust quantities anytime" },
+    { step: "3", title: "Pay & receive", hint: "Mobile Money, then delivery or pickup in Lusaka" }
+  ] as const,
   /** Short chips under the hero headline */
   heroCategories: [
     "Chargers",

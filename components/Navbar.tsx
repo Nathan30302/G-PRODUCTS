@@ -256,32 +256,44 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="Search products…"
-                    className="min-h-11 min-w-0 flex-1 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base text-white outline-none focus:border-brand/40"
+                    className="min-h-11 min-w-0 flex-1 rounded-2xl border border-white/10 bg-ink-950/70 px-4 py-3 text-base text-white outline-none focus:border-brand/40"
+                    aria-label="Search products"
+                    enterKeyHint="search"
                   />
                   <button type="submit" className="btn-brand px-5">
-                    Go
+                    Search
                   </button>
                 </form>
 
+                <Link
+                  href="/search"
+                  className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-brand px-4 py-3 text-base font-bold text-ink-950 shadow-brand-glow"
+                >
+                  <Icon name="search" className="h-5 w-5" />
+                  Browse all products
+                </Link>
+
                 <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { href: "/", label: "Home", icon: "home" as const },
-                    { href: "/search", label: "Shop", icon: "search" as const },
-                    {
-                      href: "/services",
-                      label: "Services",
-                      icon: "services" as const
-                    }
-                  ].map((l) => (
-                    <Link
-                      key={l.href}
-                      href={l.href}
-                      className="flex min-h-11 items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3 text-sm font-semibold text-white/85"
-                    >
-                      <Icon name={l.icon} className="h-4 w-4 text-brand" />
-                      {l.label}
-                    </Link>
-                  ))}
+                  <Link
+                    href="/search?deals=1"
+                    className="flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-brand/25 bg-brand/10 px-3.5 py-3 text-sm font-semibold text-brand"
+                  >
+                    Hot deals
+                  </Link>
+                  <Link
+                    href="/cart"
+                    className="flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3 text-sm font-semibold text-white/85"
+                  >
+                    <Icon name="cart" className="h-4 w-4 text-brand" />
+                    Cart{count > 0 ? ` (${count})` : ""}
+                  </Link>
+                  <Link
+                    href="/"
+                    className="flex min-h-11 items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3 text-sm font-semibold text-white/85"
+                  >
+                    <Icon name="home" className="h-4 w-4 text-brand" />
+                    Home
+                  </Link>
                   <Link
                     href={accountHref}
                     className="flex min-h-11 items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3 text-sm font-semibold text-white/85"
@@ -293,28 +305,34 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
 
                 <div>
                   <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-white/35">
-                    Departments
+                    Shop by category
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     {catalogGroups
                       .filter((c) => !c.href)
                       .map((c) => (
-                      <Link
-                        key={c.slug}
-                        href={hrefForCatalogGroup(c)}
-                        className="flex min-h-11 items-center gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3 py-3 text-sm font-semibold text-white/85"
-                      >
-                        <span className="truncate">{c.name}</span>
-                      </Link>
-                    ))}
-                    <Link
-                      href="/services"
-                      className="col-span-2 flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-3 text-sm font-semibold text-white/85"
-                    >
-                      <Icon name="services" className="h-4 w-4 text-brand" />
-                      Store services
-                    </Link>
+                        <Link
+                          key={c.slug}
+                          href={hrefForCatalogGroup(c)}
+                          className="flex min-h-11 items-center gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3 py-3 text-sm font-semibold text-white/85"
+                        >
+                          <span className="truncate">{c.name}</span>
+                        </Link>
+                      ))}
                   </div>
+                </div>
+
+                <div className="border-t border-white/[0.06] pt-4">
+                  <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/30">
+                    Also at our stores
+                  </p>
+                  <Link
+                    href="/services"
+                    className="flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3 text-sm font-medium text-white/55"
+                  >
+                    <Icon name="services" className="h-4 w-4" />
+                    Printing, keys &amp; G-Loans
+                  </Link>
                 </div>
               </div>
             </div>

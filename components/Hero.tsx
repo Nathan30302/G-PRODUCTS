@@ -14,28 +14,24 @@ export function Hero() {
 
       <div className="container-g relative flex flex-col justify-center py-10 sm:py-14 lg:py-20">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-          <p className="eyebrow text-brand/90">{siteConfig.name}</p>
+          <p className="eyebrow text-brand/90">G-Products · Online shop</p>
 
           <h1 className="display mt-2 max-w-[14ch] text-[2.15rem] leading-[1.1] text-white sm:mt-3 sm:max-w-none sm:text-[3rem] lg:text-[3.5rem]">
             {siteConfig.tagline}
           </h1>
 
-          <p className="mt-4 max-w-2xl text-lg font-medium leading-relaxed text-white/80 sm:mt-5 sm:text-xl">
-            {siteConfig.splashLine}
-          </p>
-
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/50 sm:mt-4 sm:text-base">
+          <p className="mt-4 max-w-2xl text-lg font-medium leading-relaxed text-white/85 sm:mt-5 sm:text-xl">
             {siteConfig.subheading}
           </p>
 
-          <div className="hero-rise mt-6 flex w-full max-w-xl flex-col gap-2 sm:max-w-2xl">
-            <div className="rounded-[1.75rem] border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-md">
+          <div className="mt-6 flex w-full max-w-xl flex-col gap-2 sm:max-w-2xl">
+            <div className="rounded-[1.75rem] border border-white/10 bg-ink-900/60 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Link
                   href="/search"
                   className="btn-brand flex min-h-[3.25rem] flex-1 items-center justify-center gap-2 px-6 py-4 text-base font-bold sm:min-h-[3.5rem]"
                 >
-                  Shop products
+                  Browse products
                   <Icon name="arrow-right" className="h-5 w-5" />
                 </Link>
                 <a
@@ -44,23 +40,23 @@ export function Hero() {
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-[3.25rem] flex-1 items-center justify-center gap-2.5 rounded-pill border border-accent/35 bg-accent/10 px-6 py-4 text-base font-bold text-white transition-all duration-200 ease-out-expo hover:-translate-y-0.5 hover:border-accent/55 hover:bg-accent/20 sm:min-h-[3.5rem]"
+                  className="inline-flex min-h-[3.25rem] flex-1 items-center justify-center gap-2.5 rounded-pill border border-accent/35 bg-accent/10 px-6 py-4 text-base font-bold text-white transition-colors hover:border-accent/55 hover:bg-accent/20 sm:min-h-[3.5rem]"
                 >
                   <Icon name="whatsapp" className="h-5 w-5 text-accent" />
-                  Order on WhatsApp
+                  WhatsApp order
                 </a>
               </div>
             </div>
-            <p className="text-center text-[11px] leading-relaxed text-white/35 sm:text-xs">
-              Mobile Money checkout · campus delivery · pickup in Lusaka
+            <p className="text-center text-[11px] leading-relaxed text-white/40 sm:text-xs">
+              MTN · Airtel · Zamtel Money · campus delivery · store pickup
             </p>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-5 hidden flex-wrap items-center justify-center gap-2 sm:mt-6 sm:flex">
             {siteConfig.heroCategories.map((label) => (
               <Link
                 key={label}
-                href="/search"
+                href={`/search?q=${encodeURIComponent(label)}`}
                 className="rounded-pill border border-white/12 bg-white/[0.05] px-3.5 py-2 text-xs font-medium text-white/75 transition-colors hover:border-brand/40 hover:bg-brand/10 hover:text-brand sm:text-sm"
               >
                 {label}
@@ -68,26 +64,13 @@ export function Hero() {
             ))}
           </div>
 
-          <ul className="mt-5 hidden flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-white/45 sm:flex sm:text-sm">
-            {siteConfig.promise.map((p) => (
-              <li key={p} className="flex items-center gap-1.5">
-                <Icon name="check" className="h-3.5 w-3.5 shrink-0 text-accent" />
-                {p}
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-5 text-xs leading-relaxed text-white/35 sm:mt-6">
-            Printing, key cutting &amp; G-Loans at our stores.{" "}
+          <p className="mt-5 hidden text-xs leading-relaxed text-white/35 sm:block">
+            Printing, key cutting &amp; G-Loans available in-store.{" "}
             <Link
               href="/services"
               className="font-semibold text-brand/85 hover:text-brand"
             >
               View services
-            </Link>
-            {" · "}
-            <Link href="#reviews" className="font-semibold text-brand/85 hover:text-brand">
-              Customer reviews
             </Link>
           </p>
         </div>

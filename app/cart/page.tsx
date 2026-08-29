@@ -149,7 +149,7 @@ export default function CartPage() {
               <span>{formatPrice(total)}</span>
             </div>
             <Link href="/checkout" className="btn-brand mt-6 w-full">
-              Checkout
+              Proceed to checkout
               <Icon name="arrow-right" className="h-4 w-4" />
             </Link>
             <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-white/40">
@@ -173,7 +173,7 @@ export default function CartPage() {
               href="/checkout"
               className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-transform active:scale-[0.98]"
             >
-              Checkout
+              Checkout now
               <Icon name="arrow-right" className="h-4 w-4" />
             </Link>
           </div>

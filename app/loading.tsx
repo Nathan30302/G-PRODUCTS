@@ -15,6 +15,13 @@ export default function HomeLoading() {
       <div className="container-g -mt-1 sm:mt-0">
         <Skeleton className="h-[7.5rem] w-full rounded-[1.75rem] sm:h-[8rem]" />
       </div>
+      <div className="container-g mt-6 sm:mt-8">
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Skeleton className="h-20 rounded-2xl" />
+          <Skeleton className="hidden h-20 rounded-2xl sm:block" />
+          <Skeleton className="hidden h-20 rounded-2xl sm:block" />
+        </div>
+      </div>
       <div className="container-g mt-10 sm:mt-12">
         <Skeleton className="mb-6 h-7 w-36" />
         <ProductGridSkeleton count={4} />

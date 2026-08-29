@@ -128,12 +128,12 @@ export function SearchClient({
       <div className="container-g relative pt-8 sm:pt-10">
         <header className="max-w-2xl">
           <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand/90">
-            Catalogue
+            Product shop
           </p>
-          <h1 className="display heading-page mt-1.5">Shop</h1>
+          <h1 className="display heading-page mt-1.5">Browse &amp; search</h1>
           <p className="mt-2 text-sm leading-relaxed text-white/50">
-            Search {products.length} products — stationery, chargers, audio and
-            more.
+            {products.length} products — type to search, tap a category, or scroll
+            to browse everything.
             <span className="hidden sm:inline">
               {" "}
               Press{" "}
