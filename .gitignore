@@ -40,3 +40,5 @@ next-env.d.ts
 /public/uploads/services/*
 !/public/uploads/services/.gitkeep
 .uploads
+prisma/dev.db-shm
+prisma/dev.db-wal
