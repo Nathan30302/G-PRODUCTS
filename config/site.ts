@@ -25,7 +25,7 @@ export const siteConfig = {
   name: "G-Products",
   legalName: "G-Products and Services",
   tagline: "Heart Gladdening Products",
-/** Primary subline on the homepage hero. */
+  /** Primary subline on the homepage hero (replaces the old splash card copy). */
   splashLine: "Powering your devices and perfecting your prints all in one.",
   headline: "Powering your devices and perfecting your prints all in one.",
   subheading:

@@ -12,44 +12,23 @@ export function Hero() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_90%_20%,rgba(34,201,138,0.06),transparent_50%)]" />
       </div>
 
-      <div className="container-g relative flex flex-col justify-center py-14 sm:py-16 lg:py-20">
+      <div className="container-g relative flex flex-col justify-center py-10 sm:py-14 lg:py-20">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-          <p className="hero-rise eyebrow text-brand/90">{siteConfig.name}</p>
+          <p className="eyebrow text-brand/90">{siteConfig.name}</p>
 
-          <h1 className="hero-rise hero-rise-delay-1 display max-w-[14ch] text-[2.15rem] leading-[1.1] text-white sm:max-w-none sm:text-[3rem] lg:text-[3.5rem]">
+          <h1 className="display mt-2 max-w-[14ch] text-[2.15rem] leading-[1.1] text-white sm:mt-3 sm:max-w-none sm:text-[3rem] lg:text-[3.5rem]">
             {siteConfig.tagline}
           </h1>
 
-          <p className="hero-rise hero-rise-delay-2 mt-5 max-w-2xl text-lg font-medium leading-relaxed text-white/80 sm:text-xl">
+          <p className="mt-4 max-w-2xl text-lg font-medium leading-relaxed text-white/80 sm:mt-5 sm:text-xl">
             {siteConfig.splashLine}
           </p>
 
-          <p className="hero-rise hero-rise-delay-2 mt-4 max-w-xl text-sm leading-relaxed text-white/50 sm:text-base">
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/50 sm:mt-4 sm:text-base">
             {siteConfig.subheading}
           </p>
 
-          <div className="hero-rise hero-rise-delay-2 mt-6 flex flex-wrap items-center justify-center gap-2">
-            {siteConfig.heroCategories.map((label) => (
-              <Link
-                key={label}
-                href="/search"
-                className="rounded-pill border border-white/12 bg-white/[0.05] px-3.5 py-2 text-xs font-medium text-white/75 transition-colors hover:border-brand/40 hover:bg-brand/10 hover:text-brand sm:text-sm"
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          <ul className="hero-rise hero-rise-delay-2 mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-white/45 sm:text-sm">
-            {siteConfig.promise.map((p) => (
-              <li key={p} className="flex items-center gap-1.5">
-                <Icon name="check" className="h-3.5 w-3.5 shrink-0 text-accent" />
-                {p}
-              </li>
-            ))}
-          </ul>
-
-          <div className="hero-rise hero-rise-delay-3 mt-10 w-full max-w-xl sm:max-w-2xl">
+          <div className="hero-rise mt-6 flex w-full max-w-xl flex-col gap-2 sm:max-w-2xl">
             <div className="rounded-[1.75rem] border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-md">
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Link
@@ -72,12 +51,33 @@ export function Hero() {
                 </a>
               </div>
             </div>
-            <p className="mt-3 text-center text-[11px] leading-relaxed text-white/35 sm:text-xs">
+            <p className="text-center text-[11px] leading-relaxed text-white/35 sm:text-xs">
               Mobile Money checkout · campus delivery · pickup in Lusaka
             </p>
           </div>
 
-          <p className="hero-rise hero-rise-delay-3 mt-6 text-xs leading-relaxed text-white/35">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            {siteConfig.heroCategories.map((label) => (
+              <Link
+                key={label}
+                href="/search"
+                className="rounded-pill border border-white/12 bg-white/[0.05] px-3.5 py-2 text-xs font-medium text-white/75 transition-colors hover:border-brand/40 hover:bg-brand/10 hover:text-brand sm:text-sm"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+
+          <ul className="mt-5 hidden flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-white/45 sm:flex sm:text-sm">
+            {siteConfig.promise.map((p) => (
+              <li key={p} className="flex items-center gap-1.5">
+                <Icon name="check" className="h-3.5 w-3.5 shrink-0 text-accent" />
+                {p}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-5 text-xs leading-relaxed text-white/35 sm:mt-6">
             Printing, key cutting &amp; G-Loans at our stores.{" "}
             <Link
               href="/services"
