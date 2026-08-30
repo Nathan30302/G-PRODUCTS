@@ -13,11 +13,11 @@ WORKDIR /app
 RUN apt-get update -y && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Dummy URL is enough for `prisma generate` + Next compile (pages are force-dynamic)
+# Dummy local DB for compile — pages may pre-render at build; runtime uses volume URL.
 ENV DATABASE_URL="file:./prisma/build.db"
 ENV AUTH_SECRET="build-time-only"
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npx prisma generate && npm run build
+RUN npx prisma db push --skip-generate && npx prisma generate && npm run build
 
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app

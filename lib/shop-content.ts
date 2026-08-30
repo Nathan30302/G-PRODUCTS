@@ -21,19 +21,29 @@ export type LocationWithPhotos = (typeof siteConfig.locations)[number] & {
 };
 
 export async function getLocationsWithPhotos(): Promise<LocationWithPhotos[]> {
-  const media = await prisma.shopLocationMedia.findMany();
-  const byId = new Map(
-    media.map((m) => [m.locationId, parsePhotoUrls(m.photoUrls)])
-  );
-  return siteConfig.locations.map((loc) => ({
-    ...loc,
-    photoUrls: byId.get(loc.id) ?? []
-  }));
+  try {
+    const media = await prisma.shopLocationMedia.findMany();
+    const byId = new Map(
+      media.map((m) => [m.locationId, parsePhotoUrls(m.photoUrls)])
+    );
+    return siteConfig.locations.map((loc) => ({
+      ...loc,
+      photoUrls: byId.get(loc.id) ?? []
+    }));
+  } catch (err) {
+    console.error("[shop-content] getLocationsWithPhotos failed:", err);
+    return siteConfig.locations.map((loc) => ({ ...loc, photoUrls: [] }));
+  }
 }
 
 export async function getPublishedTeamMembers() {
-  return prisma.shopTeamMember.findMany({
-    where: { published: true },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }]
-  });
+  try {
+    return await prisma.shopTeamMember.findMany({
+      where: { published: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }]
+    });
+  } catch (err) {
+    console.error("[shop-content] getPublishedTeamMembers failed:", err);
+    return [];
+  }
 }
