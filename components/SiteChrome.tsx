@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -14,13 +14,29 @@ export type ShopAuth = {
 
 export function SiteChrome({
   children,
-  auth
+  auth: initialAuth = null
 }: {
   children: ReactNode;
-  auth: ShopAuth;
+  auth?: ShopAuth;
 }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const [auth, setAuth] = useState<ShopAuth>(initialAuth);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/auth/me", { credentials: "same-origin" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!cancelled && (data === null || data?.kind === "customer")) {
+          setAuth(data);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   if (isAdmin) return <>{children}</>;
 

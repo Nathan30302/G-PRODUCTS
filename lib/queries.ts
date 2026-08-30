@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db";
 import {
   Category,
@@ -18,6 +19,8 @@ type DbProductWithRelations = DbProduct & {
   category: DbCategory;
   variants: DbVariant[];
 };
+
+const CATALOG_REVALIDATE = 60;
 
 function toVariants(rows: DbVariant[]): ProductVariant[] {
   return rows
@@ -79,23 +82,26 @@ const withRelations = {
   variants: true
 } as const;
 
-export async function getAllCategories(): Promise<Category[]> {
-  try {
-    const cats = await prisma.category.findMany({
-      orderBy: { sortOrder: "asc" }
-    });
-    return cats.map(toCategory);
-  } catch (err) {
-    console.error("[queries] getAllCategories failed:", err);
-    return [];
-  }
-}
+export const getAllCategories = unstable_cache(
+  async (): Promise<Category[]> => {
+    try {
+      const cats = await prisma.category.findMany({
+        orderBy: { sortOrder: "asc" }
+      });
+      return cats.map(toCategory);
+    } catch (err) {
+      console.error("[queries] getAllCategories failed:", err);
+      return [];
+    }
+  },
+  ["catalog-categories"],
+  { revalidate: CATALOG_REVALIDATE, tags: ["catalog"] }
+);
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   try {
     const { resolveShopCategory } = await import("@/lib/catalog-taxonomy");
     const virtual = resolveShopCategory(slug);
-    // Prefer live DB leaf category when present (admin may rename taglines)
     const c = await prisma.category.findUnique({ where: { slug } });
     if (c) return toCategory(c);
     return virtual;
@@ -105,18 +111,22 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
   }
 }
 
-export async function getAllProducts(): Promise<Product[]> {
-  try {
-    const items = await prisma.product.findMany({
-      include: withRelations,
-      orderBy: { createdAt: "desc" }
-    });
-    return items.map(toProduct);
-  } catch (err) {
-    console.error("[queries] getAllProducts failed:", err);
-    return [];
-  }
-}
+export const getAllProducts = unstable_cache(
+  async (): Promise<Product[]> => {
+    try {
+      const items = await prisma.product.findMany({
+        include: withRelations,
+        orderBy: { createdAt: "desc" }
+      });
+      return items.map(toProduct);
+    } catch (err) {
+      console.error("[queries] getAllProducts failed:", err);
+      return [];
+    }
+  },
+  ["catalog-products"],
+  { revalidate: CATALOG_REVALIDATE, tags: ["catalog"] }
+);
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
@@ -150,32 +160,16 @@ export async function getProductsByCategory(
   }
 }
 
+/** Derived from cached catalogue — avoids extra DB round-trips on the homepage. */
 export async function getFeatured(): Promise<Product[]> {
-  try {
-    const items = await prisma.product.findMany({
-      where: { featured: true },
-      include: withRelations,
-      orderBy: { createdAt: "desc" }
-    });
-    return items.map(toProduct);
-  } catch (err) {
-    console.error("[queries] getFeatured failed:", err);
-    return [];
-  }
+  const all = await getAllProducts();
+  return all.filter((p) => p.featured);
 }
 
+/** Derived from cached catalogue — avoids extra DB round-trips on the homepage. */
 export async function getHotDeals(): Promise<Product[]> {
-  try {
-    const items = await prisma.product.findMany({
-      where: { hotDeal: true },
-      include: withRelations,
-      orderBy: { createdAt: "desc" }
-    });
-    return items.map(toProduct);
-  } catch (err) {
-    console.error("[queries] getHotDeals failed:", err);
-    return [];
-  }
+  const all = await getAllProducts();
+  return all.filter((p) => p.hotDeal);
 }
 
 export { stockFromQuantity };

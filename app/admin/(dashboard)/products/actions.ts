@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { prisma } from "@/lib/db";
 import { requireUser, requireOwner } from "@/lib/auth";
@@ -241,6 +241,7 @@ export async function saveProduct(
     revalidatePath("/");
     revalidatePath("/search");
     revalidatePath(`/category/${categorySlug}`);
+    revalidateTag("catalog");
 
     const saved = await prisma.product.findUnique({
       where: { id: productId },
@@ -271,5 +272,6 @@ export async function deleteProduct(formData: FormData): Promise<void> {
   }
   revalidatePath("/admin/products");
   revalidatePath("/");
+  revalidateTag("catalog");
   redirect("/admin/products");
 }

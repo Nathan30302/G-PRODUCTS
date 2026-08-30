@@ -8,7 +8,6 @@ import { SiteChrome } from "@/components/SiteChrome";
 import { AbandonedCartNudge } from "@/components/AbandonedCartNudge";
 import { siteConfig } from "@/config/site";
 import { siteUrl } from "@/lib/site-url";
-import { getPublicAuth } from "@/lib/public-auth";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -65,26 +64,17 @@ export const viewport: Viewport = {
   viewportFit: "cover"
 };
 
-export const dynamic = "force-dynamic";
-
-export default async function RootLayout({
+export default function RootLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
-  let auth = null;
-  try {
-    auth = await getPublicAuth();
-  } catch (err) {
-    console.error("[layout] auth read failed:", err);
-  }
-
   return (
     <html lang="en" className={`${GeistSans.variable} ${syne.variable}`}>
       <body className="min-h-dvh bg-ink-950 font-sans text-white antialiased">
         <CartProvider>
           <ToastProvider>
-            <SiteChrome auth={auth}>{children}</SiteChrome>
+            <SiteChrome>{children}</SiteChrome>
             <AbandonedCartNudge />
           </ToastProvider>
         </CartProvider>
