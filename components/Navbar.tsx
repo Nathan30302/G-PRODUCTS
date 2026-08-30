@@ -1,22 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/cart";
 import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
 import { Icon } from "@/components/Icons";
 import { Logo } from "@/components/Logo";
+import { ShopSearchBar } from "@/components/shop/ShopSearchBar";
 import type { ShopAuth } from "@/components/SiteChrome";
 
 export function Navbar({ auth = null }: { auth?: ShopAuth }) {
   const { count } = useCart();
-  const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [q, setQ] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -37,14 +36,6 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
       document.body.style.overflow = prev;
     };
   }, [open]);
-
-  function submitSearch(e: React.FormEvent) {
-    e.preventDefault();
-    setOpen(false);
-    router.push(
-      q.trim() ? `/search?q=${encodeURIComponent(q.trim())}` : "/search"
-    );
-  }
 
   const shopGroups = catalogGroups.filter((g) => !g.href);
   const accountHref = auth?.home ?? "/profile";
@@ -159,29 +150,6 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
         </nav>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <form
-            onSubmit={submitSearch}
-            className="hidden items-center gap-1 rounded-pill border border-white/10 bg-white/[0.03] py-1 pl-3.5 pr-1.5 transition-all focus-within:border-brand/40 focus-within:bg-white/[0.06] focus-within:shadow-brand-glow md:flex"
-          >
-            <Icon name="search" className="h-4 w-4 shrink-0 text-brand/80" />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search products…"
-              className="w-32 bg-transparent px-2 py-2 text-sm text-white outline-none placeholder:text-white/35 lg:w-40 xl:w-52"
-            />
-            <button
-              type="submit"
-              className="rounded-pill bg-brand/15 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-brand transition-colors hover:bg-brand hover:text-ink-950"
-            >
-              Go
-            </button>
-          </form>
-
-          <Link href="/search" className={`${iconBtn} md:hidden`} aria-label="Search">
-            <Icon name="search" className="h-5 w-5" />
-          </Link>
-
           <Link href="/cart" className={`relative ${iconBtn}`} aria-label="Cart">
             <Icon name="cart" className="h-5 w-5" />
             {count > 0 && (
@@ -204,6 +172,10 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
             <Icon name="user" className="h-5 w-5" />
           </Link>
         </div>
+      </div>
+
+      <div className="container-g pb-3">
+        <ShopSearchBar />
       </div>
 
       <div className="hidden border-t border-white/[0.04] lg:block">
@@ -251,20 +223,6 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
           >
             <div className="max-h-[min(70dvh,calc(100dvh-var(--header-h)-var(--mobile-nav-offset)))] overflow-y-auto overscroll-contain">
               <div className="container-g space-y-5 py-5 pb-6">
-                <form onSubmit={submitSearch} className="flex gap-2">
-                  <input
-                    value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    placeholder="Search products…"
-                    className="min-h-11 min-w-0 flex-1 rounded-2xl border border-white/10 bg-ink-950/70 px-4 py-3 text-base text-white outline-none focus:border-brand/40"
-                    aria-label="Search products"
-                    enterKeyHint="search"
-                  />
-                  <button type="submit" className="btn-brand px-5">
-                    Search
-                  </button>
-                </form>
-
                 <Link
                   href="/search"
                   className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-brand px-4 py-3 text-base font-bold text-ink-950 shadow-brand-glow"

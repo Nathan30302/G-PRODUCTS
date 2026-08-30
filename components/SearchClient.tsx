@@ -461,7 +461,7 @@ export function SearchClient({
                 </div>
                 <div className="product-grid">
                   {items.map((p) => (
-                    <ProductCard key={p.id} product={p} />
+                    <ProductCard key={p.id} product={p} compact />
                   ))}
                 </div>
               </section>
@@ -470,7 +470,7 @@ export function SearchClient({
         ) : (
           <div className="mt-5 product-grid">
             {results.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} compact />
             ))}
           </div>
         )}

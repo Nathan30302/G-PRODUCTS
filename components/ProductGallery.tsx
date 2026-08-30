@@ -126,7 +126,7 @@ export function ProductGallery({
         <div className="min-w-0 flex-1">
           <div
             ref={frameRef}
-            className="group relative aspect-square touch-pan-y overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-[#f4f4f2] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_24px_48px_-28px_rgba(0,0,0,0.55)]"
+            className="relative aspect-[4/3] max-h-[min(42vw,13.5rem)] touch-pan-y overflow-hidden rounded-[1.25rem] border border-white/[0.08] bg-[#f4f4f2] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_16px_40px_-24px_rgba(0,0,0,0.5)] sm:max-h-[16rem] lg:max-h-[min(22rem,42vh)] lg:rounded-[1.5rem]"
           >
             {/* Soft studio wash */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,#ffffff_0%,#ececeb_55%,#e2e2df_100%)]" />

@@ -138,7 +138,7 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
       ) : (
         <div className="mt-5 product-grid">
           {results.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <ProductCard key={p.id} product={p} compact />
           ))}
         </div>
       )}

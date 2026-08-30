@@ -3,7 +3,7 @@ import { ProductRail } from "@/components/ProductRail";
 import { ShopByCategory } from "@/components/home/ShopByCategory";
 import { HomeBundlesSection } from "@/components/home/HomeBundlesSection";
 
-/** Homepage product discovery — search lives directly under the hero. */
+/** Homepage product discovery — search in header, rails below. */
 export function HomeCatalogSections({
   hotDeals,
   featured,
@@ -18,34 +18,34 @@ export function HomeCatalogSections({
   return (
     <>
       <ProductRail
-        title="Hot deals"
-        subtitle="Real savings — compare the old price and see what you save."
+        title="Featured deals of the week"
+        subtitle="Real savings on chargers, accessories and essentials."
         products={hotDeals}
         href="/search?deals=1"
-        hrefLabel="View all deals"
+        hrefLabel="All deals"
         accent="accent"
-        eyebrow="Deals"
-        className="!mt-10 sm:!mt-12"
+        eyebrow="🔥 Hot deals"
+        className="!mt-6 sm:!mt-8"
+      />
+
+      <ProductRail
+        title="Tech you'll love at prices you'll love more"
+        subtitle="Popular picks from G-Products."
+        products={featured}
+        href="/search"
+        hrefLabel="Shop all"
+        eyebrow="Handpicked for you"
       />
 
       <ShopByCategory />
 
       <ProductRail
-        title="Best sellers"
-        subtitle="Popular picks from G-Products."
-        products={featured}
-        href="/search"
-        hrefLabel="View all"
-        eyebrow="Popular"
-      />
-
-      <ProductRail
-        title="New arrivals"
+        title="New this week"
         subtitle="Recently added to the catalogue."
         products={newest}
         href="/search"
         hrefLabel="View all"
-        eyebrow="New"
+        eyebrow="Just in"
       />
 
       <HomeBundlesSection products={allProducts} />

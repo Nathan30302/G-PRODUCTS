@@ -1,6 +1,5 @@
 import { Hero } from "@/components/Hero";
-import { HomeSearch } from "@/components/home/HomeSearch";
-import { ShopSteps } from "@/components/home/ShopSteps";
+import { CategoryPills } from "@/components/home/CategoryPills";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
 import { LocationsBand } from "@/components/LocationsBand";
@@ -30,13 +29,12 @@ export default async function HomePage() {
     getAllProducts()
   ]);
 
-  const newest = all.slice(0, 8);
+  const newest = all.slice(0, 12);
 
   return (
     <>
       <Hero />
-      <HomeSearch />
-      <ShopSteps />
+      <CategoryPills />
       <HomeCatalogSections
         hotDeals={hotDeals}
         featured={featured}
