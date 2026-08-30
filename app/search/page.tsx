@@ -4,7 +4,7 @@ import { SearchClient } from "@/components/SearchClient";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Search products",

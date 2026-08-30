@@ -5,14 +5,12 @@ import { LocationsBand } from "@/components/LocationsBand";
 import { StoreReviewsSection } from "@/components/ReviewsSection";
 import { HomeCatalogSections } from "@/components/home/HomeLayouts";
 import {
-  getAllProducts,
-  getFeatured,
-  getHotDeals
+  getAllProducts
 } from "@/lib/queries";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: {
@@ -21,14 +19,11 @@ export const metadata: Metadata = {
   description: `${siteConfig.headline} ${siteConfig.subheading}. ${siteConfig.description}`
 };
 
-/** Opens straight into the shop — search in header, products below. No splash or hero gate. */
+/** Opens straight into the shop — one cached catalogue fetch powers all rails. */
 export default async function HomePage() {
-  const [hotDeals, featured, all] = await Promise.all([
-    getHotDeals(),
-    getFeatured(),
-    getAllProducts()
-  ]);
-
+  const all = await getAllProducts();
+  const hotDeals = all.filter((p) => p.hotDeal);
+  const featured = all.filter((p) => p.featured);
   const newest = all.slice(0, 12);
 
   return (

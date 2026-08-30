@@ -16,10 +16,9 @@ import { Icon } from "@/components/Icons";
 import { relatedProducts } from "@/lib/related-products";
 import { getProductExtras } from "@/lib/product-extras";
 import { ProductReviewsSection } from "@/components/ReviewsSection";
-import { getCustomerSession } from "@/lib/customer-auth";
 import { MobileBuyBar } from "@/components/MobileBuyBar";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateMetadata({
   params
@@ -62,11 +61,10 @@ export default async function ProductPage({
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const [category, categoryProducts, allProducts, session] = await Promise.all([
+  const [category, categoryProducts, allProducts] = await Promise.all([
     getCategoryBySlug(product.categorySlug),
     getProductsByCategory(product.categorySlug),
-    getAllProducts(),
-    getCustomerSession()
+    getAllProducts()
   ]);
   const off = discountPercent(product.price, product.compareAtPrice);
   const saved = product.compareAtPrice
@@ -160,7 +158,6 @@ export default async function ProductPage({
         <ProductReviewsSection
           productSlug={product.slug}
           productName={product.name}
-          defaultAuthorName={session?.name ?? ""}
         />
       </div>
 
