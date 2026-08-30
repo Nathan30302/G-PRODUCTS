@@ -25,7 +25,7 @@ export function HomeCatalogSections({
         hrefLabel="All deals"
         accent="accent"
         eyebrow="🔥 Hot deals"
-        className="!mt-6 sm:!mt-8"
+        className="!mt-4 sm:!mt-5"
       />
 
       <ProductRail

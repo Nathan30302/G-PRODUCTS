@@ -17,7 +17,7 @@ export function CategoryPills() {
   const groups = catalogGroups.filter((g) => !g.href).slice(0, 6);
 
   return (
-    <section className="container-g mt-4 sm:mt-5" aria-label="Browse categories">
+    <section className="container-g pt-3 sm:pt-4" aria-label="Browse categories">
       <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
         {quick.map((item) => {
           const active = pathname === item.href;

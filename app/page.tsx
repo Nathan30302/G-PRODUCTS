@@ -1,4 +1,3 @@
-import { Hero } from "@/components/Hero";
 import { CategoryPills } from "@/components/home/CategoryPills";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
@@ -22,6 +21,7 @@ export const metadata: Metadata = {
   description: `${siteConfig.headline} ${siteConfig.subheading}. ${siteConfig.description}`
 };
 
+/** Opens straight into the shop — search in header, products below. No splash or hero gate. */
 export default async function HomePage() {
   const [hotDeals, featured, all] = await Promise.all([
     getHotDeals(),
@@ -33,7 +33,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
       <CategoryPills />
       <HomeCatalogSections
         hotDeals={hotDeals}
