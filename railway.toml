@@ -3,8 +3,8 @@
 
 [build]
 builder = "NIXPACKS"
-# Install ALL deps (including Tailwind/TypeScript) even when NODE_ENV=production
-buildCommand = "npm ci && npm run build"
+# Build-time DB is local to the image — runtime DATABASE_URL may point at /data volume.
+buildCommand = "npm ci && DATABASE_URL=\"file:./prisma/build.db\" AUTH_SECRET=\"build-time-only\" npx prisma db push --skip-generate && npm run build"
 
 [deploy]
 # Run tsx directly — `npm run` turns Railway redeploy SIGTERM into a fake "npm error".

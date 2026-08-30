@@ -50,21 +50,31 @@ function mapRow(r: {
 export async function getPublishedReviewsForProduct(
   productSlug: string
 ): Promise<Review[]> {
-  const rows = await prisma.productReview.findMany({
-    where: { productSlug, published: true },
-    orderBy: { createdAt: "desc" },
-    take: 40
-  });
-  return rows.map(mapRow);
+  try {
+    const rows = await prisma.productReview.findMany({
+      where: { productSlug, published: true },
+      orderBy: { createdAt: "desc" },
+      take: 40
+    });
+    return rows.map(mapRow);
+  } catch (err) {
+    console.error("[reviews] getPublishedReviewsForProduct failed:", err);
+    return [];
+  }
 }
 
 export async function getPublishedStoreReviews(): Promise<Review[]> {
-  const rows = await prisma.productReview.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-    take: 12
-  });
-  return rows.map(mapRow);
+  try {
+    const rows = await prisma.productReview.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+      take: 12
+    });
+    return rows.map(mapRow);
+  } catch (err) {
+    console.error("[reviews] getPublishedStoreReviews failed:", err);
+    return [];
+  }
 }
 
 export async function getStoreReviews(): Promise<Review[]> {
