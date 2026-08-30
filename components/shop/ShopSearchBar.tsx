@@ -1,15 +1,21 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Icon } from "@/components/Icons";
 import { pushRecentSearch } from "@/lib/recent-searches";
 
-/** Full-width search bar — always visible under the header (Plug-style). */
+/** Full-width search bar — always visible under the header. */
 export function ShopSearchBar({ className = "" }: { className?: string }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [q, setQ] = useState("");
+  const searchParams = useSearchParams();
+  const urlQ = searchParams.get("q") ?? "";
+  const [q, setQ] = useState(urlQ);
+
+  useEffect(() => {
+    setQ(urlQ);
+  }, [urlQ]);
 
   if (pathname?.startsWith("/admin")) return null;
 

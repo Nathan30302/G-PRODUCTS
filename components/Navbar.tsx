@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/cart";
 import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
@@ -46,10 +46,8 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
-        scrolled
-          ? "border-white/[0.07] bg-ink-950/90 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl"
-          : "border-transparent bg-ink-950/70 backdrop-blur-md lg:bg-transparent lg:backdrop-blur-none"
+      className={`sticky top-0 z-50 border-b border-white/[0.07] bg-ink-950/95 shadow-[0_8px_32px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-shadow duration-300 ${
+        scrolled ? "shadow-[0_10px_40px_rgba(0,0,0,0.35)]" : ""
       }`}
       style={{ paddingTop: "var(--safe-top)" }}
     >
@@ -175,7 +173,9 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
       </div>
 
       <div className="container-g pb-3">
-        <ShopSearchBar />
+        <Suspense fallback={null}>
+          <ShopSearchBar />
+        </Suspense>
       </div>
 
       <div className="hidden border-t border-white/[0.04] lg:block">
