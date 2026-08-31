@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { GeistSans } from "geist/font/sans";
-import { Syne } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart";
 import { ToastProvider } from "@/components/Toast";
@@ -9,11 +8,11 @@ import { AbandonedCartNudge } from "@/components/AbandonedCartNudge";
 import { siteConfig } from "@/config/site";
 import { siteUrl } from "@/lib/site-url";
 
-const syne = Syne({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-syne",
+  variable: "--font-jakarta",
   display: "swap",
-  weight: ["500", "600", "700", "800"]
+  weight: ["400", "500", "600", "700", "800"]
 });
 
 export const metadata: Metadata = {
@@ -70,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${syne.variable}`}>
+    <html lang="en" className={jakarta.variable}>
       <body className="min-h-dvh bg-gp-bg font-sans text-gp-text antialiased">
         <CartProvider>
           <ToastProvider>

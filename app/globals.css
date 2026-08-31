@@ -63,10 +63,18 @@ body {
 
 html {
   -webkit-tap-highlight-color: transparent;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-jakarta), system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-variant-ligatures: common-ligatures;
+  line-height: 1.55;
+  letter-spacing: 0.005em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -403,35 +411,37 @@ html {
   /* Section eyebrow / boutique label */
   .eyebrow,
   .section-label {
-    @apply text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-600;
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-600;
   }
 
   .display {
-    @apply font-display font-extrabold tracking-[-0.02em] leading-[1.12] text-gp-text;
+    @apply font-display font-bold tracking-[-0.012em] leading-[1.2] text-gp-text;
   }
 
   .heading-page {
     font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.625rem);
-    line-height: 1.1;
-    font-weight: 800;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.015em;
   }
 
   .heading-section {
     font-size: clamp(1.375rem, 1.05rem + 1.4vw, 1.875rem);
-    line-height: 1.18;
+    line-height: 1.22;
     font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   .text-subtitle {
-    @apply text-base font-medium leading-relaxed text-gp-text-muted;
+    @apply text-[0.9375rem] font-medium leading-[1.65] text-gp-text-muted sm:text-base;
   }
 
   .text-body {
-    @apply text-sm font-normal leading-relaxed text-gp-text;
+    @apply text-[0.9375rem] font-normal leading-[1.6] text-gp-text sm:text-sm;
   }
 
   .text-caption {
-    @apply text-xs font-medium text-gp-text-subtle;
+    @apply text-xs font-medium leading-snug text-gp-text-subtle;
   }
 
   /* Premium card surfaces */
@@ -468,7 +478,7 @@ html {
   }
 
   .field-label {
-    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-gp-text-muted;
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-gp-text-muted;
   }
 }
 

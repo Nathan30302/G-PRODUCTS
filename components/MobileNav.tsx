@@ -37,7 +37,7 @@ export function MobileNav({ auth = null }: { auth?: ShopAuth }) {
             <Link
               key={it.href}
               href={href}
-              className={`relative flex min-w-[3.25rem] flex-1 flex-col items-center gap-0.5 rounded-pill px-1 py-1.5 text-[8px] font-bold tracking-wide transition-all duration-300 ${
+              className={`relative flex min-w-[3.25rem] flex-1 flex-col items-center gap-0.5 rounded-pill px-1 py-1.5 text-[10px] font-semibold tracking-normal transition-all duration-300 ${
                 active
                   ? "bg-warm/12 text-warm"
                   : "text-gp-text-subtle hover:text-gp-text"

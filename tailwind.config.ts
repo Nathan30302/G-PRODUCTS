@@ -8,8 +8,20 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        display: ["var(--font-syne)", "var(--font-geist-sans)", "sans-serif"],
+        sans: [
+          "var(--font-jakarta)",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "sans-serif"
+        ],
+        display: [
+          "var(--font-jakarta)",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "sans-serif"
+        ],
         mono: ["ui-monospace", "SFMono-Regular", "monospace"]
       },
       colors: {
