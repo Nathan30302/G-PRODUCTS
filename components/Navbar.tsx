@@ -17,11 +17,12 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
 
   const isHome = pathname === "/";
   const isSearchFind = pathname === "/search/find";
+  const isProductPage = pathname?.startsWith("/product/");
   const shopBrowseMode =
     pathname === "/search" &&
     !searchParams.get("q")?.trim() &&
     searchParams.get("deals") !== "1";
-  const minimalMobileShop = shopBrowseMode || isSearchFind;
+  const minimalMobileShop = shopBrowseMode || isSearchFind || isProductPage;
 
   const accountHref = auth?.home ?? "/profile";
 
@@ -53,7 +54,7 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
     <header
       className={`sticky top-0 z-50 border-b border-gp-border bg-gp-surface/95 shadow-sm backdrop-blur-xl transition-shadow duration-300 ${
         scrolled ? "shadow-md" : ""
-      } ${minimalMobileShop ? "hidden md:block" : ""}`}
+      } ${minimalMobileShop ? "hidden md:block" : ""} ${isProductPage ? "md:hidden" : ""}`}
       style={{ paddingTop: "var(--safe-top)" }}
     >
       <div className="container-g grid h-14 grid-cols-[3rem_1fr_3rem] items-center gap-2 sm:h-16 sm:grid-cols-[3.5rem_1fr_3.5rem]">

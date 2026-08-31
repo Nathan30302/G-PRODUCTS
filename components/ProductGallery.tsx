@@ -26,12 +26,14 @@ export function ProductGallery({
   images,
   name,
   badge,
-  showingLabel
+  showingLabel,
+  variant = "default"
 }: {
   images: ProductImage[];
   name: string;
   badge?: string | null;
   showingLabel?: string | null;
+  variant?: "default" | "plug";
 }) {
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
@@ -43,6 +45,7 @@ export function ProductGallery({
   const list = images.length > 0 ? images : [{ url: "", alt: name }];
   const count = list.length;
   const index = Math.min(active, count - 1);
+  const isPlug = variant === "plug";
 
   useLayoutEffect(() => {
     const el = frameRef.current;
@@ -96,16 +99,16 @@ export function ProductGallery({
 
   return (
     <div className="w-full">
-      {showingLabel ? (
-        <p className="mb-2.5 text-xs font-medium text-white/50">
+      {showingLabel && !isPlug ? (
+        <p className="mb-2.5 text-xs font-medium text-gp-text-muted">
           Showing{" "}
-          <span className="text-white/85">{showingLabel}</span>
+          <span className="text-gp-text">{showingLabel}</span>
         </p>
       ) : null}
 
-      <div className="flex gap-3 lg:gap-4">
+      <div className={`flex gap-3 ${isPlug ? "" : "lg:gap-4"}`}>
         {/* Desktop vertical filmstrip */}
-        {count > 1 ? (
+        {count > 1 && !isPlug ? (
           <div className="hidden max-h-[min(100%,28rem)] w-[4.25rem] shrink-0 flex-col gap-2 overflow-y-auto py-0.5 no-scrollbar xl:flex">
             {list.map((img, i) => (
               <Thumb
@@ -126,7 +129,11 @@ export function ProductGallery({
         <div className="min-w-0 flex-1">
           <div
             ref={frameRef}
-            className="group relative aspect-[4/5] max-h-[min(72vw,22rem)] touch-pan-y overflow-hidden rounded-[1.25rem] border border-white/[0.08] bg-[#f4f4f2] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_16px_40px_-24px_rgba(0,0,0,0.5)] sm:max-h-[26rem] lg:max-h-[min(34rem,58vh)] lg:rounded-[1.5rem]"
+            className={`group relative touch-pan-y overflow-hidden bg-[#f7f7f5] ${
+              isPlug
+                ? "aspect-square max-h-[min(88vw,22rem)] rounded-2xl border border-gp-border/60 sm:max-h-[24rem]"
+                : "aspect-[4/5] max-h-[min(72vw,22rem)] rounded-[1.25rem] border border-gp-border/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_16px_40px_-24px_rgba(0,0,0,0.12)] sm:max-h-[26rem] lg:max-h-[min(34rem,58vh)] lg:rounded-[1.5rem]"
+            }`}
           >
             {/* Soft studio wash */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,#ffffff_0%,#ececeb_55%,#e2e2df_100%)]" />
@@ -168,33 +175,39 @@ export function ProductGallery({
               ))}
             </motion.div>
 
-            {badge ? (
+            {badge && !isPlug ? (
               <span className="pointer-events-none absolute left-3 top-3 z-[2] rounded-pill bg-accent px-2.5 py-1 text-[10px] font-bold tracking-wide text-ink-950 shadow-sm">
                 {badge}
               </span>
             ) : null}
 
-            <button
-              type="button"
-              onClick={() => setLightbox(true)}
-              className="absolute bottom-3 right-3 z-[2] grid h-10 w-10 place-items-center rounded-full border border-ink-950/10 bg-ink-950/70 text-white shadow-lg backdrop-blur-md transition-all hover:bg-ink-950/85"
-              aria-label="View full-size photo"
-            >
-              <Icon name="expand" className="h-4 w-4" />
-            </button>
+            {!isPlug ? (
+              <button
+                type="button"
+                onClick={() => setLightbox(true)}
+                className="absolute bottom-3 right-3 z-[2] grid h-10 w-10 place-items-center rounded-full border border-ink-950/10 bg-ink-950/70 text-white shadow-lg backdrop-blur-md transition-all hover:bg-ink-950/85"
+                aria-label="View full-size photo"
+              >
+                <Icon name="expand" className="h-4 w-4" />
+              </button>
+            ) : null}
 
             {count > 1 ? (
               <>
-                <NavBtn
-                  side="left"
-                  disabled={index === 0}
-                  onClick={() => go(-1)}
-                />
-                <NavBtn
-                  side="right"
-                  disabled={index === count - 1}
-                  onClick={() => go(1)}
-                />
+                {!isPlug ? (
+                  <>
+                    <NavBtn
+                      side="left"
+                      disabled={index === 0}
+                      onClick={() => go(-1)}
+                    />
+                    <NavBtn
+                      side="right"
+                      disabled={index === count - 1}
+                      onClick={() => go(1)}
+                    />
+                  </>
+                ) : null}
 
                 <div className="pointer-events-none absolute inset-x-0 bottom-3 z-[2] flex justify-center gap-1.5 xl:hidden">
                   {list.map((_, i) => (
@@ -216,8 +229,17 @@ export function ProductGallery({
             ) : null}
           </div>
 
+          {isPlug && count > 1 ? (
+            <div className="mt-2.5 h-0.5 w-full overflow-hidden rounded-full bg-gp-border">
+              <div
+                className="h-full bg-ink-700 transition-all duration-300"
+                style={{ width: `${((index + 1) / count) * 100}%` }}
+              />
+            </div>
+          ) : null}
+
           {/* Mobile / tablet horizontal filmstrip */}
-          {count > 1 ? (
+          {count > 1 && !isPlug ? (
             <div className="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar xl:hidden">
               {list.map((img, i) => (
                 <Thumb

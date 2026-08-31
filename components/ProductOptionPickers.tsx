@@ -40,7 +40,8 @@ export function ColourPicker({
   locked = false,
   lockHint,
   fitmentModel,
-  swatchesOnly = false
+  swatchesOnly = false,
+  variant = "default"
 }: {
   product: Product;
   variants: ProductVariant[];
@@ -51,8 +52,69 @@ export function ColourPicker({
   fitmentModel?: string | null;
   /** Round colour dots only — used for silicone pouches after model pick. */
   swatchesOnly?: boolean;
+  variant?: "default" | "plug";
 }) {
   const selected = variants.find((v) => v.id === selectedId);
+  const isPlug = variant === "plug";
+
+  if (isPlug && !swatchesOnly) {
+    return (
+      <div className={`mt-6 ${locked ? "opacity-55" : ""}`}>
+        <h2 className="text-base font-bold text-gp-text">Choose Your Color</h2>
+        <p className="mt-0.5 text-sm text-gp-text-muted">
+          A color that matches your style. Designed to stand out.
+        </p>
+        {locked ? (
+          <p className="mt-2 text-xs text-gp-text-subtle">
+            {lockHint ?? "Select model first"}
+          </p>
+        ) : null}
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+          {variants.map((v) => {
+            const active = v.id === selectedId;
+            const out = !v.available;
+            return (
+              <button
+                key={v.id}
+                type="button"
+                disabled={locked}
+                onClick={() => onSelect(v.id)}
+                aria-pressed={active}
+                title={
+                  locked
+                    ? lockHint ?? "Select model first"
+                    : out
+                      ? `${v.name} — out of stock`
+                      : v.name
+                }
+                className={`relative inline-flex shrink-0 items-center gap-2 rounded-pill border px-3.5 py-2 text-sm font-semibold transition-all ${
+                  active
+                    ? "border-ink-700 bg-white text-gp-text shadow-[0_0_0_1px_rgba(35,55,70,0.15)] ring-2 ring-ink-700/20"
+                    : "border-gp-border bg-gp-muted/60 text-gp-text hover:border-gp-text-subtle"
+                } ${out || locked ? "opacity-50" : ""} ${locked ? "cursor-not-allowed" : ""}`}
+              >
+                {out ? (
+                  <span
+                    className="pointer-events-none absolute inset-0 rounded-pill"
+                    aria-hidden
+                  >
+                    <span className="absolute left-2 right-2 top-1/2 h-px -rotate-[18deg] bg-gp-text-subtle/70" />
+                  </span>
+                ) : null}
+                <span
+                  className="relative h-4 w-4 shrink-0 rounded-full ring-1 ring-black/10"
+                  style={swatchStyle(v.colorHex, v.name)}
+                />
+                <span className={out ? "line-through decoration-gp-text-subtle" : ""}>
+                  {v.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`mt-5 ${locked ? "opacity-55" : ""}`}>
@@ -188,13 +250,56 @@ export function PricedOptionGrid({
   product,
   variants,
   selectedId,
-  onSelect
+  onSelect,
+  variant = "default"
 }: {
   product: Product;
   variants: ProductVariant[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  variant?: "default" | "plug";
 }) {
+  const isPlug = variant === "plug";
+
+  if (isPlug) {
+    return (
+      <div className="mt-6">
+        <h2 className="text-base font-bold text-gp-text">Choose Your Option</h2>
+        <p className="mt-0.5 text-sm text-gp-text-muted">
+          Pick a size that fits your everyday needs.
+        </p>
+        <div className="mt-3 flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+          {variants.map((v) => {
+            const active = v.id === selectedId;
+            const out = !v.available;
+            const price = unitPrice(product, v);
+            return (
+              <button
+                key={v.id}
+                type="button"
+                disabled={out}
+                onClick={() => onSelect(v.id)}
+                aria-pressed={active}
+                className={`flex w-[7.5rem] shrink-0 flex-col overflow-hidden rounded-2xl border bg-gp-muted/50 text-left transition-all ${
+                  active
+                    ? "border-ink-700 ring-2 ring-ink-700/15"
+                    : "border-gp-border hover:border-gp-text-subtle"
+                } ${out ? "opacity-45" : ""}`}
+              >
+                <span className="px-3 py-3 text-sm font-bold text-gp-text">
+                  {v.name}
+                </span>
+                <span className="border-t border-gp-border/80 bg-white px-3 py-2.5 text-sm font-bold tabular-nums text-gp-text">
+                  {formatPrice(price)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mt-5">
       <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/40">
@@ -424,15 +529,15 @@ export function FitmentPicker({
   }
 
   return (
-    <div className="mt-5">
+    <div className="mt-6">
       <div className="flex items-baseline justify-between gap-2">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/40">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-gp-text-muted">
           <span className="text-brand">1</span>
-          <span className="mx-1.5 text-white/20">·</span>
+          <span className="mx-1.5 text-gp-border">·</span>
           Choose your iPhone
         </p>
         {!value ? (
-          <p className="text-xs text-white/35">Required</p>
+          <p className="text-xs text-gp-text-subtle">Required</p>
         ) : null}
       </div>
 
@@ -442,10 +547,10 @@ export function FitmentPicker({
             <Icon name="check" className="h-4 w-4" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-brand/80">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-700/80">
               Your phone
             </p>
-            <p className="truncate text-sm font-bold text-white">{value}</p>
+            <p className="truncate text-sm font-bold text-gp-text">{value}</p>
           </div>
           <button
             type="button"
@@ -453,7 +558,7 @@ export function FitmentPicker({
               setOpen(true);
               setQuery("");
             }}
-            className="shrink-0 rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/70 transition hover:border-brand/40 hover:text-brand"
+            className="shrink-0 rounded-full border border-gp-border px-3 py-1.5 text-xs font-semibold text-gp-text-muted transition hover:border-brand/40 hover:text-ink-700"
           >
             Change
           </button>
@@ -462,7 +567,7 @@ export function FitmentPicker({
         <>
           <label className="relative mt-3 block">
             <span className="sr-only">Search iPhone model</span>
-            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-white/35">
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gp-text-subtle">
               <svg
                 viewBox="0 0 24 24"
                 className="h-4 w-4"
@@ -482,17 +587,17 @@ export function FitmentPicker({
               placeholder="Type model… e.g. 17 Pro Max"
               autoComplete="off"
               autoFocus={open && Boolean(value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-10 pr-3.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-brand/50 focus:ring-1 focus:ring-brand/30"
+              className="w-full rounded-2xl border border-gp-border bg-white py-3.5 pl-10 pr-3.5 text-sm text-gp-text outline-none placeholder:text-gp-text-subtle focus:border-ink-700/35 focus:ring-1 focus:ring-ink-700/15"
             />
           </label>
 
           <div
-            className="mt-2 max-h-48 overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-white/[0.02] sm:max-h-56"
+            className="mt-2 max-h-48 overflow-y-auto overscroll-contain rounded-2xl border border-gp-border bg-white sm:max-h-56"
             role="listbox"
             aria-label={fitment.label}
           >
             {filtered.length === 0 ? (
-              <p className="px-4 py-6 text-center text-sm text-white/40">
+              <p className="px-4 py-6 text-center text-sm text-gp-text-muted">
                 No model matches “{query}”
               </p>
             ) : (
@@ -505,10 +610,10 @@ export function FitmentPicker({
                     role="option"
                     aria-selected={on}
                     onClick={() => pick(opt)}
-                    className={`flex w-full items-center justify-between gap-3 border-b border-white/[0.04] px-4 py-3 text-left text-sm transition last:border-0 ${
+                    className={`flex w-full items-center justify-between gap-3 border-b border-gp-border/60 px-4 py-3 text-left text-sm transition last:border-0 ${
                       on
-                        ? "bg-brand/15 font-bold text-brand"
-                        : "text-white/75 hover:bg-white/[0.04] hover:text-white"
+                        ? "bg-brand/15 font-bold text-ink-700"
+                        : "text-gp-text hover:bg-gp-muted hover:text-gp-text"
                     }`}
                   >
                     <span>{opt}</span>
@@ -524,7 +629,7 @@ export function FitmentPicker({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="mt-2 text-xs font-semibold text-white/40 hover:text-white/70"
+              className="mt-2 text-xs font-semibold text-gp-text-muted hover:text-gp-text"
             >
               Cancel
             </button>

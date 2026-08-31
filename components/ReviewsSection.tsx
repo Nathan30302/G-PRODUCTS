@@ -27,17 +27,24 @@ function Stars({ rating, size = "sm" }: { rating: number; size?: "sm" | "lg" }) 
 
 function ReviewCard({
   review,
-  featured = false
+  featured = false,
+  theme = "dark"
 }: {
   review: Review;
   featured?: boolean;
+  theme?: "dark" | "light";
 }) {
+  const light = theme === "light";
   return (
     <article
-      className={`relative overflow-hidden rounded-[1.35rem] border bg-ink-900/50 ${
-        featured
-          ? "border-brand/25 bg-gradient-to-br from-brand/[0.08] via-ink-900/70 to-ink-950/80 p-7 sm:p-8"
-          : "border-white/[0.07] p-5"
+      className={`relative overflow-hidden rounded-[1.35rem] border ${
+        light
+          ? featured
+            ? "border-brand/25 bg-brand/[0.06] p-7 sm:p-8"
+            : "border-gp-border/80 bg-white p-5"
+          : featured
+            ? "border-brand/25 bg-gradient-to-br from-brand/[0.08] via-ink-900/70 to-ink-950/80 p-7 sm:p-8"
+            : "border-white/[0.07] bg-ink-900/50 p-5"
       }`}
     >
       {featured ? (
@@ -58,23 +65,25 @@ function ReviewCard({
       </div>
       {review.title ? (
         <h3
-          className={`mt-4 font-bold text-white ${
-            featured ? "text-lg sm:text-xl" : "text-sm"
-          }`}
+          className={`mt-4 font-bold ${
+            light ? "text-gp-text" : "text-white"
+          } ${featured ? "text-lg sm:text-xl" : "text-sm"}`}
         >
           {review.title}
         </h3>
       ) : null}
       <p
-        className={`mt-3 leading-relaxed text-white/70 ${
-          featured ? "text-base sm:text-lg" : "text-sm"
-        }`}
+        className={`mt-3 leading-relaxed ${
+          light ? "text-gp-text-muted" : "text-white/70"
+        } ${featured ? "text-base sm:text-lg" : "text-sm"}`}
       >
         {review.body}
       </p>
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 text-xs text-white/40">
+      <div className={`mt-5 flex flex-wrap items-center justify-between gap-2 text-xs ${light ? "text-gp-text-muted" : "text-white/40"}`}>
         <p>
-          <span className="font-semibold text-white/70">{review.author}</span>
+          <span className={`font-semibold ${light ? "text-gp-text" : "text-white/70"}`}>
+            {review.author}
+          </span>
           {review.date
             ? ` · ${new Date(review.date).toLocaleDateString("en-ZM", {
                 month: "short",
@@ -83,7 +92,7 @@ function ReviewCard({
             : ""}
         </p>
         {review.productName ? (
-          <span className="rounded-pill border border-white/10 px-2.5 py-1 text-[10px] text-white/45">
+          <span className={`rounded-pill border px-2.5 py-1 text-[10px] ${light ? "border-gp-border text-gp-text-muted" : "border-white/10 text-white/45"}`}>
             {review.productName}
           </span>
         ) : null}
@@ -92,18 +101,27 @@ function ReviewCard({
   );
 }
 
-function EmptyReviews({ context }: { context: "store" | "product" }) {
+function EmptyReviews({
+  context,
+  theme = "dark"
+}: {
+  context: "store" | "product";
+  theme?: "dark" | "light";
+}) {
+  const light = theme === "light";
   return (
-    <div className="rounded-[1.35rem] border border-dashed border-white/[0.12] bg-white/[0.02] px-6 py-12 text-center">
+    <div className={`rounded-[1.35rem] border border-dashed px-6 py-12 text-center ${
+      light ? "border-gp-border bg-gp-muted/40" : "border-white/[0.12] bg-white/[0.02]"
+    }`}>
       <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
         <Icon name="star" className="h-6 w-6" />
       </span>
-      <p className="mt-5 text-base font-semibold text-white">
+      <p className={`mt-5 text-base font-semibold ${light ? "text-gp-text" : "text-white"}`}>
         {context === "store"
           ? "Be the first to leave a review"
           : "No reviews for this product yet"}
       </p>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-white/45">
+      <p className={`mx-auto mt-2 max-w-md text-sm leading-relaxed ${light ? "text-gp-text-muted" : "text-white/45"}`}>
         We only publish genuine customer feedback — never fake ratings.
       </p>
       <a
@@ -180,43 +198,50 @@ export async function ProductReviewsSection({
   productName,
   defaultAuthorName = "",
   orderRef = "",
-  showLeaveForm = true
+  showLeaveForm = true,
+  theme = "dark"
 }: {
   productSlug: string;
   productName: string;
   defaultAuthorName?: string;
   orderRef?: string;
   showLeaveForm?: boolean;
+  theme?: "dark" | "light";
 }) {
   const list = await getProductReviews(productSlug);
   const avg = averageRating(list);
+  const light = theme === "light";
 
   return (
     <section className="mt-12">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="display text-xl">Customer reviews</h2>
-          <p className="mt-1 text-sm text-white/45">
+          <h2 className={`text-xl font-bold ${light ? "text-gp-text" : "display text-xl"}`}>
+            Customer reviews
+          </h2>
+          <p className={`mt-1 text-sm ${light ? "text-gp-text-muted" : "text-white/45"}`}>
             Ratings for {productName}
           </p>
         </div>
         {avg != null ? (
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold tabular-nums text-brand">
+            <span className={`text-lg font-bold tabular-nums ${light ? "text-gp-text" : "text-brand"}`}>
               {avg}
             </span>
             <Stars rating={avg} />
-            <span className="text-xs text-white/40">({list.length})</span>
+            <span className={`text-xs ${light ? "text-gp-text-muted" : "text-white/40"}`}>
+              ({list.length})
+            </span>
           </div>
         ) : null}
       </div>
 
       {list.length === 0 ? (
-        <EmptyReviews context="product" />
+        <EmptyReviews context="product" theme={theme} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {list.map((r) => (
-            <ReviewCard key={r.id} review={r} />
+            <ReviewCard key={r.id} review={r} theme={theme} />
           ))}
         </div>
       )}

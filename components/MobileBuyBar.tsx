@@ -50,17 +50,17 @@ export function MobileBuyBar({ product }: { product: Product }) {
 
   return (
     <div
-      className="fixed inset-x-0 z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg md:hidden"
+      className="fixed inset-x-0 z-40 border-t border-gp-border bg-white/95 px-4 py-3 shadow-[0_-4px_24px_rgba(26,35,33,0.08)] backdrop-blur-lg md:hidden"
       style={{ bottom: "var(--mobile-nav-offset)" }}
     >
       <div className="flex items-center gap-3">
         <div className="min-w-0">
-          <p className="text-[11px] text-white/45">
+          <p className="text-[11px] text-gp-text-muted">
             {selected ? `${selected.name} · ` : ""}
             {fitmentValue ? `${fitmentValue} · ` : ""}
             Price
           </p>
-          <p className="truncate text-lg font-extrabold text-white">
+          <p className="truncate text-lg font-extrabold text-gp-text">
             {formatPrice(displayPrice)}
           </p>
         </div>
@@ -69,14 +69,14 @@ export function MobileBuyBar({ product }: { product: Product }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Order on WhatsApp"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-pill border border-accent/40 bg-accent/10 text-accent"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-pill border border-accent/30 bg-accent/10 text-accent"
         >
           <Icon name="whatsapp" className="h-5 w-5" />
         </a>
         {soldOut || !chosen?.available ? (
           <Link
             href="#buy"
-            className="flex flex-1 items-center justify-center rounded-pill border border-white/20 bg-white/[0.06] px-4 py-3 text-sm font-bold text-white/60"
+            className="flex flex-1 items-center justify-center rounded-pill border border-gp-border bg-gp-muted px-4 py-3 text-sm font-bold text-gp-text-muted"
           >
             Notify me
           </Link>

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   getProductBySlug,
   getProductsByCategory,
@@ -18,6 +17,11 @@ import { getProductExtras } from "@/lib/product-extras";
 import { ProductReviewsSection } from "@/components/ReviewsSection";
 import { MobileBuyBar } from "@/components/MobileBuyBar";
 import { TrackProductView } from "@/components/shop/TrackProductView";
+import { ProductPageHeader } from "@/components/product/ProductPageHeader";
+import {
+  averageRating,
+  getProductReviews
+} from "@/lib/reviews";
 
 export const revalidate = 60;
 
@@ -62,105 +66,90 @@ export default async function ProductPage({
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const [category, categoryProducts, allProducts] = await Promise.all([
+  const [category, categoryProducts, allProducts, reviews] = await Promise.all([
     getCategoryBySlug(product.categorySlug),
     getProductsByCategory(product.categorySlug),
-    getAllProducts()
+    getAllProducts(),
+    getProductReviews(slug)
   ]);
   const off = discountPercent(product.price, product.compareAtPrice);
   const saved = product.compareAtPrice
     ? product.compareAtPrice - product.price
     : 0;
-  // Prefer full catalogue for cross-sell (chargers with pouches, mice with laptops…)
+  const avgRating = averageRating(reviews);
   const relatedPool =
     allProducts.length > categoryProducts.length ? allProducts : categoryProducts;
   const related = relatedProducts(product, relatedPool, 8);
+  const backHref = category ? `/category/${category.slug}` : "/search";
 
   return (
-    <div>
+    <div className="bg-white">
       <TrackProductView slug={product.slug} />
-      <div className="container-g py-6 sm:py-10">
-        <nav className="flex flex-wrap items-center gap-1.5 text-sm text-white/40">
-          <Link href="/" className="transition-colors hover:text-white">
-            Home
-          </Link>
-          <Icon name="chevron-right" className="h-3.5 w-3.5" />
-          {category && (
-            <>
-              <Link
-                href={`/category/${category.slug}`}
-                className="transition-colors hover:text-white"
-              >
-                {category.name}
-              </Link>
-              <Icon name="chevron-right" className="h-3.5 w-3.5" />
-            </>
-          )}
-          <span className="min-w-0 truncate text-white/70">{product.name}</span>
-        </nav>
+      <ProductPageHeader title={product.name} backHref={backHref} />
 
+      <div className="container-g py-5 sm:py-8">
         <ProductVariantProvider product={product}>
-          <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-14">
-            <div className="mx-auto w-full max-w-md shrink-0 sm:max-w-lg lg:mx-0 lg:w-[min(48%,30rem)] lg:max-w-none xl:w-[min(44%,32rem)]">
-              <ProductPurchasePanel
-                product={product}
-                badge={off ? `-${off}%` : null}
-                compareOff={off}
-                saved={saved}
-              />
-            </div>
+          <div className="mx-auto max-w-2xl">
+            <ProductPurchasePanel
+              product={product}
+              compareOff={off}
+              saved={saved}
+              avgRating={avgRating}
+              reviewCount={reviews.length}
+            />
 
-            <div className="min-w-0 flex-1">
-              <ProductDetailInfo product={product} />
-            </div>
+            <ProductDetailInfo product={product} />
           </div>
 
           <MobileBuyBar product={product} />
         </ProductVariantProvider>
 
-        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="mx-auto mt-8 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
           {trust.map((t) => (
             <div
               key={t.label}
-              className="flex items-center gap-3 rounded-[1.15rem] border border-white/[0.07] bg-ink-900/50 px-4 py-3.5 sm:flex-col sm:items-center sm:gap-2 sm:p-4 sm:text-center"
+              className="flex items-center gap-3 rounded-[1.15rem] border border-gp-border/80 bg-gp-muted/40 px-4 py-3.5 sm:flex-col sm:items-center sm:gap-2 sm:p-4 sm:text-center"
             >
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/20">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/15 text-ink-700 ring-1 ring-brand/25">
                 <Icon name={t.icon} className="h-5 w-5" />
               </span>
               <div>
-                <p className="text-sm font-semibold text-white/85">{t.label}</p>
-                <p className="text-[11px] text-white/40">{t.hint}</p>
+                <p className="text-sm font-semibold text-gp-text">{t.label}</p>
+                <p className="text-[11px] text-gp-text-muted">{t.hint}</p>
               </div>
             </div>
           ))}
         </div>
 
         {product.shortSpecs.length > 0 && !getProductExtras(product).features && (
-          <div className="mt-10">
-            <h2 className="display text-xl">Specifications</h2>
-            <dl className="mt-4 overflow-hidden rounded-[1.25rem] border border-white/[0.07] bg-ink-900/40">
+          <div className="mx-auto mt-10 max-w-2xl">
+            <h2 className="text-xl font-bold text-gp-text">Specifications</h2>
+            <dl className="mt-4 overflow-hidden rounded-[1.25rem] border border-gp-border/80 bg-white">
               {product.shortSpecs.map((s, i) => (
                 <div
                   key={s}
                   className={`flex items-start gap-3 px-4 py-3.5 text-sm ${
-                    i % 2 === 0 ? "bg-white/[0.02]" : "bg-transparent"
+                    i % 2 === 0 ? "bg-gp-muted/30" : "bg-transparent"
                   }`}
                 >
                   <Icon
                     name="check"
                     className="mt-0.5 h-4 w-4 shrink-0 text-accent"
                   />
-                  <span className="text-white/75">{s}</span>
+                  <span className="text-gp-text">{s}</span>
                 </div>
               ))}
             </dl>
           </div>
         )}
 
-        <ProductReviewsSection
-          productSlug={product.slug}
-          productName={product.name}
-        />
+        <div className="mx-auto max-w-2xl">
+          <ProductReviewsSection
+            productSlug={product.slug}
+            productName={product.name}
+            theme="light"
+          />
+        </div>
       </div>
 
       {related.length > 0 && (

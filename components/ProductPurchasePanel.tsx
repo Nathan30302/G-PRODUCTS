@@ -1,9 +1,9 @@
 "use client";
 
 import { Product, hasPricedOptions, unitPrice } from "@/lib/types";
-import { formatPrice } from "@/lib/format";
 import { useProductVariant } from "@/components/ProductVariantContext";
 import { ProductGallery } from "@/components/ProductGallery";
+import { ProductPriceBlock } from "@/components/product/ProductPriceBlock";
 import {
   ColourPicker,
   ExtensionPicker,
@@ -13,14 +13,17 @@ import {
 
 export function ProductPurchasePanel({
   product,
-  badge,
   compareOff,
-  saved
+  saved,
+  avgRating,
+  reviewCount
 }: {
   product: Product;
   badge?: string | null;
   compareOff?: number | null;
   saved?: number;
+  avgRating?: number | null;
+  reviewCount?: number;
 }) {
   const {
     galleryImages,
@@ -34,10 +37,6 @@ export function ProductPurchasePanel({
 
   const pricedOptions = hasPricedOptions(product);
   const multi = product.variants.length > 1;
-  const displayPrice = unitPrice(product, selected);
-  const inStock = selected
-    ? selected.available
-    : product.stock !== "sold_out";
   const isExtension = product.slug === "extension-cable";
   const isColourProduct =
     multi &&
@@ -45,20 +44,34 @@ export function ProductPurchasePanel({
     product.variants.some((v) => Boolean(v.colorHex));
 
   return (
-    <div className="lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
-      <ProductGallery
-        key={`${selectedId ?? "default"}-${fitmentValue ?? "nofit"}`}
-        images={galleryImages}
-        name={product.name}
-        badge={badge}
-        showingLabel={
-          multi
-            ? [selected?.name, fitmentValue].filter(Boolean).join(" · ") || null
-            : null
-        }
+    <div className="mx-auto w-full max-w-lg lg:max-w-none">
+      <h1 className="text-lg font-bold leading-snug text-gp-text sm:text-xl">
+        {product.name}
+      </h1>
+
+      <ProductPriceBlock
+        product={product}
+        compareOff={compareOff}
+        saved={saved}
+        avgRating={avgRating}
+        reviewCount={reviewCount}
       />
 
-      {/* Pouches: model first, then colour (cutout depends on model). */}
+      <div className="mt-5">
+        <ProductGallery
+          key={`${selectedId ?? "default"}-${fitmentValue ?? "nofit"}`}
+          images={galleryImages}
+          name={product.name}
+          variant="plug"
+          showingLabel={
+            multi
+              ? [selected?.name, fitmentValue].filter(Boolean).join(" · ") ||
+                null
+              : null
+          }
+        />
+      </div>
+
       {fitment && product.slug === "phone-pouch" ? (
         <FitmentPicker
           fitment={fitment}
@@ -85,6 +98,7 @@ export function ProductPurchasePanel({
             lockHint="Choose your iPhone model first"
             fitmentModel={fitmentValue}
             swatchesOnly={product.slug === "phone-pouch"}
+            variant="plug"
           />
         ) : (
           <PricedOptionGrid
@@ -92,6 +106,7 @@ export function ProductPurchasePanel({
             variants={product.variants}
             selectedId={selectedId}
             onSelect={setSelectedId}
+            variant="plug"
           />
         ))}
 
@@ -102,49 +117,6 @@ export function ProductPurchasePanel({
           onChange={setFitmentValue}
         />
       ) : null}
-
-      <div className="mt-5 border-t border-white/[0.06] pt-4">
-        <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-          {pricedOptions && multi ? (
-            <span className="text-xs font-medium text-white/45">
-              {selected ? "Selected" : "From"}
-            </span>
-          ) : null}
-          <span className="text-2xl font-extrabold tabular-nums tracking-tight text-white">
-            {formatPrice(displayPrice)}
-          </span>
-          {product.compareAtPrice &&
-            product.compareAtPrice > displayPrice &&
-            !pricedOptions && (
-              <span className="text-sm text-white/35 line-through">
-                {formatPrice(product.compareAtPrice)}
-              </span>
-            )}
-        </div>
-
-        <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs">
-          <span
-            className={
-              inStock
-                ? product.stock === "low_stock"
-                  ? "font-medium text-brand"
-                  : "font-medium text-accent"
-                : "font-medium text-white/40"
-            }
-          >
-            {inStock
-              ? product.stock === "low_stock"
-                ? "Low stock"
-                : "In stock"
-              : "Out of stock"}
-          </span>
-          {compareOff && saved && !pricedOptions ? (
-            <span className="rounded-pill bg-accent/10 px-2 py-0.5 font-semibold text-accent">
-              Save {formatPrice(saved)}
-            </span>
-          ) : null}
-        </div>
-      </div>
     </div>
   );
 }
