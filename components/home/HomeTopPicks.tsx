@@ -24,12 +24,27 @@ const TOP_PICK_CHIPS = catalogGroups
     label: CHIP_LABELS[g.slug] ?? g.name,
     fullLabel: g.name,
     filter: (p: Product) =>
-      g.children.length > 0
-        ? g.children.includes(p.categorySlug)
-        : false
+      g.children.length > 0 ? g.children.includes(p.categorySlug) : false
   }));
 
-/** Reference-style top picks row with G-Products category filters. */
+function isHotDeal(p: Product): boolean {
+  return Boolean(
+    p.hotDeal || (p.compareAtPrice && p.compareAtPrice > p.price)
+  );
+}
+
+/** Hot deals first, then featured, then the rest — stable by name. */
+function sortTopPicks(list: Product[]): Product[] {
+  return [...list].sort((a, b) => {
+    const score = (p: Product) =>
+      (p.hotDeal ? 4 : 0) +
+      (p.compareAtPrice && p.compareAtPrice > p.price ? 2 : 0) +
+      (p.featured ? 1 : 0);
+    return score(b) - score(a) || a.name.localeCompare(b.name);
+  });
+}
+
+/** Top picks row — hot deal badges sit on products, ordered deals-first. */
 export function HomeTopPicks({
   products,
   storeRating = null,
@@ -48,12 +63,11 @@ export function HomeTopPicks({
     [products]
   );
 
-  const filtered = useMemo(
-    () => (chip ? inStock.filter(chip.filter).slice(0, 10) : inStock.slice(0, 10)),
-    [inStock, chip]
-  );
-
-  const list = filtered.length > 0 ? filtered : inStock.slice(0, 10);
+  const list = useMemo(() => {
+    const filtered = chip ? inStock.filter(chip.filter) : inStock;
+    const base = filtered.length > 0 ? filtered : inStock;
+    return sortTopPicks(base).slice(0, 12);
+  }, [inStock, chip]);
 
   const ratingLabel =
     storeRating != null
@@ -102,32 +116,12 @@ export function HomeTopPicks({
       </div>
 
       <div className="no-scrollbar snap-rail relative mt-5 -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-4 sm:px-6">
-        <Link
-          href="/search?deals=1"
-          className="snap-item flex w-[11rem] shrink-0 flex-col overflow-hidden rounded-[1.25rem] border border-brand/40 bg-gradient-to-br from-brand/25 via-white to-accent/10 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-card-hover sm:w-[12rem]"
-        >
-          <div className="flex flex-1 flex-col items-center justify-center px-4 py-10 text-center">
-            <span className="text-3xl" aria-hidden>
-              🔥
-            </span>
-            <p className="mt-3 font-display text-base font-extrabold text-ink-900">
-              Hot Deals
-            </p>
-            <p className="mt-1 text-xs font-medium text-gp-text-muted">
-              Save on campus picks
-            </p>
-          </div>
-          <span className="flex items-center justify-center gap-1 border-t border-brand/25 py-3 text-xs font-bold text-ink-700">
-            Shop deals
-            <Icon name="arrow-right" className="h-3.5 w-3.5" />
-          </span>
-        </Link>
-
         {list.map((p) => (
           <HomeProductCard
             key={p.id}
             product={p}
             ratingLabel={ratingLabel}
+            showHotOnImage={isHotDeal(p)}
           />
         ))}
       </div>

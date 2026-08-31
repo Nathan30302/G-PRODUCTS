@@ -7,12 +7,15 @@ import { coverImageForProduct } from "@/lib/product-images";
 export function HomeProductCard({
   product,
   ratingLabel,
-  width = "rail"
+  width = "rail",
+  showHotOnImage = false
 }: {
   product: Product;
   ratingLabel?: string | null;
   /** rail = horizontal scroll width; grid = full column width */
   width?: "rail" | "grid";
+  /** Overlay 🔥 Hot on the product photo (top picks rail) */
+  showHotOnImage?: boolean;
 }) {
   const variant =
     product.variants.find((v) => v.available) ?? product.variants[0] ?? null;
@@ -23,11 +26,13 @@ export function HomeProductCard({
     !priced && product.compareAtPrice && product.compareAtPrice > product.price
       ? product.compareAtPrice
       : null;
-  const badge = productBadge(product);
+  const off =
+    !priced && compare
+      ? discountPercent(product.price, product.compareAtPrice)
+      : null;
+  const textBadge = productTextBadge(product, showHotOnImage);
   const widthClass =
-    width === "rail"
-      ? "w-[11rem] shrink-0 sm:w-[12rem]"
-      : "w-full";
+    width === "rail" ? "w-[11rem] shrink-0 sm:w-[12rem]" : "w-full";
 
   return (
     <Link
@@ -44,11 +49,20 @@ export function HomeProductCard({
             className="object-contain p-3"
           />
         ) : null}
+        {showHotOnImage ? (
+          <span className="pointer-events-none absolute left-2 top-2 z-[2] rounded-pill bg-brand px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-ink-950 shadow-sm">
+            🔥 Hot
+          </span>
+        ) : off ? (
+          <span className="pointer-events-none absolute left-2 top-2 z-[2] rounded-pill bg-brand px-2 py-0.5 text-[10px] font-bold text-ink-950 shadow-sm">
+            Save {off}%
+          </span>
+        ) : null}
       </div>
       <div className="flex flex-1 flex-col p-3">
-        {badge ? (
-          <span className="mb-2 w-fit rounded-md bg-brand/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-ink-800">
-            {badge}
+        {textBadge ? (
+          <span className="mb-2 w-fit rounded-md bg-ink-700/10 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-ink-700">
+            {textBadge}
           </span>
         ) : null}
         <div className="flex items-center justify-between gap-1">
@@ -85,13 +99,12 @@ export function HomeProductCard({
   );
 }
 
-function productBadge(product: Product): string | null {
-  if (product.hotDeal) return "Hot deal";
+function productTextBadge(
+  product: Product,
+  hotOnImage: boolean
+): string | null {
+  if (hotOnImage) return null;
   if (product.featured) return "Campus pick";
-  if (product.compareAtPrice && product.compareAtPrice > product.price) {
-    const off = discountPercent(product.price, product.compareAtPrice);
-    if (off) return `Save ${off}%`;
-  }
   return null;
 }
 

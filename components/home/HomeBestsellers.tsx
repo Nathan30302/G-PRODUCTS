@@ -3,11 +3,17 @@ import type { Product } from "@/lib/types";
 import { HomeProductCard } from "@/components/home/HomeProductCard";
 import { Icon } from "@/components/Icons";
 
+function isHotDeal(p: Product): boolean {
+  return Boolean(
+    p.hotDeal || (p.compareAtPrice && p.compareAtPrice > p.price)
+  );
+}
+
 function bestsellerScore(p: Product): number {
   return (
-    (p.featured ? 3 : 0) +
-    (p.hotDeal ? 2 : 0) +
-    (p.compareAtPrice && p.compareAtPrice > p.price ? 1 : 0)
+    (p.hotDeal ? 4 : 0) +
+    (p.compareAtPrice && p.compareAtPrice > p.price ? 2 : 0) +
+    (p.featured ? 1 : 0)
   );
 }
 
@@ -23,7 +29,7 @@ export function HomeBestsellers({
 }) {
   const list = products
     .filter((p) => p.stock !== "sold_out")
-    .sort((a, b) => bestsellerScore(b) - bestsellerScore(b) || a.name.localeCompare(b.name))
+    .sort((a, b) => bestsellerScore(b) - bestsellerScore(a) || a.name.localeCompare(b.name))
     .slice(0, 12);
 
   if (list.length === 0) return null;
@@ -54,6 +60,7 @@ export function HomeBestsellers({
             key={p.id}
             product={p}
             ratingLabel={ratingLabel}
+            showHotOnImage={isHotDeal(p)}
           />
         ))}
       </div>
