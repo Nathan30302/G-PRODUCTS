@@ -5,15 +5,7 @@ import { Icon } from "@/components/Icons";
 import { sortByDealScore } from "@/lib/product-deals";
 
 /** Curated handpicked rail — separate from chip-filtered deals section. */
-export function HomeHandpickedForYou({
-  products,
-  storeRating = null,
-  reviewCount = 0
-}: {
-  products: Product[];
-  storeRating?: number | null;
-  reviewCount?: number;
-}) {
+export function HomeHandpickedForYou({ products }: { products: Product[] }) {
   const list = sortByDealScore(
     products.filter((p) => p.stock !== "sold_out" && (p.featured || p.hotDeal))
   ).slice(0, 12);
@@ -24,11 +16,6 @@ export function HomeHandpickedForYou({
 
   const rail = list.length >= 4 ? list : fallback;
   if (rail.length === 0) return null;
-
-  const ratingLabel =
-    storeRating != null
-      ? `${storeRating.toFixed(2)}${reviewCount > 0 ? ` (${reviewCount})` : ""}`
-      : null;
 
   return (
     <section className="container-g mt-10 sm:mt-12">
@@ -55,8 +42,6 @@ export function HomeHandpickedForYou({
           <HomeProductCard
             key={p.id}
             product={p}
-            ratingLabel={ratingLabel}
-            showDealBadge
             variant="plug"
             width="wide"
           />

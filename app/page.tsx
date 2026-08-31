@@ -7,7 +7,6 @@ import { HomeBestsellers } from "@/components/home/HomeBestsellers";
 import { HomeHandpickedForYou } from "@/components/home/HomeHandpickedForYou";
 import { HomeAboutSection } from "@/components/home/HomeAboutSection";
 import { getAllProducts } from "@/lib/queries";
-import { averageRating, getPublishedStoreReviews } from "@/lib/reviews";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
@@ -21,33 +20,17 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [all, storeReviews] = await Promise.all([
-    getAllProducts(),
-    getPublishedStoreReviews()
-  ]);
-  const storeRating = averageRating(storeReviews);
+  const all = await getAllProducts();
 
   return (
     <>
       <HomeSearchSection />
       <HomeStudentPacks />
       <ExploreTopTech products={all} />
-      <HomeTopPicks
-        products={all}
-        storeRating={storeRating}
-        reviewCount={storeReviews.length}
-      />
+      <HomeTopPicks products={all} />
       <StoreServicesStrip />
-      <HomeBestsellers
-        products={all}
-        storeRating={storeRating}
-        reviewCount={storeReviews.length}
-      />
-      <HomeHandpickedForYou
-        products={all}
-        storeRating={storeRating}
-        reviewCount={storeReviews.length}
-      />
+      <HomeBestsellers products={all} />
+      <HomeHandpickedForYou products={all} />
       <HomeAboutSection />
     </>
   );

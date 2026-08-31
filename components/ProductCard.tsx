@@ -11,6 +11,7 @@ import { coverImageForProduct } from "@/lib/product-images";
 import { Icon } from "@/components/Icons";
 import { useCart } from "@/lib/cart";
 import { hapticTap } from "@/lib/haptics";
+import { productStockLabel } from "@/lib/product-stock";
 
 function peekUrls(product: Product): string[] {
   const seen = new Set<string>();
@@ -167,8 +168,17 @@ export function ProductCard({
         href={`/product/${product.slug}`}
         className={`flex flex-1 flex-col ${pad}`}
       >
+        <div className="flex items-center justify-between gap-2">
+          <span className="truncate text-[11px] font-normal text-gp-text-subtle">
+            {product.brand?.trim() || "G-Products"}
+          </span>
+          <span className="shrink-0 text-[10px] font-medium tabular-nums text-gp-text-muted">
+            <span className="text-accent">●</span> {productStockLabel(product)}
+          </span>
+        </div>
+
         <h3
-          className={`line-clamp-2 font-semibold leading-snug text-gp-text transition-colors group-hover:text-ink-700 ${
+          className={`mt-1 line-clamp-2 font-bold leading-snug text-gp-text transition-colors group-hover:text-ink-700 ${
             compact ? "text-xs" : "text-sm"
           }`}
         >
@@ -176,19 +186,18 @@ export function ProductCard({
         </h3>
 
         <div className="mt-auto flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 pt-1.5">
+          <span className="text-[11px] font-normal text-gp-text-subtle">From</span>
           <span
             className={`font-bold tabular-nums text-gp-text ${
               compact ? "text-xs" : "text-sm"
             }`}
           >
-            {pricedOptions
-              ? `From ${formatPrice(fromPrice(product))}`
-              : formatPrice(product.price)}
+            {formatPrice(pricedOptions ? fromPrice(product) : product.price)}
           </span>
           {product.compareAtPrice &&
           product.compareAtPrice > product.price &&
           !pricedOptions ? (
-            <span className="text-[11px] tabular-nums text-gp-text-subtle line-through">
+            <span className="text-[11px] font-normal tabular-nums text-gp-text-subtle line-through">
               {formatPrice(product.compareAtPrice)}
             </span>
           ) : null}

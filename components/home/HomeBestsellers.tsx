@@ -2,28 +2,15 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { HomeProductCard } from "@/components/home/HomeProductCard";
 import { Icon } from "@/components/Icons";
-import { isProductDeal, sortByDealScore } from "@/lib/product-deals";
+import { sortByDealScore } from "@/lib/product-deals";
 
 /** Horizontal bestsellers row — "Our Bestsellers" with view all. */
-export function HomeBestsellers({
-  products,
-  storeRating = null,
-  reviewCount = 0
-}: {
-  products: Product[];
-  storeRating?: number | null;
-  reviewCount?: number;
-}) {
+export function HomeBestsellers({ products }: { products: Product[] }) {
   const list = sortByDealScore(
     products.filter((p) => p.stock !== "sold_out")
   ).slice(0, 12);
 
   if (list.length === 0) return null;
-
-  const ratingLabel =
-    storeRating != null
-      ? `${storeRating.toFixed(1)}${reviewCount > 0 ? ` (${reviewCount})` : ""}`
-      : null;
 
   return (
     <section className="container-g mt-10 sm:mt-12">
@@ -42,12 +29,7 @@ export function HomeBestsellers({
 
       <div className="no-scrollbar snap-rail relative mt-5 -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-4 sm:px-6">
         {list.map((p) => (
-          <HomeProductCard
-            key={p.id}
-            product={p}
-            ratingLabel={ratingLabel}
-            showDealBadge={isProductDeal(p)}
-          />
+          <HomeProductCard key={p.id} product={p} variant="plug" width="wide" />
         ))}
       </div>
     </section>

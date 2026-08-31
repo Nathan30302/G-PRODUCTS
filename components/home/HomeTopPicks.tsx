@@ -35,15 +35,7 @@ const CHIPS: Chip[] = [
 ];
 
 /** Handpicked section — chips, rail, promo pill, featured deals of the week. */
-export function HomeTopPicks({
-  products,
-  storeRating = null,
-  reviewCount = 0
-}: {
-  products: Product[];
-  storeRating?: number | null;
-  reviewCount?: number;
-}) {
+export function HomeTopPicks({ products }: { products: Product[] }) {
   const [chipId, setChipId] = useState("deals");
   const chip = CHIPS.find((c) => c.id === chipId) ?? CHIPS[0];
 
@@ -59,14 +51,9 @@ export function HomeTopPicks({
   }, [inStock, chip]);
 
   const featuredDeals = useMemo(
-    () => sortByDealScore(inStock.filter(isProductDeal)).slice(0, 10),
+    () => sortByDealScore(inStock.filter(isProductDeal)).slice(0, 6),
     [inStock]
   );
-
-  const ratingLabel =
-    storeRating != null
-      ? `${storeRating.toFixed(2)}${reviewCount > 0 ? ` (${reviewCount})` : ""}`
-      : null;
 
   return (
     <section className="container-g mt-10 sm:mt-12">
@@ -104,7 +91,6 @@ export function HomeTopPicks({
           <HomeProductCard
             key={p.id}
             product={p}
-            ratingLabel={ratingLabel}
             showDealBadge={isProductDeal(p)}
             variant="plug"
             width="wide"
@@ -123,15 +109,14 @@ export function HomeTopPicks({
           <h3 className="mt-8 text-center text-base font-bold text-gp-text sm:text-lg">
             Featured Deals of the Week
           </h3>
-          <div className="no-scrollbar snap-rail relative mt-4 -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-4 sm:px-6">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
             {featuredDeals.map((p) => (
               <HomeProductCard
                 key={`deal-${p.id}`}
                 product={p}
-                ratingLabel={ratingLabel}
-                showDealBadge
+                showDealCta
                 variant="plug"
-                width="wide"
+                width="grid"
               />
             ))}
           </div>
