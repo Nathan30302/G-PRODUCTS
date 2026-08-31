@@ -22,25 +22,27 @@ const services = [
   }
 ];
 
-/** Compact homepage strip — services are secondary to the product shop. */
+/** Compact homepage strip for in-store services. */
 export function StoreServicesStrip() {
   return (
-    <section className="container-g mt-14 sm:mt-16">
-      <div className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/45 px-5 py-6 sm:px-7 sm:py-7">
+    <section className="container-g mt-10 pb-4 sm:mt-12 sm:pb-6">
+      <div className="rounded-[1.35rem] border border-gp-border/80 bg-white p-5 shadow-card sm:p-7">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
-            <p className="eyebrow">Also at our stores</p>
-            <h2 className="display mt-2 text-xl sm:text-2xl">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gp-text-subtle">
+              Also at our stores
+            </p>
+            <h2 className="display mt-2 text-xl font-extrabold text-gp-text sm:text-2xl">
               In-store services
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-white/50">
+            <p className="mt-2 text-sm leading-relaxed text-gp-text-muted">
               Shop products online first — visit us for printing, key cutting and
               G-Loans when you need them.
             </p>
           </div>
           <Link
             href="/services"
-            className="inline-flex items-center gap-1 rounded-pill border border-white/10 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:border-brand/35 hover:bg-brand/5"
+            className="inline-flex items-center gap-1 rounded-pill border border-gp-border px-4 py-2 text-sm font-semibold text-ink-700 transition-colors hover:border-ink-700/30 hover:bg-gp-muted"
           >
             All services
             <Icon name="arrow-right" className="h-4 w-4" />
@@ -52,16 +54,16 @@ export function StoreServicesStrip() {
             <Link
               key={s.href}
               href={s.href}
-              className="group flex items-center gap-3 rounded-2xl border border-white/[0.06] bg-ink-950/35 px-4 py-3.5 transition-colors hover:border-brand/30 hover:bg-ink-950/55"
+              className="group flex items-center gap-3 rounded-2xl border border-gp-border/70 bg-gp-muted/50 px-4 py-3.5 transition-all hover:border-ink-700/20 hover:bg-white hover:shadow-card"
             >
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.04] text-brand ring-1 ring-white/[0.06] transition-colors group-hover:bg-brand/10 group-hover:ring-brand/20">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-ink-700/10 text-ink-700 transition-colors group-hover:bg-ink-700 group-hover:text-white">
                 <Icon name={s.icon} className="h-4 w-4" />
               </span>
               <span className="min-w-0 text-left">
-                <span className="block text-sm font-semibold text-white">
+                <span className="block text-sm font-semibold text-gp-text">
                   {s.name}
                 </span>
-                <span className="block text-xs text-white/40">{s.hint}</span>
+                <span className="block text-xs text-gp-text-muted">{s.hint}</span>
               </span>
             </Link>
           ))}
