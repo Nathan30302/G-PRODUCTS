@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/Icons";
 import { pushRecentSearch } from "@/lib/recent-searches";
@@ -38,28 +37,28 @@ export function HomeSearchSection() {
   }
 
   return (
-    <section className="container-g pt-5 pb-2 sm:pt-6">
+    <section className="container-g pt-4 pb-1 sm:pt-5">
       <form
         onSubmit={submit}
-        className="flex items-center gap-3 rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 shadow-card transition-all focus-within:border-ink-700/30 focus-within:shadow-float"
+        className="flex items-center gap-3 rounded-pill border border-gp-border bg-gp-surface px-5 py-3.5 shadow-card transition-all focus-within:border-ink-700/25 focus-within:shadow-float"
       >
-        <Icon name="search" className="h-5 w-5 shrink-0 text-gp-text-subtle" />
+        <Icon name="search" className="h-[1.125rem] w-[1.125rem] shrink-0 text-gp-text-subtle" />
         <input
           name="q"
-          placeholder="What are you looking for?"
-          className="min-w-0 flex-1 bg-transparent text-base text-gp-text outline-none placeholder:text-gp-text-subtle"
+          placeholder="Search phones, tablets, laptops…"
+          className="min-w-0 flex-1 bg-transparent text-[0.9375rem] text-gp-text outline-none placeholder:text-gp-text-subtle"
           aria-label="Search products"
           autoComplete="off"
         />
       </form>
 
-      <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
+      <div className="no-scrollbar mt-3.5 flex gap-2 overflow-x-auto pb-1">
         {QUICK_SEARCHES.map((chip) => (
           <button
             key={chip.label}
             type="button"
             onClick={() => go(chip)}
-            className="shrink-0 rounded-pill border border-gp-border bg-gp-muted px-4 py-2 text-sm font-medium text-gp-text transition-all hover:border-ink-700/25 hover:bg-white hover:shadow-card active:scale-[0.98]"
+            className="shrink-0 rounded-pill border border-gp-border bg-white px-3.5 py-2 text-xs font-semibold text-gp-text transition-all hover:border-ink-700/20 hover:shadow-card active:scale-[0.98] sm:text-sm"
           >
             {chip.label}
           </button>

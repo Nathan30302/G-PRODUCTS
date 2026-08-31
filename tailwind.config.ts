@@ -44,6 +44,11 @@ const config: Config = {
           DEFAULT: "#22c98a",
           soft: "#4ade9f",
           dark: "#17a06d"
+        },
+        warm: {
+          DEFAULT: "#e07a3a",
+          soft: "#f4a261",
+          dark: "#c8652a"
         }
       },
       borderRadius: {
