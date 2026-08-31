@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart";
+import { ThemeProvider } from "@/lib/theme";
 import { ToastProvider } from "@/components/Toast";
 import { SiteChrome } from "@/components/SiteChrome";
 import { AbandonedCartNudge } from "@/components/AbandonedCartNudge";
@@ -70,15 +71,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={jakarta.variable}>
+    <html lang="en" className={jakarta.variable} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("gp-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}})();`
+          }}
+        />
+      </head>
       <body className="min-h-dvh bg-gp-bg font-sans text-gp-text antialiased">
-        <CartProvider>
-          <ToastProvider>
-            <AppSplash />
-            <SiteChrome>{children}</SiteChrome>
-            <AbandonedCartNudge />
-          </ToastProvider>
-        </CartProvider>
+        <ThemeProvider>
+          <CartProvider>
+            <ToastProvider>
+              <AppSplash />
+              <SiteChrome>{children}</SiteChrome>
+              <AbandonedCartNudge />
+            </ToastProvider>
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

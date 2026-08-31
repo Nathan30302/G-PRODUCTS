@@ -42,7 +42,7 @@ export function LocationForm({
           className="field mt-2"
           placeholder="e.g. Campus room, Home"
         />
-        <span className="mt-1.5 block text-[11px] text-white/30">
+        <span className="mt-1.5 block text-[11px] text-gp-text-subtle">
           Helps you pick the right spot at checkout.
         </span>
       </label>

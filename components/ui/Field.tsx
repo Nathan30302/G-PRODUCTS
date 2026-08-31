@@ -58,7 +58,7 @@ export function FieldGroup({
           {error}
         </p>
       ) : hint ? (
-        <p className="mt-1.5 text-xs text-white/40">{hint}</p>
+        <p className="mt-1.5 text-xs text-gp-text-subtle">{hint}</p>
       ) : null}
     </div>
   );

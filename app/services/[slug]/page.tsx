@@ -43,15 +43,15 @@ export default async function ServiceDetailPage({
 
   return (
     <div className="container-g py-10">
-      <nav className="text-sm text-white/40">
-        <Link href="/" className="hover:text-white">
+      <nav className="text-sm text-gp-text-subtle">
+        <Link href="/" className="hover:text-gp-text">
           Home
         </Link>{" "}
         /{" "}
-        <Link href="/services" className="hover:text-white">
+        <Link href="/services" className="hover:text-gp-text">
           Services
         </Link>{" "}
-        / <span className="text-white/70">{service.name}</span>
+        / <span className="text-gp-text-muted">{service.name}</span>
       </nav>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:items-start">
@@ -65,10 +65,10 @@ export default async function ServiceDetailPage({
             {service.name}
           </h1>
           <p className="mt-2 text-brand">{service.tagline}</p>
-          <p className="mt-4 leading-relaxed text-white/60">
+          <p className="mt-4 leading-relaxed text-gp-text-muted">
             {service.description}
           </p>
-          <ul className="mt-6 space-y-2.5 text-sm text-white/50">
+          <ul className="mt-6 space-y-2.5 text-sm text-gp-text-muted">
             <li className="flex items-start gap-2.5">
               <Icon
                 name="map-pin"

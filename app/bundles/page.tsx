@@ -25,7 +25,7 @@ export default async function BundlesPage() {
         <h1 className="mt-2 display heading-page">
           Packs that just make sense
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-white/55 sm:text-base">
+        <p className="mt-3 text-sm leading-relaxed text-gp-text-muted sm:text-base">
           Add a whole set to your cart in one tap. Adjust quantities in the cart
           before checkout — or ask on WhatsApp if you need a custom mix.
         </p>
@@ -37,7 +37,7 @@ export default async function BundlesPage() {
         ))}
       </div>
 
-      <p className="mt-10 text-center text-sm text-white/45">
+      <p className="mt-10 text-center text-sm text-gp-text-subtle">
         Prefer to build your own?{" "}
         <Link href="/search" className="font-semibold text-brand hover:underline">
           Browse the catalogue

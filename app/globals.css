@@ -17,12 +17,19 @@
   --gp-space-16: 4rem;
   /* Light retail surfaces */
   --gp-bg: #ffffff;
+  --gp-bg-rgb: 255 255 255;
   --gp-muted: #f5f5f5;
+  --gp-muted-rgb: 245 245 245;
   --gp-surface: #ffffff;
+  --gp-surface-rgb: 255 255 255;
   --gp-border: #e8ebea;
+  --gp-border-rgb: 232 235 234;
   --gp-text: #1a2321;
+  --gp-text-rgb: 26 35 33;
   --gp-text-muted: #5f6b68;
+  --gp-text-muted-rgb: 95 107 104;
   --gp-text-subtle: #8b9693;
+  --gp-text-subtle-rgb: 139 150 147;
   --gp-primary: #233746;
   --gp-primary-dark: #1a2834;
   --gp-brand-yellow: #e5f34f;
@@ -36,6 +43,26 @@
   --header-h: calc(var(--header-bar) + var(--search-bar) + var(--safe-top));
   --mobile-nav-h: 3.75rem;
   --mobile-nav-offset: calc(var(--mobile-nav-h) + max(1rem, var(--safe-bottom)));
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --gp-bg: #121a18;
+  --gp-bg-rgb: 18 26 24;
+  --gp-muted: #1a2422;
+  --gp-muted-rgb: 26 36 34;
+  --gp-surface: #1e2a28;
+  --gp-surface-rgb: 30 42 40;
+  --gp-border: #2d3b38;
+  --gp-border-rgb: 45 59 56;
+  --gp-text: #eef2f1;
+  --gp-text-rgb: 238 242 241;
+  --gp-text-muted: #9aaba6;
+  --gp-text-muted-rgb: 154 171 166;
+  --gp-text-subtle: #6b7d78;
+  --gp-text-subtle-rgb: 107 125 120;
+  --gp-primary: #233746;
+  --gp-primary-dark: #1a2834;
 }
 
 @media (min-width: 640px) {
@@ -110,6 +137,11 @@ html {
 ::selection {
   background-color: rgba(229, 243, 79, 0.4);
   color: #1a2834;
+}
+
+[data-theme="dark"] ::selection {
+  background-color: rgba(200, 224, 63, 0.35);
+  color: #eef2f1;
 }
 
 /* Accessible focus ring, brand-tinted */
@@ -505,7 +537,7 @@ html {
   .auth-screen {
     @apply relative flex min-h-dvh flex-col items-center justify-center px-4 py-10 sm:px-6;
     padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
-    padding-top: max(2.5rem, env(safe-area-inset-top));
+    padding-top: max(3rem, calc(env(safe-area-inset-top) + 1rem));
   }
 
   .auth-screen-bg {
@@ -541,7 +573,7 @@ html {
   }
 
   .auth-card {
-    @apply overflow-hidden rounded-[1.75rem] border border-gp-border/80 bg-white shadow-[0_24px_60px_-28px_rgba(35,55,70,0.18)];
+    @apply overflow-hidden rounded-[1.75rem] border border-gp-border/80 bg-gp-surface shadow-[0_24px_60px_-28px_rgba(35,55,70,0.18)];
   }
 
   .auth-card-header {
@@ -557,7 +589,7 @@ html {
   }
 
   .auth-tab-active {
-    @apply bg-white text-ink-850 shadow-card;
+    @apply bg-gp-surface text-ink-850 shadow-card;
   }
 
   .auth-card-body {
@@ -581,7 +613,7 @@ html {
   }
 
   .auth-perk {
-    @apply inline-flex items-center gap-1.5 rounded-pill border border-gp-border/80 bg-white px-3 py-1.5 text-[11px] font-semibold text-gp-text-muted;
+    @apply inline-flex items-center gap-1.5 rounded-pill border border-gp-border/80 bg-gp-surface px-3 py-1.5 text-[11px] font-semibold text-gp-text-muted;
   }
 
   .auth-back {
@@ -611,7 +643,7 @@ html {
   }
 
   .shop-find-chip {
-    @apply inline-flex items-center gap-1.5 rounded-pill border border-gp-border bg-gp-muted/80 px-3.5 py-2 text-sm font-medium text-gp-text transition-colors hover:border-ink-700/20 hover:bg-white;
+    @apply inline-flex items-center gap-1.5 rounded-pill border border-gp-border bg-gp-muted/80 px-3.5 py-2 text-sm font-medium text-gp-text transition-colors hover:border-ink-700/20 hover:bg-gp-surface;
   }
 
   /* Premium app opening splash — white / yellow / green sunburst */

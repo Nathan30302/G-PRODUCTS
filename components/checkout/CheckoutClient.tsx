@@ -400,7 +400,7 @@ export function CheckoutClient({
         Secure checkout
       </p>
       <h1 className="mt-1.5 display heading-page">Checkout</h1>
-      <p className="mt-2 text-sm text-white/50">
+      <p className="mt-2 text-sm text-gp-text-muted">
         Delivery details, then pay with Mobile Money.
       </p>
 
@@ -417,7 +417,7 @@ export function CheckoutClient({
               <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
                 1
               </span>
-              <h2 className="text-lg font-bold text-white">Delivery details</h2>
+              <h2 className="text-lg font-bold text-gp-text">Delivery details</h2>
             </div>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <FieldGroup label="Full name" htmlFor="checkout-name">
@@ -460,7 +460,7 @@ export function CheckoutClient({
               </div>
             </div>
             {!prefill?.address ? (
-              <p className="mt-4 text-xs text-white/40">
+              <p className="mt-4 text-xs text-gp-text-subtle">
                 <Link href="/profile/account" className="text-brand hover:underline">
                   Save a location in your profile
                 </Link>{" "}
@@ -474,9 +474,9 @@ export function CheckoutClient({
               <span className="grid h-8 w-8 place-items-center rounded-full bg-brand/15 text-sm font-bold text-brand">
                 2
               </span>
-              <h2 className="text-lg font-bold text-white">Payment method</h2>
+              <h2 className="text-lg font-bold text-gp-text">Payment method</h2>
             </div>
-            <p className="mt-1.5 pl-11 text-sm text-white/50">
+            <p className="mt-1.5 pl-11 text-sm text-gp-text-muted">
               Pay securely with Mobile Money.
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -488,7 +488,7 @@ export function CheckoutClient({
                   className={`relative rounded-xl border p-4 text-left transition-all ${
                     method === opt.id
                       ? "border-brand bg-brand/10 shadow-brand-glow"
-                      : "border-white/10 bg-ink-900 hover:border-white/20"
+                      : "border-gp-border bg-gp-muted hover:border-ink-700/25"
                   }`}
                 >
                   {method === opt.id && (
@@ -496,14 +496,14 @@ export function CheckoutClient({
                       <Icon name="check" className="h-3 w-3" />
                     </span>
                   )}
-                  <span className="block font-bold text-white">
+                  <span className="block font-bold text-gp-text">
                     {opt.label}
                   </span>
-                  <span className="text-sm text-white/50">{opt.number}</span>
+                  <span className="text-sm text-gp-text-muted">{opt.number}</span>
                 </button>
               ))}
             </div>
-            <p className="mt-4 flex items-start gap-2 rounded-lg bg-ink-900 p-3 text-xs text-white/40">
+            <p className="mt-4 flex items-start gap-2 rounded-lg bg-gp-muted p-3 text-xs text-gp-text-muted">
               <Icon
                 name="shield"
                 className="mt-0.5 h-4 w-4 shrink-0 text-brand/70"
@@ -517,26 +517,26 @@ export function CheckoutClient({
 
         <div className="h-fit lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
           <Panel className="p-4 sm:p-6">
-            <h2 className="text-lg font-bold text-white">Order summary</h2>
+            <h2 className="text-lg font-bold text-gp-text">Order summary</h2>
             <div className="mt-4 space-y-2.5">
               {items.map((i) => (
                 <div
                   key={i.id}
-                  className="flex justify-between gap-2 text-sm text-white/60"
+                  className="flex justify-between gap-2 text-sm text-gp-text-muted"
                 >
                   <span className="pr-2">
                     {i.name}{" "}
-                    <span className="text-white/40">x{i.qty}</span>
+                    <span className="text-gp-text-subtle">x{i.qty}</span>
                   </span>
-                  <span className="shrink-0 text-white/80">
+                  <span className="shrink-0 font-medium text-gp-text">
                     {formatPrice(i.price * i.qty)}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="mt-4 border-t border-white/10 pt-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-white/40">
+            <div className="mt-4 border-t border-gp-border pt-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gp-text-subtle">
                 Promo code
               </p>
               <div className="mt-2 flex gap-2">
@@ -551,7 +551,7 @@ export function CheckoutClient({
                 />
                 <button
                   type="button"
-                  className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold text-white/80 hover:border-brand/40 hover:text-brand"
+                  className="rounded-xl border border-gp-border px-3 py-2 text-xs font-bold text-gp-text hover:border-brand/40 hover:text-ink-700"
                   onClick={() => {
                     const result = applyPromoCode(promoInput, total);
                     if (!result.ok) {
@@ -588,14 +588,14 @@ export function CheckoutClient({
                   </button>
                 </p>
               ) : (
-                <p className="mt-1.5 text-[10px] text-white/30">
+                <p className="mt-1.5 text-[10px] text-gp-text-subtle">
                   {listPublicPromoHints().join(" · ")}
                 </p>
               )}
             </div>
 
             {discount > 0 ? (
-              <div className="mt-3 flex justify-between text-sm text-white/50">
+              <div className="mt-3 flex justify-between text-sm text-gp-text-muted">
                 <span>Subtotal</span>
                 <span className="tabular-nums">{formatPrice(total)}</span>
               </div>
@@ -606,7 +606,7 @@ export function CheckoutClient({
                 <span className="tabular-nums">−{formatPrice(discount)}</span>
               </div>
             ) : null}
-            <div className="mt-4 flex justify-between border-t border-white/10 pt-4 text-lg font-black text-white">
+            <div className="mt-4 flex justify-between border-t border-gp-border pt-4 text-lg font-black text-gp-text">
               <span>Total</span>
               <span>{formatPrice(payTotal)}</span>
             </div>
@@ -657,8 +657,8 @@ export function CheckoutClient({
         <ShopStickyBar>
           <div className="flex items-center gap-3">
             <div className="min-w-0">
-              <p className="text-[11px] text-white/45">Total</p>
-              <p className="text-lg font-extrabold tabular-nums text-white">
+              <p className="text-[11px] text-gp-text-subtle">Total</p>
+              <p className="text-lg font-extrabold tabular-nums text-gp-text">
               {formatPrice(payTotal)}
               </p>
             </div>
@@ -666,7 +666,7 @@ export function CheckoutClient({
               type="button"
               onClick={placeOrder}
               disabled={!canPlace || phase === "submitting"}
-              className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98] disabled:bg-ink-700 disabled:text-white/40"
+              className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98] disabled:bg-gp-border disabled:text-gp-text-subtle"
             >
               {phase === "submitting" ? "Placing..." : "Place order"}
             </button>

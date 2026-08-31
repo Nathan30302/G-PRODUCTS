@@ -57,7 +57,7 @@ export function ShopEmptyState({
 export function ShopStickyBar({ children }: { children: ReactNode }) {
   return (
     <div
-      className="fixed inset-x-0 z-40 border-t border-gp-border bg-white/96 px-4 py-3 shadow-float backdrop-blur-lg md:pb-[max(0.75rem,var(--safe-bottom))] lg:hidden"
+      className="fixed inset-x-0 z-40 border-t border-gp-border bg-gp-surface/96 px-4 py-3 shadow-float backdrop-blur-lg md:pb-[max(0.75rem,var(--safe-bottom))] lg:hidden"
       style={{ bottom: "var(--mobile-nav-offset)" }}
     >
       {children}

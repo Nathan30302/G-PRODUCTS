@@ -5,6 +5,7 @@ import type { CustomerSession } from "@/lib/customer-auth";
 import { formatPrice, formatDateTime } from "@/lib/format";
 import { parseServiceFileUrls } from "@/lib/service-files";
 import { LocationForm } from "@/components/profile/LocationForm";
+import { ThemeSettings } from "@/components/profile/ThemeSettings";
 import { LogoutButton } from "@/components/LogoutButton";
 import {
   ShopEmptyState,
@@ -148,6 +149,8 @@ export function AccountHome({
           />
         </div>
       </section>
+
+      <ThemeSettings />
 
       <section className="mt-12">
         <div className="flex items-end justify-between gap-3">

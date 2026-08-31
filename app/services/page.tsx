@@ -16,11 +16,11 @@ export default async function ServicesPage() {
 
   return (
     <div className="container-g py-10">
-      <nav className="text-sm text-white/40">
-        <Link href="/" className="transition-colors hover:text-white">
+      <nav className="text-sm text-gp-text-subtle">
+        <Link href="/" className="transition-colors hover:text-gp-text">
           Home
         </Link>{" "}
-        / <span className="text-white/70">Services</span>
+        / <span className="text-gp-text-muted">Services</span>
       </nav>
 
       <header className="relative mt-5 max-w-3xl overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-br from-ink-900 via-ink-900/80 to-ink-950 p-6 sm:p-8">

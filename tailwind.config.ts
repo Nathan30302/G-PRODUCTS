@@ -26,14 +26,14 @@ const config: Config = {
       },
       colors: {
         gp: {
-          bg: "#FFFFFF",
-          muted: "#F5F5F5",
-          surface: "#FFFFFF",
-          border: "#E8EBEA",
+          bg: "rgb(var(--gp-bg-rgb) / <alpha-value>)",
+          muted: "rgb(var(--gp-muted-rgb) / <alpha-value>)",
+          surface: "rgb(var(--gp-surface-rgb) / <alpha-value>)",
+          border: "rgb(var(--gp-border-rgb) / <alpha-value>)",
           text: {
-            DEFAULT: "#1A2321",
-            muted: "#5F6B68",
-            subtle: "#8B9693"
+            DEFAULT: "rgb(var(--gp-text-rgb) / <alpha-value>)",
+            muted: "rgb(var(--gp-text-muted-rgb) / <alpha-value>)",
+            subtle: "rgb(var(--gp-text-subtle-rgb) / <alpha-value>)"
           }
         },
         // G-Products slate — logo background #233746
