@@ -7,13 +7,13 @@ export function CategoryBrowseStack({ tiles }: { tiles: BrowseTileView[] }) {
   if (tiles.length === 0) return null;
 
   return (
-    <section className="space-y-3 sm:space-y-3.5" aria-label="Browse categories">
+    <section className="space-y-3.5 sm:space-y-4" aria-label="Browse categories">
       {tiles.map((tile) => (
         <Link
           key={tile.id}
           href={tile.href}
-          className={`group relative block w-full overflow-hidden rounded-2xl border border-gp-border shadow-card transition-all hover:shadow-card-hover active:scale-[0.995] ${
-            tile.isPromo ? "h-[7.5rem] sm:h-[8.5rem]" : "h-[5.75rem] sm:h-[6.5rem]"
+          className={`group relative block w-full overflow-hidden rounded-3xl border border-gp-border/80 shadow-card transition-all hover:shadow-card-hover active:scale-[0.995] ${
+            tile.isPromo ? "h-[8.5rem] sm:h-[9.5rem]" : "h-[7rem] sm:h-[8rem]"
           }`}
         >
           {tile.imageUrl ? (
@@ -34,10 +34,10 @@ export function CategoryBrowseStack({ tiles }: { tiles: BrowseTileView[] }) {
               }`}
             />
           )}
-          <span className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-black/10" />
-          <span className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          <span className="absolute inset-0 bg-black/30 transition-colors group-hover:bg-black/35" />
+          <span className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-black/5" />
           <span
-            className={`absolute bottom-0 left-0 right-0 px-4 pb-4 font-display font-extrabold tracking-tight text-white drop-shadow-sm sm:px-5 sm:pb-5 ${
+            className={`absolute inset-0 flex items-center justify-center px-5 text-center font-display font-extrabold tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] ${
               tile.isPromo ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"
             }`}
           >

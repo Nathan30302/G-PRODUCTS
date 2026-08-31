@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, Suspense, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -48,14 +48,18 @@ export function SiteChrome({
       >
         Skip to content
       </a>
-      <Navbar auth={auth} />
+      <Suspense fallback={null}>
+        <Navbar auth={auth} />
+      </Suspense>
       <main
         id="main-content"
         className="min-h-[70vh] pb-[calc(var(--mobile-nav-offset)+0.75rem)] md:pb-0"
       >
         {children}
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       <MobileNav auth={auth} />
     </div>
   );

@@ -8,8 +8,8 @@ import { siteConfig } from "@/config/site";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Search products",
-  description: `Find electronics, stationery, chargers, phone accessories and more at ${siteConfig.name}. Fast search across the full catalogue.`
+  title: "Shop",
+  description: `Browse electronics, stationery, chargers, phone accessories and more at ${siteConfig.name}.`
 };
 
 export default async function SearchPage({
@@ -28,16 +28,17 @@ export default async function SearchPage({
       : products;
   const showBrowse = !q?.trim() && deals !== "1";
 
+  if (showBrowse) {
+    return (
+      <div className="container-g px-4 pb-[calc(var(--mobile-nav-offset)+0.5rem)] pt-1 sm:pt-2 md:pb-10 md:pt-4">
+        <BrowseTilesSection />
+      </div>
+    );
+  }
+
   return (
-    <>
-      {showBrowse ? (
-        <div className="container-g pt-4 sm:pt-6">
-          <BrowseTilesSection />
-        </div>
-      ) : null}
-      <Suspense fallback={null}>
-        <SearchClient products={list} categories={categories} />
-      </Suspense>
-    </>
+    <Suspense fallback={null}>
+      <SearchClient products={list} categories={categories} />
+    </Suspense>
   );
 }

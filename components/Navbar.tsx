@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/cart";
@@ -14,8 +14,14 @@ import type { ShopAuth } from "@/components/SiteChrome";
 export function Navbar({ auth = null }: { auth?: ShopAuth }) {
   const { count } = useCart();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const shopBrowseMode =
+    pathname === "/search" &&
+    !searchParams.get("q")?.trim() &&
+    searchParams.get("deals") !== "1";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -53,10 +59,14 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
     <header
       className={`sticky top-0 z-50 border-b border-gp-border bg-gp-surface/95 shadow-sm backdrop-blur-xl transition-shadow duration-300 ${
         scrolled ? "shadow-md" : ""
-      }`}
+      } ${shopBrowseMode ? "md:border-b md:shadow-sm" : ""}`}
       style={{ paddingTop: "var(--safe-top)" }}
     >
-      <div className="container-g flex h-14 items-center justify-between gap-2 sm:h-16 sm:gap-3">
+      <div
+        className={`container-g flex h-14 items-center justify-between gap-2 sm:h-16 sm:gap-3 ${
+          shopBrowseMode ? "hidden md:flex" : ""
+        }`}
+      >
         <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
           <button
             className={`${iconBtn} lg:hidden`}
@@ -153,13 +163,15 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
         </div>
       </div>
 
-      <div className="container-g pb-3">
+      <div className={`container-g ${shopBrowseMode ? "py-3 md:pb-3" : "pb-3"}`}>
         <Suspense fallback={null}>
           <ShopSearchBar />
         </Suspense>
       </div>
 
-      <div className="hidden border-t border-gp-border lg:block">
+      <div
+        className={`border-t border-gp-border ${shopBrowseMode ? "hidden" : "hidden lg:block"}`}
+      >
         <div className="container-g no-scrollbar flex gap-1 overflow-x-auto py-2">
           {catalogGroups
             .filter((c) => !c.href)

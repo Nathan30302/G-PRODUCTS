@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
 import { siteConfig, whatsappHref, configuredSocialLinks } from "@/config/site";
 import { Logo } from "@/components/Logo";
@@ -29,8 +32,19 @@ const companyLinks = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const shopBrowseMode =
+    pathname === "/search" &&
+    !searchParams.get("q")?.trim() &&
+    searchParams.get("deals") !== "1";
+
   return (
-    <footer className="relative mt-16 border-t border-gp-border bg-gp-surface sm:mt-24">
+    <footer
+      className={`relative mt-16 border-t border-gp-border bg-gp-surface sm:mt-24 ${
+        shopBrowseMode ? "hidden md:block" : ""
+      }`}
+    >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
       <div className="container-g grid grid-cols-2 gap-8 py-12 sm:gap-10 sm:py-14 md:grid-cols-3 lg:grid-cols-12">
         <div className="col-span-2 md:col-span-3 lg:col-span-4">

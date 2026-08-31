@@ -31,8 +31,8 @@
   --header-h: calc(var(--header-bar) + var(--search-bar) + var(--safe-top));
   --cats-bar: 0px;
   --chrome-h: calc(var(--header-h) + var(--cats-bar));
-  --mobile-nav-h: 3.25rem;
-  --mobile-nav-offset: calc(var(--mobile-nav-h) + max(0.75rem, var(--safe-bottom)));
+  --mobile-nav-h: 3.75rem;
+  --mobile-nav-offset: calc(var(--mobile-nav-h) + max(1rem, var(--safe-bottom)));
 }
 
 @media (min-width: 640px) {

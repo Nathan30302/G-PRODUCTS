@@ -83,7 +83,7 @@ export function SearchClient({
           </div>
         </header>
 
-        <div className="mt-6 rounded-[1.35rem] border border-gp-border bg-gp-bg p-3 sm:p-4">
+        <div className="mt-6 rounded-[1.35rem] border border-gp-border bg-gp-surface p-3 sm:p-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-gp-text-subtle">
               Stock
@@ -101,14 +101,14 @@ export function SearchClient({
                 onClick={() => setStock(id)}
                 className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${
                   stock === id
-                    ? "bg-white text-ink-950"
-                    : "bg-gp-bg text-gp-text-muted hover:text-white/80"
+                    ? "bg-gp-text text-white shadow-sm"
+                    : "border border-gp-border bg-gp-bg text-gp-text-muted hover:border-accent/30 hover:text-gp-text"
                 }`}
               >
                 {label}
               </button>
             ))}
-            <span className="mx-1 hidden h-5 w-px bg-white/10 sm:inline" />
+            <span className="mx-1 hidden h-5 w-px bg-gp-border sm:inline" />
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-gp-text-subtle">
               Sort
             </span>
@@ -125,8 +125,8 @@ export function SearchClient({
                 onClick={() => setSort(id)}
                 className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${
                   sort === id
-                    ? "bg-accent text-white"
-                    : "bg-gp-bg text-gp-text-muted hover:text-white/80"
+                    ? "bg-accent text-white shadow-sm"
+                    : "border border-gp-border bg-gp-bg text-gp-text-muted hover:border-accent/30 hover:text-gp-text"
                 }`}
               >
                 {label}
@@ -140,8 +140,8 @@ export function SearchClient({
               onClick={() => setCat("all")}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-sm font-semibold transition-all ${
                 cat === "all"
-                  ? "bg-accent text-white"
-                  : "border border-gp-border bg-gp-surface text-gp-text-muted hover:border-accent/30 hover:text-white"
+                  ? "bg-accent text-white shadow-sm"
+                  : "border border-gp-border bg-gp-bg text-gp-text-muted hover:border-accent/30 hover:text-gp-text"
               }`}
             >
               All categories
@@ -153,14 +153,14 @@ export function SearchClient({
                 onClick={() => setCat(c.slug)}
                 className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-sm font-semibold transition-all ${
                   cat === c.slug
-                    ? "bg-accent text-white"
-                    : "border border-gp-border bg-gp-surface text-gp-text-muted hover:border-accent/30 hover:text-white"
+                    ? "bg-accent text-white shadow-sm"
+                    : "border border-gp-border bg-gp-bg text-gp-text-muted hover:border-accent/30 hover:text-gp-text"
                 }`}
               >
                 <Icon
                   name={c.icon}
                   className={`h-3.5 w-3.5 ${
-                    cat === c.slug ? "text-ink-950/70" : "text-accent"
+                    cat === c.slug ? "text-white/90" : "text-accent"
                   }`}
                 />
                 {c.name}
@@ -240,7 +240,7 @@ export function SearchClient({
                       <Icon name={category.icon} className="h-5 w-5" />
                     </span>
                     <div>
-                      <h2 className="display text-xl">{category.name}</h2>
+                      <h2 className="display text-xl text-gp-text">{category.name}</h2>
                       <p className="mt-0.5 text-sm text-gp-text-muted">
                         {category.tagline}
                       </p>
