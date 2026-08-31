@@ -13,7 +13,17 @@ const config: Config = {
         mono: ["ui-monospace", "SFMono-Regular", "monospace"]
       },
       colors: {
-        // G-Products palette - dark teal/petrol base from the logo banner
+        gp: {
+          bg: "#F7F8F7",
+          surface: "#FFFFFF",
+          border: "#E3E8E6",
+          text: {
+            DEFAULT: "#1A2321",
+            muted: "#5F6B68",
+            subtle: "#8B9693"
+          }
+        },
+        // G-Products palette - dark teal kept for admin / logo contexts
         ink: {
           950: "#06181c",
           900: "#0a2429",
@@ -41,12 +51,12 @@ const config: Config = {
         pill: "999px"
       },
       boxShadow: {
-        card: "0 8px 30px rgba(0,0,0,0.35)",
+        card: "0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)",
         "card-hover":
-          "0 18px 50px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04)",
+          "0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
         glow: "0 0 0 1px rgba(246,212,0,0.35), 0 10px 40px rgba(246,212,0,0.18)",
-        "accent-glow": "0 10px 40px -8px rgba(34,201,138,0.45)",
-        "brand-glow": "0 10px 40px -8px rgba(246,212,0,0.4)"
+        "accent-glow": "0 10px 40px -8px rgba(34,201,138,0.25)",
+        "brand-glow": "0 4px 14px -2px rgba(246,212,0,0.35)"
       },
       transitionTimingFunction: {
         "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)"

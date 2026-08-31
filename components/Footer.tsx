@@ -30,22 +30,22 @@ const companyLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-16 border-t border-white/[0.06] bg-ink-950/80 sm:mt-24">
+    <footer className="relative mt-16 border-t border-gp-border bg-gp-surface sm:mt-24">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
       <div className="container-g grid grid-cols-2 gap-8 py-12 sm:gap-10 sm:py-14 md:grid-cols-3 lg:grid-cols-12">
         <div className="col-span-2 md:col-span-3 lg:col-span-4">
           <Logo size="lg" />
-          <p className="mt-4 text-sm font-semibold text-brand/90">
+          <p className="mt-4 text-sm font-semibold text-accent/90">
             {siteConfig.tagline}
           </p>
-          <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/50">
+          <p className="mt-2 max-w-xs text-sm leading-relaxed text-gp-text-muted">
             {siteConfig.description}
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             {Object.values(siteConfig.mobileMoney).map((m) => (
               <span
                 key={m.label}
-                className="rounded-pill border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-white/55"
+                className="rounded-pill border border-gp-border bg-gp-bg px-3 py-1 text-xs font-medium text-gp-text-muted"
               >
                 {m.label}
               </span>
@@ -54,29 +54,29 @@ export function Footer() {
         </div>
 
         <div className="lg:col-span-2">
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
             Shop
           </h4>
-          <ul className="mt-4 space-y-2.5 text-sm text-white/55">
+          <ul className="mt-4 space-y-2.5 text-sm text-gp-text-muted">
             {catalogGroups
               .filter((g) => !g.href)
               .map((g) => (
                 <li key={g.slug}>
                   <Link
                     href={hrefForCatalogGroup(g)}
-                    className="transition-colors hover:text-brand"
+                    className="transition-colors hover:text-accent"
                   >
                     {g.name}
                   </Link>
                 </li>
               ))}
             <li>
-              <Link href="/search?deals=1" className="transition-colors hover:text-brand">
+              <Link href="/search?deals=1" className="transition-colors hover:text-accent">
                 Hot Deals
               </Link>
             </li>
             <li>
-              <Link href="/bundles" className="transition-colors hover:text-brand">
+              <Link href="/bundles" className="transition-colors hover:text-accent">
                 Bundles &amp; packs
               </Link>
             </li>
@@ -84,15 +84,15 @@ export function Footer() {
         </div>
 
         <div className="lg:col-span-2">
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
             Services
           </h4>
-          <ul className="mt-4 space-y-2.5 text-sm text-white/55">
+          <ul className="mt-4 space-y-2.5 text-sm text-gp-text-muted">
             {serviceLinks.map((s) => (
               <li key={s.href}>
                 <Link
                   href={s.href}
-                  className="transition-colors hover:text-brand"
+                  className="transition-colors hover:text-accent"
                 >
                   {s.name}
                 </Link>
@@ -102,15 +102,15 @@ export function Footer() {
         </div>
 
         <div className="lg:col-span-2">
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
             Help
           </h4>
-          <ul className="mt-4 space-y-2.5 text-sm text-white/55">
+          <ul className="mt-4 space-y-2.5 text-sm text-gp-text-muted">
             {helpLinks.map((s) => (
               <li key={s.href}>
                 <Link
                   href={s.href}
-                  className="transition-colors hover:text-brand"
+                  className="transition-colors hover:text-accent"
                 >
                   {s.name}
                 </Link>
@@ -120,15 +120,15 @@ export function Footer() {
         </div>
 
         <div className="col-span-2 md:col-span-1 lg:col-span-2">
-          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+          <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
             Company
           </h4>
-          <ul className="mt-4 space-y-2.5 text-sm text-white/55">
+          <ul className="mt-4 space-y-2.5 text-sm text-gp-text-muted">
             {companyLinks.map((s) => (
               <li key={s.href}>
                 <Link
                   href={s.href}
-                  className="transition-colors hover:text-brand"
+                  className="transition-colors hover:text-accent"
                 >
                   {s.name}
                 </Link>
@@ -138,32 +138,32 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="container-g border-t border-white/[0.06] pb-6 pt-8">
+      <div className="container-g border-t border-gp-border pb-6 pt-8">
         <div className="grid gap-8 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
               Connect
             </h4>
-            <p className="mt-3 max-w-md text-sm text-white/55">
+            <p className="mt-3 max-w-md text-sm text-gp-text-muted">
               Call or WhatsApp for stock, printing and services.
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {siteConfig.contacts.map((c) => (
                 <div
                   key={c.tel}
-                  className="flex items-center justify-between gap-2 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-3"
+                  className="flex items-center justify-between gap-2 rounded-2xl border border-gp-border bg-gp-bg px-3.5 py-3"
                 >
-                  <span className="text-sm font-semibold tabular-nums text-white">
+                  <span className="text-sm font-semibold tabular-nums text-gp-text">
                     {c.display}
                   </span>
                   <span className="flex shrink-0 items-center gap-2">
                     <a
                       href={`tel:${c.tel}`}
-                      className="text-xs font-semibold text-brand hover:underline"
+                      className="text-xs font-semibold text-accent hover:underline"
                     >
                       Call
                     </a>
-                    <span className="text-white/20">·</span>
+                    <span className="text-gp-text-subtle">·</span>
                     <a
                       href={`https://wa.me/${c.whatsapp}`}
                       target="_blank"
@@ -185,7 +185,7 @@ export function Footer() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-pill border border-white/10 px-3 py-1.5 text-xs font-semibold text-white/60 transition hover:border-brand/40 hover:text-brand"
+                  className="rounded-pill border border-gp-border px-3 py-1.5 text-xs font-semibold text-gp-text-muted transition hover:border-accent/40 hover:text-accent"
                 >
                   {s.label}
                 </a>
@@ -204,15 +204,15 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/[0.06] py-6">
-        <div className="container-g flex flex-col items-center justify-between gap-3 text-xs text-white/35 sm:flex-row sm:items-start">
+      <div className="border-t border-gp-border py-6">
+        <div className="container-g flex flex-col items-center justify-between gap-3 text-xs text-gp-text-subtle sm:flex-row sm:items-start">
           <p className="text-center sm:text-left">
             &copy; {new Date().getFullYear()} {siteConfig.legalName}. All rights
             reserved.
           </p>
           <ul className="flex max-w-xl flex-wrap justify-center gap-x-2 gap-y-1 text-center sm:justify-end sm:text-right">
             {siteConfig.locationLabels.map((loc) => (
-              <li key={loc} className="after:ml-2 after:text-white/20 after:content-['·'] last:after:content-none">
+              <li key={loc} className="after:ml-2 after:text-gp-text-subtle after:content-['·'] last:after:content-none">
                 {loc}
               </li>
             ))}

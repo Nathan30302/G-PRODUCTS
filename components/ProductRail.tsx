@@ -56,14 +56,14 @@ export function ProductRail({
     return (
       <section className={`${wrap} mt-10 sm:mt-12 ${className}`}>
         {eyebrow ? (
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
             {eyebrow}
           </p>
         ) : null}
-        <h2 className="display mt-1 text-lg font-extrabold text-white sm:text-xl">
+        <h2 className="display mt-1 text-lg font-extrabold text-gp-text sm:text-xl">
           {title}
         </h2>
-        <p className="mt-4 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-5 py-8 text-center text-sm text-white/45">
+        <p className="mt-4 rounded-2xl border border-dashed border-gp-border bg-gp-bg px-5 py-8 text-center text-sm text-gp-text-muted">
           New products coming soon — browse the full shop in the meantime.
         </p>
       </section>
@@ -77,7 +77,7 @@ export function ProductRail({
           {eyebrow ? (
             <p
               className={`text-[10px] font-bold uppercase tracking-[0.18em] ${
-                accent === "accent" ? "text-accent/90" : "text-white/40"
+                accent === "accent" ? "text-accent/90" : "text-gp-text-subtle"
               }`}
             >
               {eyebrow}
@@ -87,7 +87,7 @@ export function ProductRail({
             {title}
           </h2>
           {subtitle ? (
-            <p className="mt-1.5 hidden max-w-lg text-sm text-white/45 sm:block">
+            <p className="mt-1.5 hidden max-w-lg text-sm text-gp-text-muted sm:block">
               {subtitle}
             </p>
           ) : null}
@@ -95,7 +95,7 @@ export function ProductRail({
         {href ? (
           <Link
             href={href}
-            className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-brand transition-colors hover:text-brand-soft sm:inline-flex"
+            className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-brand transition-colors hover:text-accent-soft sm:inline-flex"
           >
             {hrefLabel}
             <Icon name="arrow-right" className="h-4 w-4" />
@@ -105,12 +105,12 @@ export function ProductRail({
 
       <div className="relative mt-4">
         <div
-          className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-ink-950 to-transparent transition-opacity ${
+          className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-gp-bg to-transparent transition-opacity ${
             atStart ? "opacity-0" : "opacity-100"
           }`}
         />
         <div
-          className={`pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-ink-950 to-transparent transition-opacity ${
+          className={`pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-gp-bg to-transparent transition-opacity ${
             atEnd ? "opacity-0" : "opacity-100"
           }`}
         />

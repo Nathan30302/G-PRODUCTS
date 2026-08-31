@@ -41,17 +41,13 @@ export function SiteChrome({
   if (isAdmin) return <>{children}</>;
 
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-ink-950 text-white">
+    <div className="relative min-h-dvh overflow-x-hidden bg-gp-bg text-gp-text">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-[max(1rem,var(--safe-top))] focus:z-[100] focus:rounded-pill focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-ink-950"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-[max(1rem,var(--safe-top))] focus:z-[100] focus:rounded-pill focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
       >
         Skip to content
       </a>
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.07),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.055),_transparent_45%)]" />
-      </div>
       <Navbar auth={auth} />
       <main
         id="main-content"

@@ -22,9 +22,8 @@ export function MobileNav({ auth = null }: { auth?: ShopAuth }) {
   const accountHref = auth?.home ?? "/profile";
 
   return (
-    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-12 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
-      {/* Plug-sized compact floating pill */}
-      <div className="pointer-events-auto flex items-center gap-0.5 rounded-pill border border-white/10 bg-ink-950/92 px-1.5 py-1 shadow-[0_12px_40px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.04] backdrop-blur-2xl">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-50 border-t border-gp-border bg-gp-surface/95 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-lg md:hidden">
+      <div className="pointer-events-auto mx-auto flex max-w-md items-stretch justify-around px-2 pt-1">
         {items.map((it) => {
           const href = it.href === "/profile" ? accountHref : it.href;
           const active =
@@ -38,21 +37,22 @@ export function MobileNav({ auth = null }: { auth?: ShopAuth }) {
             <Link
               key={it.href}
               href={href}
-              className={`relative flex w-[3.1rem] flex-col items-center gap-0.5 rounded-pill px-0.5 py-1.5 text-[9px] font-semibold tracking-normal transition-all duration-300 ${
-                active
-                  ? "bg-brand/15 text-brand"
-                  : "text-white/40 hover:text-white/70"
+              className={`relative flex min-w-[4rem] flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-semibold transition-colors ${
+                active ? "text-accent" : "text-gp-text-subtle"
               }`}
             >
-              <span className="relative grid h-[1.1rem] w-[1.1rem] place-items-center">
-                <Icon name={it.icon} className="h-3.5 w-3.5" />
+              <span className="relative grid h-6 w-6 place-items-center">
+                <Icon name={it.icon} className="h-5 w-5" />
                 {it.href === "/cart" && count > 0 && (
-                  <span className="absolute -right-2 -top-1.5 grid h-3 min-w-3 place-items-center rounded-full bg-brand px-0.5 text-[7px] font-bold leading-none text-ink-950">
-                    {count}
+                  <span className="absolute -right-2.5 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-white">
+                    {count > 9 ? "9+" : count}
                   </span>
                 )}
               </span>
               {it.label}
+              {active ? (
+                <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-accent" />
+              ) : null}
             </Link>
           );
         })}
