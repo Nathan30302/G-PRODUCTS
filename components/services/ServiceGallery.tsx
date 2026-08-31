@@ -74,7 +74,7 @@ export function ServiceGallery({
     <div className="w-full">
       <div
         ref={frameRef}
-        className="group relative aspect-[4/3] touch-pan-y overflow-hidden rounded-[1.35rem] border border-white/[0.08] bg-ink-850 shadow-card"
+        className="group relative aspect-[4/3] touch-pan-y overflow-hidden rounded-[1.35rem] border border-gp-border bg-gp-muted shadow-card"
       >
         {list.length > 0 ? (
           <motion.div
@@ -152,8 +152,8 @@ export function ServiceGallery({
                   type="button"
                   aria-label={`Go to photo ${i + 1}`}
                   onClick={() => setActive(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === index ? "w-6 bg-brand" : "w-1.5 bg-white/35"
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    i === index ? "w-7 bg-brand" : "w-2 bg-white/40"
                   }`}
                 />
               ))}
@@ -177,7 +177,7 @@ export function ServiceGallery({
               className={`relative h-14 w-[4.5rem] shrink-0 overflow-hidden rounded-xl border transition-all duration-300 ${
                 i === index
                   ? "border-brand ring-2 ring-brand/35"
-                  : "border-white/10 opacity-65 hover:opacity-100"
+                  : "border-gp-border opacity-70 hover:opacity-100"
               }`}
             >
               <SafeImage

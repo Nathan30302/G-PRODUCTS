@@ -1,6 +1,7 @@
 "use client";
 
 import { siteConfig } from "@/config/site";
+import { serviceOptionClass } from "@/components/services/service-ui";
 
 export type PayMethod = "mtn" | "airtel" | "zamtel";
 
@@ -31,21 +32,17 @@ export function PaymentPicker({
 }) {
   return (
     <div>
-      <p className="text-sm font-semibold text-white">Pay with Mobile Money</p>
+      <p className="text-sm font-semibold text-gp-text">Pay with Mobile Money</p>
       <div className="mt-3 grid gap-3 sm:grid-cols-3">
         {options.map((opt) => (
           <button
             key={opt.id}
             type="button"
             onClick={() => onChange(opt.id)}
-            className={`rounded-xl border p-3 text-left transition-colors ${
-              method === opt.id
-                ? "border-brand bg-brand/10"
-                : "border-ink-700 bg-ink-900 hover:border-ink-600"
-            }`}
+            className={serviceOptionClass(method === opt.id)}
           >
-            <span className="block text-sm font-bold text-white">{opt.label}</span>
-            <span className="text-xs text-white/50">{opt.number}</span>
+            <span className="block text-sm font-bold text-gp-text">{opt.label}</span>
+            <span className="text-xs text-gp-text-muted">{opt.number}</span>
           </button>
         ))}
       </div>

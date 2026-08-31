@@ -9,9 +9,12 @@ import {
   ServiceSteps
 } from "@/components/services/ServiceSteps";
 import { FileUploadField } from "@/components/services/FileUploadField";
-
-const field =
-  "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
+import {
+  serviceField,
+  serviceLabel,
+  serviceOptionClass,
+  ServiceSubmitButton
+} from "@/components/services/service-ui";
 
 const STEPS = ["Details", "Collateral", "NRC", "Send"];
 
@@ -125,9 +128,9 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
     <form onSubmit={submit} className="space-y-5">
       <ServiceSteps steps={STEPS} current={stepIndex} />
 
-      <div className="rounded-[1.15rem] border border-brand/20 bg-brand/[0.06] px-4 py-3.5">
-        <p className="text-sm font-semibold text-white">What you need</p>
-        <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-white/55">
+      <div className="service-estimate">
+        <p className="text-sm font-semibold text-gp-text">What you need</p>
+        <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-gp-text-muted">
           <li>• Collateral worth more than the loan amount</li>
           <li>• Clear photo / scan of your original NRC</li>
           <li>• Minimum {formatPrice(LOAN_MIN)}</li>
@@ -138,16 +141,12 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
               key={r.weeks}
               type="button"
               onClick={() => setWeeks(r.weeks)}
-              className={`rounded-xl border px-3 py-2 text-center transition-colors ${
-                weeks === r.weeks
-                  ? "border-brand bg-brand/15 ring-1 ring-brand/30"
-                  : "border-ink-700 bg-ink-900/80 hover:border-ink-600"
-              }`}
+              className={`${serviceOptionClass(weeks === r.weeks)} text-center`}
             >
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-white/40">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-gp-text-subtle">
                 {r.weeks} wk
               </p>
-              <p className="text-lg font-black text-brand">{r.rate}%</p>
+              <p className="text-lg font-black text-ink-700">{r.rate}%</p>
             </button>
           ))}
         </div>
@@ -159,28 +158,28 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="text-sm text-white/60">Full name</span>
+            <span className={serviceLabel}>Full name</span>
             <input
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={field}
+              className={serviceField}
             />
           </label>
           <label className="block">
-            <span className="text-sm text-white/60">Phone (WhatsApp)</span>
+            <span className={serviceLabel}>Phone (WhatsApp)</span>
             <input
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className={field}
+              className={serviceField}
               placeholder="09xx xxx xxx"
             />
           </label>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="text-sm text-white/60">Amount needed (ZMW)</span>
+            <span className={serviceLabel}>Amount needed (ZMW)</span>
             <input
               type="number"
               min={LOAN_MIN}
@@ -190,15 +189,15 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
               onChange={(e) =>
                 setAmount(Math.max(LOAN_MIN, Number(e.target.value) || LOAN_MIN))
               }
-              className={field}
+              className={serviceField}
             />
           </label>
           <label className="block">
-            <span className="text-sm text-white/60">Term</span>
+            <span className={serviceLabel}>Term</span>
             <select
               value={weeks}
               onChange={(e) => setWeeks(Number(e.target.value))}
-              className={field}
+              className={serviceField}
             >
               {LOAN_RATES.map((r) => (
                 <option key={r.weeks} value={r.weeks}>
@@ -208,9 +207,9 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
             </select>
           </label>
         </div>
-        <div className="rounded-xl border border-ink-800 bg-ink-900 px-4 py-3 text-sm text-white/60">
+        <div className="rounded-xl border border-gp-border bg-gp-muted px-4 py-3 text-sm text-gp-text-muted">
           Est. interest {formatPrice(interest)} · Est. repay{" "}
-          <span className="font-bold text-brand">{formatPrice(repay)}</span>
+          <span className="font-bold text-ink-700">{formatPrice(repay)}</span>
         </div>
       </FormSection>
 
@@ -219,13 +218,13 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         hint="Describe what you will leave — must be worth more than the loan."
       >
         <label className="block">
-          <span className="text-sm text-white/60">Collateral description</span>
+          <span className={serviceLabel}>Collateral description</span>
           <textarea
             required
             value={collateral}
             onChange={(e) => setCollateral(e.target.value)}
             rows={2}
-            className={field}
+            className={serviceField}
             placeholder="e.g. Laptop, phone, appliance…"
           />
         </label>
@@ -245,7 +244,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
           hint="Clear photo or scan of your original NRC."
           accept=".pdf,.png,.jpg,.jpeg,.webp"
         />
-        <label className="flex items-start gap-3 text-sm text-white/70">
+        <label className="flex items-start gap-3 text-sm text-gp-text-muted">
           <input
             type="checkbox"
             checked={hasNrc}
@@ -255,12 +254,12 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
           I confirm this is a copy of my original NRC
         </label>
         <label className="block">
-          <span className="text-sm text-white/60">Notes (optional)</span>
+          <span className={serviceLabel}>Notes (optional)</span>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className={field}
+            className={serviceField}
           />
         </label>
       </FormSection>
@@ -271,15 +270,11 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="w-full rounded-pill bg-brand px-6 py-3.5 text-sm font-bold text-ink-950 shadow-brand-glow hover:bg-brand-soft disabled:opacity-60"
-      >
-        {submitting
-          ? "Sending request..."
-          : `Request ${formatPrice(amount)} loan`}
-      </button>
+      <ServiceSubmitButton
+        busy={submitting}
+        label={`Request ${formatPrice(amount)} loan`}
+        busyLabel="Sending request..."
+      />
     </form>
   );
 }

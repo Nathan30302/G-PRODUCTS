@@ -25,6 +25,16 @@ export async function generateMetadata({
   };
 }
 
+function orderHint(slug: string) {
+  if (slug === "printing") {
+    return "Upload → choose options → pay → we print → collect or delivery.";
+  }
+  if (slug === "key-cutting") {
+    return "Pick key type → in-store or Yango → pay → we cut.";
+  }
+  return "Details → collateral → NRC → we review on WhatsApp.";
+}
+
 export default async function ServiceDetailPage({
   params
 }: {
@@ -42,7 +52,7 @@ export default async function ServiceDetailPage({
         : [];
 
   return (
-    <div className="container-g py-10">
+    <div className="container-g py-8 pb-16 sm:py-10">
       <nav className="text-sm text-gp-text-subtle">
         <Link href="/" className="hover:text-gp-text">
           Home
@@ -54,71 +64,79 @@ export default async function ServiceDetailPage({
         / <span className="text-gp-text-muted">{service.name}</span>
       </nav>
 
-      <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:items-start">
-        <div className="lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
+      <div className="mt-5 lg:hidden">
+        <p className="section-label">{service.priceLabel ?? "Service"}</p>
+        <h1 className="display heading-page mt-1">{service.name}</h1>
+        <p className="mt-1 text-sm font-medium text-ink-700">{service.tagline}</p>
+      </div>
+
+      <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10">
+        <div className="order-2 lg:order-1 lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
           <ServiceGallery
             images={gallery}
             name={service.name}
             badge={service.priceLabel}
           />
-          <h1 className="display heading-page mt-6">
-            {service.name}
-          </h1>
-          <p className="mt-2 text-brand">{service.tagline}</p>
-          <p className="mt-4 leading-relaxed text-gp-text-muted">
+          <div className="hidden lg:block">
+            <h1 className="display heading-page mt-6">{service.name}</h1>
+            <p className="mt-2 font-medium text-ink-700">{service.tagline}</p>
+          </div>
+          <p className="mt-4 leading-relaxed text-gp-text-muted lg:mt-4">
             {service.description}
           </p>
-          <ul className="mt-6 space-y-2.5 text-sm text-gp-text-muted">
-            <li className="flex items-start gap-2.5">
-              <Icon
-                name="map-pin"
-                className="mt-0.5 h-4 w-4 shrink-0 text-brand"
-              />
-              Pickup at {siteConfig.branch} — or Yango delivery.
-            </li>
-            <li className="flex items-start gap-2.5">
-              <Icon
-                name="wallet"
-                className="mt-0.5 h-4 w-4 shrink-0 text-brand"
-              />
-              Pay with MTN, Airtel or Zamtel Mobile Money.
-            </li>
-            <li className="flex items-start gap-2.5">
-              <Icon
-                name="whatsapp"
-                className="mt-0.5 h-4 w-4 shrink-0 text-brand"
-              />
-              We confirm and update you on WhatsApp.
-            </li>
+          <ul className="mt-6 grid gap-2.5 sm:grid-cols-1">
+            {[
+              {
+                icon: "map-pin",
+                text: `Pickup at ${siteConfig.branch} — or Yango delivery.`
+              },
+              {
+                icon: "wallet",
+                text: "Pay with MTN, Airtel or Zamtel Mobile Money."
+              },
+              {
+                icon: "whatsapp",
+                text: "We confirm and update you on WhatsApp."
+              }
+            ].map((item) => (
+              <li
+                key={item.text}
+                className="flex items-start gap-2.5 rounded-xl border border-gp-border/80 bg-gp-muted/60 px-3.5 py-3 text-sm text-gp-text-muted"
+              >
+                <Icon
+                  name={item.icon}
+                  className="mt-0.5 h-4 w-4 shrink-0 text-brand"
+                />
+                {item.text}
+              </li>
+            ))}
           </ul>
         </div>
 
-        <div className="rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/90 to-ink-900/95 p-5 shadow-card sm:p-8">
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/20">
-              <Icon name="edit" className="h-5 w-5" />
-            </span>
-            <div>
-              <h2 className="text-lg font-bold text-white">
-                {service.payable ? "Place your order" : "Submit a request"}
-              </h2>
-              <p className="mt-0.5 text-sm text-white/50">
-                {slug === "printing"
-                  ? "Upload → choose options → pay → we print → collect or delivery."
-                  : slug === "key-cutting"
-                    ? "Pick key type → in-store or Yango → pay → we cut."
-                    : "Details → collateral → NRC → we review on WhatsApp."}
-              </p>
+        <div className="order-1 lg:order-2">
+          <div className="gp-card shadow-float lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
+            <div className="flex items-center gap-3 border-b border-gp-border/70 pb-5">
+              <span className="grid h-11 w-11 place-items-center rounded-xl bg-gp-muted text-ink-700 ring-1 ring-gp-border">
+                <Icon name={service.icon} className="h-5 w-5" />
+              </span>
+              <div>
+                <h2 className="text-lg font-bold text-gp-text">
+                  {service.payable ? "Place your order" : "Submit a request"}
+                </h2>
+                <p className="mt-0.5 text-sm text-gp-text-muted">
+                  {orderHint(slug)}
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="mt-6 border-t border-white/[0.06] pt-6">
-            {slug === "key-cutting" && (
-              <KeyCuttingForm settings={service.settings} />
-            )}
-            {slug === "g-loans" && <GLoansForm settings={service.settings} />}
-            {slug === "printing" && (
-              <PrintingForm settings={service.settings} />
-            )}
+            <div className="pt-6">
+              {slug === "key-cutting" && (
+                <KeyCuttingForm settings={service.settings} />
+              )}
+              {slug === "g-loans" && <GLoansForm settings={service.settings} />}
+              {slug === "printing" && (
+                <PrintingForm settings={service.settings} />
+              )}
+            </div>
           </div>
         </div>
       </div>

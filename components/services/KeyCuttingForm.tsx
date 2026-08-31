@@ -16,10 +16,13 @@ import {
   FormSection,
   ServiceSteps
 } from "@/components/services/ServiceSteps";
+import {
+  serviceField,
+  serviceLabel,
+  serviceOptionClass,
+  ServiceSubmitButton
+} from "@/components/services/service-ui";
 import { siteConfig } from "@/config/site";
-
-const field =
-  "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
 
 type Phase = "form" | "submitting" | "done" | "pending";
 
@@ -192,25 +195,21 @@ export function KeyCuttingForm({
               key={k.id}
               type="button"
               onClick={() => setKeyType(k.id)}
-              className={`rounded-xl border p-3.5 text-left text-sm font-semibold transition-colors ${
-                keyType === k.id
-                  ? "border-brand bg-brand/10 text-white ring-1 ring-brand/25"
-                  : "border-ink-700 bg-ink-900 text-white/70 hover:border-ink-600"
-              }`}
+              className={serviceOptionClass(keyType === k.id)}
             >
               {k.label}
             </button>
           ))}
         </div>
         <label className="block max-w-[10rem]">
-          <span className="text-sm text-white/60">How many keys?</span>
+          <span className={serviceLabel}>How many keys?</span>
           <input
             type="number"
             min={1}
             max={20}
             value={qty}
             onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
-            className={field}
+            className={serviceField}
           />
         </label>
       </FormSection>
@@ -223,16 +222,12 @@ export function KeyCuttingForm({
           <button
             type="button"
             onClick={() => setFlow("IN_STORE")}
-            className={`rounded-xl border p-4 text-left transition-colors ${
-              flow === "IN_STORE"
-                ? "border-brand bg-brand/10 ring-1 ring-brand/25"
-                : "border-ink-700 bg-ink-900 hover:border-ink-600"
-            }`}
+            className={serviceOptionClass(flow === "IN_STORE", true)}
           >
-            <span className="block font-bold text-white">
+            <span className="block font-bold text-gp-text">
               I&apos;ll bring my key to the store
             </span>
-            <span className="mt-1 block text-sm text-white/50">
+            <span className="mt-1 block text-sm text-gp-text-muted">
               Come to {siteConfig.branch}. You only pay for the cut (
               {formatPrice(settings.keyCuttingPrice)} each).
             </span>
@@ -240,16 +235,12 @@ export function KeyCuttingForm({
           <button
             type="button"
             onClick={() => setFlow("YANGO_ROUNDTRIP")}
-            className={`rounded-xl border p-4 text-left transition-colors ${
-              flow === "YANGO_ROUNDTRIP"
-                ? "border-brand bg-brand/10 ring-1 ring-brand/25"
-                : "border-ink-700 bg-ink-900 hover:border-ink-600"
-            }`}
+            className={serviceOptionClass(flow === "YANGO_ROUNDTRIP", true)}
           >
-            <span className="block font-bold text-white">
+            <span className="block font-bold text-gp-text">
               Send my key by Yango (round trip)
             </span>
-            <span className="mt-1 block text-sm text-white/50">
+            <span className="mt-1 block text-sm text-gp-text-muted">
               Collect → cut → return. Cut + 2 Yango trips (
               {formatPrice(settings.yangoLegFee)} each way).
             </span>
@@ -257,13 +248,13 @@ export function KeyCuttingForm({
         </div>
         {flow === "YANGO_ROUNDTRIP" && (
           <label className="block">
-            <span className="text-sm text-white/60">
+            <span className={serviceLabel}>
               Your address (Yango pickup & return)
             </span>
             <input
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className={field}
+              className={serviceField}
               placeholder="e.g. Kamwala, Lusaka — near the market"
               required
             />
@@ -277,64 +268,64 @@ export function KeyCuttingForm({
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="text-sm text-white/60">Full name</span>
+            <span className={serviceLabel}>Full name</span>
             <input
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={field}
+              className={serviceField}
               placeholder="Your name"
             />
           </label>
           <label className="block">
-            <span className="text-sm text-white/60">Phone (WhatsApp)</span>
+            <span className={serviceLabel}>Phone (WhatsApp)</span>
             <input
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className={field}
+              className={serviceField}
               placeholder="09xx xxx xxx"
             />
           </label>
         </div>
         <label className="block">
-          <span className="text-sm text-white/60">Notes (optional)</span>
+          <span className={serviceLabel}>Notes (optional)</span>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className={field}
+            className={serviceField}
             placeholder="Any details we should know"
           />
         </label>
         <PaymentPicker method={pay} onChange={setPay} />
       </FormSection>
 
-      <div className="space-y-2 rounded-xl border border-brand/20 bg-brand/[0.06] px-4 py-3.5 text-sm">
-        <div className="flex justify-between text-white/60">
+      <div className="service-estimate">
+        <div className="flex justify-between text-gp-text-muted">
           <span>
             Key cut ({formatPrice(settings.keyCuttingPrice)} × {qty})
           </span>
-          <span className="text-white">{formatPrice(cutFee)}</span>
+          <span className="font-medium text-gp-text">{formatPrice(cutFee)}</span>
         </div>
         {flow === "YANGO_ROUNDTRIP" && (
           <>
-            <div className="flex justify-between text-white/60">
+            <div className="flex justify-between text-gp-text-muted">
               <span>Yango to G-Products</span>
-              <span className="text-white">{formatPrice(yangoToStore)}</span>
+              <span className="font-medium text-gp-text">{formatPrice(yangoToStore)}</span>
             </div>
-            <div className="flex justify-between text-white/60">
+            <div className="flex justify-between text-gp-text-muted">
               <span>Yango return to you</span>
-              <span className="text-white">{formatPrice(yangoReturn)}</span>
+              <span className="font-medium text-gp-text">{formatPrice(yangoReturn)}</span>
             </div>
           </>
         )}
-        <div className="flex justify-between border-t border-white/10 pt-2 text-lg font-black text-white">
+        <div className="flex justify-between border-t border-gp-border pt-2 text-lg font-black text-gp-text">
           <span>Total</span>
-          <span className="text-brand">{formatPrice(estimate)}</span>
+          <span className="text-ink-700">{formatPrice(estimate)}</span>
         </div>
         {flow === "YANGO_ROUNDTRIP" && (
-          <p className="text-xs text-white/40">
+          <p className="text-xs text-gp-text-subtle">
             Yango fees are estimates for Lusaka; we confirm on WhatsApp if your
             area differs.
           </p>
@@ -347,15 +338,11 @@ export function KeyCuttingForm({
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={phase === "submitting"}
-        className="w-full rounded-pill bg-brand px-6 py-3.5 text-sm font-bold text-ink-950 shadow-brand-glow hover:bg-brand-soft disabled:opacity-60"
-      >
-        {phase === "submitting"
-          ? "Placing order..."
-          : `Order key cutting · ${formatPrice(estimate)}`}
-      </button>
+      <ServiceSubmitButton
+        busy={phase === "submitting"}
+        label={`Order key cutting · ${formatPrice(estimate)}`}
+        busyLabel="Placing order..."
+      />
     </form>
   );
 }

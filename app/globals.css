@@ -533,6 +533,31 @@ html {
     @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-gp-text-muted;
   }
 
+  /* Service & pack order forms — shared option cards */
+  .service-option {
+    @apply rounded-xl border border-gp-border bg-gp-muted p-3.5 text-left text-sm font-semibold text-gp-text transition-all duration-200 hover:border-ink-700/25 hover:shadow-sm;
+  }
+
+  .service-option-lg {
+    @apply service-option p-4;
+  }
+
+  .service-option-active {
+    @apply border-brand bg-brand/10 text-gp-text ring-1 ring-brand/25 shadow-sm;
+  }
+
+  .service-form-section {
+    @apply space-y-3 rounded-[1.15rem] border border-gp-border/80 bg-gp-surface p-4 shadow-sm sm:p-5;
+  }
+
+  .service-estimate {
+    @apply space-y-2 rounded-xl border border-brand/25 bg-brand/[0.06] px-4 py-3.5 text-sm;
+  }
+
+  .service-label {
+    @apply text-sm font-medium text-gp-text-muted;
+  }
+
   /* Premium auth screen — logo stays bare; background stays away from mark */
   .auth-screen {
     @apply relative flex min-h-dvh flex-col items-center justify-center px-4 py-10 sm:px-6;

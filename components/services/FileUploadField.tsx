@@ -81,12 +81,12 @@ export function FileUploadField({
   return (
     <div className="space-y-3">
       <div>
-        <p className="text-sm font-semibold text-white">
+        <p className="text-sm font-semibold text-gp-text">
           {label}
           {required ? <span className="text-brand"> *</span> : null}
         </p>
         {hint ? (
-          <p className="mt-1 text-xs leading-relaxed text-white/45">{hint}</p>
+          <p className="mt-1 text-xs leading-relaxed text-gp-text-muted">{hint}</p>
         ) : null}
       </div>
 
@@ -94,10 +94,10 @@ export function FileUploadField({
         <span className="grid h-11 w-11 place-items-center rounded-2xl bg-brand/15 text-brand ring-1 ring-brand/25">
           <Icon name="image" className="h-5 w-5" />
         </span>
-        <span className="text-sm font-semibold text-white">
+        <span className="text-sm font-semibold text-gp-text">
           Tap to upload from your phone
         </span>
-        <span className="text-xs text-white/40">
+        <span className="text-xs text-gp-text-subtle">
           PDF, Word, or photos · max 12MB each · full quality kept
         </span>
         <input
@@ -114,7 +114,7 @@ export function FileUploadField({
       </label>
 
       {error ? (
-        <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
+        <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-500">
           {error}
         </p>
       ) : null}
@@ -124,9 +124,9 @@ export function FileUploadField({
           {previews.map((p, i) => (
             <li
               key={p.id}
-              className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-ink-900/80 p-2.5"
+              className="flex items-center gap-3 rounded-xl border border-gp-border bg-gp-muted/80 p-2.5"
             >
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-ink-850">
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gp-surface">
                 {p.isImage && p.url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -141,17 +141,17 @@ export function FileUploadField({
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-white/90">
+                <p className="truncate text-sm font-semibold text-gp-text">
                   {p.file.name}
                 </p>
-                <p className="text-xs text-white/40">
+                <p className="text-xs text-gp-text-subtle">
                   {formatBytes(p.file.size)} · ready to send
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => removeAt(i)}
-                className="rounded-lg p-2 text-white/40 hover:bg-white/5 hover:text-white"
+                className="rounded-lg p-2 text-gp-text-subtle transition-colors hover:bg-gp-surface hover:text-gp-text"
                 aria-label="Remove file"
               >
                 <Icon name="close" className="h-4 w-4" />

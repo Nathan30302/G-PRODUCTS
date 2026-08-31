@@ -18,9 +18,12 @@ import {
   ServiceSteps
 } from "@/components/services/ServiceSteps";
 import { FileUploadField } from "@/components/services/FileUploadField";
-
-const field =
-  "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
+import {
+  serviceField,
+  serviceLabel,
+  serviceOptionClass,
+  ServiceSubmitButton
+} from "@/components/services/service-ui";
 
 type Phase = "form" | "submitting" | "done" | "pending";
 
@@ -201,11 +204,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
     <form onSubmit={submit} className="space-y-5">
       <ServiceSteps steps={STEPS} current={stepIndex} />
 
-      <div className="rounded-[1.15rem] border border-brand/20 bg-brand/[0.06] px-4 py-3 text-sm text-white/65">
-        <p className="font-semibold text-white">
+      <div className="service-estimate">
+        <p className="font-semibold text-gp-text">
           Upload → Options → Pay → Print → Collect
         </p>
-        <p className="mt-1 text-xs leading-relaxed text-white/50">
+        <p className="mt-1 text-xs leading-relaxed text-gp-text-muted">
           Upload original-quality files securely to our printing team, choose
           your options, pay with Mobile Money — we print, then you pick up or
           get delivery. No need to resend files on WhatsApp.
@@ -243,14 +246,10 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
               key={m.id}
               type="button"
               onClick={() => setJobId(m.id)}
-              className={`rounded-xl border p-3 text-left transition-colors ${
-                jobId === m.id
-                  ? "border-brand bg-brand/10 ring-1 ring-brand/25"
-                  : "border-ink-700 bg-ink-900 hover:border-ink-600"
-              }`}
+              className={serviceOptionClass(jobId === m.id)}
             >
-              <span className="block text-sm font-bold text-white">{m.name}</span>
-              <span className="text-xs text-brand/90">
+              <span className="block text-sm font-bold text-gp-text">{m.name}</span>
+              <span className="text-xs text-ink-700">
                 {formatPrice(m.price)} / unit
               </span>
             </button>
@@ -258,7 +257,7 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="text-sm text-white/60">Quantity / pages</span>
+            <span className={serviceLabel}>Quantity / pages</span>
             <input
               type="number"
               min={1}
@@ -266,11 +265,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
               onChange={(e) =>
                 setPages(Math.max(1, Number(e.target.value) || 1))
               }
-              className={field}
+              className={serviceField}
             />
           </label>
           <label className="block">
-            <span className="text-sm text-white/60">Copies</span>
+            <span className={serviceLabel}>Copies</span>
             <input
               type="number"
               min={1}
@@ -278,37 +277,37 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
               onChange={(e) =>
                 setCopies(Math.max(1, Number(e.target.value) || 1))
               }
-              className={field}
+              className={serviceField}
             />
           </label>
         </div>
         <label className="block">
-          <span className="text-sm text-white/60">Notes (optional)</span>
+          <span className={serviceLabel}>Notes (optional)</span>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className={field}
+            className={serviceField}
             placeholder="e.g. Staple, double-sided, A4…"
           />
         </label>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="text-sm text-white/60">Full name</span>
+            <span className={serviceLabel}>Full name</span>
             <input
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={field}
+              className={serviceField}
             />
           </label>
           <label className="block">
-            <span className="text-sm text-white/60">Phone (WhatsApp)</span>
+            <span className={serviceLabel}>Phone (WhatsApp)</span>
             <input
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className={field}
+              className={serviceField}
               placeholder="09xx xxx xxx"
             />
           </label>
@@ -326,20 +325,20 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         hint="Choose Mobile Money — after payment we print, then you collect."
       >
         <PaymentPicker method={pay} onChange={setPay} />
-        <p className="text-xs leading-relaxed text-white/40">
-          Next: <span className="text-white/60">4 · Print</span> (we prepare
-          your job) → <span className="text-white/60">5 · Collect</span>{" "}
+        <p className="text-xs leading-relaxed text-gp-text-subtle">
+          Next: <span className="font-medium text-gp-text-muted">4 · Print</span> (we prepare
+          your job) → <span className="font-medium text-gp-text-muted">5 · Collect</span>{" "}
           (pickup or Yango).
         </p>
       </FormSection>
 
-      <div className="flex items-center justify-between rounded-xl border border-brand/20 bg-brand/[0.06] px-4 py-3.5">
-        <span className="text-sm text-white/60">Estimated total</span>
-        <span className="text-lg font-black text-brand">
+      <div className="service-estimate flex items-center justify-between">
+        <span className="text-sm text-gp-text-muted">Estimated total</span>
+        <span className="text-lg font-black text-ink-700">
           {formatPrice(estimate)}
         </span>
       </div>
-      <p className="text-xs text-white/40">
+      <p className="text-xs text-gp-text-subtle">
         We&apos;ll confirm on WhatsApp if the final count changes after we check
         your files.
       </p>
@@ -350,15 +349,11 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={phase === "submitting"}
-        className="w-full rounded-pill bg-brand px-6 py-3.5 text-sm font-bold text-ink-950 shadow-brand-glow hover:bg-brand-soft disabled:opacity-60"
-      >
-        {phase === "submitting"
-          ? "Placing order..."
-          : `Place print order · ${formatPrice(estimate)}`}
-      </button>
+      <ServiceSubmitButton
+        busy={phase === "submitting"}
+        label={`Place print order · ${formatPrice(estimate)}`}
+        busyLabel="Placing order..."
+      />
     </form>
   );
 }
