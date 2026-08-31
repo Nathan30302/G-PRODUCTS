@@ -17,6 +17,7 @@ import { relatedProducts } from "@/lib/related-products";
 import { getProductExtras } from "@/lib/product-extras";
 import { ProductReviewsSection } from "@/components/ReviewsSection";
 import { MobileBuyBar } from "@/components/MobileBuyBar";
+import { TrackProductView } from "@/components/shop/TrackProductView";
 
 export const revalidate = 60;
 
@@ -77,6 +78,7 @@ export default async function ProductPage({
 
   return (
     <div>
+      <TrackProductView slug={product.slug} />
       <div className="container-g py-6 sm:py-10">
         <nav className="flex flex-wrap items-center gap-1.5 text-sm text-white/40">
           <Link href="/" className="transition-colors hover:text-white">

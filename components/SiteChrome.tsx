@@ -40,6 +40,18 @@ export function SiteChrome({
 
   if (isAdmin) return <>{children}</>;
 
+  const isAuthGate = pathname === "/profile";
+
+  if (isAuthGate) {
+    return (
+      <div className="relative min-h-dvh overflow-x-hidden bg-gp-bg text-gp-text">
+        <main id="main-content" className="min-h-dvh">
+          {children}
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-dvh overflow-x-hidden bg-gp-bg text-gp-text">
       <a

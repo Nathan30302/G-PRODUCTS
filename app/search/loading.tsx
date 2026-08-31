@@ -1,8 +1,10 @@
+import { ShopSearchTrigger } from "@/components/shop/ShopSearchTrigger";
 import { BrowseTilesSkeleton } from "@/components/Skeleton";
 
 export default function SearchLoading() {
   return (
-    <div className="container-g px-4 pb-[calc(var(--mobile-nav-offset)+0.5rem)] pt-1 sm:pt-2 md:pb-10 md:pt-4">
+    <div className="shop-browse-wrap">
+      <ShopSearchTrigger className="mb-1 opacity-60" />
       <BrowseTilesSkeleton />
     </div>
   );

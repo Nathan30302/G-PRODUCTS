@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getAllProducts, getAllCategories } from "@/lib/queries";
 import { SearchClient } from "@/components/SearchClient";
-import { BrowseTilesSection } from "@/components/shop/BrowseTilesSection";
+import { ShopBrowseScreen } from "@/components/shop/ShopBrowseScreen";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
@@ -30,8 +30,8 @@ export default async function SearchPage({
 
   if (showBrowse) {
     return (
-      <div className="container-g px-4 pb-[calc(var(--mobile-nav-offset)+0.5rem)] pt-1 sm:pt-2 md:pb-10 md:pt-4">
-        <BrowseTilesSection />
+      <div className="shop-browse-wrap">
+        <ShopBrowseScreen />
       </div>
     );
   }

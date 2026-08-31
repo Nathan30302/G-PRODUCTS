@@ -3,15 +3,17 @@ import { siteConfig } from "@/config/site";
 
 const MARK_SRC = siteConfig.logoMark;
 
-/** Pixel box for the G mark — same clean symbol used in the nav. */
+/** Pixel box for the G mark — original PNG only, no redraw or overlays. */
 const sizes = {
   sm: 36,
   md: 44,
-  lg: 112
+  lg: 96,
+  xl: 128
 } as const;
 
 /**
- * Clean brand mark only — original PNG, no effects, filters, or overlays.
+ * Clean G-Products mark — the official PNG only.
+ * Do not wrap with rings, glows, gradients, badges, or emoji.
  */
 export function Logo({
   size = "md",
@@ -41,7 +43,7 @@ export function Logo({
         height={px}
         priority={priority}
         unoptimized
-        className="h-full w-full object-contain"
+        className="h-full w-full object-contain select-none"
         draggable={false}
       />
     </span>

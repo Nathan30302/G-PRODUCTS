@@ -31,7 +31,13 @@ export function MobileNav({ auth = null }: { auth?: ShopAuth }) {
               ? pathname === "/"
               : it.href === "/profile"
                 ? Boolean(pathname?.startsWith("/profile"))
-                : pathname?.startsWith(it.href);
+                : it.href === "/search"
+                  ? Boolean(
+                      pathname === "/search" ||
+                        pathname?.startsWith("/search/") ||
+                        pathname?.startsWith("/category/")
+                    )
+                  : pathname?.startsWith(it.href);
 
           return (
             <Link
