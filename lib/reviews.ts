@@ -92,3 +92,33 @@ export function averageRating(list: Review[]): number | null {
   const sum = list.reduce((n, r) => n + r.rating, 0);
   return Math.round((sum / list.length) * 10) / 10;
 }
+
+export type ReviewSummary = { avg: number; count: number };
+
+/** Batch rating summaries for category/search grids. */
+export async function getReviewSummariesForProducts(
+  productSlugs: string[]
+): Promise<Record<string, ReviewSummary>> {
+  if (productSlugs.length === 0) return {};
+  try {
+    const rows = await prisma.productReview.groupBy({
+      by: ["productSlug"],
+      where: { productSlug: { in: productSlugs }, published: true },
+      _avg: { rating: true },
+      _count: { _all: true }
+    });
+    const out: Record<string, ReviewSummary> = {};
+    for (const row of rows) {
+      if (row._avg.rating != null && row._count._all > 0) {
+        out[row.productSlug] = {
+          avg: Math.round(row._avg.rating * 10) / 10,
+          count: row._count._all
+        };
+      }
+    }
+    return out;
+  } catch (err) {
+    console.error("[reviews] getReviewSummariesForProducts failed:", err);
+    return {};
+  }
+}

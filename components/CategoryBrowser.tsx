@@ -1,26 +1,31 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Product } from "@/lib/types";
-import { ProductCard } from "@/components/ProductCard";
+import { CategoryPageHeader } from "@/components/category/CategoryPageHeader";
+import { CategoryProductCard } from "@/components/category/CategoryProductCard";
 import { ShopEmptyState } from "@/components/shop/ui";
+import { Icon } from "@/components/Icons";
+import type { ReviewSummary } from "@/lib/reviews";
 
 type Sort = "newest" | "best-sellers" | "price-asc" | "price-desc";
 
 const sortLabels: Record<Sort, string> = {
   newest: "New Arrivals",
   "best-sellers": "Best Sellers",
-  "price-asc": "Price (Low to High)",
-  "price-desc": "Price (High to Low)"
+  "price-asc": "Price: Low to High",
+  "price-desc": "Price: High to Low"
 };
 
 function extractColors(products: Product[]): string[] {
   const set = new Set<string>();
   for (const p of products) {
     for (const v of p.variants) {
-      const name = v.name.trim();
-      if (name && name.length < 24) set.add(name);
+      if (v.colorHex) {
+        const name = v.name.trim();
+        if (name && name.length < 24) set.add(name);
+      }
     }
   }
   return [...set].slice(0, 12);
@@ -44,12 +49,99 @@ function extractSeries(products: Product[]): string[] {
   return [...set].slice(0, 10);
 }
 
-export function CategoryBrowser({ products }: { products: Product[] }) {
+function FilterPill({
+  label,
+  displayValue,
+  active,
+  open,
+  onToggle,
+  children
+}: {
+  label: string;
+  displayValue?: string | null;
+  active?: boolean;
+  open: boolean;
+  onToggle: () => void;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="relative shrink-0">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition-colors ${
+          active
+            ? "border-ink-700/30 bg-ink-700/5 text-gp-text"
+            : "border-gp-border bg-white text-gp-text hover:border-gp-text-subtle"
+        }`}
+      >
+        <span className="max-w-[8rem] truncate">{displayValue ?? label}</span>
+        <Icon
+          name="chevron-down"
+          className={`h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && children ? (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-40"
+            aria-label="Close menu"
+            onClick={onToggle}
+          />
+          <div className="absolute left-0 top-[calc(100%+0.35rem)] z-50 max-h-56 min-w-[11rem] overflow-y-auto rounded-xl border border-gp-border bg-white py-1 shadow-[0_12px_40px_rgba(26,35,33,0.12)]">
+            {children}
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function FilterOption({
+  label,
+  selected,
+  onSelect
+}: {
+  label: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-left text-sm transition-colors ${
+        selected
+          ? "bg-ink-700/5 font-semibold text-gp-text"
+          : "text-gp-text-muted hover:bg-gp-muted hover:text-gp-text"
+      }`}
+    >
+      {label}
+      {selected ? <Icon name="check" className="h-4 w-4 shrink-0 text-accent" /> : null}
+    </button>
+  );
+}
+
+export function CategoryBrowser({
+  categoryName,
+  products,
+  reviewSummaries = {}
+}: {
+  categoryName: string;
+  products: Product[];
+  reviewSummaries?: Record<string, ReviewSummary>;
+}) {
+  const filterRef = useRef<HTMLDivElement>(null);
   const [sort, setSort] = useState<Sort>("newest");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [color, setColor] = useState<string | null>(null);
   const [storage, setStorage] = useState<string | null>(null);
   const [series, setSeries] = useState<string | null>(null);
+  const [openFilter, setOpenFilter] = useState<
+    null | "sort" | "color" | "storage" | "series" | "panel"
+  >(null);
 
   const colors = useMemo(() => extractColors(products), [products]);
   const storages = useMemo(() => extractStorage(products), [products]);
@@ -64,12 +156,11 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
       );
     }
     if (storage) {
-      const s = storage.toLowerCase();
       list = list.filter((p) => {
         const blob = [p.name, ...p.variants.map((v) => v.name)]
           .join(" ")
           .toLowerCase();
-        return blob.includes(s.toLowerCase());
+        return blob.includes(storage.toLowerCase());
       });
     }
     if (series) {
@@ -95,114 +186,172 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
     setStorage(null);
     setSeries(null);
     setSort("newest");
+    setOpenFilter(null);
   };
 
   const hasFilters =
     inStockOnly || color || storage || series || sort !== "newest";
 
-  const chip = (active: boolean) =>
-    active
-      ? "bg-ink-700 text-white shadow-sm"
-      : "border border-gp-border bg-gp-muted text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text";
+  function toggleFilter(key: typeof openFilter) {
+    setOpenFilter((cur) => (cur === key ? null : key));
+  }
+
+  function scrollToFilters() {
+    filterRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    setOpenFilter("panel");
+  }
 
   return (
-    <>
-      <div className="gp-card sticky top-[var(--chrome-h)] z-30 mt-6 !p-4 sm:!p-5">
-        <p className="section-label mb-3">Sort &amp; filter</p>
+    <div className="min-h-[50vh] bg-white pb-4">
+      <CategoryPageHeader
+        title={categoryName}
+        onFilterClick={scrollToFilters}
+      />
 
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-caption mr-1">Sort</span>
-          {(Object.keys(sortLabels) as Sort[]).map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setSort(s)}
-              className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(sort === s)}`}
+      <div
+        ref={filterRef}
+        className="border-b border-gp-border/80 bg-white px-4 py-3"
+      >
+        <div className="flex gap-2 overflow-x-auto pb-0.5 no-scrollbar">
+          <FilterPill
+            label="Sort"
+            displayValue={sort === "newest" ? "Sort" : sortLabels[sort]}
+            active={sort !== "newest"}
+            open={openFilter === "sort"}
+            onToggle={() => toggleFilter("sort")}
+          >
+            {(Object.keys(sortLabels) as Sort[]).map((s) => (
+              <FilterOption
+                key={s}
+                label={sortLabels[s]}
+                selected={sort === s}
+                onSelect={() => {
+                  setSort(s);
+                  setOpenFilter(null);
+                }}
+              />
+            ))}
+          </FilterPill>
+
+          {colors.length > 0 ? (
+            <FilterPill
+              label="Color"
+              displayValue={color ?? "Color"}
+              active={Boolean(color)}
+              open={openFilter === "color"}
+              onToggle={() => toggleFilter("color")}
             >
-              {sortLabels[s]}
+              <FilterOption
+                label="All colors"
+                selected={!color}
+                onSelect={() => {
+                  setColor(null);
+                  setOpenFilter(null);
+                }}
+              />
+              {colors.map((c) => (
+                <FilterOption
+                  key={c}
+                  label={c}
+                  selected={color === c}
+                  onSelect={() => {
+                    setColor(c);
+                    setOpenFilter(null);
+                  }}
+                />
+              ))}
+            </FilterPill>
+          ) : null}
+
+          {storages.length > 0 ? (
+            <FilterPill
+              label="Storage Size"
+              displayValue={storage ?? "Storage Size"}
+              active={Boolean(storage)}
+              open={openFilter === "storage"}
+              onToggle={() => toggleFilter("storage")}
+            >
+              <FilterOption
+                label="All sizes"
+                selected={!storage}
+                onSelect={() => {
+                  setStorage(null);
+                  setOpenFilter(null);
+                }}
+              />
+              {storages.map((s) => (
+                <FilterOption
+                  key={s}
+                  label={s}
+                  selected={storage === s}
+                  onSelect={() => {
+                    setStorage(s);
+                    setOpenFilter(null);
+                  }}
+                />
+              ))}
+            </FilterPill>
+          ) : null}
+
+          {seriesList.length > 0 ? (
+            <FilterPill
+              label="Series"
+              displayValue={series ?? "Series"}
+              active={Boolean(series)}
+              open={openFilter === "series"}
+              onToggle={() => toggleFilter("series")}
+            >
+              <FilterOption
+                label="All brands"
+                selected={!series}
+                onSelect={() => {
+                  setSeries(null);
+                  setOpenFilter(null);
+                }}
+              />
+              {seriesList.map((s) => (
+                <FilterOption
+                  key={s}
+                  label={s}
+                  selected={series === s}
+                  onSelect={() => {
+                    setSeries(s);
+                    setOpenFilter(null);
+                  }}
+                />
+              ))}
+            </FilterPill>
+          ) : null}
+        </div>
+
+        {openFilter === "panel" || hasFilters ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-gp-border/60 pt-3">
+            <button
+              type="button"
+              onClick={() => setInStockOnly((v) => !v)}
+              className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                inStockOnly
+                  ? "border-ink-700/30 bg-ink-700/5 text-gp-text"
+                  : "border-gp-border text-gp-text-muted"
+              }`}
+            >
+              In stock only
             </button>
-          ))}
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-caption mr-1">Filter</span>
-          <button
-            type="button"
-            onClick={() => setInStockOnly((v) => !v)}
-            className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(inStockOnly)}`}
-          >
-            In stock
-          </button>
-        </div>
-
-        {colors.length > 0 ? (
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-caption w-full sm:w-auto">Color</span>
-            {colors.map((c) => (
+            {hasFilters ? (
               <button
-                key={c}
                 type="button"
-                onClick={() => setColor(color === c ? null : c)}
-                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(color === c)}`}
+                onClick={reset}
+                className="text-xs font-semibold text-ink-700 hover:underline"
               >
-                {c}
+                Clear all
               </button>
-            ))}
+            ) : null}
           </div>
-        ) : null}
-
-        {storages.length > 0 ? (
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-caption w-full sm:w-auto">Storage</span>
-            {storages.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setStorage(storage === s ? null : s)}
-                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(storage === s)}`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        ) : null}
-
-        {seriesList.length > 0 ? (
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-caption w-full sm:w-auto">Series</span>
-            {seriesList.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSeries(series === s ? null : s)}
-                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(series === s)}`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        ) : null}
-
-        {hasFilters ? (
-          <button
-            type="button"
-            onClick={reset}
-            className="mt-4 text-xs font-semibold text-ink-700 hover:underline"
-          >
-            Clear all filters
-          </button>
         ) : null}
       </div>
 
-      <p className="mt-5 text-sm text-gp-text-muted">
-        <span className="font-semibold tabular-nums text-gp-text">
-          {results.length}
-        </span>{" "}
-        product{results.length === 1 ? "" : "s"}
-      </p>
-
-      {results.length === 0 ? (
-        <div className="mt-8">
+      <div className="px-4 pt-4">
+        {results.length === 0 ? (
           <ShopEmptyState
             icon="search"
             title="No products match"
@@ -220,14 +369,19 @@ export function CategoryBrowser({ products }: { products: Product[] }) {
               </div>
             }
           />
-        </div>
-      ) : (
-        <div className="mt-5 product-grid">
-          {results.map((p) => (
-            <ProductCard key={p.id} product={p} compact />
-          ))}
-        </div>
-      )}
-    </>
+        ) : (
+          <div className="category-plug-grid">
+            {results.map((p, i) => (
+              <CategoryProductCard
+                key={p.id}
+                product={p}
+                review={reviewSummaries[p.slug]}
+                priority={i < 4}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

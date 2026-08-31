@@ -394,6 +394,29 @@ html {
     }
   }
 
+  /* Plug-style category browse — big 2-column mobile grid */
+  .category-plug-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  @media (min-width: 640px) {
+    .category-plug-grid {
+      gap: 1rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .category-plug-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .category-plug-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
   /* Horizontal snap rail */
   .snap-rail {
     scroll-snap-type: x mandatory;
