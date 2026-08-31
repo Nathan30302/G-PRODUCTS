@@ -12,7 +12,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="mt-2 w-full rounded-pill bg-brand px-6 py-3.5 text-sm font-bold text-ink-950 shadow-brand-glow transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-brand-soft disabled:translate-y-0 disabled:opacity-60"
+      className="auth-submit mt-2 disabled:translate-y-0 disabled:opacity-60"
     >
       {pending ? "Signing you in…" : "Enter the desk"}
     </button>
@@ -27,29 +27,33 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-16">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-ink-950" />
-        <div className="absolute left-1/2 top-[-10%] h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-brand/14 blur-[130px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-80 w-80 rounded-full bg-accent/12 blur-[110px]" />
+    <div className="auth-screen bg-ink-950 text-white">
+      <div className="auth-screen-bg" aria-hidden>
+        <div className="auth-orb auth-orb-a opacity-60" />
+        <div className="auth-orb auth-orb-b opacity-60" />
       </div>
 
-      <div className="relative w-full max-w-md animate-fade-up">
-        <div className="mb-8 flex flex-col items-center text-center">
-          <Logo size="lg" priority />
-          <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
+      <div className="auth-screen-inner">
+        <header className="auth-brand">
+          <Logo size="xl" priority />
+          <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
             Provider desk
           </p>
-          <h1 className="display mt-3 text-3xl">Welcome back</h1>
-          <p className="mt-2 max-w-xs text-sm text-white/45">
-            Secure access for owners and staff — products, orders and services.
-          </p>
-        </div>
+        </header>
 
-        <div className="overflow-hidden rounded-[1.85rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-7 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] sm:p-8">
-          <form action={formAction} className="space-y-4">
+        <div className="overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
+          <div className="border-b border-white/[0.06] px-6 pb-5 pt-7 sm:px-8 sm:pt-8">
+            <h1 className="display text-[clamp(1.5rem,1.2rem+1.2vw,1.875rem)] font-extrabold text-white">
+              Welcome back
+            </h1>
+            <p className="mt-2 text-sm leading-relaxed text-white/45">
+              Secure access for owners and staff — products, orders and services.
+            </p>
+          </div>
+
+          <form action={formAction} className="space-y-4 px-6 py-6 sm:px-8 sm:py-7">
             <label className="block">
-              <span className="field-label">Email</span>
+              <span className="auth-field-label text-white/50">Email</span>
               <input
                 name="email"
                 type="email"
@@ -59,12 +63,12 @@ export function LoginForm() {
                 spellCheck={false}
                 enterKeyHint="next"
                 required
-                className="field"
+                className="auth-field border-white/10 bg-white/[0.04] text-white placeholder:text-white/30 focus:border-brand/40 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.12)]"
                 placeholder="you@gproducts.zm"
               />
             </label>
             <label className="block">
-              <span className="field-label">Password</span>
+              <span className="auth-field-label text-white/50">Password</span>
               <span className="relative mt-2 block">
                 <input
                   name="password"
@@ -72,13 +76,13 @@ export function LoginForm() {
                   autoComplete="current-password"
                   enterKeyHint="go"
                   required
-                  className="field pr-14"
+                  className="auth-field border-white/10 bg-white/[0.04] pr-14 text-white placeholder:text-white/30 focus:border-brand/40 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.12)]"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-2 top-1/2 z-10 min-h-11 min-w-11 -translate-y-1/2 rounded-lg px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white/40 hover:text-brand"
+                  className="absolute right-2 top-1/2 z-10 min-h-11 min-w-11 -translate-y-1/2 rounded-xl px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white/40 hover:text-brand"
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
@@ -95,8 +99,8 @@ export function LoginForm() {
           </form>
         </div>
 
-        <p className="mt-7 text-center text-sm text-white/40">
-          <Link href="/profile" className="font-medium text-brand hover:underline">
+        <p className="auth-back text-white/40">
+          <Link href="/profile" className="font-semibold text-brand hover:underline">
             ← Back to Profile
           </Link>
           <span className="mx-2 text-white/20">·</span>

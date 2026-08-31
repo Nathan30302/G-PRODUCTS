@@ -36,11 +36,9 @@ export default async function ProfilePage({
   const initialReferralCode = (params.ref ?? "").trim().toUpperCase();
 
   return (
-    <div className="container-g relative overflow-hidden py-12 sm:py-16">
-      <AuthPanel
-        initialMode={initialMode}
-        initialReferralCode={initialReferralCode}
-      />
-    </div>
+    <AuthPanel
+      initialMode={initialMode}
+      initialReferralCode={initialReferralCode}
+    />
   );
 }

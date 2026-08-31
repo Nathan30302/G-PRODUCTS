@@ -75,7 +75,7 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
         <Link
           href="/"
           aria-label="G-Products home"
-          className="mx-auto flex justify-center"
+          className="mx-auto flex justify-center [&_*]:pointer-events-none"
         >
           <Logo size="md" priority />
         </Link>
