@@ -126,7 +126,7 @@ export function ProductGallery({
         <div className="min-w-0 flex-1">
           <div
             ref={frameRef}
-            className="relative aspect-[4/3] max-h-[min(42vw,13.5rem)] touch-pan-y overflow-hidden rounded-[1.25rem] border border-white/[0.08] bg-[#f4f4f2] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_16px_40px_-24px_rgba(0,0,0,0.5)] sm:max-h-[16rem] lg:max-h-[min(22rem,42vh)] lg:rounded-[1.5rem]"
+            className="group relative aspect-[4/5] max-h-[min(72vw,22rem)] touch-pan-y overflow-hidden rounded-[1.25rem] border border-white/[0.08] bg-[#f4f4f2] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_16px_40px_-24px_rgba(0,0,0,0.5)] sm:max-h-[26rem] lg:max-h-[min(34rem,58vh)] lg:rounded-[1.5rem]"
           >
             {/* Soft studio wash */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,#ffffff_0%,#ececeb_55%,#e2e2df_100%)]" />
@@ -158,8 +158,8 @@ export function ProductGallery({
                     src={img.url || null}
                     alt={img.alt ?? name}
                     fill
-                    sizes="(max-width: 640px) 92vw, (max-width: 1280px) 42vw, 480px"
-                    className="pointer-events-none select-none object-contain p-4 sm:p-6 lg:p-7"
+                    sizes="(max-width: 640px) 92vw, (max-width: 1280px) 50vw, 560px"
+                    className="pointer-events-none select-none object-contain p-4 sm:p-6 lg:p-8"
                     priority={i === 0}
                     draggable={false}
                     quality={90}
@@ -177,11 +177,10 @@ export function ProductGallery({
             <button
               type="button"
               onClick={() => setLightbox(true)}
-              className="absolute bottom-3 right-3 z-[2] inline-flex items-center gap-1.5 rounded-pill border border-ink-950/10 bg-ink-950/70 px-3 py-1.5 text-[11px] font-semibold text-white shadow-lg backdrop-blur-md transition-all hover:bg-ink-950/85 lg:opacity-0 lg:group-hover:opacity-100"
-              aria-label="Open full-screen photos"
+              className="absolute bottom-3 right-3 z-[2] grid h-10 w-10 place-items-center rounded-full border border-ink-950/10 bg-ink-950/70 text-white shadow-lg backdrop-blur-md transition-all hover:bg-ink-950/85"
+              aria-label="View full-size photo"
             >
-              <Icon name="expand" className="h-3.5 w-3.5" />
-              Expand
+              <Icon name="expand" className="h-4 w-4" />
             </button>
 
             {count > 1 ? (
@@ -491,7 +490,7 @@ function PhotoLightbox({
               style={{ width: stageW || "100%" }}
             >
               <motion.div
-                className="relative h-[min(72vh,720px)] w-full max-w-4xl"
+                className="relative h-[min(82vh,820px)] w-full max-w-5xl"
                 animate={{ scale }}
                 transition={{ type: "spring", stiffness: 260, damping: 28 }}
               >
