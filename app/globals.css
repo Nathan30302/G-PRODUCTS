@@ -264,6 +264,76 @@ html {
   }
 }
 
+/* Campus packs banner — G-Products green / teal drift (home only) */
+.campus-packs-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    #0e2e34 0%,
+    #1b4e58 42%,
+    #123b43 100%
+  );
+}
+.campus-smoke-a {
+  top: -20%;
+  left: -10%;
+  width: 75%;
+  height: 70%;
+  background: radial-gradient(
+    circle,
+    rgba(34, 201, 138, 0.45) 0%,
+    rgba(34, 201, 138, 0) 68%
+  );
+  animation: smoke-drift-a 16s ease-in-out infinite;
+}
+.campus-smoke-b {
+  top: 10%;
+  right: -15%;
+  width: 60%;
+  height: 65%;
+  background: radial-gradient(
+    circle,
+    rgba(246, 212, 0, 0.28) 0%,
+    rgba(246, 212, 0, 0) 70%
+  );
+  animation: smoke-drift-b 20s ease-in-out infinite;
+}
+.campus-smoke-c {
+  bottom: -25%;
+  left: 15%;
+  width: 55%;
+  height: 55%;
+  background: radial-gradient(
+    circle,
+    rgba(74, 222, 159, 0.35) 0%,
+    rgba(34, 201, 138, 0) 72%
+  );
+  animation: smoke-drift-c 24s ease-in-out infinite;
+}
+.campus-smoke-d {
+  top: 30%;
+  left: 40%;
+  width: 35%;
+  height: 40%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.12) 0%,
+    transparent 70%
+  );
+  animation: smoke-drift-d 14s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campus-smoke-a,
+  .campus-smoke-b,
+  .campus-smoke-c,
+  .campus-smoke-d {
+    animation: none !important;
+  }
+}
+
 @layer utilities {
   .container-g {
     width: 100%;

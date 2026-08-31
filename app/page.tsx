@@ -37,7 +37,7 @@ export default async function HomePage() {
   return (
     <>
       <HomeSearchSection />
-      <HomeStudentPacks products={all} />
+      <HomeStudentPacks />
       <ExploreTopTech products={all} />
       <HomeTopPicks
         products={handpicked}
