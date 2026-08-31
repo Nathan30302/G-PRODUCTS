@@ -1,11 +1,12 @@
+import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
 import type { Product } from "@/lib/types";
 import { coverImageForProduct } from "@/lib/product-images";
 
 export type ExploreTile = {
   id: string;
-  /** Uppercase pill label, e.g. SHOP PHONES */
+  /** Category name shown on the pill badge */
   badge: string;
-  /** Marketing headline on the card */
+  /** Short supporting line on the card */
   headline: string;
   href: string;
   imageUrl: string | null;
@@ -14,63 +15,28 @@ export type ExploreTile = {
   gradient: string;
 };
 
-/** Static 6-tile grid for home — mapped to real catalogue categories. */
-export const EXPLORE_TOP_TECH_TILES: ExploreTile[] = [
-  {
-    id: "phones",
-    badge: "Shop Phones",
-    headline: "Find your next phone",
-    href: "/category/phones",
-    imageUrl: null,
-    categorySlug: "phones",
-    gradient: "from-[#e8f5e9] via-white to-[#f1f8e9]"
-  },
-  {
-    id: "tablets",
-    badge: "Shop iPads",
-    headline: "Discover your next tablet",
-    href: "/search?q=tablet",
-    imageUrl: null,
-    categorySlug: "computers",
-    gradient: "from-[#e3f2fd] via-white to-[#f5f5f5]"
-  },
-  {
-    id: "android",
-    badge: "Shop Android",
-    headline: "Power meets value",
-    href: "/search?q=android",
-    imageUrl: null,
-    categorySlug: "phones",
-    gradient: "from-[#e8eaf6] via-white to-[#f3e5f5]"
-  },
-  {
-    id: "macbooks",
-    badge: "Shop MacBooks",
-    headline: "Laptops built for work",
-    href: "/category/computers",
-    imageUrl: null,
-    categorySlug: "computers",
-    gradient: "from-[#fff8e1] via-white to-[#e8f5e9]"
-  },
-  {
-    id: "watches",
-    badge: "Shop Smartwatches",
-    headline: "Tech for your wrist",
-    href: "/category/watches",
-    imageUrl: null,
-    categorySlug: "watches",
-    gradient: "from-[#fce4ec] via-white to-[#f3e5f5]"
-  },
-  {
-    id: "audio",
-    badge: "Shop Audio",
-    headline: "Find your sound",
-    href: "/category/audio",
-    imageUrl: null,
-    categorySlug: "audio",
-    gradient: "from-[#e0f7fa] via-white to-[#e8f5e9]"
-  }
+const GP_GRADIENTS = [
+  "from-ink-700/[0.06] via-white to-brand/[0.08]",
+  "from-accent/[0.08] via-white to-ink-700/[0.04]",
+  "from-brand/[0.1] via-white to-accent/[0.06]",
+  "from-ink-700/[0.05] via-white to-brand/[0.12]",
+  "from-accent/[0.06] via-white to-brand/[0.08]",
+  "from-brand/[0.08] via-white to-ink-700/[0.05]"
 ];
+
+/** Six G-Products shop groups for the home category grid. */
+export const EXPLORE_TOP_TECH_TILES: ExploreTile[] = catalogGroups
+  .filter((g) => !g.href)
+  .slice(0, 6)
+  .map((group, index) => ({
+    id: group.slug,
+    badge: group.name,
+    headline: group.tagline,
+    href: hrefForCatalogGroup(group),
+    imageUrl: null,
+    categorySlug: group.children[0],
+    gradient: GP_GRADIENTS[index % GP_GRADIENTS.length]
+  }));
 
 export function enrichExploreTiles(
   tiles: ExploreTile[],
@@ -79,10 +45,11 @@ export function enrichExploreTiles(
   return tiles.map((tile) => {
     if (tile.imageUrl) return tile;
 
-    const byCategory = tile.categorySlug
+    const slugs = tile.categorySlug ? [tile.categorySlug] : [];
+    const byCategory = slugs.length
       ? products.find(
           (p) =>
-            p.categorySlug === tile.categorySlug &&
+            slugs.includes(p.categorySlug) &&
             p.stock !== "sold_out" &&
             coverImageForProduct(
               p,
@@ -99,24 +66,6 @@ export function enrichExploreTiles(
           null
       );
       if (url) return { ...tile, imageUrl: url };
-    }
-
-    const q = tile.href.includes("q=")
-      ? decodeURIComponent(tile.href.split("q=")[1]?.split("&")[0] ?? "")
-      : "";
-    if (q) {
-      const hit = products.find(
-        (p) =>
-          p.stock !== "sold_out" &&
-          [p.name, p.brand ?? ""].join(" ").toLowerCase().includes(q.toLowerCase())
-      );
-      if (hit) {
-        const url = coverImageForProduct(
-          hit,
-          hit.variants.find((v) => v.available) ?? hit.variants[0] ?? null
-        );
-        if (url) return { ...tile, imageUrl: url };
-      }
     }
 
     return tile;

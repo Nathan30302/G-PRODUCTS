@@ -174,7 +174,7 @@ export function HandpickedRail({
 
 function productBadge(product: Product): string | null {
   if (product.hotDeal) return "Hot deal";
-  if (product.featured) return "Student favorite";
+  if (product.featured) return "Campus pick";
   if (product.compareAtPrice && product.compareAtPrice > product.price) {
     const off = discountPercent(product.price, product.compareAtPrice);
     if (off) return `Save ${off}%`;

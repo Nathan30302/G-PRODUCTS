@@ -45,7 +45,7 @@ export function HomeSearchSection() {
         <Icon name="search" className="h-[1.125rem] w-[1.125rem] shrink-0 text-gp-text-subtle" />
         <input
           name="q"
-          placeholder="Search phones, tablets, laptops…"
+          placeholder="Search chargers, stationery, phones…"
           className="min-w-0 flex-1 bg-transparent text-[0.9375rem] text-gp-text outline-none placeholder:text-gp-text-subtle"
           aria-label="Search products"
           autoComplete="off"

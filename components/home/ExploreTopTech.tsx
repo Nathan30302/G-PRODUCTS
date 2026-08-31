@@ -17,7 +17,7 @@ export function ExploreTopTech({ products }: { products: Product[] }) {
           Trusted by many, loved by all
         </p>
         <h2 className="display mt-2 text-[clamp(1.5rem,1.1rem+1.6vw,2rem)] font-extrabold text-ink-800">
-          Explore our Top Tech
+          Shop by category
         </h2>
       </div>
 
@@ -37,10 +37,10 @@ function ExploreTileCard({ tile }: { tile: ExploreTile }) {
       className={`group relative flex min-h-[13.5rem] flex-col overflow-hidden rounded-[1.35rem] border border-gp-border/60 bg-gradient-to-br ${tile.gradient} shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover active:scale-[0.99] sm:min-h-[15rem] sm:rounded-[1.5rem]`}
     >
       <div className="flex flex-col items-center px-3 pt-4 text-center sm:px-4 sm:pt-5">
-        <span className="rounded-pill bg-gradient-to-r from-[#f4b942] to-[#e8a317] px-3 py-1 text-[9px] font-extrabold uppercase tracking-[0.12em] text-white shadow-sm sm:px-3.5 sm:text-[10px]">
+        <span className="rounded-pill bg-ink-700 px-3 py-1 text-[9px] font-extrabold uppercase tracking-[0.1em] text-white shadow-sm sm:px-3.5 sm:text-[10px]">
           {tile.badge}
         </span>
-        <p className="mt-2.5 max-w-[12ch] font-display text-sm font-bold leading-snug text-ink-900 sm:mt-3 sm:text-[0.9375rem]">
+        <p className="mt-2.5 line-clamp-2 max-w-[18ch] font-display text-xs font-bold leading-snug text-ink-900 sm:mt-3 sm:text-sm">
           {tile.headline}
         </p>
       </div>

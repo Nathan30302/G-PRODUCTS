@@ -8,7 +8,6 @@ import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
 import { Icon } from "@/components/Icons";
 import { Logo } from "@/components/Logo";
 import { ShopSearchBar } from "@/components/shop/ShopSearchBar";
-import { NotificationsBell } from "@/components/shop/NotificationsBell";
 import type { ShopAuth } from "@/components/SiteChrome";
 
 export function Navbar({ auth = null }: { auth?: ShopAuth }) {
@@ -59,7 +58,13 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
     >
       <div className="container-g grid h-14 grid-cols-[3rem_1fr_3rem] items-center gap-2 sm:h-16 sm:grid-cols-[3.5rem_1fr_3.5rem]">
         <div className="flex justify-start">
-          <NotificationsBell />
+          <Link
+            href="/services"
+            aria-label="Services"
+            className={iconBtn}
+          >
+            <Icon name="services" className="h-5 w-5" />
+          </Link>
         </div>
 
         <Link

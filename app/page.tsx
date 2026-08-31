@@ -1,5 +1,5 @@
 import { HomeSearchSection } from "@/components/home/HomeSearchSection";
-import { HomePromoHero } from "@/components/home/HomePromoHero";
+import { HomeStudentPacks } from "@/components/home/HomeStudentPacks";
 import { ExploreTopTech } from "@/components/home/ExploreTopTech";
 import { HandpickedRail } from "@/components/home/HandpickedRail";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
@@ -33,7 +33,7 @@ export default async function HomePage() {
   return (
     <>
       <HomeSearchSection />
-      <HomePromoHero />
+      <HomeStudentPacks products={all} />
       <ExploreTopTech products={all} />
       <HandpickedRail
         products={handpicked}
