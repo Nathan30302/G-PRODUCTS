@@ -42,7 +42,12 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
   }, []);
 
   const iconBtn =
-    "grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gp-border bg-gp-surface text-gp-text-muted transition-colors hover:border-ink-700/30 hover:text-ink-700 sm:rounded-2xl";
+    "grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gp-border bg-gp-surface text-gp-text-muted transition-all duration-200 hover:border-brand/35 hover:bg-brand/10 hover:text-ink-700 sm:rounded-2xl";
+
+  const servicesActive = Boolean(pathname?.startsWith("/services"));
+  const servicesBtn = servicesActive
+    ? "grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-brand/40 bg-brand/15 text-ink-700 shadow-sm sm:rounded-2xl"
+    : iconBtn;
 
   const navLink = (active: boolean) =>
     active
@@ -61,7 +66,7 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
           <Link
             href="/services"
             aria-label="Services"
-            className={iconBtn}
+            className={servicesBtn}
           >
             <Icon name="services" className="h-5 w-5" />
           </Link>

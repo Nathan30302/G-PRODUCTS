@@ -13,7 +13,7 @@ export function ExploreTopTech({ products }: { products: Product[] }) {
   return (
     <section className="container-g mt-10 sm:mt-12">
       <div className="text-center">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gp-text-subtle sm:text-[11px]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-600 sm:text-[11px]">
           Trusted by many, loved by all
         </p>
         <h2 className="display mt-2 text-[clamp(1.5rem,1.1rem+1.6vw,2rem)] font-extrabold text-ink-800">
@@ -34,10 +34,21 @@ function ExploreTileCard({ tile }: { tile: ExploreTile }) {
   return (
     <Link
       href={tile.href}
-      className={`group relative flex min-h-[13.5rem] flex-col overflow-hidden rounded-[1.35rem] border border-gp-border/60 bg-gradient-to-br ${tile.gradient} shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover active:scale-[0.99] sm:min-h-[15rem] sm:rounded-[1.5rem]`}
+      className={`group relative flex min-h-[13.5rem] flex-col overflow-hidden rounded-[1.35rem] border border-gp-border/50 bg-gradient-to-br ${tile.gradient} shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover active:scale-[0.99] sm:min-h-[15rem] sm:rounded-[1.5rem]`}
     >
-      <div className="flex flex-col items-center px-3 pt-4 text-center sm:px-4 sm:pt-5">
-        <span className="rounded-pill bg-ink-700 px-3 py-1 text-[9px] font-extrabold uppercase tracking-[0.1em] text-white shadow-sm sm:px-3.5 sm:text-[10px]">
+      <span
+        className={`pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full blur-2xl opacity-70 transition-opacity group-hover:opacity-90 ${tile.glowClass}`}
+        aria-hidden
+      />
+      <span
+        className={`pointer-events-none absolute -bottom-6 -left-6 h-20 w-20 rounded-full blur-xl opacity-50 ${tile.glowClass}`}
+        aria-hidden
+      />
+
+      <div className="relative flex flex-col items-center px-3 pt-4 text-center sm:px-4 sm:pt-5">
+        <span
+          className={`rounded-pill px-3 py-1 text-[9px] font-extrabold uppercase tracking-[0.08em] shadow-sm sm:px-3.5 sm:text-[10px] ${tile.badgeClass}`}
+        >
           {tile.badge}
         </span>
         <p className="mt-2.5 line-clamp-2 max-w-[18ch] font-display text-xs font-bold leading-snug text-ink-900 sm:mt-3 sm:text-sm">

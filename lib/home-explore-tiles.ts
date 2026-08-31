@@ -4,39 +4,68 @@ import { coverImageForProduct } from "@/lib/product-images";
 
 export type ExploreTile = {
   id: string;
-  /** Category name shown on the pill badge */
   badge: string;
-  /** Short supporting line on the card */
   headline: string;
   href: string;
   imageUrl: string | null;
   categorySlug?: string;
-  /** Tailwind gradient classes for card background */
   gradient: string;
+  badgeClass: string;
+  glowClass: string;
 };
 
-const GP_GRADIENTS = [
-  "from-ink-700/[0.06] via-white to-brand/[0.08]",
-  "from-accent/[0.08] via-white to-ink-700/[0.04]",
-  "from-brand/[0.1] via-white to-accent/[0.06]",
-  "from-ink-700/[0.05] via-white to-brand/[0.12]",
-  "from-accent/[0.06] via-white to-brand/[0.08]",
-  "from-brand/[0.08] via-white to-ink-700/[0.05]"
-];
+/** G-Products yellow · green · white mixes — one theme per category tile. */
+const TILE_THEMES = [
+  {
+    gradient: "from-brand/35 via-white to-white",
+    badgeClass: "bg-brand text-ink-900 shadow-brand-glow",
+    glowClass: "bg-brand/50"
+  },
+  {
+    gradient: "from-white via-accent/15 to-brand/12",
+    badgeClass: "bg-accent text-white shadow-sm",
+    glowClass: "bg-accent/45"
+  },
+  {
+    gradient: "from-brand/20 via-white to-accent/18",
+    badgeClass: "bg-ink-700 text-brand",
+    glowClass: "bg-brand/40"
+  },
+  {
+    gradient: "from-accent/22 via-white to-white",
+    badgeClass: "bg-gradient-to-r from-accent to-accent-soft text-ink-900",
+    glowClass: "bg-accent/40"
+  },
+  {
+    gradient: "from-white via-brand/25 to-accent/12",
+    badgeClass: "bg-brand-dark text-ink-950",
+    glowClass: "bg-brand/45"
+  },
+  {
+    gradient: "from-brand/12 via-accent/10 to-white",
+    badgeClass: "bg-ink-700 text-white",
+    glowClass: "bg-accent/35"
+  }
+] as const;
 
 /** Six G-Products shop groups for the home category grid. */
 export const EXPLORE_TOP_TECH_TILES: ExploreTile[] = catalogGroups
   .filter((g) => !g.href)
   .slice(0, 6)
-  .map((group, index) => ({
-    id: group.slug,
-    badge: group.name,
-    headline: group.tagline,
-    href: hrefForCatalogGroup(group),
-    imageUrl: null,
-    categorySlug: group.children[0],
-    gradient: GP_GRADIENTS[index % GP_GRADIENTS.length]
-  }));
+  .map((group, index) => {
+    const theme = TILE_THEMES[index % TILE_THEMES.length];
+    return {
+      id: group.slug,
+      badge: group.name,
+      headline: group.tagline,
+      href: hrefForCatalogGroup(group),
+      imageUrl: null,
+      categorySlug: group.children[0],
+      gradient: theme.gradient,
+      badgeClass: theme.badgeClass,
+      glowClass: theme.glowClass
+    };
+  });
 
 export function enrichExploreTiles(
   tiles: ExploreTile[],
