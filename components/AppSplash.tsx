@@ -6,9 +6,7 @@ import { siteConfig } from "@/config/site";
 
 const SESSION_KEY = "gproducts-splash-seen";
 
-/**
- * Premium opening splash — white / yellow / green sunburst with clean G mark.
- */
+/** Logo-first splash — crisp mark, subtle brand rings, fast exit. */
 export function AppSplash() {
   const [visible, setVisible] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
@@ -22,8 +20,8 @@ export function AppSplash() {
     }
 
     setVisible(true);
-    const fadeTimer = window.setTimeout(() => setFadeOut(true), 1800);
-    const hideTimer = window.setTimeout(() => setVisible(false), 2450);
+    const fadeTimer = window.setTimeout(() => setFadeOut(true), 950);
+    const hideTimer = window.setTimeout(() => setVisible(false), 1250);
 
     return () => {
       window.clearTimeout(fadeTimer);
@@ -40,11 +38,12 @@ export function AppSplash() {
       aria-hidden={fadeOut}
     >
       <div className="app-splash-bg" aria-hidden />
-      <div className="app-splash-mesh" aria-hidden />
-      <div className="app-splash-rays" aria-hidden />
-      <div className="app-splash-shine" aria-hidden />
+      <div className="app-splash-ring" aria-hidden />
+      <div className="app-splash-ring app-splash-ring-b" aria-hidden />
       <div className="app-splash-logo-wrap">
-        <Logo size="xl" priority />
+        <div className="app-splash-logo-stage">
+          <Logo size="xl" priority presentation="splash" />
+        </div>
         <p className="app-splash-tagline">{siteConfig.tagline}</p>
       </div>
     </div>

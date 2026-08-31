@@ -65,6 +65,43 @@
   --gp-primary-dark: #1a2834;
 }
 
+/* Provider desk themes — scoped via data-desk-theme on html while in admin */
+[data-desk-theme="dark"] {
+  color-scheme: dark;
+  --gp-bg: #121a18;
+  --gp-bg-rgb: 18 26 24;
+  --gp-muted: #1a2422;
+  --gp-muted-rgb: 26 36 34;
+  --gp-surface: #1e2a28;
+  --gp-surface-rgb: 30 42 40;
+  --gp-border: #2d3b38;
+  --gp-border-rgb: 45 59 56;
+  --gp-text: #eef2f1;
+  --gp-text-rgb: 238 242 241;
+  --gp-text-muted: #9aaba6;
+  --gp-text-muted-rgb: 154 171 166;
+  --gp-text-subtle: #6b7d78;
+  --gp-text-subtle-rgb: 107 125 120;
+}
+
+[data-desk-theme="brand"] {
+  color-scheme: dark;
+  --gp-bg: #1a2834;
+  --gp-bg-rgb: 26 40 52;
+  --gp-muted: #233746;
+  --gp-muted-rgb: 35 55 70;
+  --gp-surface: #2a4050;
+  --gp-surface-rgb: 42 64 80;
+  --gp-border: #3d5566;
+  --gp-border-rgb: 61 85 102;
+  --gp-text: #eef2f1;
+  --gp-text-rgb: 238 242 241;
+  --gp-text-muted: #b0c4bc;
+  --gp-text-muted-rgb: 176 196 188;
+  --gp-text-subtle: #849a92;
+  --gp-text-subtle-rgb: 132 154 146;
+}
+
 @media (min-width: 640px) {
   :root {
     --header-bar: 4rem;
@@ -558,11 +595,15 @@ html {
     @apply text-sm font-medium text-gp-text-muted;
   }
 
-  /* Premium auth screen — logo stays bare; background stays away from mark */
+  /* Premium auth screen */
   .auth-screen {
     @apply relative flex min-h-dvh flex-col items-center justify-center px-4 py-10 sm:px-6;
     padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
     padding-top: max(3rem, calc(env(safe-area-inset-top) + 1rem));
+    background:
+      radial-gradient(ellipse 90% 60% at 50% -10%, rgba(229, 243, 79, 0.14), transparent 55%),
+      radial-gradient(ellipse 70% 50% at 100% 100%, rgba(200, 224, 63, 0.1), transparent 50%),
+      var(--gp-bg);
   }
 
   .auth-screen-bg {
@@ -574,19 +615,19 @@ html {
   }
 
   .auth-orb-a {
-    top: 8%;
-    left: -8rem;
-    width: 18rem;
-    height: 18rem;
-    background: rgba(229, 243, 79, 0.12);
+    top: 6%;
+    left: -6rem;
+    width: 16rem;
+    height: 16rem;
+    background: rgba(229, 243, 79, 0.16);
   }
 
   .auth-orb-b {
-    right: -8rem;
-    bottom: 10%;
-    width: 20rem;
-    height: 20rem;
-    background: rgba(200, 224, 63, 0.1);
+    right: -6rem;
+    bottom: 8%;
+    width: 18rem;
+    height: 18rem;
+    background: rgba(35, 55, 70, 0.08);
   }
 
   .auth-screen-inner {
@@ -594,19 +635,28 @@ html {
   }
 
   .auth-brand {
-    @apply mb-8 flex flex-col items-center text-center;
+    @apply mb-7 flex flex-col items-center text-center;
+  }
+
+  .auth-logo-stage {
+    @apply grid place-items-center rounded-[1.35rem] bg-white p-4 shadow-[0_12px_40px_-16px_rgba(35,55,70,0.18)] ring-1 ring-gp-border/70;
+    isolation: isolate;
   }
 
   .auth-card {
-    @apply overflow-hidden rounded-[1.75rem] border border-gp-border/80 bg-gp-surface shadow-[0_24px_60px_-28px_rgba(35,55,70,0.18)];
+    @apply relative overflow-hidden rounded-[1.75rem] border border-gp-border/80 bg-gp-surface shadow-[0_24px_60px_-28px_rgba(35,55,70,0.18)];
+  }
+
+  .auth-card-accent {
+    @apply pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand via-accent to-brand;
   }
 
   .auth-card-header {
-    @apply border-b border-gp-border/70 px-6 pb-5 pt-7 sm:px-8 sm:pt-8;
+    @apply border-b border-gp-border/70 px-6 pb-5 pt-8 sm:px-8 sm:pt-9;
   }
 
   .auth-tabs {
-    @apply grid grid-cols-2 gap-1 border-b border-gp-border/70 bg-gp-muted/80 p-1.5;
+    @apply grid grid-cols-2 gap-1.5 border-b border-gp-border/70 bg-gp-muted/60 p-2;
   }
 
   .auth-tab {
@@ -614,7 +664,7 @@ html {
   }
 
   .auth-tab-active {
-    @apply bg-gp-surface text-ink-850 shadow-card;
+    @apply bg-gp-surface text-ink-850 shadow-card ring-1 ring-gp-border/60;
   }
 
   .auth-card-body {
@@ -623,6 +673,26 @@ html {
 
   .auth-field-label {
     @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-gp-text-muted;
+  }
+
+  .auth-field-hint {
+    @apply mt-1.5 text-[11px] leading-relaxed text-gp-text-subtle;
+  }
+
+  .auth-input-wrap {
+    @apply flex items-stretch overflow-hidden rounded-2xl border border-gp-border bg-gp-surface transition-all duration-200 focus-within:border-ink-700/35 focus-within:shadow-[0_0_0_4px_rgba(35,55,70,0.08)];
+  }
+
+  .auth-input-icon {
+    @apply grid w-12 shrink-0 place-items-center border-r border-gp-border/70 bg-gp-muted/50 text-gp-text-subtle;
+  }
+
+  .auth-input {
+    @apply min-w-0 flex-1 border-0 bg-transparent px-4 py-3.5 text-base font-normal text-gp-text outline-none placeholder:text-gp-text-subtle;
+  }
+
+  .auth-input-action {
+    @apply shrink-0 self-center px-3 text-[11px] font-bold uppercase tracking-wide text-gp-text-subtle transition-colors hover:text-ink-700;
   }
 
   .auth-field {
@@ -671,7 +741,7 @@ html {
     @apply inline-flex items-center gap-1.5 rounded-pill border border-gp-border bg-gp-muted/80 px-3.5 py-2 text-sm font-medium text-gp-text transition-colors hover:border-ink-700/20 hover:bg-gp-surface;
   }
 
-  /* Premium app opening splash — white / yellow / green sunburst */
+  /* App opening splash — logo first, then subtle brand motion */
   .app-splash {
     position: fixed;
     inset: 0;
@@ -680,89 +750,72 @@ html {
     place-items: center;
     overflow: hidden;
     pointer-events: none;
-    animation: app-splash-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+    background: #ffffff;
+    animation: app-splash-in 0.2s ease-out both;
   }
 
   .app-splash-out {
-    animation: app-splash-out 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: app-splash-out 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   .app-splash-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(
-      ellipse 120% 95% at 50% 38%,
-      #ffffff 0%,
-      #f7fce8 16%,
-      #edf9c8 32%,
-      #e5f34f 48%,
-      #d4ea5a 58%,
-      #c8e03f 68%,
-      #a8d832 78%,
-      #ffffff 100%
-    );
-  }
-
-  .app-splash-mesh {
-    position: absolute;
-    inset: 0;
     background:
-      radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.85) 0%, transparent 42%),
-      radial-gradient(circle at 82% 18%, rgba(229, 243, 79, 0.45) 0%, transparent 38%),
-      radial-gradient(circle at 72% 78%, rgba(200, 224, 63, 0.35) 0%, transparent 40%),
-      radial-gradient(circle at 24% 82%, rgba(255, 255, 255, 0.55) 0%, transparent 36%);
+      radial-gradient(circle at 50% 42%, rgba(229, 243, 79, 0.22) 0%, transparent 42%),
+      radial-gradient(circle at 50% 42%, rgba(200, 224, 63, 0.12) 0%, transparent 58%),
+      #ffffff;
+    opacity: 0;
+    animation: app-splash-bg-in 0.45s ease-out 0.05s forwards;
   }
 
-  .app-splash-rays {
-    position: absolute;
-    inset: -25%;
-    background: repeating-conic-gradient(
-      from -4deg at 50% 40%,
-      rgba(255, 255, 255, 0.72) 0deg 1.5deg,
-      transparent 1.5deg 11deg
-    );
-    opacity: 0.42;
-    mix-blend-mode: soft-light;
-    animation: app-splash-rays 36s linear infinite;
-  }
-
-  .app-splash-shine {
+  .app-splash-ring {
     position: absolute;
     left: 50%;
-    top: 40%;
-    height: min(78vw, 24rem);
-    width: min(78vw, 24rem);
-    transform: translate(-50%, -50%);
+    top: 42%;
     border-radius: 9999px;
-    background: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.55) 28%,
-      rgba(229, 243, 79, 0.28) 52%,
-      transparent 72%
-    );
-    filter: blur(10px);
-    animation: app-splash-shine 2.8s ease-in-out infinite;
+    border: 2px solid rgba(229, 243, 79, 0.45);
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    animation: app-splash-ring 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+  }
+
+  .app-splash-ring-b {
+    animation-delay: 0.22s;
+    border-color: rgba(200, 224, 63, 0.35);
   }
 
   .app-splash-logo-wrap {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    animation: app-splash-logo 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+    animation: app-splash-logo 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .app-splash-logo-stage {
+    display: grid;
+    place-items: center;
+    border-radius: 1.35rem;
+    background: #ffffff;
+    padding: 1rem;
+    box-shadow: 0 12px 40px -16px rgba(35, 55, 70, 0.2);
+    border: 1px solid rgba(232, 235, 234, 0.9);
+    isolation: isolate;
   }
 
   .app-splash-tagline {
-    margin-top: 1.25rem;
+    margin-top: 1rem;
     max-width: 16rem;
     font-size: 0.6875rem;
     font-weight: 600;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: rgba(35, 55, 70, 0.62);
+    color: rgba(35, 55, 70, 0.58);
+    opacity: 0;
+    animation: app-splash-tagline 0.4s ease-out 0.25s forwards;
   }
 
   @keyframes app-splash-in {
@@ -781,10 +834,16 @@ html {
     }
   }
 
+  @keyframes app-splash-bg-in {
+    to {
+      opacity: 1;
+    }
+  }
+
   @keyframes app-splash-logo {
     from {
       opacity: 0;
-      transform: scale(0.9) translateY(8px);
+      transform: scale(0.94) translateY(6px);
     }
     to {
       opacity: 1;
@@ -792,28 +851,33 @@ html {
     }
   }
 
-  @keyframes app-splash-shine {
-    0%,
-    100% {
-      opacity: 0.88;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    50% {
+  @keyframes app-splash-tagline {
+    to {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1.08);
     }
   }
 
-  @keyframes app-splash-rays {
-    to {
-      transform: rotate(360deg);
+  @keyframes app-splash-ring {
+    0% {
+      width: 5.5rem;
+      height: 5.5rem;
+      opacity: 0.7;
+      transform: translate(-50%, -50%) scale(0.75);
+    }
+    100% {
+      width: min(72vw, 18rem);
+      height: min(72vw, 18rem);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .app-splash-rays,
-    .app-splash-shine {
+    .app-splash-ring,
+    .app-splash-bg,
+    .app-splash-tagline {
       animation: none;
+      opacity: 1;
     }
   }
 }

@@ -18,13 +18,16 @@ const sizes = {
 export function Logo({
   size = "md",
   className = "",
-  priority = false
+  priority = false,
+  presentation = "default"
 }: {
   /** @deprecated Kept for call-site compatibility; UI always shows the G mark. */
   withText?: boolean;
   size?: keyof typeof sizes;
   className?: string;
   priority?: boolean;
+  /** Crisp isolated mark for auth/splash — no bleed from page effects. */
+  presentation?: "default" | "auth" | "splash";
 }) {
   const px = sizes[size];
   const mdBox = size === "md";
@@ -33,7 +36,7 @@ export function Logo({
     <span
       className={`relative inline-flex shrink-0 items-center justify-center ${
         mdBox ? "h-10 w-10 sm:h-11 sm:w-11" : ""
-      } ${className}`}
+      } ${presentation !== "default" ? "overflow-hidden rounded-xl" : ""} ${className}`}
       style={mdBox ? undefined : { width: px, height: px }}
     >
       <Image
@@ -45,6 +48,11 @@ export function Logo({
         unoptimized
         className="h-full w-full object-contain select-none"
         draggable={false}
+        style={
+          presentation !== "default"
+            ? { imageRendering: "auto", transform: "translateZ(0)" }
+            : undefined
+        }
       />
     </span>
   );

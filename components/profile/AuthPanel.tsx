@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { passwordChecks } from "@/lib/password";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
+import { AuthField } from "@/components/auth/AuthField";
 import { hapticTap } from "@/lib/haptics";
 import { siteConfig } from "@/config/site";
 
@@ -35,36 +36,33 @@ function PasswordInput({
   const score = checks.filter((c) => c.ok).length;
 
   return (
-    <label className="block">
-      <span className="auth-field-label">{label}</span>
-      <span className="relative mt-2 block">
-        <span className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-gp-text-subtle">
-          <Icon name="lock" className="h-4 w-4" />
-        </span>
-        <input
-          name={name}
-          type={show ? "text" : "password"}
-          autoComplete={autoComplete}
-          required
-          enterKeyHint={showMeter ? "next" : "go"}
-          {...(onChange
-            ? {
-                value: value ?? "",
-                onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                  onChange(e.target.value)
-              }
-            : {})}
-          className="auth-field pl-11 pr-14"
-          placeholder="••••••••"
-        />
-        <button
-          type="button"
-          onClick={() => setShow((v) => !v)}
-          className="absolute right-2 top-1/2 z-10 min-h-11 min-w-11 -translate-y-1/2 rounded-xl px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-gp-text-subtle transition-colors hover:text-ink-700"
-        >
-          {show ? "Hide" : "Show"}
-        </button>
-      </span>
+    <div>
+      <AuthField
+        label={label}
+        name={name}
+        icon="lock"
+        type={show ? "text" : "password"}
+        autoComplete={autoComplete}
+        required
+        enterKeyHint={showMeter ? "next" : "go"}
+        placeholder="Enter password"
+        {...(onChange
+          ? {
+              value: value ?? "",
+              onChange: (e: ChangeEvent<HTMLInputElement>) =>
+                onChange(e.target.value)
+            }
+          : {})}
+        trailing={
+          <button
+            type="button"
+            onClick={() => setShow((v) => !v)}
+            className="auth-input-action min-h-11 min-w-11"
+          >
+            {show ? "Hide" : "Show"}
+          </button>
+        }
+      />
 
       {showMeter && value !== undefined ? (
         <div className="mt-3 space-y-2.5">
@@ -105,7 +103,7 @@ function PasswordInput({
           </ul>
         </div>
       ) : null}
-    </label>
+    </div>
   );
 }
 
@@ -217,13 +215,16 @@ export function AuthPanel({
 
       <div className="auth-screen-inner">
         <header className="auth-brand">
-          <Logo size="xl" priority />
+          <div className="auth-logo-stage">
+            <Logo size="xl" priority presentation="auth" />
+          </div>
           <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gp-text-subtle">
             {siteConfig.tagline}
           </p>
         </header>
 
         <div className="auth-card">
+          <div className="auth-card-accent" aria-hidden />
           <div className="auth-card-header">
             <h1 className="display text-[clamp(1.5rem,1.2rem+1.2vw,1.875rem)] font-extrabold text-gp-text">
               {mode === "signin" ? "Welcome back" : "Create your account"}
@@ -258,28 +259,20 @@ export function AuthPanel({
 
           <div className="auth-card-body">
             {mode === "signin" ? (
-              <form onSubmit={onLogin} className="space-y-4" key="signin">
-                <label className="block">
-                  <span className="auth-field-label">Phone or email</span>
-                  <span className="relative mt-2 block">
-                    <span className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-gp-text-subtle">
-                      <Icon name="user" className="h-4 w-4" />
-                    </span>
-                    <input
-                      name="identifier"
-                      type="text"
-                      autoComplete="username"
-                      autoCapitalize="none"
-                      autoCorrect="off"
-                      spellCheck={false}
-                      inputMode="email"
-                      enterKeyHint="next"
-                      required
-                      className="auth-field pl-11"
-                      placeholder="0972… or you@email.com"
-                    />
-                  </span>
-                </label>
+              <form onSubmit={onLogin} className="space-y-4" key="signin" autoComplete="on">
+                <AuthField
+                  label="Phone or email"
+                  name="identifier"
+                  icon="user"
+                  type="text"
+                  autoComplete="username"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  enterKeyHint="next"
+                  required
+                  placeholder="Phone number or email address"
+                />
                 <PasswordInput
                   name="password"
                   label="Password"
@@ -304,96 +297,76 @@ export function AuthPanel({
                 </button>
               </form>
             ) : (
-              <form onSubmit={onSignup} className="space-y-4" key="signup">
+              <form onSubmit={onSignup} className="space-y-4" key="signup" autoComplete="on">
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="block">
-                    <span className="auth-field-label">First name</span>
-                    <input
-                      name="firstName"
-                      type="text"
-                      autoComplete="given-name"
-                      enterKeyHint="next"
-                      required
-                      className="auth-field"
-                      placeholder="Gift"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="auth-field-label">Last name</span>
-                    <input
-                      name="lastName"
-                      type="text"
-                      autoComplete="family-name"
-                      enterKeyHint="next"
-                      required
-                      className="auth-field"
-                      placeholder="Mbumwae"
-                    />
-                  </label>
+                  <AuthField
+                    label="First name"
+                    name="firstName"
+                    type="text"
+                    autoComplete="given-name"
+                    enterKeyHint="next"
+                    required
+                    placeholder="First name"
+                  />
+                  <AuthField
+                    label="Last name"
+                    name="lastName"
+                    type="text"
+                    autoComplete="family-name"
+                    enterKeyHint="next"
+                    required
+                    placeholder="Last name"
+                  />
                 </div>
 
-                <label className="block">
-                  <span className="auth-field-label">Phone</span>
-                  <span className="relative mt-2 block">
-                    <span className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-gp-text-subtle">
-                      <Icon name="phone" className="h-4 w-4" />
-                    </span>
-                    <input
-                      name="phone"
-                      type="tel"
-                      autoComplete="tel"
-                      inputMode="tel"
-                      enterKeyHint="next"
-                      required
-                      className="auth-field pl-11"
-                      placeholder="0972 500 209"
-                    />
-                  </span>
-                </label>
+                <AuthField
+                  label="Phone"
+                  name="phone"
+                  icon="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  enterKeyHint="next"
+                  required
+                  placeholder="0972 500 209"
+                />
 
-                <label className="block">
-                  <span className="auth-field-label">Email</span>
-                  <span className="relative mt-2 block">
-                    <span className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-gp-text-subtle">
-                      <Icon name="mail" className="h-4 w-4" />
-                    </span>
-                    <input
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      autoCapitalize="none"
-                      autoCorrect="off"
-                      spellCheck={false}
-                      enterKeyHint="next"
-                      required
-                      className="auth-field pl-11"
-                      placeholder="you@email.com"
-                    />
-                  </span>
-                </label>
+                <AuthField
+                  label="Email"
+                  name="email"
+                  icon="mail"
+                  type="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  enterKeyHint="next"
+                  required
+                  placeholder="you@email.com"
+                  hint="Used for order updates — not shown publicly."
+                />
 
-                <label className="block">
-                  <span className="auth-field-label">
-                    Referral code{" "}
+                <AuthField
+                  label="Referral code"
+                  name="referralCode"
+                  type="text"
+                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  enterKeyHint="next"
+                  value={referralCode}
+                  onChange={(e) =>
+                    setReferralCode(e.target.value.toUpperCase())
+                  }
+                  inputClassName="uppercase"
+                  placeholder="GP-XXXXXX"
+                  labelExtra={
                     <span className="font-normal normal-case tracking-normal text-gp-text-subtle">
+                      {" "}
                       (optional)
                     </span>
-                  </span>
-                  <input
-                    name="referralCode"
-                    type="text"
-                    autoCapitalize="characters"
-                    autoCorrect="off"
-                    spellCheck={false}
-                    enterKeyHint="next"
-                    value={referralCode}
-                    onChange={(e) =>
-                      setReferralCode(e.target.value.toUpperCase())
-                    }
-                    className="auth-field uppercase"
-                    placeholder="GP-XXXXXX"
-                  />
-                </label>
+                  }
+                />
 
                 <PasswordInput
                   name="password"

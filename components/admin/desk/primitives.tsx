@@ -72,7 +72,7 @@ export function DeskStat({
   hint?: string;
 }) {
   const tones: Record<DeskStatTone, string> = {
-    default: "border-gp-border bg-white",
+    default: "border-gp-border bg-gp-surface",
     warn: "border-brand/35 bg-brand/10",
     good: "border-accent/35 bg-accent/10",
     brand: "border-ink-700/15 bg-gradient-to-br from-brand/15 to-accent/10"
@@ -113,7 +113,7 @@ export function DeskPanel({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[1.35rem] border border-gp-border/80 bg-white shadow-card ${className}`}
+      className={`relative overflow-hidden rounded-[1.35rem] border border-gp-border/80 bg-gp-surface shadow-card ${className}`}
     >
       {children}
     </div>
