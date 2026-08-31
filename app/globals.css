@@ -30,10 +30,8 @@
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --header-bar: 3.5rem;
-  --search-bar: 3.25rem;
+  --search-bar: 0px;
   --header-h: calc(var(--header-bar) + var(--search-bar) + var(--safe-top));
-  --cats-bar: 0px;
-  --chrome-h: calc(var(--header-h) + var(--cats-bar));
   --mobile-nav-h: 3.75rem;
   --mobile-nav-offset: calc(var(--mobile-nav-h) + max(1rem, var(--safe-bottom)));
 }

@@ -81,6 +81,13 @@ export function Icon({ name, className }: { name: string; className?: string }) 
           <line x1="21" y1="21" x2="16.5" y2="16.5" />
         </svg>
       );
+    case "bell":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+          <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16l-2-2z" strokeLinejoin="round" />
+          <path d="M10 20a2 2 0 0 0 4 0" strokeLinecap="round" />
+        </svg>
+      );
     case "whatsapp":
       return (
         <svg className={cls} viewBox="0 0 24 24" fill="currentColor">

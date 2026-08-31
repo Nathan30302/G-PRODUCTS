@@ -5,114 +5,200 @@ import Link from "next/link";
 import { Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { ShopEmptyState } from "@/components/shop/ui";
-import { Icon } from "@/components/Icons";
 
-type Sort = "newest" | "price-asc" | "price-desc";
+type Sort = "newest" | "best-sellers" | "price-asc" | "price-desc";
 
 const sortLabels: Record<Sort, string> = {
-  newest: "Newest",
-  "price-asc": "Price ↑",
-  "price-desc": "Price ↓"
+  newest: "New Arrivals",
+  "best-sellers": "Best Sellers",
+  "price-asc": "Price (Low to High)",
+  "price-desc": "Price (High to Low)"
 };
+
+function extractColors(products: Product[]): string[] {
+  const set = new Set<string>();
+  for (const p of products) {
+    for (const v of p.variants) {
+      const name = v.name.trim();
+      if (name && name.length < 24) set.add(name);
+    }
+  }
+  return [...set].slice(0, 12);
+}
+
+function extractStorage(products: Product[]): string[] {
+  const set = new Set<string>();
+  const re = /\b(\d+\s?(?:GB|TB|MB|gb|tb))\b/gi;
+  for (const p of products) {
+    const blob = [p.name, ...p.variants.map((v) => v.name)].join(" ");
+    for (const m of blob.matchAll(re)) set.add(m[1].toUpperCase().replace(/\s/g, ""));
+  }
+  return [...set].slice(0, 8);
+}
+
+function extractSeries(products: Product[]): string[] {
+  const set = new Set<string>();
+  for (const p of products) {
+    if (p.brand?.trim()) set.add(p.brand.trim());
+  }
+  return [...set].slice(0, 10);
+}
 
 export function CategoryBrowser({ products }: { products: Product[] }) {
   const [sort, setSort] = useState<Sort>("newest");
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [color, setColor] = useState<string | null>(null);
+  const [storage, setStorage] = useState<string | null>(null);
+  const [series, setSeries] = useState<string | null>(null);
 
-  const priceCeiling = useMemo(
-    () => Math.max(...products.map((p) => p.price), 0),
-    [products]
-  );
+  const colors = useMemo(() => extractColors(products), [products]);
+  const storages = useMemo(() => extractStorage(products), [products]);
+  const seriesList = useMemo(() => extractSeries(products), [products]);
 
   const results = useMemo(() => {
     let list = [...products];
     if (inStockOnly) list = list.filter((p) => p.stock !== "sold_out");
-    if (maxPrice != null) list = list.filter((p) => p.price <= maxPrice);
+    if (color) {
+      list = list.filter((p) =>
+        p.variants.some((v) => v.name.toLowerCase() === color.toLowerCase())
+      );
+    }
+    if (storage) {
+      const s = storage.toLowerCase();
+      list = list.filter((p) => {
+        const blob = [p.name, ...p.variants.map((v) => v.name)]
+          .join(" ")
+          .toLowerCase();
+        return blob.includes(s.toLowerCase());
+      });
+    }
+    if (series) {
+      list = list.filter(
+        (p) => (p.brand ?? "").toLowerCase() === series.toLowerCase()
+      );
+    }
     if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
     else if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
+    else if (sort === "best-sellers") {
+      list.sort((a, b) => {
+        const score = (p: Product) =>
+          (p.featured ? 2 : 0) + (p.hotDeal ? 1 : 0);
+        return score(b) - score(a) || a.name.localeCompare(b.name);
+      });
+    }
     return list;
-  }, [products, inStockOnly, maxPrice, sort]);
+  }, [products, inStockOnly, color, storage, series, sort]);
 
   const reset = () => {
     setInStockOnly(false);
-    setMaxPrice(null);
+    setColor(null);
+    setStorage(null);
+    setSeries(null);
     setSort("newest");
   };
 
-  const hasFilters = inStockOnly || maxPrice != null || sort !== "newest";
+  const hasFilters =
+    inStockOnly || color || storage || series || sort !== "newest";
+
+  const chip = (active: boolean) =>
+    active
+      ? "bg-ink-700 text-white shadow-sm"
+      : "border border-gp-border bg-gp-muted text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text";
 
   return (
     <>
-      <div className="sticky top-[var(--chrome-h)] z-30 -mx-4 mt-6 border-y border-white/[0.06] bg-ink-950/85 px-4 py-3 backdrop-blur-xl sm:mx-0 sm:rounded-[1.25rem] sm:border sm:border-white/[0.07]">
-        <div className="no-scrollbar flex items-center gap-2 overflow-x-auto sm:flex-wrap">
-          <span className="mr-1 hidden items-center gap-1.5 text-sm font-semibold text-white/60 sm:flex">
-            <Icon name="sliders" className="h-4 w-4" />
-            Filter
-          </span>
+      <div className="gp-card sticky top-[var(--chrome-h)] z-30 mt-6 !p-4 sm:!p-5">
+        <p className="section-label mb-3">Sort &amp; filter</p>
 
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-caption mr-1">Sort</span>
+          {(Object.keys(sortLabels) as Sort[]).map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setSort(s)}
+              className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(sort === s)}`}
+            >
+              {sortLabels[s]}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="text-caption mr-1">Filter</span>
           <button
             type="button"
             onClick={() => setInStockOnly((v) => !v)}
-            className={`shrink-0 rounded-pill px-3.5 py-2 text-sm font-medium transition-colors ${
-              inStockOnly
-                ? "bg-accent/15 text-accent ring-1 ring-accent/40"
-                : "bg-white/[0.04] text-white/70 hover:text-white"
-            }`}
+            className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(inStockOnly)}`}
           >
             In stock
           </button>
+        </div>
 
-          {priceCeiling > 0 &&
-            [0.25, 0.5, 0.75].map((f) => {
-              const cap = Math.ceil((priceCeiling * f) / 50) * 50;
-              const activeCap = maxPrice === cap;
-              return (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => setMaxPrice(activeCap ? null : cap)}
-                  className={`shrink-0 rounded-pill px-3.5 py-2 text-sm font-medium transition-colors ${
-                    activeCap
-                      ? "bg-brand/20 text-brand ring-1 ring-brand/40"
-                      : "bg-white/[0.04] text-white/70 hover:text-white"
-                  }`}
-                >
-                  Under K{cap.toLocaleString()}
-                </button>
-              );
-            })}
-
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            {hasFilters ? (
+        {colors.length > 0 ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-caption w-full sm:w-auto">Color</span>
+            {colors.map((c) => (
               <button
+                key={c}
                 type="button"
-                onClick={reset}
-                className="text-sm text-white/45 transition-colors hover:text-white"
+                onClick={() => setColor(color === c ? null : c)}
+                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(color === c)}`}
               >
-                Clear
-              </button>
-            ) : null}
-            {(Object.keys(sortLabels) as Sort[]).map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSort(s)}
-                className={`shrink-0 rounded-pill px-3.5 py-2 text-sm font-medium transition-colors ${
-                  sort === s
-                    ? "bg-white/[0.08] text-white ring-1 ring-white/15"
-                    : "bg-white/[0.04] text-white/55 hover:text-white"
-                }`}
-              >
-                {sortLabels[s]}
+                {c}
               </button>
             ))}
           </div>
-        </div>
+        ) : null}
+
+        {storages.length > 0 ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-caption w-full sm:w-auto">Storage</span>
+            {storages.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setStorage(storage === s ? null : s)}
+                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(storage === s)}`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        {seriesList.length > 0 ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-caption w-full sm:w-auto">Series</span>
+            {seriesList.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setSeries(series === s ? null : s)}
+                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${chip(series === s)}`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        {hasFilters ? (
+          <button
+            type="button"
+            onClick={reset}
+            className="mt-4 text-xs font-semibold text-ink-700 hover:underline"
+          >
+            Clear all filters
+          </button>
+        ) : null}
       </div>
 
-      <p className="mt-5 text-sm text-white/45">
-        {results.length} product{results.length === 1 ? "" : "s"}
+      <p className="mt-5 text-sm text-gp-text-muted">
+        <span className="font-semibold tabular-nums text-gp-text">
+          {results.length}
+        </span>{" "}
+        product{results.length === 1 ? "" : "s"}
       </p>
 
       {results.length === 0 ? (

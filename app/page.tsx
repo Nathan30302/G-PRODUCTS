@@ -1,11 +1,9 @@
-import { Hero } from "@/components/Hero";
-import { TrustBadgeStrip } from "@/components/home/TrustBadgeStrip";
+import { HomeSearchSection } from "@/components/home/HomeSearchSection";
+import { ExploreTopTech } from "@/components/home/ExploreTopTech";
+import { HandpickedRail } from "@/components/home/HandpickedRail";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
-import { WhyGProducts } from "@/components/WhyGProducts";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
-import { LocationsBand } from "@/components/LocationsBand";
 import { StoreReviewsSection } from "@/components/ReviewsSection";
-import { HomeCatalogSections } from "@/components/home/HomeLayouts";
 import { getAllProducts } from "@/lib/queries";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
@@ -21,25 +19,19 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const all = await getAllProducts();
-  const hotDeals = all.filter((p) => p.hotDeal);
-  const featured = all.filter((p) => p.featured);
-  const newest = all.slice(0, 12);
+  const handpicked = [
+    ...all.filter((p) => p.featured),
+    ...all.filter((p) => !p.featured)
+  ].slice(0, 14);
 
   return (
     <>
-      <Hero />
-      <TrustBadgeStrip />
-      <HomeCatalogSections
-        hotDeals={hotDeals}
-        featured={featured}
-        newest={newest}
-        allProducts={all}
-      />
+      <HomeSearchSection />
+      <ExploreTopTech products={all} />
+      <HandpickedRail products={handpicked} />
       <HomeFAQ />
       <StoreReviewsSection />
       <StoreServicesStrip />
-      <WhyGProducts />
-      <LocationsBand />
     </>
   );
 }

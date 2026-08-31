@@ -41,26 +41,26 @@ export default async function CategoryPage({
 
   return (
     <div className="container-g py-8 sm:py-10">
-      <nav className="flex items-center gap-1.5 text-sm text-white/40">
-        <Link href="/" className="transition-colors hover:text-white">
+      <nav className="flex items-center gap-1.5 text-sm text-gp-text-subtle">
+        <Link href="/" className="transition-colors hover:text-ink-700">
           Home
         </Link>
         <Icon name="chevron-right" className="h-3.5 w-3.5" />
-        <span className="text-white/70">{category.name}</span>
+        <Link href="/search" className="transition-colors hover:text-ink-700">
+          Shop
+        </Link>
+        <Icon name="chevron-right" className="h-3.5 w-3.5" />
+        <span className="text-gp-text">{category.name}</span>
       </nav>
 
       <header className="mt-5 flex items-start gap-4">
-        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20 shadow-[0_0_24px_rgba(246,212,0,0.12)]">
+        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gp-muted text-ink-700 ring-1 ring-gp-border">
           <Icon name={category.icon} className="h-7 w-7" />
         </span>
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
-            {group ? "Department" : "Category"}
-          </p>
-          <h1 className="mt-1 heading-page font-black tracking-tight text-white">
-            {category.name}
-          </h1>
-          <p className="mt-1.5 text-white/50">{category.tagline}</p>
+          <p className="section-label">Category</p>
+          <h1 className="display heading-page mt-1">{category.name}</h1>
+          <p className="text-subtitle mt-1.5">{category.tagline}</p>
         </div>
       </header>
 
@@ -70,7 +70,7 @@ export default async function CategoryPage({
             <Link
               key={c.slug}
               href={`/category/${c.slug}`}
-              className="rounded-pill border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
+              className="rounded-pill border border-gp-border bg-gp-muted px-3.5 py-1.5 text-xs font-semibold text-gp-text-muted transition-colors hover:border-ink-700/25 hover:text-ink-700"
             >
               {c.name}
             </Link>
