@@ -8,6 +8,7 @@ import { Icon } from "@/components/Icons";
 import { HomeProductCard } from "@/components/home/HomeProductCard";
 import { pushRecentSearch, getRecentSearches } from "@/lib/recent-searches";
 import { getRecentProductSlugs } from "@/lib/recent-products";
+import { isProductDeal } from "@/lib/product-deals";
 
 const QUICK_SEARCHES = [
   { label: "Chargers", query: "charger" },
@@ -131,20 +132,15 @@ export function SearchFindScreen({ products }: { products: Product[] }) {
           <section className="mt-8">
             <h2 className="text-base font-bold text-gp-text">Recently Viewed</h2>
             <div className="no-scrollbar snap-rail relative mt-4 -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-4 sm:px-6">
-              {recentlyViewed.map((p) => {
-                const isDeal = Boolean(
-                  p.hotDeal || (p.compareAtPrice && p.compareAtPrice > p.price)
-                );
-                return (
-                  <HomeProductCard
-                    key={p.id}
-                    product={p}
-                    showHotOnImage={isDeal}
-                    variant="plug"
-                    width="wide"
-                  />
-                );
-              })}
+              {recentlyViewed.map((p) => (
+                <HomeProductCard
+                  key={p.id}
+                  product={p}
+                  showDealBadge={isProductDeal(p)}
+                  variant="plug"
+                  width="wide"
+                />
+              ))}
             </div>
           </section>
         ) : null}
