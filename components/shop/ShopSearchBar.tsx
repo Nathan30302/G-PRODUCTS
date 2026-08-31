@@ -37,7 +37,7 @@ export function ShopSearchBar({ className = "" }: { className?: string }) {
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Search chargers, phones, stationery…"
+        placeholder="What are you looking for?"
         className="min-w-0 flex-1 bg-transparent py-1.5 text-base text-gp-text outline-none placeholder:text-gp-text-subtle"
         aria-label="Search products"
         enterKeyHint="search"

@@ -9,24 +9,6 @@ import { Icon } from "@/components/Icons";
 import { ShopEmptyState } from "@/components/shop/ui";
 import { filterCatalog, type SortMode, type StockFilter } from "@/lib/search";
 
-type TrendChip = {
-  label: string;
-  query?: string;
-  category?: string;
-  href?: string;
-};
-
-const trending: TrendChip[] = [
-  { label: "Exercise Book", query: "exercise" },
-  { label: "Memory Card", query: "memory", category: "storage" },
-  { label: "F9-5", query: "f9-5", category: "audio" },
-  { label: "Extension", query: "extension", category: "chargers" },
-  { label: "Union lock", query: "union lock", category: "locks" },
-  { label: "Oraimo", query: "oraimo", category: "chargers" },
-  { label: "Mouse", query: "mouse", category: "computers" },
-  { label: "Printing", href: "/services/printing" }
-];
-
 export function SearchClient({
   products,
   categories
@@ -52,19 +34,6 @@ export function SearchClient({
       }),
     [deferredQuery, cat, stock, sort, products]
   );
-
-  function applyTrend(chip: TrendChip) {
-    if (chip.href) {
-      router.push(chip.href);
-      return;
-    }
-    const q = chip.query ?? chip.label;
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("q", q);
-    router.push(`/search?${params.toString()}`);
-    if (chip.category) setCat(chip.category);
-    else setCat("all");
-  }
 
   function clearFilters() {
     const params = new URLSearchParams(searchParams.toString());
@@ -113,27 +82,6 @@ export function SearchClient({
             </p>
           </div>
         </header>
-
-        {!query ? (
-          <div className="mt-5">
-            <p className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-gp-text-subtle">
-              <Icon name="spark" className="h-3.5 w-3.5 text-brand" />
-              Popular right now
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {trending.map((t) => (
-                <button
-                  key={t.label}
-                  type="button"
-                  onClick={() => applyTrend(t)}
-                  className="rounded-pill border border-gp-border bg-gp-bg px-3.5 py-2 text-sm font-medium text-gp-text transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-accent/40 hover:bg-accent/10 hover:text-accent"
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : null}
 
         <div className="mt-6 rounded-[1.35rem] border border-gp-border bg-gp-bg p-3 sm:p-4">
           <div className="flex flex-wrap items-center gap-2">

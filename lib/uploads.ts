@@ -146,7 +146,12 @@ function diskFullMessage(err: unknown): string | null {
   return null;
 }
 
-export type UploadFolder = "products" | "services" | "service-pages" | "misc";
+export type UploadFolder =
+  | "products"
+  | "services"
+  | "service-pages"
+  | "misc"
+  | "browse-tiles";
 
 async function assertDiskSpace(dir: string, neededBytes: number): Promise<void> {
   try {

@@ -1,6 +1,6 @@
 import { Hero } from "@/components/Hero";
 import { TrustBadgeStrip } from "@/components/home/TrustBadgeStrip";
-import { CategoryTiles } from "@/components/home/CategoryTiles";
+import { BrowseTilesSection } from "@/components/shop/BrowseTilesSection";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
@@ -8,7 +8,6 @@ import { LocationsBand } from "@/components/LocationsBand";
 import { StoreReviewsSection } from "@/components/ReviewsSection";
 import { HomeCatalogSections } from "@/components/home/HomeLayouts";
 import { getAllProducts } from "@/lib/queries";
-import { resolveCategoryTileCovers } from "@/lib/category-tile-covers";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
@@ -26,13 +25,14 @@ export default async function HomePage() {
   const hotDeals = all.filter((p) => p.hotDeal);
   const featured = all.filter((p) => p.featured);
   const newest = all.slice(0, 12);
-  const categoryTiles = resolveCategoryTileCovers(all);
 
   return (
     <>
       <Hero />
       <TrustBadgeStrip />
-      <CategoryTiles tiles={categoryTiles} />
+      <section className="container-g pt-5 sm:pt-6">
+        <BrowseTilesSection />
+      </section>
       <HomeCatalogSections
         hotDeals={hotDeals}
         featured={featured}

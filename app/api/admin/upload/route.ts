@@ -25,7 +25,8 @@ export async function POST(req: Request) {
     const folder =
       folderRaw === "services" ||
       folderRaw === "service-pages" ||
-      folderRaw === "misc"
+      folderRaw === "misc" ||
+      folderRaw === "browse-tiles"
         ? folderRaw
         : "products";
 

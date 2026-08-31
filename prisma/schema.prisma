@@ -271,3 +271,17 @@ model ShopTeamMember {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+/// Shop browse category tiles (vertical stack on home / shop — admin-managed photos)
+model ShopBrowseTile {
+  id        String   @id @default(cuid())
+  label     String
+  /// Destination when tapped, e.g. /search?q=charger or /category/audio
+  href      String
+  imageUrl  String?
+  isPromo   Boolean  @default(false)
+  sortOrder Int      @default(0)
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

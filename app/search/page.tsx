@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { getAllProducts, getAllCategories } from "@/lib/queries";
 import { SearchClient } from "@/components/SearchClient";
+import { BrowseTilesSection } from "@/components/shop/BrowseTilesSection";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
@@ -16,7 +17,7 @@ export default async function SearchPage({
 }: {
   searchParams: Promise<{ q?: string; deals?: string }>;
 }) {
-  const [{ deals }, products, categories] = await Promise.all([
+  const [{ q, deals }, products, categories] = await Promise.all([
     searchParams,
     getAllProducts(),
     getAllCategories()
@@ -25,9 +26,18 @@ export default async function SearchPage({
     deals === "1"
       ? products.filter((p) => p.hotDeal || p.compareAtPrice)
       : products;
+  const showBrowse = !q?.trim() && deals !== "1";
+
   return (
-    <Suspense fallback={null}>
-      <SearchClient products={list} categories={categories} />
-    </Suspense>
+    <>
+      {showBrowse ? (
+        <div className="container-g pt-4 sm:pt-6">
+          <BrowseTilesSection />
+        </div>
+      ) : null}
+      <Suspense fallback={null}>
+        <SearchClient products={list} categories={categories} />
+      </Suspense>
+    </>
   );
 }

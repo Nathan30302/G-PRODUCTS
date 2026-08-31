@@ -33,6 +33,11 @@ const navGroups: NavGroup[] = [
         href: "/admin/products",
         label: "Products",
         hint: "Catalogue & stock"
+      },
+      {
+        href: "/admin/browse-tiles",
+        label: "Browse tiles",
+        hint: "Shop category photos"
       }
     ]
   },
