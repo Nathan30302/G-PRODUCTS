@@ -12,10 +12,8 @@ export function Panel({
 }) {
   return (
     <div
-      className={`rounded-[1.35rem] border border-white/[0.07] bg-ink-900/70 shadow-card ${
-        elevated
-          ? "bg-gradient-to-b from-ink-900/80 to-ink-950/50"
-          : ""
+      className={`rounded-[1.25rem] border border-gp-border/80 bg-gp-surface shadow-card ${
+        elevated ? "shadow-float" : ""
       } ${className}`.trim()}
     >
       {children}

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useCart } from "@/lib/cart";
 import { useToast } from "@/components/Toast";
 import { Icon } from "@/components/Icons";
+import { hapticTap } from "@/lib/haptics";
 import { Product, ProductVariant, hasPricedOptions } from "@/lib/types";
 import { coverImageForProduct } from "@/lib/product-images";
 
@@ -41,7 +42,7 @@ export function AddToCartButton({
     return (
       <Link
         href={`/product/${product.slug}`}
-        className={`flex w-full items-center justify-center rounded-pill border border-white/15 bg-white/[0.04] font-semibold text-white/50 ${
+        className={`flex w-full items-center justify-center rounded-pill border border-gp-border bg-gp-muted font-semibold text-gp-text-muted ${
           compact ? "px-4 py-2 text-sm" : "px-4 py-3"
         }`}
       >
@@ -72,6 +73,7 @@ export function AddToCartButton({
     if (product.variants.length > 0 && (!chosen || !chosen.available)) return;
     const n = Math.max(1, Math.round(qty));
     add(product, chosen, n, fitment ?? undefined);
+    hapticTap("light");
     setAdded(true);
     const detail = [chosen?.name, fitment].filter(Boolean).join(" · ");
     toast({
@@ -89,7 +91,7 @@ export function AddToCartButton({
       <button
         type="button"
         disabled
-        className={`flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-pill border border-white/15 bg-white/[0.04] font-semibold text-white/45 ${
+        className={`flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-pill border border-gp-border bg-gp-muted font-semibold text-gp-text-subtle ${
           compact ? "px-4 py-2 text-sm" : "px-4 py-3"
         }`}
       >
@@ -105,8 +107,8 @@ export function AddToCartButton({
       aria-label={`Add ${product.name} to cart`}
       className={`flex w-full items-center justify-center gap-2 rounded-pill font-semibold transition-all duration-200 ease-out-expo active:scale-[0.97] ${
         added
-          ? "bg-accent text-ink-950"
-          : "bg-brand text-ink-950 hover:bg-brand-soft hover:shadow-brand-glow"
+          ? "bg-accent text-white shadow-card"
+          : "bg-ink-700 text-white shadow-float hover:bg-ink-800"
       } ${compact ? "px-4 py-2 text-sm" : "px-4 py-3"}`}
     >
       {added ? (

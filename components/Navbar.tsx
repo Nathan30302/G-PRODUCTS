@@ -52,8 +52,8 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
 
   const navLink = (active: boolean) =>
     active
-      ? "bg-accent/10 text-accent"
-      : "text-gp-text-muted hover:bg-gp-bg hover:text-gp-text";
+      ? "bg-ink-700/10 text-ink-700"
+      : "text-gp-text-muted hover:bg-gp-muted hover:text-gp-text";
 
   return (
     <header
@@ -184,8 +184,8 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
                 href={href}
                 className={`shrink-0 rounded-pill px-3.5 py-1.5 text-xs font-semibold transition-all ${
                   active
-                    ? "bg-accent text-white"
-                    : "text-gp-text-muted hover:bg-gp-bg hover:text-gp-text"
+                    ? "bg-ink-700 text-white"
+                    : "text-gp-text-muted hover:bg-gp-muted hover:text-gp-text"
                 }`}
               >
                 {c.name}

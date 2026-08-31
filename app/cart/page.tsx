@@ -52,11 +52,11 @@ export default function CartPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="flex gap-3 rounded-xl border border-gp-border bg-gp-surface p-3 shadow-card sm:gap-4 sm:p-4"
+                className="flex gap-4 rounded-2xl border border-gp-border/80 bg-gp-surface p-4 shadow-card sm:gap-5 sm:p-5"
               >
                 <Link
                   href={`/product/${item.slug}`}
-                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[#f4f4f2] sm:h-24 sm:w-24"
+                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gp-muted sm:h-24 sm:w-24"
                 >
                   {item.image && (
                     <Image
@@ -72,7 +72,7 @@ export default function CartPage() {
                   <div className="flex items-start justify-between gap-3">
                     <Link
                       href={`/product/${item.slug}`}
-                      className="min-w-0 font-semibold text-gp-text transition-colors hover:text-accent"
+                      className="min-w-0 font-semibold text-gp-text transition-colors hover:text-ink-700"
                     >
                       {item.name}
                     </Link>
@@ -128,7 +128,7 @@ export default function CartPage() {
         </div>
 
         <div className="h-fit lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
-          <div className="rounded-xl border border-gp-border bg-gp-surface p-6 shadow-card">
+          <div className="gp-card lg:sticky lg:top-[calc(var(--chrome-h)+0.75rem)]">
             <h2 className="text-lg font-bold text-gp-text">Order summary</h2>
             <div className="mt-4 flex justify-between text-sm text-gp-text-muted">
               <span>Subtotal</span>

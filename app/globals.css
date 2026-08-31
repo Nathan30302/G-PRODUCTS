@@ -16,12 +16,15 @@
   --gp-space-12: 3rem;
   --gp-space-16: 4rem;
   /* Light retail surfaces */
-  --gp-bg: #f7f8f7;
+  --gp-bg: #ffffff;
+  --gp-muted: #f5f5f5;
   --gp-surface: #ffffff;
-  --gp-border: #e3e8e6;
+  --gp-border: #e8ebea;
   --gp-text: #1a2321;
   --gp-text-muted: #5f6b68;
   --gp-text-subtle: #8b9693;
+  --gp-primary: #1b4e58;
+  --gp-primary-dark: #123b43;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -293,27 +296,28 @@ html {
     }
   }
 
-  /* Catalogue / shop product grids — compact Plug-style density */
+  /* Catalogue / shop product grids — generous premium spacing */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
   @media (min-width: 640px) {
     .product-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.75rem;
+      gap: 1rem;
     }
   }
   @media (min-width: 1024px) {
     .product-grid {
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 1rem;
+      gap: 1.25rem;
     }
   }
   @media (min-width: 1280px) {
     .product-grid {
       grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 1.5rem;
     }
   }
 
@@ -328,36 +332,75 @@ html {
     scroll-snap-align: start;
   }
 
-  /* Section eyebrow label */
-  .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.14em] text-accent;
+  /* Section eyebrow / boutique label */
+  .eyebrow,
+  .section-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-600;
   }
 
   .display {
-    @apply font-display font-extrabold tracking-[-0.01em] leading-[1.15] text-gp-text;
+    @apply font-display font-extrabold tracking-[-0.02em] leading-[1.12] text-gp-text;
   }
 
   .heading-page {
-    font-size: clamp(1.65rem, 1.15rem + 2.4vw, 2.5rem);
-    line-height: 1.12;
+    font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.625rem);
+    line-height: 1.1;
+    font-weight: 800;
   }
 
   .heading-section {
-    font-size: clamp(1.35rem, 1.05rem + 1.4vw, 1.875rem);
-    line-height: 1.2;
+    font-size: clamp(1.375rem, 1.05rem + 1.4vw, 1.875rem);
+    line-height: 1.18;
+    font-weight: 700;
+  }
+
+  .text-subtitle {
+    @apply text-base font-medium leading-relaxed text-gp-text-muted;
+  }
+
+  .text-body {
+    @apply text-sm font-normal leading-relaxed text-gp-text;
+  }
+
+  .text-caption {
+    @apply text-xs font-medium text-gp-text-subtle;
+  }
+
+  /* Premium card surfaces */
+  .gp-card {
+    @apply rounded-[1.25rem] border border-gp-border/80 bg-gp-surface p-5 shadow-card transition-shadow duration-300 sm:p-6;
+  }
+
+  .gp-card-muted {
+    @apply rounded-[1.25rem] bg-gp-muted p-5 shadow-card sm:p-6;
+  }
+
+  .page-enter {
+    animation: page-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* Subtle top-lit panel used across cards/sections */
   .panel {
-    @apply rounded-[1.35rem] border border-gp-border bg-gp-surface shadow-card;
+    @apply rounded-[1.25rem] border border-gp-border/80 bg-gp-surface shadow-card;
   }
 
   .field {
-    @apply mt-2 w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-base text-gp-text outline-none transition-all placeholder:text-gp-text-subtle focus:border-accent/50 focus:shadow-[0_0_0_3px_rgba(34,201,138,0.12)];
+    @apply mt-2 w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-base font-normal text-gp-text outline-none transition-all placeholder:text-gp-text-subtle focus:border-ink-600/40 focus:shadow-[0_0_0_3px_rgba(27,78,88,0.1)];
   }
 
   .field-label {
-    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-gp-text-muted;
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-gp-text-muted;
   }
 }
 
@@ -366,7 +409,7 @@ html {
   .skeleton {
     position: relative;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.04);
+    background-color: var(--gp-muted);
   }
   .skeleton::after {
     content: "";
@@ -376,7 +419,7 @@ html {
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(0, 0, 0, 0.06),
+      rgba(255, 255, 255, 0.65),
       transparent
     );
     animation: shimmer 1.6s infinite;
@@ -384,10 +427,10 @@ html {
 
   .btn-brand,
   .btn-primary {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill bg-accent px-6 py-3 text-sm font-bold text-white shadow-accent-glow transition-all duration-200 ease-out-expo hover:bg-accent-dark hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gp-border disabled:text-gp-text-subtle disabled:shadow-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill bg-ink-700 px-6 py-3 text-sm font-bold text-white shadow-float transition-all duration-200 ease-out-expo hover:bg-ink-800 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-gp-border disabled:text-gp-text-subtle disabled:shadow-none;
   }
   .btn-ghost {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill border border-gp-border bg-gp-surface px-6 py-3 text-sm font-bold text-gp-text transition-all duration-200 ease-out-expo hover:border-accent/40 hover:bg-gp-bg active:scale-[0.98];
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill border border-gp-border bg-gp-surface px-6 py-3 text-sm font-semibold text-gp-text shadow-card transition-all duration-200 ease-out-expo hover:border-ink-600/30 hover:bg-gp-muted active:scale-[0.97];
   }
   .btn-whatsapp {
     @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill border-2 border-[#25D366] bg-gp-surface px-4 py-3 text-sm font-semibold text-[#128C7E] transition-all duration-200 ease-out-expo hover:bg-green-50 active:scale-[0.98];

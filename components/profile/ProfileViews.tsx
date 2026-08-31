@@ -54,26 +54,21 @@ export function AccountHome({
 
   return (
     <div className="container-g py-10 sm:py-14">
-      <div className="relative overflow-hidden rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-br from-ink-900 via-ink-900/90 to-ink-950 p-5 sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/10 blur-3xl" />
-        <div className="relative flex flex-wrap items-end justify-between gap-4">
+      <div className="gp-card shadow-float">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
-              Account
-            </p>
-            <h1 className="display heading-page mt-2">
-              Hi, {firstName}
-            </h1>
-            <p className="mt-2 text-sm text-white/45">
+            <p className="section-label">Account</p>
+            <h1 className="display heading-page mt-2">Hi, {firstName}</h1>
+            <p className="text-subtitle mt-2">
               {customer.phone}
               {customer.email ? ` · ${customer.email}` : null}
             </p>
           </div>
-          <LogoutButton className="rounded-pill border border-white/15 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white/55 transition-colors hover:border-white/30 hover:text-white" />
+          <LogoutButton className="rounded-pill border border-gp-border px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-gp-text-muted transition-colors hover:border-ink-700/30 hover:text-ink-700" />
         </div>
       </div>
 
-      <div className="mt-8 grid gap-3 sm:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
         <ShopQuickLink
           href="/search"
           icon="search"
@@ -94,63 +89,59 @@ export function AccountHome({
         />
       </div>
 
-      <section className="mt-12 rounded-[1.35rem] border border-white/[0.08] bg-gradient-to-br from-brand/[0.08] via-white/[0.02] to-accent/[0.06] p-5 sm:p-6">
+      <section className="gp-card mt-12 shadow-card">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/15 text-brand ring-1 ring-brand/25">
+            <span className="grid h-11 w-11 place-items-center rounded-xl bg-gp-muted text-ink-700 ring-1 ring-gp-border">
               <Icon name="star" className="h-5 w-5" />
             </span>
             <div>
-              <h2 className="display text-xl">G-Rewards</h2>
-              <p className="mt-0.5 text-sm text-white/45">
+              <h2 className="display heading-section">G-Rewards</h2>
+              <p className="text-subtitle mt-1">
                 Earn ~1 point per K1 when an order is paid. Share your code for
                 a bonus on a friend’s first paid order.
               </p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-extrabold tabular-nums text-brand">
+            <p className="text-3xl font-extrabold tabular-nums text-ink-700">
               {rewardPoints}
             </p>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-white/40">
-              points
-            </p>
+            <p className="section-label mt-0.5">points</p>
           </div>
         </div>
         {referralCode ? (
-          <div className="mt-5 rounded-2xl border border-white/[0.08] bg-ink-950/50 p-4">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
-              Your referral code
-            </p>
-            <p className="mt-1 font-mono text-lg font-bold tracking-wide text-white">
+          <div className="gp-card-muted mt-6">
+            <p className="section-label">Your referral code</p>
+            <p className="mt-2 font-mono text-lg font-bold tracking-wide text-gp-text">
               {referralCode}
             </p>
             {referralLink ? (
-              <p className="mt-2 break-all text-xs text-white/45">
+              <p className="text-caption mt-2 break-all">
                 Invite link:{" "}
-                <span className="text-brand/90">{referralLink}</span>
+                <span className="font-medium text-ink-700">{referralLink}</span>
               </p>
             ) : null}
-            <p className="mt-2 text-xs text-white/35">
+            <p className="text-caption mt-2">
               Friends enter this code when they create an account.
             </p>
           </div>
         ) : null}
       </section>
 
-      <section className="mt-12 rounded-[1.35rem] border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6">
+      <section className="gp-card mt-12">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/20">
+          <span className="grid h-11 w-11 place-items-center rounded-xl bg-gp-muted text-ink-700 ring-1 ring-gp-border">
             <Icon name="map-pin" className="h-5 w-5" />
           </span>
           <div>
-            <h2 className="display text-xl">Delivery location</h2>
-            <p className="mt-0.5 text-sm text-white/45">
+            <h2 className="display heading-section">Delivery location</h2>
+            <p className="text-subtitle mt-1">
               Saved for checkout — edit anytime.
             </p>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-6">
           <LocationForm
             locationLabel={locationLabel}
             defaultLocation={defaultLocation}
@@ -160,15 +151,13 @@ export function AccountHome({
 
       <section className="mt-12">
         <div className="flex items-end justify-between gap-3">
-          <h2 className="display text-xl">Recent orders</h2>
+          <h2 className="display heading-section">Recent orders</h2>
           {orders.length > 0 ? (
-            <span className="text-xs font-medium text-white/35">
-              {orders.length} shown
-            </span>
+            <span className="text-caption">{orders.length} shown</span>
           ) : null}
         </div>
         {orders.length === 0 ? (
-          <div className="mt-4">
+          <div className="mt-5">
             <ShopEmptyState
               icon="cart"
               title="No orders yet"
@@ -182,20 +171,20 @@ export function AccountHome({
             />
           </div>
         ) : (
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-5 space-y-3">
             {orders.map((o) => (
               <li
                 key={o.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-[1.15rem] border border-white/[0.08] bg-ink-900/40 px-4 py-4 transition-colors hover:border-white/[0.12]"
+                className="gp-card flex flex-wrap items-center justify-between gap-3 !p-4 transition-all duration-300 hover:shadow-card-hover sm:!p-5"
               >
                 <div className="min-w-0">
-                  <p className="font-semibold text-white">{o.ref}</p>
-                  <p className="mt-0.5 text-xs text-white/40">
+                  <p className="font-semibold text-gp-text">{o.ref}</p>
+                  <p className="text-caption mt-1">
                     {formatDateTime(o.createdAt)}
                   </p>
                 </div>
-                <div className="flex flex-col items-end gap-1.5">
-                  <p className="font-bold tabular-nums text-brand">
+                <div className="flex flex-col items-end gap-2">
+                  <p className="font-bold tabular-nums text-ink-700">
                     {formatPrice(o.total)}
                   </p>
                   <ShopStatusPill status={o.status} />
@@ -206,17 +195,15 @@ export function AccountHome({
         )}
       </section>
 
-      <section className="mt-10">
+      <section className="mt-12">
         <div className="flex items-end justify-between gap-3">
-          <h2 className="display text-xl">Service requests</h2>
+          <h2 className="display heading-section">Service requests</h2>
           {services.length > 0 ? (
-            <span className="text-xs font-medium text-white/35">
-              {services.length} shown
-            </span>
+            <span className="text-caption">{services.length} shown</span>
           ) : null}
         </div>
         {services.length === 0 ? (
-          <div className="mt-4">
+          <div className="mt-5">
             <ShopEmptyState
               icon="services"
               title="No service jobs yet"
@@ -230,18 +217,18 @@ export function AccountHome({
             />
           </div>
         ) : (
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-5 space-y-3">
             {services.map((s) => {
               const n = parseServiceFileUrls(s.fileUrls).length;
               return (
                 <li key={s.id}>
                   <Link
                     href={`/services/track/${s.ref}`}
-                    className="flex flex-wrap items-center justify-between gap-3 rounded-[1.15rem] border border-white/[0.08] bg-ink-900/40 px-4 py-4 transition-colors hover:border-brand/35"
+                    className="gp-card flex flex-wrap items-center justify-between gap-3 !p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover sm:!p-5"
                   >
                     <div className="min-w-0">
-                      <p className="font-semibold text-white">{s.ref}</p>
-                      <p className="mt-0.5 text-xs capitalize text-white/40">
+                      <p className="font-semibold text-gp-text">{s.ref}</p>
+                      <p className="text-caption mt-1 capitalize">
                         {s.serviceType.replace(/_/g, " ").toLowerCase()}
                         {n > 0
                           ? ` · ${n} file${n === 1 ? "" : "s"}`
@@ -250,7 +237,7 @@ export function AccountHome({
                           ? ` · ${formatPrice(s.amount)}`
                           : ""}
                       </p>
-                      <p className="mt-0.5 text-[11px] text-white/30">
+                      <p className="text-caption mt-1">
                         {formatDateTime(s.createdAt)}
                       </p>
                     </div>
@@ -258,7 +245,7 @@ export function AccountHome({
                       <ShopStatusPill status={s.status} />
                       <Icon
                         name="chevron-right"
-                        className="h-4 w-4 text-white/30"
+                        className="h-4 w-4 text-gp-text-subtle"
                       />
                     </div>
                   </Link>
@@ -269,12 +256,12 @@ export function AccountHome({
         )}
       </section>
 
-      <p className="mt-10 text-center text-sm text-white/35">
-        <Link href="/" className="hover:text-white/60">
+      <p className="mt-12 text-center text-sm text-gp-text-subtle">
+        <Link href="/" className="font-medium text-ink-700 hover:text-ink-800">
           ← Back to shop
         </Link>
-        <span className="mx-2 text-white/15">·</span>
-        <span className="text-white/25">{siteConfig.name}</span>
+        <span className="mx-2 text-gp-border">·</span>
+        <span>{siteConfig.name}</span>
       </p>
     </div>
   );

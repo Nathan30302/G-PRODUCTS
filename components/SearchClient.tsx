@@ -83,7 +83,7 @@ export function SearchClient({
           </div>
         </header>
 
-        <div className="mt-6 rounded-[1.35rem] border border-gp-border bg-gp-surface p-3 sm:p-4">
+        <div className="mt-8 gp-card">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-gp-text-subtle">
               Stock
@@ -101,8 +101,8 @@ export function SearchClient({
                 onClick={() => setStock(id)}
                 className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${
                   stock === id
-                    ? "bg-gp-text text-white shadow-sm"
-                    : "border border-gp-border bg-gp-bg text-gp-text-muted hover:border-accent/30 hover:text-gp-text"
+                    ? "bg-ink-700 text-white shadow-sm"
+                    : "border border-gp-border bg-gp-muted text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text"
                 }`}
               >
                 {label}
@@ -125,8 +125,8 @@ export function SearchClient({
                 onClick={() => setSort(id)}
                 className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${
                   sort === id
-                    ? "bg-accent text-white shadow-sm"
-                    : "border border-gp-border bg-gp-bg text-gp-text-muted hover:border-accent/30 hover:text-gp-text"
+                    ? "bg-ink-700 text-white shadow-sm"
+                    : "border border-gp-border bg-gp-muted text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text"
                 }`}
               >
                 {label}
@@ -140,8 +140,8 @@ export function SearchClient({
               onClick={() => setCat("all")}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-sm font-semibold transition-all ${
                 cat === "all"
-                  ? "bg-accent text-white shadow-sm"
-                  : "border border-gp-border bg-gp-bg text-gp-text-muted hover:border-accent/30 hover:text-gp-text"
+                  ? "bg-ink-700 text-white shadow-sm"
+                  : "border border-gp-border bg-gp-muted text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text"
               }`}
             >
               All categories
@@ -153,14 +153,14 @@ export function SearchClient({
                 onClick={() => setCat(c.slug)}
                 className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-sm font-semibold transition-all ${
                   cat === c.slug
-                    ? "bg-accent text-white shadow-sm"
-                    : "border border-gp-border bg-gp-bg text-gp-text-muted hover:border-accent/30 hover:text-gp-text"
+                    ? "bg-ink-700 text-white shadow-sm"
+                    : "border border-gp-border bg-gp-muted text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text"
                 }`}
               >
                 <Icon
                   name={c.icon}
                   className={`h-3.5 w-3.5 ${
-                    cat === c.slug ? "text-white/90" : "text-accent"
+                    cat === c.slug ? "text-white/90" : "text-ink-600"
                   }`}
                 />
                 {c.name}
@@ -236,7 +236,7 @@ export function SearchClient({
               <section key={category.slug}>
                 <div className="mb-5 flex items-end justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-accent/10 text-accent ring-1 ring-accent/20">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gp-muted text-ink-700 ring-1 ring-gp-border">
                       <Icon name={category.icon} className="h-5 w-5" />
                     </span>
                     <div>
@@ -248,7 +248,7 @@ export function SearchClient({
                   </div>
                   <Link
                     href={`/category/${category.slug}`}
-                    className="shrink-0 text-sm font-semibold text-accent hover:underline"
+                    className="shrink-0 text-sm font-semibold text-ink-700 hover:underline"
                   >
                     View all
                   </Link>

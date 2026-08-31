@@ -24,7 +24,7 @@ export function TrustBadgeStrip() {
           {badges.map((b) => {
             const inner = (
               <>
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gp-muted text-ink-700">
                   <Icon name={b.icon} className="h-4 w-4" />
                 </span>
                 <span className="text-xs font-semibold text-gp-text sm:text-sm">
@@ -37,7 +37,7 @@ export function TrustBadgeStrip() {
                 {"href" in b && b.href ? (
                   <Link
                     href={b.href}
-                    className="flex items-center gap-2.5 transition-colors hover:text-accent"
+                    className="flex items-center gap-3 transition-colors hover:text-ink-700"
                   >
                     {inner}
                   </Link>

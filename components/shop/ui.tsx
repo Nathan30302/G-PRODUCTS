@@ -14,14 +14,14 @@ export function ShopSectionHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-3">
+    <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
-        {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
-        <h2 className={`display heading-section ${eyebrow ? "mt-1.5" : ""}`}>
+        {eyebrow ? <p className="section-label">{eyebrow}</p> : null}
+        <h2 className={`display heading-section ${eyebrow ? "mt-2" : ""}`}>
           {title}
         </h2>
         {subtitle ? (
-          <p className="mt-2 max-w-xl text-sm text-gp-text-muted">{subtitle}</p>
+          <p className="text-subtitle mt-2 max-w-xl">{subtitle}</p>
         ) : null}
       </div>
       {action}
@@ -41,13 +41,13 @@ export function ShopEmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-[1.35rem] border border-gp-border bg-gp-surface p-10 text-center shadow-card sm:p-12">
-      <span className="grid h-16 w-16 place-items-center rounded-2xl bg-accent/10 text-accent ring-1 ring-accent/20">
+    <div className="gp-card flex flex-col items-center p-10 text-center sm:p-12">
+      <span className="grid h-16 w-16 place-items-center rounded-2xl bg-gp-muted text-ink-700 ring-1 ring-gp-border">
         <Icon name={icon} className="h-7 w-7" />
       </span>
       <p className="mt-5 text-lg font-semibold text-gp-text">{title}</p>
       {description ? (
-        <p className="mt-1.5 max-w-sm text-sm text-gp-text-muted">{description}</p>
+        <p className="text-subtitle mt-2 max-w-sm">{description}</p>
       ) : null}
       {action ? <div className="mt-6">{action}</div> : null}
     </div>
@@ -57,7 +57,7 @@ export function ShopEmptyState({
 export function ShopStickyBar({ children }: { children: ReactNode }) {
   return (
     <div
-      className="fixed inset-x-0 z-40 border-t border-gp-border bg-gp-surface/95 px-4 py-3 backdrop-blur-lg md:pb-[max(0.75rem,var(--safe-bottom))] lg:hidden"
+      className="fixed inset-x-0 z-40 border-t border-gp-border bg-white/96 px-4 py-3 shadow-float backdrop-blur-lg md:pb-[max(0.75rem,var(--safe-bottom))] lg:hidden"
       style={{ bottom: "var(--mobile-nav-offset)" }}
     >
       {children}
@@ -66,25 +66,25 @@ export function ShopStickyBar({ children }: { children: ReactNode }) {
 }
 
 const ORDER_STATUS: Record<string, string> = {
-  PENDING: "border-brand/30 bg-brand/10 text-brand",
-  PAID: "border-accent/30 bg-accent/10 text-accent",
-  PREPARING: "border-sky-400/30 bg-sky-400/10 text-sky-300",
-  READY: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-  DELIVERED: "border-white/15 bg-white/[0.04] text-white/70",
-  CANCELLED: "border-red-400/30 bg-red-400/10 text-red-300",
-  NEW: "border-brand/30 bg-brand/10 text-brand",
-  CONFIRMED: "border-sky-400/30 bg-sky-400/10 text-sky-300",
-  IN_PROGRESS: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-  SUCCESS: "border-accent/30 bg-accent/10 text-accent",
-  FAILED: "border-red-400/30 bg-red-400/10 text-red-300"
+  PENDING: "border-brand/40 bg-brand/10 text-ink-800",
+  PAID: "border-accent/35 bg-accent/10 text-accent-dark",
+  PREPARING: "border-sky-300 bg-sky-50 text-sky-800",
+  READY: "border-amber-300 bg-amber-50 text-amber-900",
+  DELIVERED: "border-gp-border bg-gp-muted text-gp-text-muted",
+  CANCELLED: "border-red-200 bg-red-50 text-red-700",
+  NEW: "border-brand/40 bg-brand/10 text-ink-800",
+  CONFIRMED: "border-sky-300 bg-sky-50 text-sky-800",
+  IN_PROGRESS: "border-amber-300 bg-amber-50 text-amber-900",
+  SUCCESS: "border-accent/35 bg-accent/10 text-accent-dark",
+  FAILED: "border-red-200 bg-red-50 text-red-700"
 };
 
 export function ShopStatusPill({ status }: { status: string }) {
   const cls =
-    ORDER_STATUS[status] ?? "border-white/15 bg-white/[0.04] text-white/65";
+    ORDER_STATUS[status] ?? "border-gp-border bg-gp-muted text-gp-text-muted";
   return (
     <span
-      className={`inline-flex rounded-pill border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${cls}`}
+      className={`inline-flex rounded-pill border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] ${cls}`}
     >
       {status.replace(/_/g, " ")}
     </span>
@@ -105,13 +105,13 @@ export function ShopQuickLink({
   return (
     <Link
       href={href}
-      className="group rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] px-5 py-4 transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/40 hover:bg-white/[0.05]"
+      className="group gp-card block transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:shadow-card-hover"
     >
-      <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/20 transition-colors group-hover:bg-brand/15">
+      <span className="grid h-11 w-11 place-items-center rounded-xl bg-gp-muted text-ink-700 ring-1 ring-gp-border transition-colors group-hover:bg-ink-700/10">
         <Icon name={icon} className="h-5 w-5" />
       </span>
-      <p className="mt-3 font-bold text-white">{title}</p>
-      <p className="mt-1 text-xs text-white/40">{subtitle}</p>
+      <p className="mt-4 font-bold text-gp-text">{title}</p>
+      <p className="text-caption mt-1">{subtitle}</p>
     </Link>
   );
 }

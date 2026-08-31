@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { passwordChecks } from "@/lib/password";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
+import { hapticTap } from "@/lib/haptics";
 
 type Mode = "signin" | "signup";
 
@@ -57,7 +58,7 @@ function PasswordInput({
         <button
           type="button"
           onClick={() => setShow((v) => !v)}
-          className="absolute right-2 top-1/2 z-10 min-h-11 min-w-11 -translate-y-1/2 rounded-lg px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white/40 hover:text-brand"
+          className="absolute right-2 top-1/2 z-10 min-h-11 min-w-11 -translate-y-1/2 rounded-lg px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-gp-text-subtle hover:text-ink-700"
         >
           {show ? "Hide" : "Show"}
         </button>
@@ -76,7 +77,7 @@ function PasswordInput({
                       : score <= 4
                         ? "bg-brand"
                         : "bg-accent"
-                    : "bg-white/10"
+                    : "bg-gp-border"
                 }`}
               />
             ))}
@@ -86,12 +87,12 @@ function PasswordInput({
               <li
                 key={c.id}
                 className={`flex items-center gap-1.5 text-[11px] ${
-                  c.ok ? "text-accent" : "text-white/35"
+                  c.ok ? "text-accent-dark" : "text-gp-text-subtle"
                 }`}
               >
                 <span
                   className={`grid h-3.5 w-3.5 place-items-center rounded-full text-[9px] ${
-                    c.ok ? "bg-accent/20" : "bg-white/5"
+                    c.ok ? "bg-accent/15 text-accent-dark" : "bg-gp-muted"
                   }`}
                 >
                   {c.ok ? "✓" : ""}
@@ -163,6 +164,7 @@ export function AuthPanel({
         return;
       }
       hardNavigate(data.redirectTo ?? "/");
+      hapticTap("success");
     } catch {
       showError("Network error. Check your connection and try again.");
     }
@@ -198,6 +200,7 @@ export function AuthPanel({
         return;
       }
       hardNavigate(data.redirectTo ?? "/profile/account");
+      hapticTap("success");
     } catch {
       showError("Network error. Check your connection and try again.");
     }
@@ -205,23 +208,18 @@ export function AuthPanel({
 
   return (
     <div className="relative mx-auto w-full max-w-md pb-[max(2rem,env(safe-area-inset-bottom))]">
-      <div className="pointer-events-none absolute -left-16 -top-10 h-48 w-48 rounded-full bg-brand/15 blur-[90px]" />
-      <div className="pointer-events-none absolute -right-10 top-32 h-40 w-40 rounded-full bg-accent/10 blur-[80px]" />
-
       <div className="relative mb-8 flex flex-col items-center text-center">
         <Logo size="lg" priority />
-        <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.28em] text-brand">
-          Your account
-        </p>
-        <h1 className="display mt-2 text-3xl sm:text-4xl">
+        <p className="section-label mt-6">Your account</p>
+        <h1 className="display heading-page mt-2">
           {mode === "signin" ? "Welcome back" : "Create account"}
         </h1>
-        <p className="mt-2 max-w-xs text-sm text-white/45">
+        <p className="text-subtitle mt-3 max-w-xs">
           {mode === "signin"
             ? "Sign in with your phone or email — you’ll stay signed in."
             : "All fields required. You’ll be signed in right after signup."}
         </p>
-        <ul className="mt-5 flex flex-wrap justify-center gap-2">
+        <ul className="mt-6 flex flex-wrap justify-center gap-2">
           {[
             { icon: "truck", label: "Track orders" },
             { icon: "map-pin", label: "Saved address" },
@@ -229,25 +227,24 @@ export function AuthPanel({
           ].map((b) => (
             <li
               key={b.label}
-              className="inline-flex items-center gap-1.5 rounded-pill border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-white/50"
+              className="inline-flex items-center gap-1.5 rounded-pill border border-gp-border bg-gp-muted px-3 py-1.5 text-[11px] font-medium text-gp-text-muted"
             >
-              <Icon name={b.icon} className="h-3 w-3 text-brand" />
+              <Icon name={b.icon} className="h-3 w-3 text-ink-700" />
               {b.label}
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="relative overflow-hidden rounded-[1.85rem] border border-white/[0.08] bg-gradient-to-b from-ink-850/95 to-ink-900/95 p-1.5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.04]">
-        <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
-        <div className="relative grid grid-cols-2 gap-1 rounded-[1.35rem] bg-ink-950/60 p-1">
+      <div className="gp-card overflow-hidden p-0 shadow-float">
+        <div className="grid grid-cols-2 gap-1 border-b border-gp-border bg-gp-muted p-1.5">
           <button
             type="button"
             onClick={() => switchMode("signin")}
-            className={`rounded-pill py-2.5 text-sm font-bold transition-all ${
+            className={`rounded-pill py-2.5 text-sm font-bold transition-all duration-300 ${
               mode === "signin"
-                ? "bg-brand text-ink-950 shadow-brand-glow"
-                : "text-white/45 hover:text-white"
+                ? "bg-white text-ink-700 shadow-card"
+                : "text-gp-text-subtle hover:text-gp-text"
             }`}
           >
             Sign in
@@ -255,10 +252,10 @@ export function AuthPanel({
           <button
             type="button"
             onClick={() => switchMode("signup")}
-            className={`rounded-pill py-2.5 text-sm font-bold transition-all ${
+            className={`rounded-pill py-2.5 text-sm font-bold transition-all duration-300 ${
               mode === "signup"
-                ? "bg-brand text-ink-950 shadow-brand-glow"
-                : "text-white/45 hover:text-white"
+                ? "bg-white text-ink-700 shadow-card"
+                : "text-gp-text-subtle hover:text-gp-text"
             }`}
           >
             Create account
@@ -293,7 +290,7 @@ export function AuthPanel({
               {error ? (
                 <p
                   ref={errorRef}
-                  className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+                  className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
                 >
                   {error}
                 </p>
@@ -369,7 +366,7 @@ export function AuthPanel({
               <label className="block">
                 <span className="field-label">
                   Referral code{" "}
-                  <span className="font-normal text-white/35">(optional)</span>
+                  <span className="font-normal text-gp-text-subtle">(optional)</span>
                 </span>
                 <input
                   name="referralCode"
@@ -405,7 +402,7 @@ export function AuthPanel({
               {error ? (
                 <p
                   ref={errorRef}
-                  className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+                  className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
                 >
                   {error}
                 </p>
@@ -419,7 +416,7 @@ export function AuthPanel({
                 {pending ? "Creating…" : "Create account"}
               </button>
 
-              <p className="text-center text-[11px] leading-relaxed text-white/30">
+              <p className="text-center text-caption leading-relaxed">
                 Password needs 8+ characters, upper, lower, a number and a
                 symbol (e.g. Shop2026!).
               </p>
@@ -428,10 +425,10 @@ export function AuthPanel({
         </div>
       </div>
 
-      <p className="relative mt-7 text-center text-sm text-white/35">
+      <p className="relative mt-7 text-center text-sm text-gp-text-subtle">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 hover:text-white/60"
+          className="inline-flex items-center gap-1.5 font-medium text-ink-700 hover:text-ink-800"
         >
           <Icon name="chevron-left" className="h-3.5 w-3.5" />
           Back to shop

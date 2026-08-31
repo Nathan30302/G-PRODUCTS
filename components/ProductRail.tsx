@@ -54,15 +54,9 @@ export function ProductRail({
 
   if (products.length === 0) {
     return (
-      <section className={`${wrap} mt-10 sm:mt-12 ${className}`}>
-        {eyebrow ? (
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
-            {eyebrow}
-          </p>
-        ) : null}
-        <h2 className="display mt-1 text-lg font-extrabold text-gp-text sm:text-xl">
-          {title}
-        </h2>
+      <section className={`${wrap} mt-12 sm:mt-14 ${className}`}>
+        {eyebrow ? <p className="section-label">{eyebrow}</p> : null}
+        <h2 className="display heading-section mt-2">{title}</h2>
         <p className="mt-4 rounded-2xl border border-dashed border-gp-border bg-gp-bg px-5 py-8 text-center text-sm text-gp-text-muted">
           New products coming soon — browse the full shop in the meantime.
         </p>
@@ -71,31 +65,27 @@ export function ProductRail({
   }
 
   return (
-    <section className={`${wrap} mt-10 sm:mt-12 ${className}`}>
-      <div className="flex items-end justify-between gap-3">
+    <section className={`${wrap} mt-12 sm:mt-14 ${className}`}>
+      <div className="flex items-end justify-between gap-4">
         <div className="min-w-0">
           {eyebrow ? (
             <p
-              className={`text-[10px] font-bold uppercase tracking-[0.18em] ${
-                accent === "accent" ? "text-accent/90" : "text-gp-text-subtle"
+              className={`section-label ${
+                accent === "accent" ? "text-ink-600" : ""
               }`}
             >
               {eyebrow}
             </p>
           ) : null}
-          <h2 className="display mt-1 text-lg font-extrabold leading-tight text-white sm:text-xl">
-            {title}
-          </h2>
+          <h2 className="display heading-section mt-2">{title}</h2>
           {subtitle ? (
-            <p className="mt-1.5 hidden max-w-lg text-sm text-gp-text-muted sm:block">
-              {subtitle}
-            </p>
+            <p className="text-subtitle mt-2 hidden max-w-lg sm:block">{subtitle}</p>
           ) : null}
         </div>
         {href ? (
           <Link
             href={href}
-            className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-brand transition-colors hover:text-accent-soft sm:inline-flex"
+            className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-ink-700 transition-colors hover:text-ink-800 sm:inline-flex"
           >
             {hrefLabel}
             <Icon name="arrow-right" className="h-4 w-4" />
@@ -103,7 +93,7 @@ export function ProductRail({
         ) : null}
       </div>
 
-      <div className="relative mt-4">
+      <div className="relative mt-5">
         <div
           className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-gp-bg to-transparent transition-opacity ${
             atStart ? "opacity-0" : "opacity-100"
@@ -116,7 +106,7 @@ export function ProductRail({
         />
         <div
           ref={scroller}
-          className="no-scrollbar snap-rail -mx-4 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-3 sm:px-6"
+          className="no-scrollbar snap-rail -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-4 sm:px-6"
         >
           {products.map((p, i) => (
             <div
@@ -133,7 +123,7 @@ export function ProductRail({
         <div className="mt-4 sm:hidden">
           <Link
             href={href}
-            className="flex min-h-10 items-center justify-center gap-1 text-sm font-semibold text-brand"
+            className="flex min-h-10 items-center justify-center gap-1 text-sm font-semibold text-ink-700"
           >
             {hrefLabel}
             <Icon name="arrow-right" className="h-4 w-4" />

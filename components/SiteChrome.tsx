@@ -53,7 +53,7 @@ export function SiteChrome({
       </Suspense>
       <main
         id="main-content"
-        className="min-h-[70vh] pb-[calc(var(--mobile-nav-offset)+0.75rem)] md:pb-0"
+        className="min-h-[70vh] pb-[calc(var(--mobile-nav-offset)+0.75rem)] md:pb-0 page-enter"
       >
         {children}
       </main>

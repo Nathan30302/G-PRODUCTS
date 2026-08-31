@@ -13,15 +13,15 @@ export function Hero() {
 
       <div className="container-g relative flex flex-col justify-center py-10 sm:py-12 lg:py-14">
         <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-          <p className="hero-rise text-xs font-semibold uppercase tracking-[0.16em] text-accent sm:text-sm">
+          <p className="hero-rise section-label sm:text-xs">
             {siteConfig.splashLine}
           </p>
 
-          <h1 className="hero-rise hero-rise-delay-1 display mt-3 max-w-[14ch] text-[2rem] leading-[1.1] sm:max-w-none sm:text-[2.65rem] lg:text-[3rem]">
+          <h1 className="hero-rise hero-rise-delay-1 display heading-page mt-4 max-w-[14ch] sm:max-w-none">
             {siteConfig.tagline}
           </h1>
 
-          <p className="hero-rise hero-rise-delay-2 mt-3 max-w-2xl text-sm leading-relaxed text-gp-text-muted sm:text-base">
+          <p className="hero-rise hero-rise-delay-2 text-subtitle mt-4 max-w-2xl">
             {siteConfig.subheading}
           </p>
 
@@ -48,7 +48,7 @@ export function Hero() {
 
           <p className="hero-rise hero-rise-delay-3 mt-4 text-xs text-gp-text-subtle">
             Printing, key cutting &amp; G-Loans at our stores.{" "}
-            <Link href="/services" className="font-semibold text-accent hover:underline">
+            <Link href="/services" className="font-semibold text-ink-700 hover:underline">
               View services
             </Link>
           </p>

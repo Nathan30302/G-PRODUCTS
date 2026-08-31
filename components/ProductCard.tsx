@@ -10,6 +10,7 @@ import { SafeImage } from "@/components/SafeImage";
 import { coverImageForProduct } from "@/lib/product-images";
 import { Icon } from "@/components/Icons";
 import { useCart } from "@/lib/cart";
+import { hapticTap } from "@/lib/haptics";
 
 function peekUrls(product: Product): string[] {
   const seen = new Set<string>();
@@ -83,17 +84,18 @@ export function ProductCard({
       return;
     }
     add(product, defaultVariant(product), 1);
+    hapticTap("light");
   }
 
-  const pad = compact ? "p-2" : "p-2.5 sm:p-3";
+  const pad = compact ? "p-3" : "p-3.5 sm:p-4";
   const imageSizes = compact
     ? "(max-width: 640px) 30vw, 11rem"
     : "(max-width: 640px) 46vw, 14rem";
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-gp-border bg-gp-surface shadow-card transition-shadow hover:shadow-card-hover">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gp-border/80 bg-gp-surface shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover">
       <div
-        className="relative aspect-[4/5] overflow-hidden bg-[#f4f4f2]"
+        className="relative aspect-[4/5] overflow-hidden rounded-t-2xl bg-gp-muted"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         onMouseEnter={() => {
@@ -125,7 +127,7 @@ export function ProductCard({
                 priority={priority}
                 quality={85}
                 sizes={imageSizes}
-                className={`object-contain p-2 ${soldOut ? "opacity-50 grayscale" : ""}`}
+                className={`object-contain p-3 ${soldOut ? "opacity-50 grayscale" : ""}`}
               />
             </motion.div>
           </AnimatePresence>
@@ -150,7 +152,7 @@ export function ProductCard({
                 ? `View options for ${product.name}`
                 : `Add ${product.name} to cart`
             }
-            className="absolute bottom-2 right-2 z-[2] grid h-9 w-9 place-items-center rounded-full border border-gp-border bg-gp-surface/95 text-gp-text shadow-card transition-all hover:border-accent hover:bg-accent hover:text-white"
+            className="absolute bottom-3 right-3 z-[2] grid h-10 w-10 place-items-center rounded-full border border-gp-border bg-white/95 text-ink-700 shadow-float transition-all duration-200 hover:border-ink-700 hover:bg-ink-700 hover:text-white active:scale-95"
           >
             <Icon name={pricedOptions || multi ? "chevron-right" : "cart"} className="h-4 w-4" />
           </button>
@@ -166,7 +168,7 @@ export function ProductCard({
         className={`flex flex-1 flex-col ${pad}`}
       >
         <h3
-          className={`line-clamp-2 font-semibold leading-snug text-gp-text transition-colors group-hover:text-accent ${
+          className={`line-clamp-2 font-semibold leading-snug text-gp-text transition-colors group-hover:text-ink-700 ${
             compact ? "text-xs" : "text-sm"
           }`}
         >
