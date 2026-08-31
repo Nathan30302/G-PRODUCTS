@@ -11,8 +11,7 @@ const sizes = {
 } as const;
 
 /**
- * Brand mark only (G + teardrop). Uses the original PNG asset — do not
- * replace with a redrawn SVG. Used in nav, auth, and desk.
+ * Clean brand mark only — original PNG, no effects, filters, or overlays.
  */
 export function Logo({
   size = "md",
@@ -30,7 +29,7 @@ export function Logo({
 
   return (
     <span
-      className={`relative inline-flex shrink-0 ${
+      className={`relative inline-flex shrink-0 items-center justify-center ${
         mdBox ? "h-10 w-10 sm:h-11 sm:w-11" : ""
       } ${className}`}
       style={mdBox ? undefined : { width: px, height: px }}
@@ -42,7 +41,8 @@ export function Logo({
         height={px}
         priority={priority}
         unoptimized
-        className="h-full w-full object-contain p-[4%]"
+        className="h-full w-full object-contain"
+        draggable={false}
       />
     </span>
   );

@@ -120,7 +120,7 @@ export function HomeTopPicks({
               onClick={() => setChipId(c.id)}
               className={`shrink-0 whitespace-nowrap text-sm font-semibold transition-colors ${
                 active
-                  ? "rounded-pill bg-ink-900 px-4 py-2 text-white shadow-sm"
+                  ? "rounded-pill bg-ink-850 px-4 py-2 text-white shadow-sm"
                   : "px-0 py-2 text-gp-text hover:text-ink-700"
               }`}
             >
@@ -144,7 +144,7 @@ export function HomeTopPicks({
       </div>
 
       <div className="mt-8 flex justify-center">
-        <span className="rounded-pill bg-gradient-to-r from-[#9b7bff] via-[#c084fc] to-[#f4a261] px-5 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-white shadow-sm sm:text-[11px]">
+        <span className="rounded-pill bg-gradient-to-r from-brand to-accent px-5 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-950 shadow-sm sm:text-[11px]">
           No promo code needed
         </span>
       </div>

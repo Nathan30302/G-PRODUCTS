@@ -21,7 +21,7 @@ export function HomeStudentPacks() {
         </div>
 
         <div className="relative flex flex-col items-center px-5 py-7 text-center sm:px-8 sm:py-8">
-          <span className="rounded-pill bg-brand/95 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-ink-900 shadow-sm">
+          <span className="rounded-pill bg-brand px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-ink-950 shadow-sm">
             Campus packs
           </span>
 
@@ -29,7 +29,7 @@ export function HomeStudentPacks() {
             Student packages you can grab today
           </h2>
 
-          <span className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-pill bg-white px-6 py-2.5 text-sm font-bold text-ink-800 shadow-float transition-all group-hover:bg-brand group-hover:text-ink-900">
+          <span className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-pill bg-white px-6 py-2.5 text-sm font-bold text-ink-850 shadow-float transition-colors group-hover:bg-brand group-hover:text-ink-950">
             Shop campus packs
             <Icon
               name="arrow-right"

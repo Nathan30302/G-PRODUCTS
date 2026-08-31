@@ -5,14 +5,14 @@ import { siteConfig } from "@/config/site";
 export function HomePromoBanner() {
   return (
     <section className="container-g mt-10 sm:mt-12">
-      <div className="relative overflow-hidden rounded-[1.5rem] bg-ink-800 shadow-card sm:rounded-[1.75rem]">
+      <div className="relative overflow-hidden rounded-[1.5rem] bg-ink-850 shadow-card sm:rounded-[1.75rem]">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_80%_at_30%_20%,rgba(34,201,138,0.25),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_90%_80%,rgba(246,212,0,0.15),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_80%_at_30%_20%,rgba(200,224,63,0.22),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_90%_80%,rgba(229,243,79,0.12),transparent_55%)]" />
         </div>
 
         <div className="relative px-6 py-10 text-center sm:px-10 sm:py-12">
-          <span className="rounded-pill bg-gradient-to-r from-accent to-ink-600 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white">
+          <span className="rounded-pill bg-gradient-to-r from-brand to-accent px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-ink-950">
             More than a shop
           </span>
           <h2 className="display mx-auto mt-4 max-w-lg text-[clamp(1.25rem,0.95rem+1.4vw,1.75rem)] font-extrabold leading-snug text-white">

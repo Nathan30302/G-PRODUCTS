@@ -327,7 +327,7 @@ export function ProductForm({
                 type="checkbox"
                 name="featured"
                 defaultChecked={product?.featured}
-                className="h-4 w-4 accent-[#f6d400]"
+                className="h-4 w-4 accent-[#E5F34F]"
               />
               <span>
                 <span className="block text-sm font-semibold text-white">
@@ -343,7 +343,7 @@ export function ProductForm({
                 type="checkbox"
                 name="hotDeal"
                 defaultChecked={product?.hotDeal}
-                className="h-4 w-4 accent-[#22c98a]"
+                className="h-4 w-4 accent-[#C8E03F]"
               />
               <span>
                 <span className="block text-sm font-semibold text-white">

@@ -23,8 +23,10 @@
   --gp-text: #1a2321;
   --gp-text-muted: #5f6b68;
   --gp-text-subtle: #8b9693;
-  --gp-primary: #1b4e58;
-  --gp-primary-dark: #123b43;
+  --gp-primary: #233746;
+  --gp-primary-dark: #1a2834;
+  --gp-brand-yellow: #e5f34f;
+  --gp-brand-green: #c8e03f;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -106,13 +108,13 @@ html {
 
 /* Selection */
 ::selection {
-  background-color: rgba(246, 212, 0, 0.35);
-  color: #1a2321;
+  background-color: rgba(229, 243, 79, 0.4);
+  color: #1a2834;
 }
 
 /* Accessible focus ring, brand-tinted */
 :focus-visible {
-  outline: 2px solid rgba(246, 212, 0, 0.7);
+  outline: 2px solid rgba(229, 243, 79, 0.75);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -179,8 +181,8 @@ html {
   max-height: 34rem;
   background: radial-gradient(
     circle,
-    rgba(246, 212, 0, 0.35) 0%,
-    rgba(246, 212, 0, 0) 70%
+    rgba(229, 243, 79, 0.35) 0%,
+    rgba(229, 243, 79, 0) 70%
   );
   animation: smoke-drift-a 18s ease-in-out infinite;
 }
@@ -193,8 +195,8 @@ html {
   max-height: 30rem;
   background: radial-gradient(
     circle,
-    rgba(34, 201, 138, 0.28) 0%,
-    rgba(34, 201, 138, 0) 70%
+    rgba(200, 224, 63, 0.28) 0%,
+    rgba(200, 224, 63, 0) 70%
   );
   animation: smoke-drift-b 22s ease-in-out infinite;
 }
@@ -277,12 +279,7 @@ html {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: linear-gradient(
-    145deg,
-    #0e2e34 0%,
-    #1b4e58 42%,
-    #123b43 100%
-  );
+  background: linear-gradient(145deg, #1a2834 0%, #233746 50%, #1e2f3d 100%);
 }
 .campus-smoke-a {
   top: -20%;
@@ -291,8 +288,8 @@ html {
   height: 70%;
   background: radial-gradient(
     circle,
-    rgba(34, 201, 138, 0.45) 0%,
-    rgba(34, 201, 138, 0) 68%
+    rgba(200, 224, 63, 0.4) 0%,
+    rgba(200, 224, 63, 0) 68%
   );
   animation: smoke-drift-a 16s ease-in-out infinite;
 }
@@ -303,8 +300,8 @@ html {
   height: 65%;
   background: radial-gradient(
     circle,
-    rgba(246, 212, 0, 0.28) 0%,
-    rgba(246, 212, 0, 0) 70%
+    rgba(229, 243, 79, 0.32) 0%,
+    rgba(229, 243, 79, 0) 70%
   );
   animation: smoke-drift-b 20s ease-in-out infinite;
 }
@@ -315,8 +312,8 @@ html {
   height: 55%;
   background: radial-gradient(
     circle,
-    rgba(74, 222, 159, 0.35) 0%,
-    rgba(34, 201, 138, 0) 72%
+    rgba(212, 232, 85, 0.28) 0%,
+    rgba(200, 224, 63, 0) 72%
   );
   animation: smoke-drift-c 24s ease-in-out infinite;
 }
@@ -505,7 +502,7 @@ html {
 
   .btn-brand,
   .btn-primary {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill bg-ink-700 px-6 py-3 text-sm font-bold text-white shadow-float transition-all duration-200 ease-out-expo hover:bg-ink-800 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-gp-border disabled:text-gp-text-subtle disabled:shadow-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill bg-ink-850 px-6 py-3 text-sm font-bold text-white shadow-float transition-all duration-200 ease-out-expo hover:bg-ink-950 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-gp-border disabled:text-gp-text-subtle disabled:shadow-none;
   }
   .btn-ghost {
     @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill border border-gp-border bg-gp-surface px-6 py-3 text-sm font-semibold text-gp-text shadow-card transition-all duration-200 ease-out-expo hover:border-ink-600/30 hover:bg-gp-muted active:scale-[0.97];

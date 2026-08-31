@@ -36,26 +36,27 @@ const config: Config = {
             subtle: "#8B9693"
           }
         },
-        // G-Products palette - dark teal kept for admin / logo contexts
+        // G-Products slate — logo background #233746
         ink: {
-          950: "#06181c",
-          900: "#0a2429",
-          850: "#0e2e34",
-          800: "#123b43",
-          700: "#1b4e58",
-          600: "#296571"
+          950: "#1a2834",
+          900: "#1e2f3d",
+          850: "#233746",
+          800: "#233746",
+          700: "#233746",
+          600: "#4a6578"
         },
-        // Brand yellow - straight from the G-Products logo
+        // Logo gradient: lime yellow → lime green
         brand: {
-          DEFAULT: "#f6d400",
-          soft: "#ffe24d",
-          dark: "#d9bb00"
+          DEFAULT: "#E5F34F",
+          soft: "#EDF76A",
+          dark: "#C8E03F",
+          yellow: "#E5F34F",
+          green: "#C8E03F"
         },
-        // Green accent - WhatsApp, in-stock, savings
         accent: {
-          DEFAULT: "#22c98a",
-          soft: "#4ade9f",
-          dark: "#17a06d"
+          DEFAULT: "#C8E03F",
+          soft: "#D4E855",
+          dark: "#A8C832"
         },
         warm: {
           DEFAULT: "#e07a3a",
@@ -75,9 +76,9 @@ const config: Config = {
         float:
           "0 12px 40px -8px rgba(26,35,33,0.14), 0 4px 12px -4px rgba(26,35,33,0.08)",
         nav: "0 10px 40px rgba(26,35,33,0.14), 0 2px 8px rgba(26,35,33,0.06)",
-        glow: "0 0 0 1px rgba(246,212,0,0.35), 0 10px 40px rgba(246,212,0,0.18)",
-        "accent-glow": "0 10px 40px -8px rgba(27,78,88,0.22)",
-        "brand-glow": "0 4px 14px -2px rgba(246,212,0,0.35)"
+        glow: "0 0 0 1px rgba(229,243,79,0.35), 0 10px 40px rgba(229,243,79,0.18)",
+        "accent-glow": "0 10px 40px -8px rgba(35,55,70,0.22)",
+        "brand-glow": "0 4px 14px -2px rgba(229,243,79,0.35)"
       },
       transitionTimingFunction: {
         "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)"

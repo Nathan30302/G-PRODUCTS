@@ -14,37 +14,37 @@ export type ExploreTile = {
   glowClass: string;
 };
 
-/** G-Products yellow · green · white mixes — one theme per category tile. */
+/** Yellow · green · white tile themes from the G-Products logo palette. */
 const TILE_THEMES = [
   {
-    gradient: "from-brand/35 via-white to-white",
-    badgeClass: "bg-brand text-ink-900 shadow-brand-glow",
-    glowClass: "bg-brand/50"
-  },
-  {
-    gradient: "from-white via-accent/15 to-brand/12",
-    badgeClass: "bg-accent text-white shadow-sm",
-    glowClass: "bg-accent/45"
-  },
-  {
-    gradient: "from-brand/20 via-white to-accent/18",
-    badgeClass: "bg-ink-700 text-brand",
-    glowClass: "bg-brand/40"
-  },
-  {
-    gradient: "from-accent/22 via-white to-white",
-    badgeClass: "bg-gradient-to-r from-accent to-accent-soft text-ink-900",
-    glowClass: "bg-accent/40"
-  },
-  {
-    gradient: "from-white via-brand/25 to-accent/12",
-    badgeClass: "bg-brand-dark text-ink-950",
+    gradient: "from-brand/30 via-white to-white",
+    badgeClass: "bg-brand text-ink-950 shadow-brand-glow",
     glowClass: "bg-brand/45"
   },
   {
+    gradient: "from-white via-accent/18 to-brand/15",
+    badgeClass: "bg-accent text-ink-950",
+    glowClass: "bg-accent/40"
+  },
+  {
+    gradient: "from-brand/18 via-white to-accent/14",
+    badgeClass: "bg-gradient-to-r from-brand to-accent text-ink-950",
+    glowClass: "bg-brand/35"
+  },
+  {
+    gradient: "from-accent/20 via-white to-white",
+    badgeClass: "bg-ink-850 text-brand",
+    glowClass: "bg-accent/38"
+  },
+  {
+    gradient: "from-white via-brand/22 to-accent/12",
+    badgeClass: "bg-brand-dark text-ink-950",
+    glowClass: "bg-brand/40"
+  },
+  {
     gradient: "from-brand/12 via-accent/10 to-white",
-    badgeClass: "bg-ink-700 text-white",
-    glowClass: "bg-accent/35"
+    badgeClass: "bg-ink-850 text-brand",
+    glowClass: "bg-accent/32"
   }
 ] as const;
 

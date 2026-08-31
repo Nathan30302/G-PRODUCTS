@@ -39,7 +39,7 @@ export function MobileNav({ auth = null }: { auth?: ShopAuth }) {
               href={href}
               className={`relative flex min-w-[3.25rem] flex-1 flex-col items-center gap-0.5 rounded-pill px-1 py-1.5 text-[10px] font-semibold tracking-normal transition-all duration-300 ${
                 active
-                  ? "bg-warm/12 text-warm"
+                  ? "bg-brand/20 text-ink-850"
                   : "text-gp-text-subtle hover:text-gp-text"
               }`}
             >
