@@ -1,6 +1,5 @@
 import { Hero } from "@/components/Hero";
 import { TrustBadgeStrip } from "@/components/home/TrustBadgeStrip";
-import { BrowseTilesSection } from "@/components/shop/BrowseTilesSection";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
@@ -30,9 +29,6 @@ export default async function HomePage() {
     <>
       <Hero />
       <TrustBadgeStrip />
-      <section className="container-g pt-5 sm:pt-6">
-        <BrowseTilesSection />
-      </section>
       <HomeCatalogSections
         hotDeals={hotDeals}
         featured={featured}

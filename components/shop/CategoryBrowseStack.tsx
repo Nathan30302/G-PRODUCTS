@@ -23,7 +23,7 @@ export function CategoryBrowseStack({ tiles }: { tiles: BrowseTileView[] }) {
               fill
               sizes="(max-width: 768px) 100vw, 640px"
               quality={82}
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
             />
           ) : (
             <span

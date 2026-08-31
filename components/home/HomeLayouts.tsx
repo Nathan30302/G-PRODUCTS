@@ -1,6 +1,5 @@
 import { Product } from "@/lib/types";
 import { ProductRail } from "@/components/ProductRail";
-import { ShopByCategory } from "@/components/home/ShopByCategory";
 import { HomeBundlesSection } from "@/components/home/HomeBundlesSection";
 
 /** Homepage product discovery — search in header, rails below. */
@@ -36,8 +35,6 @@ export function HomeCatalogSections({
         hrefLabel="Shop all"
         eyebrow="Handpicked for you"
       />
-
-      <ShopByCategory />
 
       <ProductRail
         title="New this week"

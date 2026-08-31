@@ -422,6 +422,7 @@ async function main() {
     ensureUploadsDir("services");
     ensureUploadsDir("service-pages");
     ensureUploadsDir("misc");
+    ensureUploadsDir("browse-tiles");
     console.log("[start] upload folders ready");
   } catch (err) {
     console.warn("[start] upload folders:", err);
@@ -441,6 +442,13 @@ async function main() {
         err2
       );
     }
+  }
+
+  try {
+    const { ensureBrowseTiles } = await import("../lib/ensure-browse-tiles");
+    await ensureBrowseTiles();
+  } catch (err) {
+    console.warn("[start] browse tiles ensure:", err);
   }
 
   try {

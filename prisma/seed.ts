@@ -4,6 +4,7 @@ import { categories } from "../lib/categories";
 import { products } from "../lib/products";
 import { services, DEFAULT_SETTINGS } from "../lib/services";
 import { isUploadUrl } from "../lib/uploads";
+import { ensureBrowseTiles } from "../lib/ensure-browse-tiles";
 
 const prisma = new PrismaClient();
 
@@ -179,65 +180,7 @@ async function main() {
   console.log(`Seeded ${services.length} service offerings (live edits preserved)`);
 
   // --- Browse tiles: seed defaults only when table is empty ---
-  const existingTiles = await prisma.shopBrowseTile.count();
-  if (existingTiles === 0) {
-    const defaults = [
-      {
-        label: "Back to School 🔥",
-        href: "/search?q=book",
-        isPromo: true,
-        sortOrder: 0
-      },
-      {
-        label: "Chargers & Cables",
-        href: "/category/chargers",
-        isPromo: false,
-        sortOrder: 10
-      },
-      {
-        label: "Phone Accessories",
-        href: "/category/phone-accessories",
-        isPromo: false,
-        sortOrder: 20
-      },
-      {
-        label: "Stationery & School",
-        href: "/category/stationery",
-        isPromo: false,
-        sortOrder: 30
-      },
-      {
-        label: "Storage",
-        href: "/category/storage",
-        isPromo: false,
-        sortOrder: 40
-      },
-      {
-        label: "Audio",
-        href: "/category/audio",
-        isPromo: false,
-        sortOrder: 50
-      },
-      {
-        label: "Phones",
-        href: "/category/phones",
-        isPromo: false,
-        sortOrder: 60
-      },
-      {
-        label: "Smart Watches",
-        href: "/category/watches",
-        isPromo: false,
-        sortOrder: 70
-      }
-    ];
-    for (const tile of defaults) {
-      await prisma.shopBrowseTile.create({ data: tile });
-    }
-    console.log(`Seeded ${defaults.length} browse tiles`);
-  } else {
-    console.log(`Browse tiles unchanged (${existingTiles} existing)`);
-  }
+  await ensureBrowseTiles(prisma);
 }
 
 main()
