@@ -14,10 +14,10 @@ export function ExploreTopTech({ products }: { products: Product[] }) {
     <section className="container-g mt-10 sm:mt-12">
       <div className="text-center">
         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-600 sm:text-[11px]">
-          Trusted by many, loved by all
+          Browse the catalog
         </p>
         <h2 className="display mt-2 text-[clamp(1.5rem,1.1rem+1.6vw,2rem)] font-extrabold text-ink-800">
-          Shop by category
+          Explore our top products
         </h2>
       </div>
 

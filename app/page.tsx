@@ -2,11 +2,10 @@ import { HomeSearchSection } from "@/components/home/HomeSearchSection";
 import { HomeStudentPacks } from "@/components/home/HomeStudentPacks";
 import { ExploreTopTech } from "@/components/home/ExploreTopTech";
 import { HomeTopPicks } from "@/components/home/HomeTopPicks";
-import { HomeReviewsRail } from "@/components/home/HomeReviewsRail";
-import { HomePromoBanner } from "@/components/home/HomePromoBanner";
-import { HomeAboutSection } from "@/components/home/HomeAboutSection";
-import { HomeFAQ } from "@/components/home/HomeFAQ";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
+import { HomeBestsellers } from "@/components/home/HomeBestsellers";
+import { HomeHandpickedForYou } from "@/components/home/HomeHandpickedForYou";
+import { HomeAboutSection } from "@/components/home/HomeAboutSection";
 import { getAllProducts } from "@/lib/queries";
 import { averageRating, getPublishedStoreReviews } from "@/lib/reviews";
 import type { Metadata } from "next";
@@ -27,7 +26,6 @@ export default async function HomePage() {
     getPublishedStoreReviews()
   ]);
   const storeRating = averageRating(storeReviews);
-  const productsBySlug = new Map(all.map((p) => [p.slug, p]));
 
   return (
     <>
@@ -39,14 +37,18 @@ export default async function HomePage() {
         storeRating={storeRating}
         reviewCount={storeReviews.length}
       />
-      <HomeReviewsRail
-        reviews={storeReviews}
-        productsBySlug={productsBySlug}
-      />
-      <HomePromoBanner />
-      <HomeAboutSection />
-      <HomeFAQ />
       <StoreServicesStrip />
+      <HomeBestsellers
+        products={all}
+        storeRating={storeRating}
+        reviewCount={storeReviews.length}
+      />
+      <HomeHandpickedForYou
+        products={all}
+        storeRating={storeRating}
+        reviewCount={storeReviews.length}
+      />
+      <HomeAboutSection />
     </>
   );
 }

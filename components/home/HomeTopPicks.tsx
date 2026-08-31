@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { Product } from "@/lib/types";
 import { HomeProductCard } from "@/components/home/HomeProductCard";
+import { isProductDeal, sortByDealScore } from "@/lib/product-deals";
 
 type Chip = {
   id: string;
@@ -13,9 +14,8 @@ type Chip = {
 const CHIPS: Chip[] = [
   {
     id: "deals",
-    label: "🔥 Tech Deals",
-    filter: (p) =>
-      Boolean(p.hotDeal || (p.compareAtPrice && p.compareAtPrice > p.price))
+    label: "Tech Deals",
+    filter: isProductDeal
   },
   {
     id: "phones",
@@ -23,49 +23,18 @@ const CHIPS: Chip[] = [
     filter: (p) => p.categorySlug === "phones"
   },
   {
-    id: "android",
-    label: "Android Phones",
-    filter: (p) =>
-      p.categorySlug === "phones" &&
-      /android|samsung|galaxy|tecno|itel|infinix/i.test(
-        [p.name, p.brand ?? ""].join(" ")
-      )
-  },
-  {
-    id: "computers",
-    label: "Laptops",
-    filter: (p) => p.categorySlug === "computers"
-  },
-  {
     id: "audio",
     label: "Audio",
     filter: (p) => p.categorySlug === "audio"
   },
   {
-    id: "accessories",
-    label: "Accessories",
-    filter: (p) =>
-      ["phone-accessories", "chargers", "storage"].includes(p.categorySlug)
+    id: "smartwatches",
+    label: "Smartwatches",
+    filter: (p) => p.categorySlug === "watches"
   }
 ];
 
-function isHotDeal(p: Product): boolean {
-  return Boolean(
-    p.hotDeal || (p.compareAtPrice && p.compareAtPrice > p.price)
-  );
-}
-
-function sortTopPicks(list: Product[]): Product[] {
-  return [...list].sort((a, b) => {
-    const score = (p: Product) =>
-      (p.hotDeal ? 4 : 0) +
-      (p.compareAtPrice && p.compareAtPrice > p.price ? 2 : 0) +
-      (p.featured ? 1 : 0);
-    return score(b) - score(a) || a.name.localeCompare(b.name);
-  });
-}
-
-/** Reference-style handpicked section — chips, rail, promo, featured deals. */
+/** Handpicked section — chips, rail, promo pill, featured deals of the week. */
 export function HomeTopPicks({
   products,
   storeRating = null,
@@ -86,11 +55,11 @@ export function HomeTopPicks({
   const list = useMemo(() => {
     const filtered = inStock.filter(chip.filter);
     const base = filtered.length > 0 ? filtered : inStock;
-    return sortTopPicks(base).slice(0, 12);
+    return sortByDealScore(base).slice(0, 12);
   }, [inStock, chip]);
 
   const featuredDeals = useMemo(
-    () => sortTopPicks(inStock.filter(isHotDeal)).slice(0, 10),
+    () => sortByDealScore(inStock.filter(isProductDeal)).slice(0, 10),
     [inStock]
   );
 
@@ -136,7 +105,7 @@ export function HomeTopPicks({
             key={p.id}
             product={p}
             ratingLabel={ratingLabel}
-            showHotOnImage={isHotDeal(p)}
+            showDealBadge={isProductDeal(p)}
             variant="plug"
             width="wide"
           />
@@ -152,7 +121,7 @@ export function HomeTopPicks({
       {featuredDeals.length > 0 ? (
         <>
           <h3 className="mt-8 text-center text-base font-bold text-gp-text sm:text-lg">
-            🔥 Featured Deals of the Week
+            Featured Deals of the Week
           </h3>
           <div className="no-scrollbar snap-rail relative mt-4 -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-4 sm:px-6">
             {featuredDeals.map((p) => (
@@ -160,7 +129,7 @@ export function HomeTopPicks({
                 key={`deal-${p.id}`}
                 product={p}
                 ratingLabel={ratingLabel}
-                showHotOnImage
+                showDealBadge
                 variant="plug"
                 width="wide"
               />

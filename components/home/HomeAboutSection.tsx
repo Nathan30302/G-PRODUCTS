@@ -5,27 +5,27 @@ import { siteConfig } from "@/config/site";
 const benefits = [
   {
     icon: "shield" as const,
-    title: "Genuine products",
-    body: "Quality electronics, stationery and accessories you can trust — not mystery stock."
+    title: "Worry-free experience",
+    body: "Shop with confidence — genuine products, clear pricing, and support when you need it."
   },
   {
     icon: "truck" as const,
-    title: "Fast delivery & pickup",
+    title: "Get your devices fast",
     body: "Free campus delivery where applicable, plus pickup at UNZA, Kalingalinga and Balastone."
   },
   {
     icon: "refresh" as const,
-    title: "Hassle-free support",
-    body: "Friendly help in-store and on WhatsApp until your order or print job is sorted."
+    title: "Hassle-free returns",
+    body: "Friendly help in-store and on WhatsApp if something is not right with your order."
   },
   {
     icon: "wallet" as const,
-    title: "Fair campus pricing",
-    body: "Clear prices with Mobile Money checkout — built for students and everyday shoppers."
+    title: "Shop with confidence",
+    body: "Mobile Money checkout, fair campus pricing, and trusted service built for everyday shoppers."
   }
 ];
 
-/** About G-Products + vertical benefit cards — reference About section. */
+/** About G-Products + trust benefit cards. */
 export function HomeAboutSection() {
   return (
     <section className="container-g mt-10 sm:mt-12">

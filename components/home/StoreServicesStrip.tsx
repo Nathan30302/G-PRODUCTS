@@ -30,10 +30,10 @@ export function StoreServicesStrip() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gp-text-subtle">
-              Also at our stores
+              More than products
             </p>
             <h2 className="display mt-2 text-xl font-extrabold text-gp-text sm:text-2xl">
-              In-store services
+              Services
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-gp-text-muted">
               Shop products online first — visit us for printing, key cutting and

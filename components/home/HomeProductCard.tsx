@@ -3,18 +3,19 @@ import { Product, fromPrice, hasPricedOptions } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 import { SafeImage } from "@/components/SafeImage";
 import { coverImageForProduct } from "@/lib/product-images";
+import { productDealBadgeLabel } from "@/lib/product-deals";
 
 export function HomeProductCard({
   product,
   ratingLabel,
   width = "rail",
-  showHotOnImage = false,
+  showDealBadge = false,
   variant = "default"
 }: {
   product: Product;
   ratingLabel?: string | null;
   width?: "rail" | "grid" | "wide";
-  showHotOnImage?: boolean;
+  showDealBadge?: boolean;
   /** plug = reference handpicked card styling */
   variant?: "default" | "plug";
 }) {
@@ -36,6 +37,7 @@ export function HomeProductCard({
         : "w-full";
 
   const isPlug = variant === "plug";
+  const dealLabel = showDealBadge ? productDealBadgeLabel(product) : null;
 
   return (
     <Link
@@ -58,9 +60,9 @@ export function HomeProductCard({
             className={`object-contain ${isPlug ? "p-2" : "p-3"}`}
           />
         ) : null}
-        {showHotOnImage ? (
+        {dealLabel ? (
           <span className="pointer-events-none absolute left-2.5 top-2.5 z-[2] rounded-pill bg-brand px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink-950 shadow-sm">
-            🔥 Hot
+            {dealLabel}
           </span>
         ) : null}
       </div>
