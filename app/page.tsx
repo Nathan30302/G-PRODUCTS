@@ -2,7 +2,6 @@ import { HomeSearchSection } from "@/components/home/HomeSearchSection";
 import { HomeStudentPacks } from "@/components/home/HomeStudentPacks";
 import { ExploreTopTech } from "@/components/home/ExploreTopTech";
 import { HomeTopPicks } from "@/components/home/HomeTopPicks";
-import { HomeBestsellers } from "@/components/home/HomeBestsellers";
 import { HomeReviewsRail } from "@/components/home/HomeReviewsRail";
 import { HomePromoBanner } from "@/components/home/HomePromoBanner";
 import { HomeAboutSection } from "@/components/home/HomeAboutSection";
@@ -27,10 +26,6 @@ export default async function HomePage() {
     getAllProducts(),
     getPublishedStoreReviews()
   ]);
-  const handpicked = [
-    ...all.filter((p) => p.featured),
-    ...all.filter((p) => !p.featured)
-  ].slice(0, 20);
   const storeRating = averageRating(storeReviews);
   const productsBySlug = new Map(all.map((p) => [p.slug, p]));
 
@@ -40,11 +35,6 @@ export default async function HomePage() {
       <HomeStudentPacks />
       <ExploreTopTech products={all} />
       <HomeTopPicks
-        products={handpicked}
-        storeRating={storeRating}
-        reviewCount={storeReviews.length}
-      />
-      <HomeBestsellers
         products={all}
         storeRating={storeRating}
         reviewCount={storeReviews.length}

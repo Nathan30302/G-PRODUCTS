@@ -1,31 +1,53 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { catalogGroups } from "@/lib/catalog-taxonomy";
 import { HomeProductCard } from "@/components/home/HomeProductCard";
-import { Icon } from "@/components/Icons";
 
-const CHIP_LABELS: Record<string, string> = {
-  "phones-accessories": "Phones",
-  "computers-storage": "Computers",
-  "audio": "Audio",
-  "smart-devices": "Watches",
-  "stationery-school": "Stationery",
-  "home-electrical": "Home"
+type Chip = {
+  id: string;
+  label: string;
+  filter: (p: Product) => boolean;
 };
 
-const TOP_PICK_CHIPS = catalogGroups
-  .filter((g) => !g.href)
-  .slice(0, 6)
-  .map((g) => ({
-    id: g.slug,
-    label: CHIP_LABELS[g.slug] ?? g.name,
-    fullLabel: g.name,
-    filter: (p: Product) =>
-      g.children.length > 0 ? g.children.includes(p.categorySlug) : false
-  }));
+const CHIPS: Chip[] = [
+  {
+    id: "deals",
+    label: "🔥 Tech Deals",
+    filter: (p) =>
+      Boolean(p.hotDeal || (p.compareAtPrice && p.compareAtPrice > p.price))
+  },
+  {
+    id: "phones",
+    label: "Phones",
+    filter: (p) => p.categorySlug === "phones"
+  },
+  {
+    id: "android",
+    label: "Android Phones",
+    filter: (p) =>
+      p.categorySlug === "phones" &&
+      /android|samsung|galaxy|tecno|itel|infinix/i.test(
+        [p.name, p.brand ?? ""].join(" ")
+      )
+  },
+  {
+    id: "computers",
+    label: "Laptops",
+    filter: (p) => p.categorySlug === "computers"
+  },
+  {
+    id: "audio",
+    label: "Audio",
+    filter: (p) => p.categorySlug === "audio"
+  },
+  {
+    id: "accessories",
+    label: "Accessories",
+    filter: (p) =>
+      ["phone-accessories", "chargers", "storage"].includes(p.categorySlug)
+  }
+];
 
 function isHotDeal(p: Product): boolean {
   return Boolean(
@@ -33,7 +55,6 @@ function isHotDeal(p: Product): boolean {
   );
 }
 
-/** Hot deals first, then featured, then the rest — stable by name. */
 function sortTopPicks(list: Product[]): Product[] {
   return [...list].sort((a, b) => {
     const score = (p: Product) =>
@@ -44,7 +65,7 @@ function sortTopPicks(list: Product[]): Product[] {
   });
 }
 
-/** Top picks row — hot deal badges sit on products, ordered deals-first. */
+/** Reference-style handpicked section — chips, rail, promo, featured deals. */
 export function HomeTopPicks({
   products,
   storeRating = null,
@@ -54,9 +75,8 @@ export function HomeTopPicks({
   storeRating?: number | null;
   reviewCount?: number;
 }) {
-  const [chipId, setChipId] = useState(TOP_PICK_CHIPS[0]?.id ?? "all");
-  const chip =
-    TOP_PICK_CHIPS.find((c) => c.id === chipId) ?? TOP_PICK_CHIPS[0];
+  const [chipId, setChipId] = useState("deals");
+  const chip = CHIPS.find((c) => c.id === chipId) ?? CHIPS[0];
 
   const inStock = useMemo(
     () => products.filter((p) => p.stock !== "sold_out"),
@@ -64,49 +84,44 @@ export function HomeTopPicks({
   );
 
   const list = useMemo(() => {
-    const filtered = chip ? inStock.filter(chip.filter) : inStock;
+    const filtered = inStock.filter(chip.filter);
     const base = filtered.length > 0 ? filtered : inStock;
     return sortTopPicks(base).slice(0, 12);
   }, [inStock, chip]);
 
+  const featuredDeals = useMemo(
+    () => sortTopPicks(inStock.filter(isHotDeal)).slice(0, 10),
+    [inStock]
+  );
+
   const ratingLabel =
     storeRating != null
-      ? `${storeRating.toFixed(1)}${reviewCount > 0 ? ` (${reviewCount})` : ""}`
+      ? `${storeRating.toFixed(2)}${reviewCount > 0 ? ` (${reviewCount})` : ""}`
       : null;
 
   return (
     <section className="container-g mt-10 sm:mt-12">
-      <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gp-text-subtle">
-          Handpicked G-Products
+      <div className="text-center">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gp-text-subtle sm:text-[11px]">
+          Handpicked for you
         </p>
-        <div className="mt-1 flex items-end justify-between gap-3">
-          <h2 className="display text-[clamp(1.25rem,0.95rem+1.2vw,1.625rem)] font-extrabold text-gp-text">
-            Top picks for you
-          </h2>
-          <Link
-            href="/search"
-            className="hidden shrink-0 items-center gap-0.5 text-sm font-semibold text-ink-700 hover:underline sm:inline-flex"
-          >
-            View all
-            <Icon name="chevron-right" className="h-4 w-4" />
-          </Link>
-        </div>
+        <h2 className="display mx-auto mt-2 max-w-[22ch] text-[clamp(1.125rem,0.9rem+1.3vw,1.5rem)] font-bold leading-snug text-gp-text sm:max-w-none">
+          Tech you&apos;ll love at prices you&apos;ll love more
+        </h2>
       </div>
 
-      <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
-        {TOP_PICK_CHIPS.map((c) => {
+      <div className="no-scrollbar mt-5 flex items-center gap-4 overflow-x-auto pb-1 sm:gap-5">
+        {CHIPS.map((c) => {
           const active = c.id === chipId;
           return (
             <button
               key={c.id}
               type="button"
               onClick={() => setChipId(c.id)}
-              title={c.fullLabel}
-              className={`shrink-0 rounded-pill px-4 py-2 text-xs font-bold transition-all sm:text-sm ${
+              className={`shrink-0 whitespace-nowrap text-sm font-semibold transition-colors ${
                 active
-                  ? "bg-ink-900 text-white shadow-sm"
-                  : "bg-white text-gp-text hover:bg-gp-muted"
+                  ? "rounded-pill bg-ink-900 px-4 py-2 text-white shadow-sm"
+                  : "px-0 py-2 text-gp-text hover:text-ink-700"
               }`}
             >
               {c.label}
@@ -115,16 +130,44 @@ export function HomeTopPicks({
         })}
       </div>
 
-      <div className="no-scrollbar snap-rail relative mt-5 -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-4 sm:px-6">
+      <div className="no-scrollbar snap-rail relative mt-4 -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:gap-4 sm:px-6">
         {list.map((p) => (
           <HomeProductCard
             key={p.id}
             product={p}
             ratingLabel={ratingLabel}
             showHotOnImage={isHotDeal(p)}
+            variant="plug"
+            width="wide"
           />
         ))}
       </div>
+
+      <div className="mt-8 flex justify-center">
+        <span className="rounded-pill bg-gradient-to-r from-[#9b7bff] via-[#c084fc] to-[#f4a261] px-5 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-white shadow-sm sm:text-[11px]">
+          No promo code needed
+        </span>
+      </div>
+
+      {featuredDeals.length > 0 ? (
+        <>
+          <h3 className="mt-8 text-center text-base font-bold text-gp-text sm:text-lg">
+            🔥 Featured Deals of the Week
+          </h3>
+          <div className="no-scrollbar snap-rail relative mt-4 -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:gap-4 sm:px-6">
+            {featuredDeals.map((p) => (
+              <HomeProductCard
+                key={`deal-${p.id}`}
+                product={p}
+                ratingLabel={ratingLabel}
+                showHotOnImage
+                variant="plug"
+                width="wide"
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
     </section>
   );
 }
