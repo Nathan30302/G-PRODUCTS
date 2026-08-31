@@ -15,14 +15,14 @@ export function DeskPageHeader({
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
-        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand/90">
+        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-ink-700">
           {eyebrow}
         </p>
-        <h1 className="display mt-1.5 text-[1.85rem] leading-[1.1] tracking-tight text-white sm:text-4xl">
+        <h1 className="display mt-1.5 text-[1.85rem] leading-[1.1] tracking-tight text-gp-text sm:text-4xl">
           {title}
         </h1>
         {description ? (
-          <div className="mt-2.5 max-w-2xl text-sm leading-relaxed text-white/50">
+          <div className="mt-2.5 max-w-2xl text-sm leading-relaxed text-gp-text-muted">
             {description}
           </div>
         ) : null}
@@ -46,10 +46,10 @@ export function DeskSectionTitle({
   return (
     <div className="mb-4 flex items-end justify-between gap-3">
       <div className="min-w-0">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/35">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gp-text-subtle">
           {eyebrow}
         </p>
-        <h2 className="display mt-1 text-lg text-white sm:text-xl">{title}</h2>
+        <h2 className="display mt-1 text-lg text-gp-text sm:text-xl">{title}</h2>
       </div>
       {action}
     </div>
@@ -72,24 +72,23 @@ export function DeskStat({
   hint?: string;
 }) {
   const tones: Record<DeskStatTone, string> = {
-    default: "border-white/[0.07] bg-gradient-to-b from-white/[0.035] to-white/[0.015]",
-    warn: "border-brand/30 bg-gradient-to-b from-brand/[0.12] to-brand/[0.04]",
-    good: "border-accent/28 bg-gradient-to-b from-accent/[0.12] to-accent/[0.04]",
-    brand: "border-white/[0.09] bg-gradient-to-br from-ink-850 to-ink-900"
+    default: "border-gp-border bg-white",
+    warn: "border-brand/35 bg-brand/10",
+    good: "border-accent/35 bg-accent/10",
+    brand: "border-ink-700/15 bg-gradient-to-br from-brand/15 to-accent/10"
   };
   const inner = (
     <div
-      className={`relative overflow-hidden rounded-[1.25rem] border p-4 transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.55)] sm:p-5 ${tones[tone]}`}
+      className={`relative overflow-hidden rounded-[1.25rem] border p-4 shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:shadow-card-hover sm:p-5 ${tones[tone]}`}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/42 sm:text-[11px]">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gp-text-subtle sm:text-[11px]">
         {label}
       </p>
-      <p className="mt-2 text-xl font-black tracking-tight text-white sm:text-2xl">
+      <p className="mt-2 text-xl font-black tracking-tight text-gp-text sm:text-2xl">
         {value}
       </p>
       {hint ? (
-        <p className="mt-1.5 text-xs leading-snug text-white/40">{hint}</p>
+        <p className="mt-1.5 text-xs leading-snug text-gp-text-muted">{hint}</p>
       ) : null}
     </div>
   );
@@ -106,8 +105,7 @@ export function DeskStatGrid({ children }: { children: ReactNode }) {
 
 export function DeskPanel({
   children,
-  className = "",
-  flush = false
+  className = ""
 }: {
   children: ReactNode;
   className?: string;
@@ -115,11 +113,8 @@ export function DeskPanel({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[1.45rem] border border-white/[0.09] bg-gradient-to-b from-ink-850/90 via-ink-900/78 to-ink-950/65 shadow-[0_20px_50px_-28px_rgba(0,0,0,0.65)] ring-1 ring-white/[0.035] ${
-        flush ? "" : ""
-      } ${className}`}
+      className={`relative overflow-hidden rounded-[1.35rem] border border-gp-border/80 bg-white shadow-card ${className}`}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
       {children}
     </div>
   );
@@ -135,11 +130,11 @@ export function DeskPanelHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex items-start justify-between gap-3 border-b border-white/[0.06] bg-white/[0.015] px-4 py-3.5 sm:px-5">
+    <div className="flex items-start justify-between gap-3 border-b border-gp-border/70 bg-gp-muted/40 px-4 py-3.5 sm:px-5">
       <div className="min-w-0">
-        <p className="text-sm font-bold text-white">{title}</p>
+        <p className="text-sm font-bold text-gp-text">{title}</p>
         {subtitle ? (
-          <p className="mt-0.5 text-xs text-white/40">{subtitle}</p>
+          <p className="mt-0.5 text-xs text-gp-text-muted">{subtitle}</p>
         ) : null}
       </div>
       {action}
@@ -158,7 +153,7 @@ export function DeskEmpty({
 }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-14 text-center sm:py-16">
-      <div className="grid h-14 w-14 place-items-center rounded-2xl border border-brand/20 bg-brand/[0.08] text-brand shadow-[0_0_40px_-12px_rgba(246,212,0,0.45)]">
+      <div className="grid h-14 w-14 place-items-center rounded-2xl border border-brand/25 bg-brand/10 text-ink-700">
         <svg
           className="h-6 w-6"
           viewBox="0 0 24 24"
@@ -171,9 +166,9 @@ export function DeskEmpty({
           <path d="M8 12h8M12 8v8" />
         </svg>
       </div>
-      <p className="mt-5 text-base font-bold text-white sm:text-lg">{title}</p>
+      <p className="mt-5 text-base font-bold text-gp-text sm:text-lg">{title}</p>
       {description ? (
-        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-white/45">
+        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-gp-text-muted">
           {description}
         </p>
       ) : null}
@@ -183,21 +178,21 @@ export function DeskEmpty({
 }
 
 export const ORDER_STATUS_STYLE: Record<string, string> = {
-  PENDING: "border-brand/30 bg-brand/10 text-brand",
-  PAID: "border-accent/30 bg-accent/10 text-accent",
-  PREPARING: "border-sky-400/30 bg-sky-400/10 text-sky-300",
-  READY: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-  DELIVERED: "border-white/15 bg-white/[0.04] text-white/70",
-  CANCELLED: "border-red-400/30 bg-red-400/10 text-red-300"
+  PENDING: "border-brand/35 bg-brand/15 text-ink-850",
+  PAID: "border-accent/35 bg-accent/15 text-ink-850",
+  PREPARING: "border-sky-300/50 bg-sky-50 text-sky-800",
+  READY: "border-amber-300/50 bg-amber-50 text-amber-900",
+  DELIVERED: "border-gp-border bg-gp-muted text-gp-text-muted",
+  CANCELLED: "border-red-200 bg-red-50 text-red-700"
 };
 
 export const SERVICE_STATUS_STYLE: Record<string, string> = {
-  NEW: "border-brand/30 bg-brand/10 text-brand",
-  CONFIRMED: "border-sky-400/30 bg-sky-400/10 text-sky-300",
-  IN_PROGRESS: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-  READY: "border-accent/30 bg-accent/10 text-accent",
-  DELIVERED: "border-white/15 bg-white/[0.04] text-white/70",
-  CANCELLED: "border-red-400/30 bg-red-400/10 text-red-300"
+  NEW: "border-brand/35 bg-brand/15 text-ink-850",
+  CONFIRMED: "border-sky-300/50 bg-sky-50 text-sky-800",
+  IN_PROGRESS: "border-amber-300/50 bg-amber-50 text-amber-900",
+  READY: "border-accent/35 bg-accent/15 text-ink-850",
+  DELIVERED: "border-gp-border bg-gp-muted text-gp-text-muted",
+  CANCELLED: "border-red-200 bg-red-50 text-red-700"
 };
 
 export function StatusPill({
@@ -212,13 +207,13 @@ export function StatusPill({
       ? SERVICE_STATUS_STYLE
       : kind === "payment"
         ? {
-            SUCCESS: "border-accent/30 bg-accent/10 text-accent",
-            PENDING: "border-brand/30 bg-brand/10 text-brand",
-            FAILED: "border-red-400/30 bg-red-400/10 text-red-300"
+            SUCCESS: "border-accent/35 bg-accent/15 text-ink-850",
+            PENDING: "border-brand/35 bg-brand/15 text-ink-850",
+            FAILED: "border-red-200 bg-red-50 text-red-700"
           }
         : ORDER_STATUS_STYLE;
   const cls =
-    map[status] ?? "border-white/15 bg-white/[0.04] text-white/65";
+    map[status] ?? "border-gp-border bg-gp-muted text-gp-text-muted";
   return (
     <span
       className={`inline-flex rounded-pill border px-2.5 py-1 text-[11px] font-semibold tracking-wide ${cls}`}
@@ -260,15 +255,15 @@ export function DeskFilterBar({
             href={href}
             className={`shrink-0 rounded-pill border px-3.5 py-2 text-xs font-bold transition-all ${
               isActive
-                ? "border-brand/50 bg-brand text-ink-950 shadow-brand-glow"
-                : "border-white/10 bg-white/[0.03] text-white/65 hover:border-brand/35 hover:text-white"
+                ? "border-ink-850 bg-ink-850 text-white shadow-sm"
+                : "border-gp-border bg-white text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text"
             }`}
           >
             {opt.label}
             {typeof opt.count === "number" ? (
               <span
                 className={`ml-1.5 tabular-nums ${
-                  isActive ? "text-ink-950/55" : "text-white/35"
+                  isActive ? "text-white/75" : "text-gp-text-subtle"
                 }`}
               >
                 {opt.count}
@@ -290,17 +285,10 @@ export function DeskHero({
 }) {
   return (
     <section
-      className={`relative overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-gradient-to-br from-ink-850 via-ink-900 to-ink-950 p-5 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.03] sm:rounded-[1.85rem] sm:p-8 ${className}`}
+      className={`relative overflow-hidden rounded-[1.5rem] border border-gp-border/80 bg-white p-5 shadow-card sm:rounded-[1.65rem] sm:p-8 ${className}`}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
-      <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-brand/15 blur-[80px]" />
-      <div className="pointer-events-none absolute -bottom-20 left-8 h-48 w-48 rounded-full bg-accent/10 blur-[80px]" />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage:
-          "linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)",
-        backgroundSize: "40px 40px",
-        maskImage: "radial-gradient(ellipse 80% 70% at 70% 20%, black, transparent)"
-      }} />
+      <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-brand/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-10 left-6 h-36 w-36 rounded-full bg-accent/15 blur-3xl" />
       <div className="relative">{children}</div>
     </section>
   );

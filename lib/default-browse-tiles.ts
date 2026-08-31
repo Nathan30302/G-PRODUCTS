@@ -1,3 +1,4 @@
+import { categories } from "@/lib/categories";
 import type { Product } from "@/lib/types";
 import { coverImageForProduct } from "@/lib/product-images";
 
@@ -9,78 +10,53 @@ export type BrowseTileView = {
   isPromo: boolean;
 };
 
-/** G-Products shop categories — no legacy promo tiles. */
-export const DEFAULT_BROWSE_TILES: BrowseTileView[] = [
-  {
-    id: "default-phones",
-    label: "Phones",
-    href: "/category/phones",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-phone-accessories",
-    label: "Phone Accessories",
-    href: "/category/phone-accessories",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-chargers",
-    label: "Chargers & Cables",
-    href: "/category/chargers",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-audio",
-    label: "Audio",
-    href: "/category/audio",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-watches",
-    label: "Smartwatches",
-    href: "/category/watches",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-stationery",
-    label: "Stationery & School",
-    href: "/category/stationery",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-storage",
-    label: "Storage",
-    href: "/category/storage",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-computers",
-    label: "Computers",
-    href: "/category/computers",
-    imageUrl: null,
-    isPromo: false
-  }
-];
+/** Full shop stack — hot deals + every G-Products leaf category. */
+export function buildCatalogBrowseTiles(): BrowseTileView[] {
+  return [
+    {
+      id: "promo-deals",
+      label: "Hot Deals",
+      href: "/search?deals=1",
+      imageUrl: null,
+      isPromo: true
+    },
+    ...categories.map((cat) => ({
+      id: `cat-${cat.slug}`,
+      label: cat.name,
+      href: `/category/${cat.slug}`,
+      imageUrl: null,
+      isPromo: false
+    }))
+  ];
+}
 
-const LEGACY_TILE_LABEL = /back to school|shop ipads|shop macbooks|android phones|iphones/i;
+export const DEFAULT_BROWSE_TILES: BrowseTileView[] = buildCatalogBrowseTiles();
+
+const LEGACY_TILE_LABEL =
+  /back to school|shop ipads|shop macbooks|android phones|^iphones$/i;
 
 export function isLegacyBrowseTile(label: string): boolean {
-  return LEGACY_TILE_LABEL.test(label);
+  return LEGACY_TILE_LABEL.test(label.trim());
+}
+
+function productCoverScore(p: Product): number {
+  return (
+    (p.featured ? 8 : 0) +
+    (p.hotDeal ? 4 : 0) +
+    (p.compareAtPrice && p.compareAtPrice > p.price ? 2 : 0) +
+    (p.images.length > 0 ? 2 : 0)
+  );
 }
 
 export function coverForCategory(
   slug: string,
   products: Product[]
 ): string | null {
-  for (const p of products) {
-    if (p.categorySlug !== slug || p.stock === "sold_out") continue;
+  const candidates = products
+    .filter((p) => p.categorySlug === slug && p.stock !== "sold_out")
+    .sort((a, b) => productCoverScore(b) - productCoverScore(a));
+
+  for (const p of candidates) {
     const url = coverImageForProduct(
       p,
       p.variants.find((v) => v.available) ?? p.variants[0] ?? null
@@ -90,13 +66,37 @@ export function coverForCategory(
   return null;
 }
 
-/** Fill missing tile backgrounds from catalogue photos (until admin uploads). */
+export function coverForDeals(products: Product[]): string | null {
+  const candidates = products
+    .filter(
+      (p) =>
+        p.stock !== "sold_out" &&
+        (p.hotDeal || (p.compareAtPrice && p.compareAtPrice > p.price))
+    )
+    .sort((a, b) => productCoverScore(b) - productCoverScore(a));
+
+  for (const p of candidates) {
+    const url = coverImageForProduct(
+      p,
+      p.variants.find((v) => v.available) ?? p.variants[0] ?? null
+    );
+    if (url) return url;
+  }
+  return null;
+}
+
+/** Fill tile backgrounds from the best catalogue product photo per category. */
 export function enrichBrowseTilesWithFallbacks(
   tiles: BrowseTileView[],
   products: Product[]
 ): BrowseTileView[] {
   return tiles.map((tile) => {
     if (tile.imageUrl) return tile;
+
+    if (tile.href.includes("deals=1")) {
+      const dealUrl = coverForDeals(products);
+      if (dealUrl) return { ...tile, imageUrl: dealUrl };
+    }
 
     const catMatch = tile.href.match(/\/category\/([^/?#]+)/);
     if (catMatch) {
@@ -121,12 +121,6 @@ function tileMatchesProduct(tile: BrowseTileView, p: Product): boolean {
       ? new URL(tile.href).pathname + new URL(tile.href).search
       : tile.href;
     const u = new URL(path, "https://g-products.store");
-    const q = u.searchParams.get("q")?.toLowerCase();
-    if (q) {
-      const blob = [p.name, p.brand ?? "", p.categorySlug].join(" ").toLowerCase();
-      const term = q.split(" ")[0] ?? q;
-      if (blob.includes(term)) return true;
-    }
     const catMatch = u.pathname.match(/\/category\/([^/]+)/);
     if (catMatch && p.categorySlug === catMatch[1]) return true;
     if (u.searchParams.get("deals") === "1" && (p.hotDeal || p.compareAtPrice))
@@ -134,15 +128,5 @@ function tileMatchesProduct(tile: BrowseTileView, p: Product): boolean {
   } catch {
     /* ignore */
   }
-  const label = tile.label.toLowerCase();
-  if (label.includes("charger") && p.categorySlug === "chargers") return true;
-  if (label.includes("phone") && p.categorySlug === "phone-accessories") return true;
-  if (label === "phones" && p.categorySlug === "phones") return true;
-  if (label.includes("stationery") && p.categorySlug === "stationery") return true;
-  if (label.includes("school") && p.categorySlug === "stationery") return true;
-  if (label.includes("storage") && p.categorySlug === "storage") return true;
-  if (label.includes("audio") && p.categorySlug === "audio") return true;
-  if (label.includes("watch") && p.categorySlug === "watches") return true;
-  if (label.includes("computer") && p.categorySlug === "computers") return true;
   return false;
 }

@@ -59,13 +59,13 @@ export default async function AdminDashboard() {
       <DeskHero>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
-            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-brand">
+            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-ink-700">
               Provider desk
             </p>
             <h1 className="display mt-2.5 max-w-xl text-[1.85rem] leading-[1.1] sm:mt-3 sm:text-4xl">
               {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
             </h1>
-            <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/55 sm:text-base">
+            <p className="mt-3 max-w-lg text-sm leading-relaxed text-gp-text-muted sm:text-base">
               Clear the queue, restock fast, keep customers happy — here&apos;s
               what needs you today.
             </p>

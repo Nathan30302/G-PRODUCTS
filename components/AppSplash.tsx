@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
+import { siteConfig } from "@/config/site";
 
 const SESSION_KEY = "gproducts-splash-seen";
 
 /**
- * Premium opening splash — G mark on brand sunburst, once per browser session.
+ * Premium opening splash — white / yellow / green sunburst with clean G mark.
  */
 export function AppSplash() {
   const [visible, setVisible] = useState(false);
@@ -21,8 +22,8 @@ export function AppSplash() {
     }
 
     setVisible(true);
-    const fadeTimer = window.setTimeout(() => setFadeOut(true), 1600);
-    const hideTimer = window.setTimeout(() => setVisible(false), 2200);
+    const fadeTimer = window.setTimeout(() => setFadeOut(true), 1800);
+    const hideTimer = window.setTimeout(() => setVisible(false), 2450);
 
     return () => {
       window.clearTimeout(fadeTimer);
@@ -38,11 +39,13 @@ export function AppSplash() {
       role="presentation"
       aria-hidden={fadeOut}
     >
-      <div className="app-splash-bg" />
+      <div className="app-splash-bg" aria-hidden />
+      <div className="app-splash-mesh" aria-hidden />
       <div className="app-splash-rays" aria-hidden />
-      <div className="app-splash-glow" aria-hidden />
-      <div className="app-splash-logo">
+      <div className="app-splash-shine" aria-hidden />
+      <div className="app-splash-logo-wrap">
         <Logo size="xl" priority />
+        <p className="app-splash-tagline">{siteConfig.tagline}</p>
       </div>
     </div>
   );

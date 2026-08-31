@@ -3,7 +3,6 @@ import { prisma } from "@/lib/db";
 import {
   DEFAULT_BROWSE_TILES,
   enrichBrowseTilesWithFallbacks,
-  isLegacyBrowseTile,
   type BrowseTileView
 } from "@/lib/default-browse-tiles";
 import type { Product } from "@/lib/types";
@@ -11,50 +10,44 @@ import type { Product } from "@/lib/types";
 export type { BrowseTileView } from "@/lib/default-browse-tiles";
 export {
   DEFAULT_BROWSE_TILES,
-  enrichBrowseTilesWithFallbacks,
-  isLegacyBrowseTile
+  buildCatalogBrowseTiles,
+  enrichBrowseTilesWithFallbacks
 } from "@/lib/default-browse-tiles";
 
 const CACHE_TAG = "browse-tiles";
 
-const getBrowseTilesFromDb = unstable_cache(
-  async (): Promise<BrowseTileView[]> => {
+const getBrowseTileOverrides = unstable_cache(
+  async (): Promise<Map<string, string | null>> => {
     try {
       const rows = await prisma.shopBrowseTile.findMany({
-        where: { enabled: true },
-        orderBy: { sortOrder: "asc" }
+        where: { enabled: true, imageUrl: { not: null } }
       });
-      return rows
-        .map((r) => ({
-          id: r.id,
-          label: r.label,
-          href: r.href,
-          imageUrl: r.imageUrl,
-          isPromo: r.isPromo
-        }))
-        .filter((tile) => !isLegacyBrowseTile(tile.label));
+      return new Map(rows.map((r) => [r.href, r.imageUrl]));
     } catch (err) {
-      console.error("[browse-tiles] fetch failed:", err);
-      return [];
+      console.error("[browse-tiles] override fetch failed:", err);
+      return new Map();
     }
   },
-  ["shop-browse-tiles-v3"],
+  ["shop-browse-tile-overrides-v1"],
   { revalidate: 60, tags: [CACHE_TAG] }
 );
 
-/** Admin-managed tiles, or built-in G-Products defaults when DB is empty. */
-export async function getBrowseTiles(): Promise<BrowseTileView[]> {
-  const rows = await getBrowseTilesFromDb();
-  return rows.length > 0 ? rows : DEFAULT_BROWSE_TILES;
+function mergeCatalogWithOverrides(
+  overrides: Map<string, string | null>
+): BrowseTileView[] {
+  return DEFAULT_BROWSE_TILES.map((tile) => {
+    const custom = overrides.get(tile.href);
+    return custom ? { ...tile, imageUrl: custom } : tile;
+  });
 }
 
-/** Tiles for the Shop browse screen — G-Products categories with catalog photos. */
+/** Tiles for the Shop tab — full catalogue with admin photo overrides. */
 export async function resolveShopBrowseTiles(
   products: Product[]
 ): Promise<BrowseTileView[]> {
-  const tiles = await getBrowseTiles();
-  const enriched = enrichBrowseTilesWithFallbacks(tiles, products);
-  return enriched.length > 0 ? enriched : enrichBrowseTilesWithFallbacks(DEFAULT_BROWSE_TILES, products);
+  const overrides = await getBrowseTileOverrides();
+  const tiles = mergeCatalogWithOverrides(overrides);
+  return enrichBrowseTilesWithFallbacks(tiles, products);
 }
 
 export { CACHE_TAG as BROWSE_TILES_CACHE_TAG };

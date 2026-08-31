@@ -22,18 +22,12 @@ type NavGroup = {
 const navGroups: NavGroup[] = [
   {
     label: "Home",
-    items: [
-      { href: "/admin", label: "Overview", hint: "Business pulse" }
-    ]
+    items: [{ href: "/admin", label: "Overview", hint: "Business pulse" }]
   },
   {
     label: "Catalogue",
     items: [
-      {
-        href: "/admin/products",
-        label: "Products",
-        hint: "Catalogue & stock"
-      },
+      { href: "/admin/products", label: "Products", hint: "Catalogue & stock" },
       {
         href: "/admin/browse-tiles",
         label: "Browse tiles",
@@ -55,11 +49,7 @@ const navGroups: NavGroup[] = [
         label: "Customers",
         hint: "Shop users & buyers"
       },
-      {
-        href: "/admin/reviews",
-        label: "Reviews",
-        hint: "Moderate feedback"
-      }
+      { href: "/admin/reviews", label: "Reviews", hint: "Moderate feedback" }
     ]
   },
   {
@@ -82,32 +72,20 @@ const navGroups: NavGroup[] = [
         label: "Service pages",
         hint: "Public content"
       },
-      {
-        href: "/admin/locations",
-        label: "Locations",
-        hint: "Shop photos"
-      }
+      { href: "/admin/locations", label: "Locations", hint: "Shop photos" }
     ]
   },
   {
     label: "Team",
     items: [
-      {
-        href: "/admin/shop-team",
-        label: "Shop team",
-        hint: "Names & roles"
-      },
+      { href: "/admin/shop-team", label: "Shop team", hint: "Names & roles" },
       {
         href: "/admin/staff",
         label: "Staff",
         hint: "Desk logins",
         ownerOnly: true
       },
-      {
-        href: "/admin/account",
-        label: "Account",
-        hint: "Password"
-      }
+      { href: "/admin/account", label: "Account", hint: "Password" }
     ]
   }
 ];
@@ -199,17 +177,14 @@ export function AdminShell({
     return (
       <Link
         href={item.href}
-        className={`group relative block rounded-2xl transition-all duration-300 ease-out-expo ${
+        className={`group relative block rounded-2xl transition-all duration-200 ${
           dense ? "px-3 py-2.5" : "px-4 py-3.5"
         } ${
           active
-            ? "bg-brand text-ink-950 shadow-brand-glow"
-            : "text-white/70 hover:bg-white/[0.045] hover:text-white"
+            ? "bg-ink-850 text-white shadow-sm"
+            : "text-gp-text-muted hover:bg-gp-muted hover:text-gp-text"
         }`}
       >
-        {active ? (
-          <span className="absolute left-1.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-ink-950/35" />
-        ) : null}
         <span className="flex items-center justify-between gap-2">
           <span
             className={`block font-semibold tracking-tight ${
@@ -221,9 +196,7 @@ export function AdminShell({
           {count > 0 ? (
             <span
               className={`rounded-pill px-2 py-0.5 text-[10px] font-black tabular-nums ${
-                active
-                  ? "bg-ink-950/20 text-ink-950"
-                  : "bg-brand/20 text-brand"
+                active ? "bg-white/20 text-white" : "bg-brand/20 text-ink-850"
               }`}
             >
               {count > 99 ? "99+" : count}
@@ -232,7 +205,7 @@ export function AdminShell({
         </span>
         <span
           className={`mt-0.5 block text-[11px] leading-snug ${
-            active ? "text-ink-950/55" : "text-white/32 group-hover:text-white/42"
+            active ? "text-white/70" : "text-gp-text-subtle group-hover:text-gp-text-muted"
           }`}
         >
           {item.hint}
@@ -242,21 +215,14 @@ export function AdminShell({
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-ink-950 text-white">
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(246,212,0,0.08),_transparent_52%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(34,201,138,0.06),_transparent_42%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,32,0)_0%,rgba(6,24,28,0.4)_100%)]" />
-      </div>
-
-      <header className="sticky top-0 z-40 border-b border-white/[0.07] bg-ink-950/88 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
+    <div className="relative min-h-screen overflow-x-hidden bg-gp-bg text-gp-text">
+      <header className="sticky top-0 z-40 border-b border-gp-border bg-white/95 shadow-sm backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/75 transition-colors hover:border-brand/40 hover:text-brand lg:hidden"
+              className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-gp-border bg-white text-gp-text-muted transition-colors hover:border-ink-700/25 hover:text-ink-700 lg:hidden"
               aria-label="Open menu"
             >
               <svg
@@ -281,28 +247,28 @@ export function AdminShell({
               <Logo size="md" priority />
             </Link>
             <div className="hidden min-w-0 sm:block">
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand/85">
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-ink-700">
                 Provider desk
               </p>
-              <p className="truncate text-sm font-medium text-white/50">
+              <p className="truncate text-sm font-medium text-gp-text-muted">
                 {current}
               </p>
             </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <span className="hidden rounded-pill border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/50 sm:inline">
+            <span className="hidden rounded-pill border border-gp-border bg-gp-muted px-3 py-1.5 text-[11px] font-semibold text-gp-text-muted sm:inline">
               {todayLabel()}
             </span>
-            <div className="hidden items-center gap-2.5 rounded-2xl border border-white/[0.07] bg-white/[0.025] py-1.5 pl-1.5 pr-3 md:flex">
-              <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-[11px] font-black text-brand ring-1 ring-brand/20">
+            <div className="hidden items-center gap-2.5 rounded-2xl border border-gp-border bg-white py-1.5 pl-1.5 pr-3 md:flex">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-[11px] font-black text-ink-700">
                 {initials}
               </span>
               <span className="text-right">
-                <span className="block text-sm font-semibold leading-tight text-white">
+                <span className="block text-sm font-semibold leading-tight text-gp-text">
                   {user.name}
                 </span>
-                <span className="block text-[10px] uppercase tracking-wider text-white/35">
+                <span className="block text-[10px] uppercase tracking-wider text-gp-text-subtle">
                   {user.role === "OWNER"
                     ? "Owner"
                     : user.staffTitle?.trim() || "Staff"}
@@ -311,36 +277,35 @@ export function AdminShell({
             </div>
             <Link
               href="/"
-              className="rounded-pill border border-white/10 bg-white/[0.03] px-3.5 py-2 text-xs font-semibold text-white/70 transition-all hover:border-brand/40 hover:text-brand"
+              className="rounded-pill border border-gp-border bg-white px-3.5 py-2 text-xs font-semibold text-ink-700 transition-colors hover:border-ink-700/25 hover:bg-gp-muted"
             >
               Live shop
             </Link>
-            <LogoutButton className="rounded-pill px-3 py-2 text-xs font-semibold text-white/40 transition-colors hover:text-red-400" />
+            <LogoutButton className="rounded-pill px-3 py-2 text-xs font-semibold text-gp-text-subtle transition-colors hover:text-red-600" />
           </div>
         </div>
       </header>
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-7 px-4 py-6 sm:gap-8 sm:px-6 lg:flex-row lg:py-9">
         <aside className="hidden lg:block lg:w-[17rem] lg:shrink-0">
-          <div className="relative sticky top-[5.75rem] overflow-hidden rounded-[1.65rem] border border-white/[0.09] bg-gradient-to-b from-ink-850/95 via-ink-900/90 to-ink-950/95 p-3 shadow-[0_28px_70px_-30px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.04]">
-            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-brand/45 to-transparent" />
-            <div className="mb-3 rounded-2xl border border-white/[0.06] bg-white/[0.025] px-3.5 py-3">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
+          <div className="sticky top-[5.75rem] rounded-[1.35rem] border border-gp-border/80 bg-white p-3 shadow-card">
+            <div className="mb-3 rounded-2xl border border-gp-border/70 bg-gp-muted/50 px-3.5 py-3">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
                 Signed in
               </p>
-              <p className="mt-1 truncate text-sm font-semibold text-white">
+              <p className="mt-1 truncate text-sm font-semibold text-gp-text">
                 {user.name}
               </p>
-              <p className="mt-0.5 text-[11px] text-white/40">
+              <p className="mt-0.5 text-[11px] text-gp-text-muted">
                 {user.role === "OWNER"
                   ? "Owner access"
                   : user.staffTitle?.trim() || "Staff access"}
               </p>
             </div>
-            <nav className="relative space-y-4">
+            <nav className="space-y-4">
               {groups.map((group) => (
                 <div key={group.label}>
-                  <p className="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-white/28">
+                  <p className="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
                     {group.label}
                   </p>
                   <div className="space-y-0.5">
@@ -361,22 +326,22 @@ export function AdminShell({
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-ink-950/82 backdrop-blur-md"
+            className="absolute inset-0 bg-ink-850/40 backdrop-blur-sm"
             aria-label="Close menu"
             onClick={() => setMenuOpen(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 max-h-[92vh] overflow-y-auto rounded-t-[1.85rem] border border-white/10 bg-gradient-to-b from-ink-850 to-ink-950 p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-24px_70px_rgba(0,0,0,0.55)] animate-fade-up">
-            <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-white/15" />
+          <div className="absolute inset-x-0 bottom-0 max-h-[92vh] overflow-y-auto rounded-t-[1.85rem] border border-gp-border bg-white p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-24px_70px_rgba(35,55,70,0.15)] animate-fade-up">
+            <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-gp-border" />
             <div className="mb-5 flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-ink-700">
                   Provider menu
                 </p>
-                <p className="display mt-1 text-xl leading-tight">
+                <p className="display mt-1 text-xl leading-tight text-gp-text">
                   Where to next?
                 </p>
                 {attention > 0 ? (
-                  <p className="mt-1.5 text-xs text-white/45">
+                  <p className="mt-1.5 text-xs text-gp-text-muted">
                     {attention} item{attention === 1 ? "" : "s"} need attention
                   </p>
                 ) : null}
@@ -384,22 +349,22 @@ export function AdminShell({
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/60"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-gp-border bg-gp-muted text-gp-text-muted"
                 aria-label="Close"
               >
                 ✕
               </button>
             </div>
 
-            <div className="mb-5 flex items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/15 text-xs font-black text-brand ring-1 ring-brand/20">
+            <div className="mb-5 flex items-center gap-3 rounded-2xl border border-gp-border bg-gp-muted/50 p-3">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/15 text-xs font-black text-ink-700">
                 {initials}
               </span>
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-white">
+                <p className="truncate text-sm font-semibold text-gp-text">
                   {user.name}
                 </p>
-                <p className="text-[11px] uppercase tracking-wider text-white/35">
+                <p className="text-[11px] uppercase tracking-wider text-gp-text-subtle">
                   {user.role === "OWNER"
                     ? "Owner"
                     : user.staffTitle?.trim() || "Staff"}
@@ -410,7 +375,7 @@ export function AdminShell({
             <div className="space-y-5">
               {groups.map((group) => (
                 <div key={group.label}>
-                  <p className="mb-2 px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/30">
+                  <p className="mb-2 px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
                     {group.label}
                   </p>
                   <div className="grid gap-2">
@@ -423,21 +388,21 @@ export function AdminShell({
                           href={i.href}
                           className={`rounded-2xl border px-4 py-3.5 transition-all ${
                             active
-                              ? "border-brand/50 bg-brand/10 shadow-[0_0_0_1px_rgba(246,212,0,0.12)]"
-                              : "border-white/[0.06] bg-white/[0.02]"
+                              ? "border-ink-850/20 bg-ink-850/5 shadow-sm"
+                              : "border-gp-border bg-white"
                           }`}
                         >
                           <span className="flex items-center justify-between gap-2">
-                            <span className="block text-[15px] font-bold text-white">
+                            <span className="block text-[15px] font-bold text-gp-text">
                               {i.label}
                             </span>
                             {count > 0 ? (
-                              <span className="rounded-pill bg-brand/20 px-2 py-0.5 text-[10px] font-black text-brand">
+                              <span className="rounded-pill bg-brand/20 px-2 py-0.5 text-[10px] font-black text-ink-850">
                                 {count}
                               </span>
                             ) : null}
                           </span>
-                          <span className="mt-0.5 block text-sm text-white/45">
+                          <span className="mt-0.5 block text-sm text-gp-text-muted">
                             {i.hint}
                           </span>
                         </Link>
@@ -448,15 +413,15 @@ export function AdminShell({
               ))}
             </div>
 
-            <div className="mt-5 flex gap-2 border-t border-white/[0.06] pt-4">
+            <div className="mt-5 flex gap-2 border-t border-gp-border pt-4">
               <Link
                 href="/"
-                className="flex-1 rounded-pill border border-white/10 py-3 text-center text-sm font-semibold text-white/70"
+                className="flex-1 rounded-pill border border-gp-border py-3 text-center text-sm font-semibold text-ink-700"
               >
                 Live shop
               </Link>
               <LogoutButton
-                className="flex-1 rounded-pill py-3 text-sm font-semibold text-red-400"
+                className="flex-1 rounded-pill py-3 text-sm font-semibold text-red-600"
                 label="Sign out"
               />
             </div>

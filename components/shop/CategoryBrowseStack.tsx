@@ -13,7 +13,7 @@ export function CategoryBrowseStack({ tiles }: { tiles: BrowseTileView[] }) {
           key={tile.id}
           href={tile.href}
           className={`group relative block w-full overflow-hidden rounded-3xl shadow-[0_2px_16px_rgba(26,35,33,0.08)] transition-all hover:shadow-[0_8px_28px_rgba(26,35,33,0.12)] active:scale-[0.995] ${
-            tile.isPromo ? "h-[9.5rem] sm:h-[10.5rem]" : "h-[8.25rem] sm:h-[9rem]"
+            tile.isPromo ? "h-[10rem] sm:h-[11rem]" : "h-[8.75rem] sm:h-[9.5rem]"
           }`}
         >
           {tile.imageUrl ? (
