@@ -5,6 +5,7 @@ import { CartProvider } from "@/lib/cart";
 import { ToastProvider } from "@/components/Toast";
 import { SiteChrome } from "@/components/SiteChrome";
 import { AbandonedCartNudge } from "@/components/AbandonedCartNudge";
+import { AppSplash } from "@/components/AppSplash";
 import { siteConfig } from "@/config/site";
 import { siteUrl } from "@/lib/site-url";
 
@@ -73,6 +74,7 @@ export default function RootLayout({
       <body className="min-h-dvh bg-gp-bg font-sans text-gp-text antialiased">
         <CartProvider>
           <ToastProvider>
+            <AppSplash />
             <SiteChrome>{children}</SiteChrome>
             <AbandonedCartNudge />
           </ToastProvider>

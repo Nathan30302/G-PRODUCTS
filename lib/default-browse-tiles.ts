@@ -9,15 +9,8 @@ export type BrowseTileView = {
   isPromo: boolean;
 };
 
-/** Shown on Shop when admin tiles are missing — G-Products catalog categories. */
+/** G-Products shop categories — no legacy promo tiles. */
 export const DEFAULT_BROWSE_TILES: BrowseTileView[] = [
-  {
-    id: "default-deals",
-    label: "Hot Deals",
-    href: "/search?deals=1",
-    imageUrl: null,
-    isPromo: true
-  },
   {
     id: "default-phones",
     label: "Phones",
@@ -75,6 +68,12 @@ export const DEFAULT_BROWSE_TILES: BrowseTileView[] = [
     isPromo: false
   }
 ];
+
+const LEGACY_TILE_LABEL = /back to school|shop ipads|shop macbooks|android phones|iphones/i;
+
+export function isLegacyBrowseTile(label: string): boolean {
+  return LEGACY_TILE_LABEL.test(label);
+}
 
 export function coverForCategory(
   slug: string,

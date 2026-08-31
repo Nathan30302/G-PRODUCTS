@@ -98,7 +98,7 @@ export default async function AdminBrowseTilesPage() {
         </p>
         <h2 className="mt-1 text-xl font-black text-white">New browse tile</h2>
         <p className="mt-1.5 text-sm text-white/45">
-          Example promo: &ldquo;Back to School 🔥&rdquo; → /search?q=book
+          Example promo: &ldquo;Hot Deals&rdquo; → /search?deals=1
         </p>
         <div className="mt-5">
           <BrowseTileForm />

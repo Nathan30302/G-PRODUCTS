@@ -1,12 +1,27 @@
 import { PrismaClient } from "@prisma/client";
-import { DEFAULT_BROWSE_TILES } from "@/lib/default-browse-tiles";
+import {
+  DEFAULT_BROWSE_TILES,
+  isLegacyBrowseTile
+} from "@/lib/default-browse-tiles";
 
-/** Seed default shop browse tiles when the table is empty (e.g. after schema add). */
+/** Seed defaults when empty; remove legacy Plug-style tiles from production. */
 export async function ensureBrowseTiles(prisma?: PrismaClient) {
   const client = prisma ?? new PrismaClient();
   const ownsClient = !prisma;
 
   try {
+    const existing = await client.shopBrowseTile.findMany({
+      orderBy: { sortOrder: "asc" }
+    });
+
+    const legacy = existing.filter((t) => isLegacyBrowseTile(t.label));
+    if (legacy.length > 0) {
+      await client.shopBrowseTile.deleteMany({
+        where: { id: { in: legacy.map((t) => t.id) } }
+      });
+      console.log(`[browse-tiles] removed ${legacy.length} legacy tile(s)`);
+    }
+
     const count = await client.shopBrowseTile.count();
     if (count > 0) {
       console.log(`[browse-tiles] ${count} tile(s) already configured`);
