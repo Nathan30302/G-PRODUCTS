@@ -753,10 +753,8 @@ html {
     background: #ffffff;
     --app-splash-hold-ms: 4200ms;
     --app-splash-fade-ms: 600ms;
-    animation:
-      app-splash-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both,
-      app-splash-out var(--app-splash-fade-ms) cubic-bezier(0.4, 0, 0.2, 1)
-        var(--app-splash-hold-ms) forwards;
+    --app-splash-total-ms: calc(var(--app-splash-hold-ms) + var(--app-splash-fade-ms));
+    animation: app-splash-screen var(--app-splash-total-ms) cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   .app-splash-bg {
@@ -885,6 +883,23 @@ html {
     color: rgba(35, 55, 70, 0.62);
     opacity: 0;
     animation: app-splash-tagline 0.5s ease-out 0.35s forwards;
+  }
+
+  @keyframes app-splash-screen {
+    0% {
+      opacity: 0;
+      visibility: visible;
+    }
+    7.5% {
+      opacity: 1;
+    }
+    87.5% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 
   @keyframes app-splash-in {
