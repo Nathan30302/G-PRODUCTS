@@ -751,11 +751,12 @@ html {
     overflow: hidden;
     pointer-events: none;
     background: #ffffff;
-    animation: app-splash-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .app-splash-out {
-    animation: app-splash-out 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    --app-splash-hold-ms: 4200ms;
+    --app-splash-fade-ms: 600ms;
+    animation:
+      app-splash-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both,
+      app-splash-out var(--app-splash-fade-ms) cubic-bezier(0.4, 0, 0.2, 1)
+        var(--app-splash-hold-ms) forwards;
   }
 
   .app-splash-bg {

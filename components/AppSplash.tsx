@@ -9,39 +9,57 @@ const SESSION_KEY = "gproducts-splash-seen";
 /** G-Products opening splash — logo first, brand colors bloom around it (~4s). */
 const HOLD_MS = 4200;
 const FADE_MS = 600;
+const TOTAL_MS = HOLD_MS + FADE_MS;
+
+/** Survives React Strict Mode remounts within one page load. */
+let splashHideTimer: number | null = null;
+
+function hasSeenSplash(): boolean {
+  try {
+    return !!sessionStorage.getItem(SESSION_KEY);
+  } catch {
+    return false;
+  }
+}
+
+function markSplashSeen(): void {
+  try {
+    sessionStorage.setItem(SESSION_KEY, "1");
+  } catch {
+    /* private mode */
+  }
+}
 
 export function AppSplash() {
   const [visible, setVisible] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem(SESSION_KEY)) return;
-      sessionStorage.setItem(SESSION_KEY, "1");
-    } catch {
-      /* private mode */
-    }
+    if (hasSeenSplash()) return;
 
     setVisible(true);
-    const fadeTimer = window.setTimeout(() => setFadeOut(true), HOLD_MS);
-    const hideTimer = window.setTimeout(
-      () => setVisible(false),
-      HOLD_MS + FADE_MS
-    );
 
-    return () => {
-      window.clearTimeout(fadeTimer);
-      window.clearTimeout(hideTimer);
-    };
+    if (splashHideTimer !== null) return;
+
+    splashHideTimer = window.setTimeout(() => {
+      setVisible(false);
+      markSplashSeen();
+      splashHideTimer = null;
+    }, TOTAL_MS);
   }, []);
 
   if (!visible) return null;
 
   return (
     <div
-      className={`app-splash ${fadeOut ? "app-splash-out" : ""}`}
+      className="app-splash"
       role="presentation"
-      aria-hidden={fadeOut}
+      aria-hidden={false}
+      style={
+        {
+          "--app-splash-hold-ms": `${HOLD_MS}ms`,
+          "--app-splash-fade-ms": `${FADE_MS}ms`
+        } as React.CSSProperties
+      }
     >
       <div className="app-splash-bg" aria-hidden />
       <div className="app-splash-mesh" aria-hidden />
