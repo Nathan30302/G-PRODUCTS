@@ -1,3 +1,4 @@
+import { Hero } from "@/components/Hero";
 import { CategoryPills } from "@/components/home/CategoryPills";
 import { WhyGProducts } from "@/components/WhyGProducts";
 import { StoreServicesStrip } from "@/components/home/StoreServicesStrip";
@@ -28,6 +29,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <Hero />
       <CategoryPills />
       <HomeCatalogSections
         hotDeals={hotDeals}

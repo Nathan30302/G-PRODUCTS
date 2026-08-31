@@ -99,7 +99,7 @@ export default async function ProductPage({
 
         <ProductVariantProvider product={product}>
           <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-14">
-            <div className="mx-auto w-full max-w-[17rem] shrink-0 sm:max-w-xs lg:mx-0 lg:w-[min(42%,22rem)] lg:max-w-none">
+            <div className="mx-auto w-full max-w-md shrink-0 sm:max-w-lg lg:mx-0 lg:w-[min(48%,30rem)] lg:max-w-none xl:w-[min(44%,32rem)]">
               <ProductPurchasePanel
                 product={product}
                 badge={off ? `-${off}%` : null}
