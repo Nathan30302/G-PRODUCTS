@@ -741,7 +741,7 @@ html {
     @apply inline-flex items-center gap-1.5 rounded-pill border border-gp-border bg-gp-muted/80 px-3.5 py-2 text-sm font-medium text-gp-text transition-colors hover:border-ink-700/20 hover:bg-gp-surface;
   }
 
-  /* App opening splash — logo first, then subtle brand motion */
+  /* App opening splash — G-Products logo first, yellow/green bloom ~4s */
   .app-splash {
     position: fixed;
     inset: 0;
@@ -751,48 +751,115 @@ html {
     overflow: hidden;
     pointer-events: none;
     background: #ffffff;
-    animation: app-splash-in 0.2s ease-out both;
+    animation: app-splash-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .app-splash-out {
-    animation: app-splash-out 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: app-splash-out 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   .app-splash-bg {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(circle at 50% 42%, rgba(229, 243, 79, 0.22) 0%, transparent 42%),
-      radial-gradient(circle at 50% 42%, rgba(200, 224, 63, 0.12) 0%, transparent 58%),
-      #ffffff;
+    z-index: 0;
     opacity: 0;
-    animation: app-splash-bg-in 0.45s ease-out 0.05s forwards;
+    background: radial-gradient(
+      ellipse 120% 95% at 50% 38%,
+      #ffffff 0%,
+      #f7fce8 16%,
+      #edf9c8 32%,
+      #e5f34f 48%,
+      #d4ea5a 58%,
+      #c8e03f 68%,
+      #a8d832 78%,
+      #ffffff 100%
+    );
+    animation: app-splash-bg-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+  }
+
+  .app-splash-mesh {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.85) 0%, transparent 42%),
+      radial-gradient(circle at 82% 18%, rgba(229, 243, 79, 0.45) 0%, transparent 38%),
+      radial-gradient(circle at 72% 78%, rgba(200, 224, 63, 0.35) 0%, transparent 40%),
+      radial-gradient(circle at 24% 82%, rgba(255, 255, 255, 0.55) 0%, transparent 36%),
+      radial-gradient(circle at 50% 88%, rgba(35, 55, 70, 0.06) 0%, transparent 45%);
+    animation: app-splash-bg-in 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  }
+
+  .app-splash-rays {
+    position: absolute;
+    inset: -25%;
+    z-index: 1;
+    background: repeating-conic-gradient(
+      from -4deg at 50% 40%,
+      rgba(255, 255, 255, 0.72) 0deg 1.5deg,
+      transparent 1.5deg 11deg
+    );
+    opacity: 0;
+    mix-blend-mode: soft-light;
+    animation:
+      app-splash-bg-in 0.9s ease-out 0.25s forwards,
+      app-splash-rays 24s linear 0.25s infinite;
+  }
+
+  .app-splash-shine {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    z-index: 2;
+    height: min(78vw, 24rem);
+    width: min(78vw, 24rem);
+    transform: translate(-50%, -50%);
+    border-radius: 9999px;
+    opacity: 0;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.55) 28%,
+      rgba(229, 243, 79, 0.28) 52%,
+      transparent 72%
+    );
+    filter: blur(10px);
+    animation:
+      app-splash-bg-in 0.8s ease-out 0.18s forwards,
+      app-splash-shine 2.8s ease-in-out 0.18s infinite;
   }
 
   .app-splash-ring {
     position: absolute;
     left: 50%;
-    top: 42%;
+    top: 40%;
+    z-index: 2;
     border-radius: 9999px;
-    border: 2px solid rgba(229, 243, 79, 0.45);
-    transform: translate(-50%, -50%) scale(0.6);
+    border: 2px solid rgba(229, 243, 79, 0.5);
+    transform: translate(-50%, -50%);
     opacity: 0;
-    animation: app-splash-ring 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+    animation: app-splash-ring 2.4s cubic-bezier(0.16, 1, 0.3, 1) 0.35s infinite;
   }
 
   .app-splash-ring-b {
-    animation-delay: 0.22s;
-    border-color: rgba(200, 224, 63, 0.35);
+    animation-delay: 1.15s;
+    border-color: rgba(200, 224, 63, 0.42);
+  }
+
+  .app-splash-ring-c {
+    animation-delay: 1.95s;
+    border-color: rgba(35, 55, 70, 0.12);
   }
 
   .app-splash-logo-wrap {
     position: relative;
-    z-index: 3;
+    z-index: 5;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    animation: app-splash-logo 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: app-splash-logo 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .app-splash-logo-stage {
@@ -801,21 +868,22 @@ html {
     border-radius: 1.35rem;
     background: #ffffff;
     padding: 1rem;
-    box-shadow: 0 12px 40px -16px rgba(35, 55, 70, 0.2);
-    border: 1px solid rgba(232, 235, 234, 0.9);
+    box-shadow:
+      0 12px 40px -16px rgba(35, 55, 70, 0.22),
+      0 0 0 1px rgba(232, 235, 234, 0.95);
     isolation: isolate;
   }
 
   .app-splash-tagline {
-    margin-top: 1rem;
+    margin-top: 1.25rem;
     max-width: 16rem;
     font-size: 0.6875rem;
     font-weight: 600;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: rgba(35, 55, 70, 0.58);
+    color: rgba(35, 55, 70, 0.62);
     opacity: 0;
-    animation: app-splash-tagline 0.4s ease-out 0.25s forwards;
+    animation: app-splash-tagline 0.5s ease-out 0.35s forwards;
   }
 
   @keyframes app-splash-in {
@@ -843,7 +911,7 @@ html {
   @keyframes app-splash-logo {
     from {
       opacity: 0;
-      transform: scale(0.94) translateY(6px);
+      transform: scale(0.92) translateY(10px);
     }
     to {
       opacity: 1;
@@ -857,24 +925,45 @@ html {
     }
   }
 
+  @keyframes app-splash-shine {
+    0%,
+    100% {
+      opacity: 0.88;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+  }
+
+  @keyframes app-splash-rays {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   @keyframes app-splash-ring {
     0% {
-      width: 5.5rem;
-      height: 5.5rem;
-      opacity: 0.7;
-      transform: translate(-50%, -50%) scale(0.75);
+      width: 5rem;
+      height: 5rem;
+      opacity: 0.75;
     }
     100% {
-      width: min(72vw, 18rem);
-      height: min(72vw, 18rem);
+      width: min(85vw, 22rem);
+      height: min(85vw, 22rem);
       opacity: 0;
-      transform: translate(-50%, -50%) scale(1);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .app-splash-ring,
+    .app-splash-rays,
+    .app-splash-shine,
+    .app-splash-ring {
+      animation: none;
+    }
     .app-splash-bg,
+    .app-splash-mesh,
     .app-splash-tagline {
       animation: none;
       opacity: 1;
