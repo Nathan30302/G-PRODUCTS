@@ -21,7 +21,7 @@ export function ShopSectionHeader({
           {title}
         </h2>
         {subtitle ? (
-          <p className="mt-2 max-w-xl text-sm text-white/50">{subtitle}</p>
+          <p className="mt-2 max-w-xl text-sm text-gp-text-muted">{subtitle}</p>
         ) : null}
       </div>
       {action}
@@ -41,13 +41,13 @@ export function ShopEmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-10 text-center shadow-card sm:p-12">
-      <span className="grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand ring-1 ring-brand/20">
+    <div className="flex flex-col items-center rounded-[1.35rem] border border-gp-border bg-gp-surface p-10 text-center shadow-card sm:p-12">
+      <span className="grid h-16 w-16 place-items-center rounded-2xl bg-accent/10 text-accent ring-1 ring-accent/20">
         <Icon name={icon} className="h-7 w-7" />
       </span>
-      <p className="mt-5 text-lg font-semibold text-white">{title}</p>
+      <p className="mt-5 text-lg font-semibold text-gp-text">{title}</p>
       {description ? (
-        <p className="mt-1.5 max-w-sm text-sm text-white/50">{description}</p>
+        <p className="mt-1.5 max-w-sm text-sm text-gp-text-muted">{description}</p>
       ) : null}
       {action ? <div className="mt-6">{action}</div> : null}
     </div>
@@ -57,7 +57,7 @@ export function ShopEmptyState({
 export function ShopStickyBar({ children }: { children: ReactNode }) {
   return (
     <div
-      className="fixed inset-x-0 z-40 border-t border-white/10 bg-ink-950/95 px-4 py-3 backdrop-blur-lg md:pb-[max(0.75rem,var(--safe-bottom))] lg:hidden"
+      className="fixed inset-x-0 z-40 border-t border-gp-border bg-gp-surface/95 px-4 py-3 backdrop-blur-lg md:pb-[max(0.75rem,var(--safe-bottom))] lg:hidden"
       style={{ bottom: "var(--mobile-nav-offset)" }}
     >
       {children}

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   /* G-Products spacing scale (4px base) */
   --gp-space-1: 0.25rem;
   --gp-space-2: 0.5rem;
@@ -15,11 +15,13 @@
   --gp-space-10: 2.5rem;
   --gp-space-12: 3rem;
   --gp-space-16: 4rem;
-  /* Surfaces */
-  --gp-surface: rgba(10, 36, 41, 0.7);
-  --gp-surface-elevated: rgba(14, 46, 52, 0.85);
-  --gp-border: rgba(255, 255, 255, 0.07);
-  --gp-text-muted: rgba(255, 255, 255, 0.5);
+  /* Light retail surfaces */
+  --gp-bg: #f7f8f7;
+  --gp-surface: #ffffff;
+  --gp-border: #e3e8e6;
+  --gp-text: #1a2321;
+  --gp-text-muted: #5f6b68;
+  --gp-text-subtle: #8b9693;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -29,7 +31,7 @@
   --header-h: calc(var(--header-bar) + var(--search-bar) + var(--safe-top));
   --cats-bar: 0px;
   --chrome-h: calc(var(--header-h) + var(--cats-bar));
-  --mobile-nav-h: 3.75rem;
+  --mobile-nav-h: 3.25rem;
   --mobile-nav-offset: calc(var(--mobile-nav-h) + max(0.75rem, var(--safe-bottom)));
 }
 
@@ -54,8 +56,8 @@
 
 html,
 body {
-  background-color: #06181c;
-  color: #f5f5f7;
+  background-color: var(--gp-bg);
+  color: var(--gp-text);
 }
 
 html {
@@ -95,8 +97,8 @@ html {
 
 /* Selection */
 ::selection {
-  background-color: rgba(246, 212, 0, 0.28);
-  color: #ffffff;
+  background-color: rgba(246, 212, 0, 0.35);
+  color: #1a2321;
 }
 
 /* Accessible focus ring, brand-tinted */
@@ -328,11 +330,11 @@ html {
 
   /* Section eyebrow label */
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.14em] text-brand/85;
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-accent;
   }
 
   .display {
-    @apply font-display font-extrabold tracking-[-0.01em] leading-[1.15] text-white;
+    @apply font-display font-extrabold tracking-[-0.01em] leading-[1.15] text-gp-text;
   }
 
   .heading-page {
@@ -347,15 +349,15 @@ html {
 
   /* Subtle top-lit panel used across cards/sections */
   .panel {
-    @apply rounded-[1.35rem] border border-white/[0.07] bg-ink-900/70 shadow-card;
+    @apply rounded-[1.35rem] border border-gp-border bg-gp-surface shadow-card;
   }
 
   .field {
-    @apply mt-2 w-full rounded-2xl border border-white/10 bg-ink-950/70 px-4 py-3.5 text-base text-white outline-none transition-all placeholder:text-white/30 focus:border-brand/60 focus:bg-ink-950 focus:shadow-[0_0_0_3px_rgba(246,212,0,0.12)];
+    @apply mt-2 w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-base text-gp-text outline-none transition-all placeholder:text-gp-text-subtle focus:border-accent/50 focus:shadow-[0_0_0_3px_rgba(34,201,138,0.12)];
   }
 
   .field-label {
-    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45;
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-gp-text-muted;
   }
 }
 
@@ -364,7 +366,7 @@ html {
   .skeleton {
     position: relative;
     overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 0, 0, 0.04);
   }
   .skeleton::after {
     content: "";
@@ -374,21 +376,20 @@ html {
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.08),
+      rgba(0, 0, 0, 0.06),
       transparent
     );
     animation: shimmer 1.6s infinite;
   }
 
-  /* Primary / secondary buttons */
   .btn-brand,
   .btn-primary {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill bg-brand px-6 py-3 text-sm font-bold text-ink-950 shadow-brand-glow transition-all duration-200 ease-out-expo hover:bg-brand-soft hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-ink-700 disabled:text-white/40 disabled:shadow-none;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill bg-accent px-6 py-3 text-sm font-bold text-white shadow-accent-glow transition-all duration-200 ease-out-expo hover:bg-accent-dark hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gp-border disabled:text-gp-text-subtle disabled:shadow-none;
   }
   .btn-ghost {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-bold text-white transition-all duration-200 ease-out-expo hover:border-brand/40 hover:bg-white/[0.06] active:scale-[0.98];
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill border border-gp-border bg-gp-surface px-6 py-3 text-sm font-bold text-gp-text transition-all duration-200 ease-out-expo hover:border-accent/40 hover:bg-gp-bg active:scale-[0.98];
   }
   .btn-whatsapp {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-semibold text-accent transition-all duration-200 ease-out-expo hover:bg-accent/20 active:scale-[0.98];
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill border-2 border-[#25D366] bg-gp-surface px-4 py-3 text-sm font-semibold text-[#128C7E] transition-all duration-200 ease-out-expo hover:bg-green-50 active:scale-[0.98];
   }
 }
