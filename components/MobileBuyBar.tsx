@@ -93,7 +93,7 @@ export function MobileBuyBar({ product }: { product: Product }) {
             className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98]"
           >
             <Icon name="cart" className="h-4 w-4" />
-            Add to Cart
+            Add To Cart
           </button>
         )}
       </div>

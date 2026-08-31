@@ -266,9 +266,9 @@ export function PricedOptionGrid({
       <div className="mt-6">
         <h2 className="text-base font-bold text-gp-text">Choose Your Option</h2>
         <p className="mt-0.5 text-sm text-gp-text-muted">
-          Pick a size that fits your everyday needs.
+          Pick the variant that fits your needs.
         </p>
-        <div className="mt-3 flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+        <div className="mt-3 space-y-2.5">
           {variants.map((v) => {
             const active = v.id === selectedId;
             const out = !v.available;
@@ -280,16 +280,19 @@ export function PricedOptionGrid({
                 disabled={out}
                 onClick={() => onSelect(v.id)}
                 aria-pressed={active}
-                className={`flex w-[7.5rem] shrink-0 flex-col overflow-hidden rounded-2xl border bg-gp-muted/50 text-left transition-all ${
+                className={`flex w-full items-center justify-between gap-4 rounded-2xl border px-4 py-4 text-left transition-all ${
                   active
-                    ? "border-ink-700 ring-2 ring-ink-700/15"
+                    ? "border-ink-700 ring-1 ring-ink-700/15"
                     : "border-gp-border hover:border-gp-text-subtle"
                 } ${out ? "opacity-45" : ""}`}
               >
-                <span className="px-3 py-3 text-sm font-bold text-gp-text">
-                  {v.name}
-                </span>
-                <span className="border-t border-gp-border/80 bg-white px-3 py-2.5 text-sm font-bold tabular-nums text-gp-text">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-gp-text">{v.name}</p>
+                  <p className="mt-0.5 text-xs text-gp-text-muted">
+                    {out ? "Out of stock" : "In stock · ready to ship"}
+                  </p>
+                </div>
+                <span className="shrink-0 text-base font-bold tabular-nums text-gp-text">
                   {formatPrice(price)}
                 </span>
               </button>

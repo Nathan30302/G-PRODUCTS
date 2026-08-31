@@ -11,13 +11,13 @@ import { ProductPurchasePanel } from "@/components/ProductPurchasePanel";
 import { ProductDetailInfo } from "@/components/ProductDetailInfo";
 import { ProductVariantProvider } from "@/components/ProductVariantContext";
 import { ProductRail } from "@/components/ProductRail";
-import { Icon } from "@/components/Icons";
 import { relatedProducts } from "@/lib/related-products";
-import { getProductExtras } from "@/lib/product-extras";
 import { ProductReviewsSection } from "@/components/ReviewsSection";
 import { MobileBuyBar } from "@/components/MobileBuyBar";
 import { TrackProductView } from "@/components/shop/TrackProductView";
 import { ProductPageHeader } from "@/components/product/ProductPageHeader";
+import { ProductSpecsTable } from "@/components/product/ProductSpecsTable";
+import { ProductRatingBreakdown } from "@/components/product/ProductRatingBreakdown";
 import {
   averageRating,
   getProductReviews
@@ -50,12 +50,6 @@ export async function generateMetadata({
   };
 }
 
-const trust = [
-  { icon: "truck", label: "School delivery", hint: "Free within campus" },
-  { icon: "wallet", label: "Mobile Money", hint: "MTN · Airtel · Zamtel" },
-  { icon: "map-pin", label: "4 pickup spots", hint: "UNZA · town · campus" }
-];
-
 
 export default async function ProductPage({
   params
@@ -81,75 +75,44 @@ export default async function ProductPage({
     allProducts.length > categoryProducts.length ? allProducts : categoryProducts;
   const related = relatedProducts(product, relatedPool, 8);
   const backHref = category ? `/category/${category.slug}` : "/search";
+  const onSale = Boolean(off || product.hotDeal);
 
   return (
-    <div className="bg-white">
+    <div className="overflow-x-hidden bg-white pb-4">
       <TrackProductView slug={product.slug} />
       <ProductPageHeader title={product.name} backHref={backHref} />
 
-      <div className="container-g py-5 sm:py-8">
+      <div className="mx-auto max-w-2xl py-4 sm:py-6">
         <ProductVariantProvider product={product}>
-          <div className="mx-auto max-w-2xl">
-            <ProductPurchasePanel
-              product={product}
-              compareOff={off}
-              saved={saved}
-              avgRating={avgRating}
-              reviewCount={reviews.length}
-            />
+          <ProductPurchasePanel
+            product={product}
+            compareOff={off}
+            saved={saved}
+            avgRating={avgRating}
+            reviewCount={reviews.length}
+            onSale={onSale}
+          />
 
-            <ProductDetailInfo product={product} />
+          <ProductDetailInfo product={product} />
+
+          <div className="px-4 sm:px-0">
+            <ProductSpecsTable product={product} />
+
+            {avgRating != null && reviews.length > 0 ? (
+              <ProductRatingBreakdown avg={avgRating} reviews={reviews} />
+            ) : null}
+
+            <ProductReviewsSection
+              productSlug={product.slug}
+              productName={product.name}
+              theme="light"
+              showLeaveForm
+              hideHeader={reviews.length > 0}
+            />
           </div>
 
           <MobileBuyBar product={product} />
         </ProductVariantProvider>
-
-        <div className="mx-auto mt-8 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
-          {trust.map((t) => (
-            <div
-              key={t.label}
-              className="flex items-center gap-3 rounded-[1.15rem] border border-gp-border/80 bg-gp-muted/40 px-4 py-3.5 sm:flex-col sm:items-center sm:gap-2 sm:p-4 sm:text-center"
-            >
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/15 text-ink-700 ring-1 ring-brand/25">
-                <Icon name={t.icon} className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-gp-text">{t.label}</p>
-                <p className="text-[11px] text-gp-text-muted">{t.hint}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {product.shortSpecs.length > 0 && !getProductExtras(product).features && (
-          <div className="mx-auto mt-10 max-w-2xl">
-            <h2 className="text-xl font-bold text-gp-text">Specifications</h2>
-            <dl className="mt-4 overflow-hidden rounded-[1.25rem] border border-gp-border/80 bg-white">
-              {product.shortSpecs.map((s, i) => (
-                <div
-                  key={s}
-                  className={`flex items-start gap-3 px-4 py-3.5 text-sm ${
-                    i % 2 === 0 ? "bg-gp-muted/30" : "bg-transparent"
-                  }`}
-                >
-                  <Icon
-                    name="check"
-                    className="mt-0.5 h-4 w-4 shrink-0 text-accent"
-                  />
-                  <span className="text-gp-text">{s}</span>
-                </div>
-              ))}
-            </dl>
-          </div>
-        )}
-
-        <div className="mx-auto max-w-2xl">
-          <ProductReviewsSection
-            productSlug={product.slug}
-            productName={product.name}
-            theme="light"
-          />
-        </div>
       </div>
 
       {related.length > 0 && (

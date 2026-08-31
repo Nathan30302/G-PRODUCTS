@@ -119,7 +119,7 @@ export function AddToCartButton({
       ) : (
         <>
           <Icon name="cart" className={compact ? "h-4 w-4" : "h-5 w-5"} />
-          Add to Cart
+          Add To Cart
         </>
       )}
     </button>

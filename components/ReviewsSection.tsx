@@ -199,7 +199,8 @@ export async function ProductReviewsSection({
   defaultAuthorName = "",
   orderRef = "",
   showLeaveForm = true,
-  theme = "dark"
+  theme = "dark",
+  hideHeader = false
 }: {
   productSlug: string;
   productName: string;
@@ -207,6 +208,7 @@ export async function ProductReviewsSection({
   orderRef?: string;
   showLeaveForm?: boolean;
   theme?: "dark" | "light";
+  hideHeader?: boolean;
 }) {
   const list = await getProductReviews(productSlug);
   const avg = averageRating(list);
@@ -214,27 +216,29 @@ export async function ProductReviewsSection({
 
   return (
     <section className="mt-12">
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className={`text-xl font-bold ${light ? "text-gp-text" : "display text-xl"}`}>
-            Customer reviews
-          </h2>
-          <p className={`mt-1 text-sm ${light ? "text-gp-text-muted" : "text-white/45"}`}>
-            Ratings for {productName}
-          </p>
-        </div>
-        {avg != null ? (
-          <div className="flex items-center gap-2">
-            <span className={`text-lg font-bold tabular-nums ${light ? "text-gp-text" : "text-brand"}`}>
-              {avg}
-            </span>
-            <Stars rating={avg} />
-            <span className={`text-xs ${light ? "text-gp-text-muted" : "text-white/40"}`}>
-              ({list.length})
-            </span>
+      {!hideHeader ? (
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className={`text-xl font-bold ${light ? "text-gp-text" : "display text-xl"}`}>
+              Customer reviews
+            </h2>
+            <p className={`mt-1 text-sm ${light ? "text-gp-text-muted" : "text-white/45"}`}>
+              Ratings for {productName}
+            </p>
           </div>
-        ) : null}
-      </div>
+          {avg != null ? (
+            <div className="flex items-center gap-2">
+              <span className={`text-lg font-bold tabular-nums ${light ? "text-gp-text" : "text-brand"}`}>
+                {avg}
+              </span>
+              <Stars rating={avg} />
+              <span className={`text-xs ${light ? "text-gp-text-muted" : "text-white/40"}`}>
+                ({list.length})
+              </span>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {list.length === 0 ? (
         <EmptyReviews context="product" theme={theme} />

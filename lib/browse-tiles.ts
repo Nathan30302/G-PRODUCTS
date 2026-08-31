@@ -17,15 +17,15 @@ export {
 const CACHE_TAG = "browse-tiles";
 
 const getBrowseTileOverrides = unstable_cache(
-  async (): Promise<Map<string, string | null>> => {
+  async (): Promise<Array<[string, string | null]>> => {
     try {
       const rows = await prisma.shopBrowseTile.findMany({
         where: { enabled: true, imageUrl: { not: null } }
       });
-      return new Map(rows.map((r) => [r.href, r.imageUrl]));
+      return rows.map((r) => [r.href, r.imageUrl] as [string, string | null]);
     } catch (err) {
       console.error("[browse-tiles] override fetch failed:", err);
-      return new Map();
+      return [];
     }
   },
   ["shop-browse-tile-overrides-v1"],
@@ -33,10 +33,11 @@ const getBrowseTileOverrides = unstable_cache(
 );
 
 function mergeCatalogWithOverrides(
-  overrides: Map<string, string | null>
+  overrides: Array<[string, string | null]>
 ): BrowseTileView[] {
+  const map = new Map(overrides);
   return DEFAULT_BROWSE_TILES.map((tile) => {
-    const custom = overrides.get(tile.href);
+    const custom = map.get(tile.href);
     return custom ? { ...tile, imageUrl: custom } : tile;
   });
 }
@@ -45,8 +46,8 @@ function mergeCatalogWithOverrides(
 export async function resolveShopBrowseTiles(
   products: Product[]
 ): Promise<BrowseTileView[]> {
-  const overrides = await getBrowseTileOverrides();
-  const tiles = mergeCatalogWithOverrides(overrides);
+  const overrideEntries = await getBrowseTileOverrides();
+  const tiles = mergeCatalogWithOverrides(overrideEntries);
   return enrichBrowseTilesWithFallbacks(tiles, products);
 }
 

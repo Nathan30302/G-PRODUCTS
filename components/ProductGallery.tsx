@@ -97,6 +97,72 @@ export function ProductGallery({
     }
   }
 
+  if (isPlug) {
+    return (
+      <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2">
+        <div
+          ref={frameRef}
+          className="relative aspect-square w-full touch-pan-y overflow-hidden bg-white"
+        >
+          <motion.div
+            className="relative z-[1] flex h-full cursor-grab active:cursor-grabbing"
+            style={{
+              width: width ? width * count : "100%",
+              x
+            }}
+            drag={count > 1 && width ? "x" : false}
+            dragElastic={0.12}
+            dragConstraints={
+              width ? { left: -width * (count - 1), right: 0 } : undefined
+            }
+            onDragEnd={onDragEnd}
+            onTap={() => setLightbox(true)}
+          >
+            {list.map((img, i) => (
+              <div
+                key={`${img.url}-${i}`}
+                className="relative h-full shrink-0 bg-white"
+                style={{ width: width || "100%" }}
+              >
+                <SafeImage
+                  src={img.url || null}
+                  alt={img.alt ?? name}
+                  fill
+                  sizes="100vw"
+                  className="pointer-events-none select-none object-contain p-6 sm:p-10"
+                  priority={i === 0}
+                  draggable={false}
+                  quality={90}
+                />
+              </div>
+            ))}
+          </motion.div>
+
+          {count > 1 ? (
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-0.5 bg-gp-border">
+              <div
+                className="h-full bg-ink-700 transition-all duration-300"
+                style={{ width: `${((index + 1) / count) * 100}%` }}
+              />
+            </div>
+          ) : null}
+        </div>
+
+        <AnimatePresence>
+          {lightbox ? (
+            <PhotoLightbox
+              images={list}
+              name={name}
+              start={index}
+              onClose={() => setLightbox(false)}
+              onIndex={setActive}
+            />
+          ) : null}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       {showingLabel && !isPlug ? (
