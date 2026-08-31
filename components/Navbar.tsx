@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { catalogGroups, hrefForCatalogGroup } from "@/lib/catalog-taxonomy";
 import { Icon } from "@/components/Icons";
 import { Logo } from "@/components/Logo";
-import { ShopSearchBar } from "@/components/shop/ShopSearchBar";
 import type { ShopAuth } from "@/components/SiteChrome";
 
 export function Navbar({ auth = null }: { auth?: ShopAuth }) {
@@ -17,22 +16,18 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
   const { count } = useCart();
 
   const isHome = pathname === "/";
+  const isSearchFind = pathname === "/search/find";
   const shopBrowseMode =
     pathname === "/search" &&
     !searchParams.get("q")?.trim() &&
     searchParams.get("deals") !== "1";
+  const minimalMobileShop = shopBrowseMode || isSearchFind;
 
   const accountHref = auth?.home ?? "/profile";
 
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--search-bar",
-      shopBrowseMode ? "3.25rem" : "0px"
-    );
-    return () => {
-      document.documentElement.style.setProperty("--search-bar", "0px");
-    };
-  }, [shopBrowseMode]);
+    document.documentElement.style.setProperty("--search-bar", "0px");
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -58,7 +53,7 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
     <header
       className={`sticky top-0 z-50 border-b border-gp-border bg-gp-surface/95 shadow-sm backdrop-blur-xl transition-shadow duration-300 ${
         scrolled ? "shadow-md" : ""
-      }`}
+      } ${minimalMobileShop ? "hidden md:block" : ""}`}
       style={{ paddingTop: "var(--safe-top)" }}
     >
       <div className="container-g grid h-14 grid-cols-[3rem_1fr_3rem] items-center gap-2 sm:h-16 sm:grid-cols-[3.5rem_1fr_3.5rem]">
@@ -81,19 +76,11 @@ export function Navbar({ auth = null }: { auth?: ShopAuth }) {
         </Link>
 
         <div className="flex justify-end">
-          <Link href="/search" aria-label="Search products" className={iconBtn}>
+          <Link href="/search/find" aria-label="Search products" className={iconBtn}>
             <Icon name="search" className="h-5 w-5" />
           </Link>
         </div>
       </div>
-
-      {shopBrowseMode ? (
-        <div className="container-g pb-3">
-          <Suspense fallback={null}>
-            <ShopSearchBar />
-          </Suspense>
-        </div>
-      ) : null}
 
       <div className="hidden border-t border-gp-border lg:block">
         <div className="container-g flex items-center justify-between gap-4 py-2">

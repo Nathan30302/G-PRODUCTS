@@ -9,14 +9,28 @@ export type BrowseTileView = {
   isPromo: boolean;
 };
 
-/** Shown on Shop when admin tiles are missing — matches seed defaults. */
+/** Shown on Shop when admin tiles are missing — G-Products catalog categories. */
 export const DEFAULT_BROWSE_TILES: BrowseTileView[] = [
   {
-    id: "default-promo-school",
-    label: "Back to School 🔥",
-    href: "/search?q=book",
+    id: "default-deals",
+    label: "Hot Deals",
+    href: "/search?deals=1",
     imageUrl: null,
     isPromo: true
+  },
+  {
+    id: "default-phones",
+    label: "Phones",
+    href: "/category/phones",
+    imageUrl: null,
+    isPromo: false
+  },
+  {
+    id: "default-phone-accessories",
+    label: "Phone Accessories",
+    href: "/category/phone-accessories",
+    imageUrl: null,
+    isPromo: false
   },
   {
     id: "default-chargers",
@@ -26,9 +40,16 @@ export const DEFAULT_BROWSE_TILES: BrowseTileView[] = [
     isPromo: false
   },
   {
-    id: "default-phone-accessories",
-    label: "Phone Accessories",
-    href: "/category/phone-accessories",
+    id: "default-audio",
+    label: "Audio",
+    href: "/category/audio",
+    imageUrl: null,
+    isPromo: false
+  },
+  {
+    id: "default-watches",
+    label: "Smartwatches",
+    href: "/category/watches",
     imageUrl: null,
     isPromo: false
   },
@@ -47,23 +68,9 @@ export const DEFAULT_BROWSE_TILES: BrowseTileView[] = [
     isPromo: false
   },
   {
-    id: "default-audio",
-    label: "Audio",
-    href: "/category/audio",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-phones",
-    label: "Phones",
-    href: "/category/phones",
-    imageUrl: null,
-    isPromo: false
-  },
-  {
-    id: "default-watches",
-    label: "Smart Watches",
-    href: "/category/watches",
+    id: "default-computers",
+    label: "Computers",
+    href: "/category/computers",
     imageUrl: null,
     isPromo: false
   }
@@ -131,10 +138,12 @@ function tileMatchesProduct(tile: BrowseTileView, p: Product): boolean {
   const label = tile.label.toLowerCase();
   if (label.includes("charger") && p.categorySlug === "chargers") return true;
   if (label.includes("phone") && p.categorySlug === "phone-accessories") return true;
+  if (label === "phones" && p.categorySlug === "phones") return true;
   if (label.includes("stationery") && p.categorySlug === "stationery") return true;
   if (label.includes("school") && p.categorySlug === "stationery") return true;
   if (label.includes("storage") && p.categorySlug === "storage") return true;
   if (label.includes("audio") && p.categorySlug === "audio") return true;
   if (label.includes("watch") && p.categorySlug === "watches") return true;
+  if (label.includes("computer") && p.categorySlug === "computers") return true;
   return false;
 }

@@ -35,9 +35,10 @@ export function Footer() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const shopBrowseMode =
-    pathname === "/search" &&
-    !searchParams.get("q")?.trim() &&
-    searchParams.get("deals") !== "1";
+    (pathname === "/search" &&
+      !searchParams.get("q")?.trim() &&
+      searchParams.get("deals") !== "1") ||
+    pathname === "/search/find";
 
   return (
     <footer
