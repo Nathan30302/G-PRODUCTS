@@ -1,58 +1,99 @@
 import Image from "next/image";
 import { siteConfig } from "@/config/site";
 
-const MARK_SRC = siteConfig.logoMark;
+/** Full lockup aspect ratio from the official source file. */
+const LOCKUP_ASPECT = 697 / 586;
 
-/** Pixel box for the G mark — original PNG only, no redraw or overlays. */
-const sizes = {
-  sm: 36,
-  md: 44,
-  lg: 96,
-  xl: 128
+const markHeights = {
+  sm: 32,
+  md: 40,
+  lg: 48,
+  xl: 64
 } as const;
 
+const lockupHeights = {
+  sm: 44,
+  md: 52,
+  lg: 72,
+  xl: 112
+} as const;
+
+export type LogoVariant = "mark" | "lockup" | "lockupNavy";
+
+const variantSrc: Record<LogoVariant, string> = {
+  mark: siteConfig.logoMark,
+  lockup: siteConfig.logoLockup,
+  lockupNavy: siteConfig.logoLockupNavy
+};
+
 /**
- * Clean G-Products mark — the official PNG only.
- * Do not wrap with rings, glows, gradients, badges, or emoji.
+ * Official G-Products logo — unmodified PNG assets only.
+ * Use `mark` in compact chrome; `lockup` on light backgrounds; `lockupNavy` on splash/hero blocks.
  */
 export function Logo({
+  variant = "mark",
   size = "md",
   className = "",
   priority = false,
-  presentation = "default"
+  /** @deprecated Kept for call-site compatibility. Use `variant="lockup"`. */
+  withText,
+  /** @deprecated No presentation-specific styling is applied. */
+  presentation
 }: {
-  /** @deprecated Kept for call-site compatibility; UI always shows the G mark. */
-  withText?: boolean;
-  size?: keyof typeof sizes;
+  variant?: LogoVariant;
+  size?: keyof typeof markHeights;
   className?: string;
   priority?: boolean;
-  /** Crisp isolated mark for auth/splash — no bleed from page effects. */
+  withText?: boolean;
   presentation?: "default" | "auth" | "splash";
 }) {
-  const px = sizes[size];
-  const mdBox = size === "md";
+  void withText;
+  void presentation;
+
+  const src = variantSrc[variant];
+
+  if (variant === "mark") {
+    const px = markHeights[size];
+    const mdBox = size === "md";
+
+    return (
+      <span
+        className={`relative inline-flex shrink-0 items-center justify-center ${
+          mdBox ? "h-10 w-10 sm:h-11 sm:w-11" : ""
+        } ${className}`}
+        style={mdBox ? undefined : { width: px, height: px }}
+      >
+        <Image
+          src={src}
+          alt="G-Products"
+          width={px}
+          height={px}
+          priority={priority}
+          unoptimized
+          className="h-full w-full object-contain select-none"
+          draggable={false}
+        />
+      </span>
+    );
+  }
+
+  const height = lockupHeights[size];
+  const width = Math.round(height * LOCKUP_ASPECT);
 
   return (
     <span
-      className={`relative inline-flex shrink-0 items-center justify-center ${
-        mdBox ? "h-10 w-10 sm:h-11 sm:w-11" : ""
-      } ${presentation !== "default" ? "overflow-hidden rounded-xl" : ""} ${className}`}
-      style={mdBox ? undefined : { width: px, height: px }}
+      className={`relative inline-flex shrink-0 items-center justify-center ${className}`}
+      style={{ width, height }}
     >
       <Image
-        src={MARK_SRC}
-        alt="G-Products"
-        width={px}
-        height={px}
+        src={src}
+        alt="G-Products and Services"
+        width={width}
+        height={height}
         priority={priority}
         unoptimized
         className="h-full w-full object-contain select-none"
         draggable={false}
-        style={
-          presentation !== "default"
-            ? { imageRendering: "auto", transform: "translateZ(0)" }
-            : undefined
-        }
       />
     </span>
   );

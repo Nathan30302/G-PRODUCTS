@@ -35,7 +35,7 @@ export function LoginForm() {
 
       <div className="auth-screen-inner">
         <header className="auth-brand">
-          <Logo size="xl" priority />
+          <Logo variant="lockupNavy" size="xl" priority />
           <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gp-text-subtle">
             Provider desk
           </p>

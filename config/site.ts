@@ -49,11 +49,19 @@ export const siteConfig = {
     "Fair prices",
     "Fast delivery"
   ] as const,
-  /** Full lockup asset (OG / apple icon). In-app UI uses logoMark only. */
-  logo: "/brand/g-products-logo.png",
-  logoSm: "/brand/g-products-logo-sm.png",
-  /** Original G mark PNG — nav, hero, auth, desk (do not redraw) */
-  logoMark: "/brand/g-products-mark.png",
+  /** Sampled from the official logo file — native navy background. */
+  logoNavy: "#243F50",
+  /** Full lockup (icon + G-PRODUCTS AND SERVICES) — transparent background. */
+  logoLockup: "/brand/g-products-lockup-transparent.png",
+  logoLockupSm: "/brand/g-products-lockup-transparent-sm.png",
+  /** Full lockup on native navy — splash / hero blocks. */
+  logoLockupNavy: "/brand/g-products-lockup-navy.png",
+  /** G mark only — nav, favicon, compact placements. */
+  logoMark: "/brand/g-products-mark-transparent.png",
+  logoMarkSm: "/brand/g-products-mark-transparent-sm.png",
+  /** @deprecated Use logoLockup — kept for OG metadata fallbacks. */
+  logo: "/brand/g-products-lockup-transparent.png",
+  logoSm: "/brand/g-products-lockup-transparent-sm.png",
   description:
     "G-Products — genuine electronics, phone accessories and stationery at fair prices in Lusaka. Shop online with Mobile Money, free campus delivery where applicable, and pickup at UNZA, Kalingalinga and Balastone. Printing, key cutting and G-Loans available in-store.",
   whatsappNumber: "260972500209",

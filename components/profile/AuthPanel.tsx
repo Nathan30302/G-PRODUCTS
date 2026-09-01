@@ -215,9 +215,7 @@ export function AuthPanel({
 
       <div className="auth-screen-inner">
         <header className="auth-brand">
-          <div className="auth-logo-stage">
-            <Logo size="xl" priority presentation="auth" />
-          </div>
+          <Logo variant="lockupNavy" size="xl" priority />
           <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gp-text-subtle">
             {siteConfig.tagline}
           </p>

@@ -36,8 +36,8 @@ export const metadata: Metadata = {
     "key cutting Lusaka"
   ],
   icons: {
-    icon: [{ url: siteConfig.logoMark, type: "image/png" }],
-    apple: [{ url: siteConfig.logo, type: "image/png" }]
+    icon: [{ url: "/icon.png", type: "image/png" }],
+    apple: [{ url: siteConfig.logoLockupNavy, type: "image/png" }]
   },
   openGraph: {
     title: `${siteConfig.name} - ${siteConfig.tagline}`,
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     url: siteUrl(),
     images: [
       {
-        url: siteConfig.logo,
+        url: siteConfig.logoLockup,
         width: 768,
         height: 768,
         alt: siteConfig.legalName

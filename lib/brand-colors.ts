@@ -1,10 +1,10 @@
 /**
  * Official G-Products brand colors — from the logo lockup.
- * Lime yellow (#E5F34F) → lime green (#C8E03F) on slate (#233746).
+ * Lime yellow (#E5F34F) → lime green (#C8E03F) on navy (#243F50).
  */
 export const brandColors = {
-  slate: "#233746",
-  slateDark: "#1a2834",
+  slate: "#243F50",
+  slateDark: "#1a2f3c",
   yellow: "#E5F34F",
   yellowSoft: "#EDF76A",
   green: "#C8E03F",
