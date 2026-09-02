@@ -15,6 +15,9 @@ export const brandColors = {
   green: "#C8E03F",
   greenSoft: "#D4E855",
   greenDark: "#A8C832",
+  /** Deep forest greens — splash ambient motion only. */
+  greenDeep: "#3D5620",
+  greenForest: "#5C7A2E",
   white: "#FFFFFF"
 } as const;
 
