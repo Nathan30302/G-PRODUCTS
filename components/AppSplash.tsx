@@ -5,7 +5,7 @@ import { Logo } from "@/components/Logo";
 
 const SESSION_KEY = "gproducts-splash-seen-v2";
 
-/** G-Products opening splash — live dark-green bloom from official lockup (~5s). */
+/** G-Products opening splash — logo-sourced dark green rays on white (~5s). */
 const HOLD_MS = 5000;
 const FADE_MS = 600;
 const TOTAL_MS = HOLD_MS + FADE_MS;

@@ -15,9 +15,11 @@ export const brandColors = {
   green: "#C8E03F",
   greenSoft: "#D4E855",
   greenDark: "#A8C832",
-  /** Deep forest greens — splash ambient motion only. */
-  greenDeep: "#3D5620",
-  greenForest: "#5C7A2E",
+  /** Sampled from g-products-lockup-navy.png G-mark pixels (darkest → mid). */
+  greenDeep: "#37510A",
+  greenRich: "#5A7228",
+  greenMid: "#7A9440",
+  greenLight: "#9AAE4F",
   white: "#FFFFFF"
 } as const;
 
