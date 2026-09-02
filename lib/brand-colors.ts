@@ -1,15 +1,25 @@
 /**
  * Official G-Products brand colors — from the logo lockup.
  * Lime yellow (#E5F34F) → lime green (#C8E03F) on navy (#243F50).
+ * Splash navy sampled from g-products-lockup-navy.png corner pixels.
  */
 export const brandColors = {
   slate: "#243F50",
+  /** Slightly lighter navy — subtle center glow on splash screens. */
+  slateGlow: "#2A4D61",
+  /** Darker navy — splash screen edge depth. */
+  slateEdge: "#1A3342",
   slateDark: "#1a2f3c",
   yellow: "#E5F34F",
   yellowSoft: "#EDF76A",
   green: "#C8E03F",
   greenSoft: "#D4E855",
   greenDark: "#A8C832",
+  /** Sampled from g-products-lockup-navy.png G-mark pixels (darkest → mid). */
+  greenDeep: "#37510A",
+  greenRich: "#5A7228",
+  greenMid: "#7A9440",
+  greenLight: "#9AAE4F",
   white: "#FFFFFF"
 } as const;
 
