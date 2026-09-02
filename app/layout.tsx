@@ -78,8 +78,29 @@ export default function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem("gp-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}})();`
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var k="gproducts-splash-seen-v2";var p=new URLSearchParams(location.search);if(p.get("splash")==="1"){sessionStorage.removeItem(k);document.documentElement.classList.add("gp-splash-boot");return;}if(!sessionStorage.getItem(k))document.documentElement.classList.add("gp-splash-boot");}catch(e){document.documentElement.classList.add("gp-splash-boot");}})();`
+          }}
+        />
       </head>
       <body className="min-h-dvh bg-gp-bg font-sans text-gp-text antialiased">
+        <div id="gp-splash-boot" className="gp-splash-boot" aria-hidden="true">
+          <div className="gp-splash-boot-bg" />
+          <div className="gp-splash-boot-rays" />
+          <div className="gp-splash-boot-logo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/g-products-mark-transparent.png"
+              alt=""
+              width={96}
+              height={96}
+              decoding="sync"
+              fetchPriority="high"
+            />
+          </div>
+          <p className="gp-splash-boot-tagline">{siteConfig.tagline}</p>
+        </div>
         <ThemeProvider>
           <CartProvider>
             <ToastProvider>

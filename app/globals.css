@@ -2,6 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Instant boot splash — visible before React hydrates */
+html.gp-splash-boot body {
+  overflow: hidden;
+}
+
+.gp-splash-boot {
+  display: none;
+}
+
+html.gp-splash-boot .gp-splash-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  background: #ffffff;
+}
+
+.gp-splash-boot-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 120% 95% at 50% 38%,
+    #ffffff 0%,
+    #f7fce8 14%,
+    #edf9c8 28%,
+    #e5f34f 44%,
+    #d4ea5a 56%,
+    #c8e03f 68%,
+    #a8d832 80%,
+    #ffffff 100%
+  );
+}
+
+.gp-splash-boot-rays {
+  position: absolute;
+  inset: -30%;
+  background: repeating-conic-gradient(
+    from -4deg at 50% 40%,
+    rgba(255, 255, 255, 0.78) 0deg 1.4deg,
+    transparent 1.4deg 10.5deg
+  );
+  mix-blend-mode: soft-light;
+  animation: gp-splash-boot-rays 28s linear infinite;
+}
+
+@keyframes gp-splash-boot-rays {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gp-splash-boot-logo {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  border-radius: 1.35rem;
+  background: #ffffff;
+  padding: 1.1rem;
+  box-shadow: 0 10px 36px -18px rgba(36, 63, 80, 0.2);
+}
+
+.gp-splash-boot-logo img {
+  width: 6rem;
+  height: 6rem;
+  object-fit: contain;
+}
+
+.gp-splash-boot-tagline {
+  position: relative;
+  z-index: 2;
+  margin-top: 1.25rem;
+  max-width: 16rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(36, 63, 80, 0.62);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gp-splash-boot-rays {
+    animation: none;
+  }
+}
+
 :root {
   color-scheme: light;
   /* G-Products spacing scale (4px base) */
