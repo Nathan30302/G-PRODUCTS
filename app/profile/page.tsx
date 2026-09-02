@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCustomerSession } from "@/lib/customer-auth";
 import { getSession } from "@/lib/auth";
 import { AuthPanel } from "@/components/profile/AuthPanel";
+import { AuthScreenShell } from "@/components/profile/AuthScreenShell";
 import { siteConfig } from "@/config/site";
 
 export const dynamic = "force-dynamic";
@@ -36,9 +37,11 @@ export default async function ProfilePage({
   const initialReferralCode = (params.ref ?? "").trim().toUpperCase();
 
   return (
-    <AuthPanel
-      initialMode={initialMode}
-      initialReferralCode={initialReferralCode}
-    />
+    <AuthScreenShell>
+      <AuthPanel
+        initialMode={initialMode}
+        initialReferralCode={initialReferralCode}
+      />
+    </AuthScreenShell>
   );
 }
