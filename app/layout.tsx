@@ -91,15 +91,14 @@ export default function RootLayout({
           <div className="gp-splash-boot-logo">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/brand/g-products-mark-transparent.png"
-              alt=""
-              width={96}
-              height={96}
+              src={siteConfig.logoLockupNavy}
+              alt="G-Products and Services"
+              width={168}
+              height={168}
               decoding="sync"
               fetchPriority="high"
             />
           </div>
-          <p className="gp-splash-boot-tagline">{siteConfig.tagline}</p>
         </div>
         <ThemeProvider>
           <CartProvider>

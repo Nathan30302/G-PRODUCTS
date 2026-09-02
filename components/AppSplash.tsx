@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
-import { siteConfig } from "@/config/site";
 
 const SESSION_KEY = "gproducts-splash-seen-v2";
 
-/** G-Products opening splash — logo first, live brand motion (~5s). */
+/** G-Products opening splash — official lockup on live brand motion (~5s). */
 const HOLD_MS = 5000;
 const FADE_MS = 600;
 const TOTAL_MS = HOLD_MS + FADE_MS;
@@ -104,10 +103,7 @@ export function AppSplash() {
       <div className="app-splash-ring app-splash-ring-c" aria-hidden />
 
       <div className="app-splash-logo-wrap">
-        <div className="app-splash-logo-stage">
-          <Logo variant="mark" size="xxl" priority />
-        </div>
-        <p className="app-splash-tagline">{siteConfig.tagline}</p>
+        <Logo variant="lockupNavy" size="splash" priority className="app-splash-lockup" />
       </div>
     </div>
   );

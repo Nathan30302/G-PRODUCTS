@@ -16,7 +16,8 @@ const lockupHeights = {
   sm: 44,
   md: 52,
   lg: 72,
-  xl: 112
+  xl: 112,
+  splash: 168
 } as const;
 
 export type LogoVariant = "mark" | "lockup" | "lockupNavy";
@@ -42,7 +43,7 @@ export function Logo({
   presentation
 }: {
   variant?: LogoVariant;
-  size?: keyof typeof markHeights;
+  size?: keyof typeof markHeights | keyof typeof lockupHeights;
   className?: string;
   priority?: boolean;
   withText?: boolean;
@@ -78,7 +79,10 @@ export function Logo({
     );
   }
 
-  const height = lockupHeights[size === "xxl" ? "xl" : size];
+  const height =
+    lockupHeights[
+      (size in lockupHeights ? size : "xl") as keyof typeof lockupHeights
+    ];
   const width = Math.round(height * LOCKUP_ASPECT);
 
   return (
