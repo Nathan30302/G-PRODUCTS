@@ -24,39 +24,41 @@ html.gp-splash-boot .gp-splash-boot {
   background: var(--gp-splash-navy-edge);
 }
 
-/* Ray Bloom — dark green center → navy mid → near-black edge (no white) */
+/* Ray Bloom — bright lime bloom center → navy corners (reference) */
 .gp-splash-boot-bg {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 118% 112% at var(--gp-splash-cx) var(--gp-splash-cy),
-    var(--gp-splash-green-deep) 0%,
-    var(--gp-splash-green-deep) 22%,
-    var(--gp-splash-navy) 60%,
+    ellipse 120% 115% at var(--gp-splash-cx) var(--gp-splash-cy),
+    var(--gp-splash-green-bright) 0%,
+    #a8c54a 14%,
+    var(--gp-splash-green-mid) 30%,
+    var(--gp-splash-teal) 46%,
+    #364f58 58%,
+    var(--gp-splash-navy) 72%,
+    #1a3342 88%,
     var(--gp-splash-navy-edge) 100%
   );
 }
 
 .gp-splash-boot-rays {
   position: absolute;
-  inset: -48%;
+  inset: -55%;
   background: repeating-conic-gradient(
     from 0deg at var(--gp-splash-cx) var(--gp-splash-cy),
-    var(--gp-splash-ray) 0deg 1.1deg,
-    transparent 1.1deg 8deg
+    var(--gp-splash-ray-light) 0deg 0.85deg,
+    var(--gp-splash-ray-dark) 0.85deg 1.7deg
   );
   mask-image: radial-gradient(
-    ellipse 100% 94% at var(--gp-splash-cx) var(--gp-splash-cy),
-    transparent 0%,
-    black 24%,
-    black 78%,
+    ellipse 120% 115% at var(--gp-splash-cx) var(--gp-splash-cy),
+    black 8%,
+    black 94%,
     transparent 100%
   );
   -webkit-mask-image: radial-gradient(
-    ellipse 100% 94% at var(--gp-splash-cx) var(--gp-splash-cy),
-    transparent 0%,
-    black 24%,
-    black 78%,
+    ellipse 120% 115% at var(--gp-splash-cx) var(--gp-splash-cy),
+    black 8%,
+    black 94%,
     transparent 100%
   );
   animation: gp-splash-boot-rays 22s linear infinite;
@@ -67,15 +69,15 @@ html.gp-splash-boot .gp-splash-boot {
   left: var(--gp-splash-cx);
   top: var(--gp-splash-cy);
   z-index: 1;
-  width: min(68vw, 18rem);
-  height: min(68vw, 18rem);
+  width: min(82vw, 21rem);
+  height: min(82vw, 21rem);
   transform: translate(-50%, -50%);
   border-radius: 9999px;
   background: radial-gradient(
     circle,
     var(--gp-splash-glow) 0%,
-    rgba(169, 209, 122, 0.1) 45%,
-    transparent 68%
+    rgba(168, 197, 74, 0.22) 38%,
+    transparent 62%
   );
   animation: gp-splash-boot-glow 4s ease-in-out infinite;
 }
@@ -119,6 +121,19 @@ html.gp-splash-boot .gp-splash-boot {
   object-fit: contain;
 }
 
+.gp-splash-boot-footer {
+  position: absolute;
+  z-index: 3;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.52);
+}
+
 :root {
   color-scheme: light;
   /* G-Products spacing scale (4px base) */
@@ -151,14 +166,17 @@ html.gp-splash-boot .gp-splash-boot {
   --gp-primary-dark: #1a2834;
   --gp-brand-yellow: #e5f34f;
   --gp-brand-green: #c8e03f;
-  /* Ray Bloom splash — sampled from logo lockup PNG */
+  /* Ray Bloom splash — bright lime center → navy edge (reference concept 2) */
   --gp-splash-cx: 50%;
-  --gp-splash-cy: 50%;
-  --gp-splash-green-deep: #33461f;
+  --gp-splash-cy: 48%;
+  --gp-splash-green-bright: #c5d86d;
+  --gp-splash-green-mid: #7a9a45;
+  --gp-splash-teal: #3d5a58;
   --gp-splash-navy: #243f50;
   --gp-splash-navy-edge: #0e1e26;
-  --gp-splash-ray: rgba(169, 209, 122, 0.27);
-  --gp-splash-glow: rgba(169, 209, 122, 0.22);
+  --gp-splash-ray-light: rgba(169, 209, 122, 0.32);
+  --gp-splash-ray-dark: rgba(45, 85, 95, 0.24);
+  --gp-splash-glow: rgba(197, 216, 109, 0.45);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -1068,10 +1086,14 @@ html {
     inset: 0;
     z-index: 0;
     background: radial-gradient(
-      ellipse 118% 112% at var(--gp-splash-cx) var(--gp-splash-cy),
-      var(--gp-splash-green-deep) 0%,
-      var(--gp-splash-green-deep) 22%,
-      var(--gp-splash-navy) 60%,
+      ellipse 120% 115% at var(--gp-splash-cx) var(--gp-splash-cy),
+      var(--gp-splash-green-bright) 0%,
+      #a8c54a 14%,
+      var(--gp-splash-green-mid) 30%,
+      var(--gp-splash-teal) 46%,
+      #364f58 58%,
+      var(--gp-splash-navy) 72%,
+      #1a3342 88%,
       var(--gp-splash-navy-edge) 100%
     );
     animation: app-splash-bg-in 0.8s ease-out both;
@@ -1079,25 +1101,23 @@ html {
 
   .app-splash-rays {
     position: absolute;
-    inset: -48%;
+    inset: -55%;
     z-index: 1;
     background: repeating-conic-gradient(
       from 0deg at var(--gp-splash-cx) var(--gp-splash-cy),
-      var(--gp-splash-ray) 0deg 1.1deg,
-      transparent 1.1deg 8deg
+      var(--gp-splash-ray-light) 0deg 0.85deg,
+      var(--gp-splash-ray-dark) 0.85deg 1.7deg
     );
     mask-image: radial-gradient(
-      ellipse 100% 94% at var(--gp-splash-cx) var(--gp-splash-cy),
-      transparent 0%,
-      black 24%,
-      black 78%,
+      ellipse 120% 115% at var(--gp-splash-cx) var(--gp-splash-cy),
+      black 8%,
+      black 94%,
       transparent 100%
     );
     -webkit-mask-image: radial-gradient(
-      ellipse 100% 94% at var(--gp-splash-cx) var(--gp-splash-cy),
-      transparent 0%,
-      black 24%,
-      black 78%,
+      ellipse 120% 115% at var(--gp-splash-cx) var(--gp-splash-cy),
+      black 8%,
+      black 94%,
       transparent 100%
     );
     animation: app-splash-rays 22s linear infinite;
@@ -1108,17 +1128,30 @@ html {
     left: var(--gp-splash-cx);
     top: var(--gp-splash-cy);
     z-index: 2;
-    width: min(68vw, 18rem);
-    height: min(68vw, 18rem);
+    width: min(82vw, 21rem);
+    height: min(82vw, 21rem);
     transform: translate(-50%, -50%);
     border-radius: 9999px;
     background: radial-gradient(
       circle,
       var(--gp-splash-glow) 0%,
-      rgba(169, 209, 122, 0.1) 45%,
-      transparent 68%
+      rgba(168, 197, 74, 0.22) 38%,
+      transparent 62%
     );
     animation: app-splash-glow 4s ease-in-out infinite;
+  }
+
+  .app-splash-footer {
+    position: absolute;
+    z-index: 6;
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.52);
   }
 
   .app-splash-logo-wrap {

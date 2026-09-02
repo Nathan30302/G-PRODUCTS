@@ -100,6 +100,7 @@ export default function RootLayout({
               fetchPriority="high"
             />
           </div>
+          <p className="gp-splash-boot-footer">g-products.store</p>
         </div>
         <ThemeProvider>
           <CartProvider>

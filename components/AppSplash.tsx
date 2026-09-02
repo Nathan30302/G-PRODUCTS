@@ -97,6 +97,8 @@ export function AppSplash() {
       <div className="app-splash-logo-wrap">
         <Logo variant="lockup" size="splash" priority className="app-splash-lockup" />
       </div>
+
+      <p className="app-splash-footer">g-products.store</p>
     </div>
   );
 }
