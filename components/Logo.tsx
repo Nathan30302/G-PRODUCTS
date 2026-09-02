@@ -8,7 +8,8 @@ const markHeights = {
   sm: 32,
   md: 40,
   lg: 48,
-  xl: 64
+  xl: 64,
+  xxl: 96
 } as const;
 
 const lockupHeights = {
@@ -53,7 +54,7 @@ export function Logo({
   const src = variantSrc[variant];
 
   if (variant === "mark") {
-    const px = markHeights[size];
+    const px = markHeights[size as keyof typeof markHeights];
     const mdBox = size === "md";
 
     return (
@@ -77,7 +78,7 @@ export function Logo({
     );
   }
 
-  const height = lockupHeights[size];
+  const height = lockupHeights[size === "xxl" ? "xl" : size];
   const width = Math.round(height * LOCKUP_ASPECT);
 
   return (
