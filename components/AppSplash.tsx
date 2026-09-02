@@ -5,7 +5,7 @@ import { Logo } from "@/components/Logo";
 
 const SESSION_KEY = "gproducts-splash-seen-v2";
 
-/** G-Products opening splash — official lockup on live brand motion (~5s). */
+/** G-Products opening splash — official lockup on solid navy (~5s). */
 const HOLD_MS = 5000;
 const FADE_MS = 600;
 const TOTAL_MS = HOLD_MS + FADE_MS;
@@ -95,12 +95,6 @@ export function AppSplash() {
       }
     >
       <div className="app-splash-bg" aria-hidden />
-      <div className="app-splash-mesh" aria-hidden />
-      <div className="app-splash-rays" aria-hidden />
-      <div className="app-splash-shine" aria-hidden />
-      <div className="app-splash-ring" aria-hidden />
-      <div className="app-splash-ring app-splash-ring-b" aria-hidden />
-      <div className="app-splash-ring app-splash-ring-c" aria-hidden />
 
       <div className="app-splash-logo-wrap">
         <Logo variant="lockupNavy" size="splash" priority className="app-splash-lockup" />

@@ -87,7 +87,6 @@ export default function RootLayout({
       <body className="min-h-dvh bg-gp-bg font-sans text-gp-text antialiased">
         <div id="gp-splash-boot" className="gp-splash-boot" aria-hidden="true">
           <div className="gp-splash-boot-bg" />
-          <div className="gp-splash-boot-rays" />
           <div className="gp-splash-boot-logo">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
