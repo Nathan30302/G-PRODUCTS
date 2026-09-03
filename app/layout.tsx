@@ -80,25 +80,30 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var k="gproducts-splash-seen-v2";var p=new URLSearchParams(location.search);if(p.get("splash")==="1"){sessionStorage.removeItem(k);document.documentElement.classList.add("gp-splash-boot");return;}if(!sessionStorage.getItem(k))document.documentElement.classList.add("gp-splash-boot");}catch(e){document.documentElement.classList.add("gp-splash-boot");}})();`
+            __html: `(function(){try{var k="gproducts-splash-seen-v3";var p=new URLSearchParams(location.search);if(p.get("splash")==="1"){sessionStorage.removeItem(k);document.documentElement.classList.add("gp-splash-boot");return;}if(!sessionStorage.getItem(k))document.documentElement.classList.add("gp-splash-boot");}catch(e){document.documentElement.classList.add("gp-splash-boot");}})();`
           }}
         />
       </head>
       <body className="min-h-dvh bg-gp-bg font-sans text-gp-text antialiased">
         <div id="gp-splash-boot" className="gp-splash-boot" aria-hidden="true">
           <div className="gp-splash-boot-bg" />
-          <div className="gp-splash-boot-rays" aria-hidden="true" />
-          <div className="gp-splash-boot-glow" aria-hidden="true" />
-          <div className="gp-splash-boot-logo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={siteConfig.logoLockup}
-              alt="G-Products and Services"
-              width={199}
-              height={168}
-              decoding="sync"
-              fetchPriority="high"
-            />
+          <div className="gp-splash-boot-rays" />
+          <div className="gp-splash-boot-vignette" />
+          <div className="gp-splash-boot-brand">
+            <div className="gp-splash-boot-mark-wrap">
+              <span className="gp-splash-boot-mark-glow" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={siteConfig.logoMark}
+                alt="G-Products"
+                width={168}
+                height={168}
+                decoding="sync"
+                fetchPriority="high"
+              />
+            </div>
+            <p className="gp-splash-boot-name">G-PRODUCTS</p>
+            <p className="gp-splash-boot-tag">AND SERVICES</p>
           </div>
           <p className="gp-splash-boot-footer">g-products.store</p>
         </div>
