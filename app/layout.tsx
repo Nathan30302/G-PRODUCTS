@@ -7,6 +7,7 @@ import { ToastProvider } from "@/components/Toast";
 import { SiteChrome } from "@/components/SiteChrome";
 import { AbandonedCartNudge } from "@/components/AbandonedCartNudge";
 import { AppSplash } from "@/components/AppSplash";
+import { SplashErrorBoundary } from "@/components/SplashErrorBoundary";
 import { siteConfig } from "@/config/site";
 import { siteUrl } from "@/lib/site-url";
 
@@ -85,6 +86,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-dvh bg-gp-bg font-sans text-gp-text antialiased">
+        {/* Boot splash stays in React's tree — hide with CSS only, never .remove(). */}
         <div id="gp-splash-boot" className="gp-splash-boot" aria-hidden="true">
           <div className="gp-splash-boot-bg" />
           <div className="gp-splash-boot-rays" />
@@ -103,7 +105,9 @@ export default function RootLayout({
         <ThemeProvider>
           <CartProvider>
             <ToastProvider>
-              <AppSplash />
+              <SplashErrorBoundary>
+                <AppSplash />
+              </SplashErrorBoundary>
               <SiteChrome>{children}</SiteChrome>
               <AbandonedCartNudge />
             </ToastProvider>

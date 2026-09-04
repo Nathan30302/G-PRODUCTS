@@ -39,10 +39,14 @@ function markSplashSeen(): void {
 /**
  * Hide the pre-React boot layer via CSS only.
  * Never call .remove() on #gp-splash-boot — that node is rendered by layout.tsx
- * and removing it outside React causes client-side exceptions on hydration.
+ * and removing it outside React crashes every page (root-layout client exception).
  */
 function hideBootSplash(): void {
-  document.documentElement.classList.remove("gp-splash-boot");
+  try {
+    document.documentElement.classList.remove("gp-splash-boot");
+  } catch {
+    /* ignore */
+  }
 }
 
 function shouldShowSplash(): boolean {
