@@ -56,7 +56,13 @@ const config: Config = {
         accent: {
           DEFAULT: "#C8E03F",
           soft: "#D4E855",
-          dark: "#A8C832"
+          dark: "#A8C832",
+          /**
+           * Readable brand green for text on light surfaces (5.2:1 on white).
+           * Sampled from the darkest greens in the logo mark — the lime
+           * DEFAULT is a fill/accent colour and only reaches ~1.8:1 as text.
+           */
+          ink: "#5A7228"
         },
         warm: {
           DEFAULT: "#e07a3a",
@@ -70,15 +76,20 @@ const config: Config = {
         pill: "999px"
       },
       boxShadow: {
-        card: "0 1px 2px rgba(0,0,0,0.03), 0 6px 20px rgba(26,35,33,0.06)",
+        // Layered: hairline contact edge + tight contact shadow + wide ambient.
+        // Reads as real depth instead of a single flat blur.
+        card: "0 0 0 1px rgba(26,35,33,0.035), 0 1px 2px rgba(26,35,33,0.04), 0 4px 12px -2px rgba(26,35,33,0.05), 0 12px 28px -6px rgba(26,35,33,0.06)",
         "card-hover":
-          "0 12px 32px rgba(26,35,33,0.1), 0 0 0 1px rgba(0,0,0,0.03)",
+          "0 0 0 1px rgba(26,35,33,0.05), 0 2px 4px rgba(26,35,33,0.05), 0 10px 24px -4px rgba(26,35,33,0.09), 0 24px 48px -12px rgba(26,35,33,0.12)",
         float:
-          "0 12px 40px -8px rgba(26,35,33,0.14), 0 4px 12px -4px rgba(26,35,33,0.08)",
-        nav: "0 10px 40px rgba(26,35,33,0.14), 0 2px 8px rgba(26,35,33,0.06)",
+          "0 1px 2px rgba(26,35,33,0.05), 0 8px 20px -4px rgba(26,35,33,0.1), 0 20px 44px -10px rgba(26,35,33,0.14)",
+        nav: "0 0 0 1px rgba(26,35,33,0.04), 0 4px 12px -2px rgba(26,35,33,0.08), 0 16px 44px -8px rgba(26,35,33,0.16)",
         glow: "0 0 0 1px rgba(229,243,79,0.35), 0 10px 40px rgba(229,243,79,0.18)",
         "accent-glow": "0 10px 40px -8px rgba(35,55,70,0.22)",
-        "brand-glow": "0 4px 14px -2px rgba(229,243,79,0.35)"
+        "brand-glow":
+          "0 1px 2px rgba(35,55,70,0.08), 0 6px 18px -4px rgba(229,243,79,0.45)",
+        /** Inner top highlight — makes light surfaces feel lit rather than flat. */
+        lit: "inset 0 1px 0 rgba(255,255,255,0.9)"
       },
       transitionTimingFunction: {
         "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)"

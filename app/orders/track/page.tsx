@@ -17,17 +17,17 @@ export default async function OrderTrackPage({
   return (
     <div className="container-g py-10 sm:py-14">
       <div className="mx-auto max-w-lg text-center">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-ink-700">
           Orders
         </p>
-        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-gp-text sm:text-4xl">
           Track your order
         </h1>
-        <p className="mt-3 text-sm text-white/55">
+        <p className="mt-3 text-sm text-gp-text-muted">
           Enter the reference from checkout (starts with GP-) and the last 4
           digits of the phone number you used. Signed-in customers can also see
           recent orders in{" "}
-          <Link href="/profile/account" className="text-brand hover:underline">
+          <Link href="/profile/account" className="font-semibold text-ink-700 hover:underline">
             Account
           </Link>
           .

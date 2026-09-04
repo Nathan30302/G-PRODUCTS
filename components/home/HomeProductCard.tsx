@@ -51,7 +51,7 @@ export function HomeProductCard({
       }`}
     >
       <div
-        className={`relative bg-white ${isPlug ? "aspect-[1/1.05] px-2 pt-3" : "aspect-[4/5] bg-gp-muted/50"}`}
+        className={`relative bg-white ${isPlug ? "aspect-[1/1.05] px-2 pt-3" : "media-well aspect-[4/5]"}`}
       >
         {image ? (
           <SafeImage

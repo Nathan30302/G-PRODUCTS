@@ -58,7 +58,7 @@ function ReviewCard({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Stars rating={review.rating} size={featured ? "lg" : "sm"} />
         {review.verifiedPurchase ? (
-          <span className="rounded-pill bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">
+          <span className="rounded-pill bg-accent/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent-ink">
             Verified purchase
           </span>
         ) : null}

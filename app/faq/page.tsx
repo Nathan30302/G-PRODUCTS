@@ -20,12 +20,12 @@ export default function FaqPage() {
           Quick answers. Still stuck?{" "}
           <a
             href={whatsappHref("Hi G-Products, I have a question.")}
-            className="font-semibold text-accent hover:underline"
+            className="font-semibold text-accent-ink hover:underline"
           >
             WhatsApp us
           </a>{" "}
           or see{" "}
-          <Link href="/delivery" className="font-semibold text-accent hover:underline">
+          <Link href="/delivery" className="font-semibold text-accent-ink hover:underline">
             Delivery &amp; Pickup
           </Link>
           .

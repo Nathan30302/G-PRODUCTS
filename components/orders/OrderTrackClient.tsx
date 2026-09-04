@@ -88,7 +88,7 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
           onChange={(e) => setRef(e.target.value)}
           placeholder="e.g. GP-AB12CD"
           autoCapitalize="characters"
-          className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-sm text-white outline-none placeholder:text-white/30 focus:border-brand/50"
+          className="w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-sm text-gp-text shadow-sm outline-none transition-all placeholder:text-gp-text-subtle focus:border-ink-700/35 focus:shadow-[0_0_0_4px_rgba(35,55,70,0.08)]"
         />
         <input
           value={phoneLast4}
@@ -99,7 +99,7 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
           autoComplete="off"
           maxLength={4}
           placeholder="Last 4 digits of checkout phone"
-          className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-center font-mono text-sm tracking-[0.35em] text-white outline-none placeholder:font-sans placeholder:tracking-normal placeholder:text-white/30 focus:border-brand/50"
+          className="w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-center font-mono text-sm tracking-[0.35em] text-gp-text shadow-sm outline-none transition-all placeholder:font-sans placeholder:tracking-normal placeholder:text-gp-text-subtle focus:border-ink-700/35 focus:shadow-[0_0_0_4px_rgba(35,55,70,0.08)]"
         />
         <button
           type="submit"
@@ -111,27 +111,27 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
       </form>
 
       {error ? (
-        <p className="mt-4 rounded-2xl border border-red-400/20 bg-red-400/10 px-4 py-3 text-sm text-red-200">
+        <p className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </p>
       ) : null}
 
       {data ? (
-        <div className="mt-8 rounded-[1.35rem] border border-white/[0.08] bg-ink-900/70 p-5 sm:p-6">
+        <div className="panel mt-8 p-5 sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-gp-text-subtle">
                 Order
               </p>
-              <p className="font-display text-xl font-extrabold text-white">
+              <p className="font-display text-xl font-extrabold text-gp-text">
                 {data.ref}
               </p>
               {data.customerName ? (
-                <p className="mt-1 text-sm text-white/50">{data.customerName}</p>
+                <p className="mt-1 text-sm text-gp-text-muted">{data.customerName}</p>
               ) : null}
             </div>
             {typeof data.total === "number" ? (
-              <p className="text-lg font-extrabold tabular-nums text-brand">
+              <p className="text-lg font-extrabold tabular-nums text-ink-850">
                 {formatPrice(data.total)}
               </p>
             ) : null}
@@ -157,7 +157,7 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
                   className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold ${
                     step.done || step.current
                       ? "bg-brand text-ink-950"
-                      : "border border-white/15 text-white/35"
+                      : "border border-gp-border text-gp-text-subtle"
                   }`}
                 >
                   {step.done && !step.current ? (
@@ -169,10 +169,10 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
                 <span
                   className={
                     step.current
-                      ? "font-bold text-brand"
+                      ? "font-bold text-ink-850"
                       : step.done
-                        ? "text-white/80"
-                        : "text-white/35"
+                        ? "text-gp-text"
+                        : "text-gp-text-subtle"
                   }
                 >
                   {step.label}
@@ -182,20 +182,20 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
           </ol>
 
           {data.orderStatus === "CANCELLED" ? (
-            <p className="mt-4 text-sm text-white/50">This order was cancelled.</p>
+            <p className="mt-4 text-sm text-gp-text-muted">This order was cancelled.</p>
           ) : null}
 
           {data.items && data.items.length > 0 ? (
-            <ul className="mt-6 space-y-2 border-t border-white/[0.06] pt-4">
+            <ul className="mt-6 space-y-2 border-t border-gp-border/70 pt-4">
               {data.items.map((item, i) => (
                 <li
                   key={`${item.name}-${i}`}
-                  className="flex justify-between gap-3 text-sm text-white/65"
+                  className="flex justify-between gap-3 text-sm text-gp-text"
                 >
                   <span>
                     {item.qty}× {item.name}
                   </span>
-                  <span className="tabular-nums text-white/45">
+                  <span className="tabular-nums text-gp-text-muted">
                     {formatPrice(item.price * item.qty)}
                   </span>
                 </li>
@@ -203,10 +203,10 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
             </ul>
           ) : null}
 
-          <p className="mt-6 text-center text-xs text-white/40">
+          <p className="mt-6 text-center text-xs text-gp-text-subtle">
             Printing jobs? Use the track link from your print confirmation, or
             open{" "}
-            <Link href="/services" className="text-brand hover:underline">
+            <Link href="/services" className="font-semibold text-ink-700 hover:underline">
               Services
             </Link>
             .

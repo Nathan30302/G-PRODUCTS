@@ -16,21 +16,21 @@ export default function ReturnsPage() {
         collected.
       </p>
 
-      <h2 className="display !mt-8 text-xl text-white">Eligible returns</h2>
+      <h2 className="display !mt-8 text-xl">Eligible returns</h2>
       <ul className="list-disc space-y-1 pl-5">
         <li>Faulty or damaged items reported on receipt or within a reasonable window.</li>
         <li>Wrong item supplied versus what you ordered.</li>
         <li>Unopened items may be considered case-by-case for exchange.</li>
       </ul>
 
-      <h2 className="display !mt-8 text-xl text-white">Not usually returnable</h2>
+      <h2 className="display !mt-8 text-xl">Not usually returnable</h2>
       <ul className="list-disc space-y-1 pl-5">
         <li>Opened consumables (e.g. stationery used, hygiene-sensitive items).</li>
         <li>Custom or made-to-order work (including completed print jobs).</li>
         <li>Items damaged after delivery due to misuse.</li>
       </ul>
 
-      <h2 className="display !mt-8 text-xl text-white">Refunds</h2>
+      <h2 className="display !mt-8 text-xl">Refunds</h2>
       <p>
         Approved refunds are typically returned via the same Mobile Money method
         used for payment, or as store credit / exchange when agreed. Processing

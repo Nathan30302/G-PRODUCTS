@@ -69,7 +69,7 @@ export function MobileBuyBar({ product }: { product: Product }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Order on WhatsApp"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-pill border border-accent/30 bg-accent/10 text-accent"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-pill border border-accent/40 bg-accent/15 text-accent-ink"
         >
           <Icon name="whatsapp" className="h-5 w-5" />
         </a>

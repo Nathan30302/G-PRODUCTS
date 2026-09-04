@@ -9,7 +9,7 @@ export function ServiceTile({ service }: { service: ServiceDef }) {
       href={`/services/${service.slug}`}
       className="group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-gp-border/80 bg-gp-surface shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-ink-700/20 hover:shadow-card-hover active:scale-[0.99]"
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-gp-muted">
+      <div className="media-well relative aspect-[16/10] overflow-hidden">
         {service.image ? (
           <SafeImage
             src={service.image}

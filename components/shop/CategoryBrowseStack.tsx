@@ -34,10 +34,14 @@ export function CategoryBrowseStack({ tiles }: { tiles: BrowseTileView[] }) {
               }`}
             />
           )}
-          <span className="absolute inset-0 bg-black/25 transition-colors group-hover:bg-black/30" />
-          <span className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/5" />
+          {/* Photo scrim. These tiles use busy product photography, so the
+              label needs a real gradient behind it — a flat wash alone left
+              white text sitting on bright packaging. */}
+          <span className="absolute inset-0 bg-ink-950/30 transition-colors group-hover:bg-ink-950/36" />
+          <span className="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-ink-950/35 to-ink-950/15" />
+          <span className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink-950/55 to-transparent" />
           <span
-            className={`absolute inset-0 flex items-center justify-center px-6 text-center font-display font-extrabold tracking-tight text-white drop-shadow-[0_2px_14px_rgba(0,0,0,0.5)] ${
+            className={`absolute inset-0 flex items-center justify-center px-6 text-center font-display font-extrabold tracking-tight text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45),0_2px_18px_rgba(0,0,0,0.55)] ${
               tile.isPromo ? "text-[1.35rem] sm:text-2xl" : "text-xl sm:text-[1.4rem]"
             }`}
           >

@@ -301,6 +301,35 @@ html {
   scrollbar-width: none;
 }
 
+/* Slimmer page scrollbar on pointer devices — the default grey bar is heavy
+   next to the light retail surfaces. Touch devices keep the native overlay. */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--gp-text-rgb) / 0.18) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    background-clip: content-box;
+    background-color: rgba(var(--gp-text-rgb) / 0.18);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(var(--gp-text-rgb) / 0.3);
+  }
+}
+
 /* Hero entrance stagger — short so content is usable immediately */
 .hero-rise {
   animation: hero-rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -607,8 +636,14 @@ html {
     @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-600;
   }
 
+  /**
+   * Typography only — deliberately sets no colour.
+   * It used to force text-gp-text, which beat `text-white` utilities and left
+   * headings dark-on-dark inside the navy cards. Light surfaces already
+   * inherit --gp-text from body, so nothing changes there.
+   */
   .display {
-    @apply font-display font-bold tracking-[-0.012em] leading-[1.2] text-gp-text;
+    @apply font-display font-bold tracking-[-0.012em] leading-[1.2];
   }
 
   .heading-page {
@@ -639,11 +674,32 @@ html {
 
   /* Premium card surfaces */
   .gp-card {
-    @apply rounded-[1.25rem] border border-gp-border/80 bg-gp-surface p-5 shadow-card transition-shadow duration-300 sm:p-6;
+    @apply rounded-[1.25rem] border border-gp-border/70 bg-gp-surface p-5 shadow-card transition-all duration-300 ease-out-expo sm:p-6;
+  }
+
+  /* Cards that are themselves links/buttons get lift + press feedback */
+  a.gp-card,
+  button.gp-card,
+  .gp-card-interactive {
+    @apply hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0 active:scale-[0.995];
   }
 
   .gp-card-muted {
     @apply rounded-[1.25rem] bg-gp-muted p-5 shadow-card sm:p-6;
+  }
+
+  /**
+   * Media well — the surface a product photo sits on.
+   * A flat grey block reads cheap; a top-lit gradient gives the product
+   * somewhere to sit. Follows the active theme via the rgb() vars.
+   */
+  .media-well {
+    background-image: linear-gradient(
+      to bottom,
+      rgb(var(--gp-surface-rgb)) 0%,
+      rgb(var(--gp-muted-rgb)) 62%,
+      rgb(var(--gp-muted-rgb)) 100%
+    );
   }
 
   .page-enter {
@@ -663,7 +719,7 @@ html {
 
   /* Subtle top-lit panel used across cards/sections */
   .panel {
-    @apply rounded-[1.25rem] border border-gp-border/80 bg-gp-surface shadow-card;
+    @apply rounded-[1.25rem] border border-gp-border/70 bg-gp-surface shadow-card;
   }
 
   .field {

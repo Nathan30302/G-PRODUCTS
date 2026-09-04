@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         our services (including Upload &amp; Print).
       </p>
 
-      <h2 className="display !mt-8 text-xl text-white">Information we collect</h2>
+      <h2 className="display !mt-8 text-xl">Information we collect</h2>
       <ul className="list-disc space-y-1 pl-5">
         <li>Contact details you provide (name, phone, email, delivery address).</li>
         <li>Order and payment confirmation details needed to fulfil your purchase.</li>
@@ -24,25 +24,25 @@ export default function PrivacyPage() {
         <li>Account login details if you register as a customer.</li>
       </ul>
 
-      <h2 className="display !mt-8 text-xl text-white">How we use it</h2>
+      <h2 className="display !mt-8 text-xl">How we use it</h2>
       <ul className="list-disc space-y-1 pl-5">
         <li>To process orders, print jobs, key cutting and related services.</li>
         <li>To contact you about stock, delivery and support on WhatsApp or phone.</li>
         <li>To improve our storefront and prevent fraud or abuse.</li>
       </ul>
 
-      <h2 className="display !mt-8 text-xl text-white">Sharing</h2>
+      <h2 className="display !mt-8 text-xl">Sharing</h2>
       <p>
         We do not sell your personal information. We may share limited details
         with payment providers or delivery partners solely to complete your
         order.
       </p>
 
-      <h2 className="display !mt-8 text-xl text-white">Contact</h2>
+      <h2 className="display !mt-8 text-xl">Contact</h2>
       <p>
         Questions about privacy:{" "}
         <a
-          className="text-brand hover:underline"
+          className="font-semibold text-ink-700 hover:underline"
           href={`mailto:${siteConfig.supportEmail}`}
         >
           {siteConfig.supportEmail}

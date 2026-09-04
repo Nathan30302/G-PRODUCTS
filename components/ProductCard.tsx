@@ -94,9 +94,9 @@ export function ProductCard({
     : "(max-width: 640px) 46vw, 14rem";
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gp-border/80 bg-gp-surface shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gp-border/70 bg-gp-surface shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0 active:scale-[0.995]">
       <div
-        className="relative aspect-[4/5] overflow-hidden rounded-t-2xl bg-gp-muted"
+        className="media-well relative aspect-[4/5] overflow-hidden rounded-t-2xl"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         onMouseEnter={() => {

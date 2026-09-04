@@ -43,8 +43,8 @@ export function NotifyMeForm({
   if (status === "ok") {
     return (
       <div className="rounded-2xl border border-accent/30 bg-accent/10 px-4 py-4">
-        <p className="text-sm font-semibold text-accent">You&apos;re on the list</p>
-        <p className="mt-1 text-sm text-accent/80">
+        <p className="text-sm font-semibold text-accent-ink">You&apos;re on the list</p>
+        <p className="mt-1 text-sm text-accent-ink/85">
           We&apos;ll notify you
           {variantName ? ` when ${variantName} is back` : " when it&apos;s back"}{" "}
           in stock.

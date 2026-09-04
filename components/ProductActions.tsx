@@ -81,7 +81,7 @@ export function ProductActions({ product }: { product: Product }) {
             requireFitment={Boolean(fitment)}
           />
           {fitment && !fitmentReady ? (
-            <p className="text-center text-xs text-accent">
+            <p className="text-center text-xs font-semibold text-accent-ink">
               Select your {fitment.label.toLowerCase()} above
             </p>
           ) : null}
@@ -92,7 +92,7 @@ export function ProductActions({ product }: { product: Product }) {
         href={waLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex w-full items-center justify-center gap-2 rounded-pill border border-gp-border bg-white px-4 py-3 text-sm font-semibold text-gp-text transition-colors hover:border-accent/30 hover:text-accent"
+        className="flex w-full items-center justify-center gap-2 rounded-pill border border-gp-border bg-white px-4 py-3 text-sm font-semibold text-gp-text transition-colors hover:border-accent/40 hover:text-accent-ink"
       >
         <Icon name="whatsapp" className="h-5 w-5" />
         Enquire on WhatsApp
