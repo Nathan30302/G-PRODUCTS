@@ -8,10 +8,14 @@ const FALLBACK_SECRET = "change-me-in-railway-variables";
 /** Historical Domain= values that can shadow host-only cookies on Safari. */
 const LEGACY_COOKIE_DOMAINS = [".g-products.store", "g-products.store"] as const;
 
-export const DESK_COOKIE = "gp_session";
-export const CUSTOMER_COOKIE = "gp_customer";
-export const DESK_MAX_AGE = 60 * 60 * 24 * 7;
-export const CUSTOMER_MAX_AGE = 60 * 60 * 24 * 30;
+import {
+  CUSTOMER_COOKIE,
+  CUSTOMER_MAX_AGE,
+  DESK_COOKIE,
+  DESK_MAX_AGE
+} from "@/lib/session-constants";
+
+export { CUSTOMER_COOKIE, CUSTOMER_MAX_AGE, DESK_COOKIE, DESK_MAX_AGE };
 
 type CookieJar = {
   set: (

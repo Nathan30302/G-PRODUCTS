@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { formatPrice, formatDateTime } from "@/lib/format";
-import { getSession } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 import { getAdminAnalytics } from "@/lib/admin-analytics";
 import {
   DeskHero,
@@ -17,7 +17,9 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  const session = await getSession();
+  // Guard here too: this page renders in parallel with the layout, so relying
+  // on the layout's redirect alone still streamed desk data to signed-out users.
+  const session = await requireUser();
   const [
     analytics,
     products,

@@ -1,4 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { hasValidDeskToken } from "@/lib/edge-auth";
+import { DESK_COOKIE } from "@/lib/session-constants";
 
 const CANONICAL_HOST = "www.g-products.store";
 
@@ -6,7 +8,7 @@ const CANONICAL_HOST = "www.g-products.store";
  * Drop garbage Server Action probes (e.g. next-action: "x" / "y") that scanners
  * send while hunting for known Next.js CVEs. Real action IDs are long hashes.
  */
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const host = request.headers.get("host") ?? "";
   const proto = request.headers.get("x-forwarded-proto") ?? "https";
 
@@ -25,6 +27,22 @@ export function middleware(request: NextRequest) {
     const actionId = request.headers.get("next-action");
     if (actionId !== null && actionId.length < 16) {
       return new NextResponse(null, { status: 400 });
+    }
+  }
+
+  // Gate the desk before rendering. A redirect inside the dashboard layout is
+  // not enough: layout and page render in parallel, so the page still streamed
+  // orders, revenue and customer counts to signed-out visitors.
+  const { pathname } = request.nextUrl;
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    if (pathname !== "/admin/login") {
+      const token = request.cookies.get(DESK_COOKIE)?.value;
+      if (!(await hasValidDeskToken(token))) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/profile";
+        url.search = "";
+        return NextResponse.redirect(url);
+      }
     }
   }
 
