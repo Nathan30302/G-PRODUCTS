@@ -1,12 +1,5 @@
 import { jwtVerify } from "jose";
-
-const FALLBACK_SECRET = "change-me-in-railway-variables";
-
-function secret(): Uint8Array {
-  const raw = process.env.AUTH_SECRET?.trim();
-  const value = raw && raw.length >= 16 ? raw : FALLBACK_SECRET;
-  return new TextEncoder().encode(value);
-}
+import { authSecretRaw } from "@/lib/auth-secret";
 
 /**
  * Signature-only desk check for Edge middleware.
@@ -19,7 +12,8 @@ export async function hasValidDeskToken(
 ): Promise<boolean> {
   if (!token) return false;
   try {
-    const { payload } = await jwtVerify(token, secret());
+    const secret = new TextEncoder().encode(authSecretRaw());
+    const { payload } = await jwtVerify(token, secret);
     return payload.kind !== "customer";
   } catch {
     return false;

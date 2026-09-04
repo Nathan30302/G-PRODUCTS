@@ -1,19 +1,18 @@
 import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
-
-const ALG = "HS256";
-const FALLBACK_SECRET = "change-me-in-railway-variables";
-
-/** Historical Domain= values that can shadow host-only cookies on Safari. */
-const LEGACY_COOKIE_DOMAINS = [".g-products.store", "g-products.store"] as const;
-
+import { authSecretRaw } from "@/lib/auth-secret";
 import {
   CUSTOMER_COOKIE,
   CUSTOMER_MAX_AGE,
   DESK_COOKIE,
   DESK_MAX_AGE
 } from "@/lib/session-constants";
+
+const ALG = "HS256";
+
+/** Historical Domain= values that can shadow host-only cookies on Safari. */
+const LEGACY_COOKIE_DOMAINS = [".g-products.store", "g-products.store"] as const;
 
 export { CUSTOMER_COOKIE, CUSTOMER_MAX_AGE, DESK_COOKIE, DESK_MAX_AGE };
 
@@ -26,9 +25,7 @@ type CookieJar = {
 };
 
 export function authSecret(): Uint8Array {
-  const raw = process.env.AUTH_SECRET?.trim();
-  const s = raw && raw.length >= 16 ? raw : FALLBACK_SECRET;
-  return new TextEncoder().encode(s);
+  return new TextEncoder().encode(authSecretRaw());
 }
 
 /**
