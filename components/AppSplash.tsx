@@ -10,9 +10,6 @@ const HOLD_MS = 5000;
 const FADE_MS = 600;
 const TOTAL_MS = HOLD_MS + FADE_MS;
 
-/** Survives React Strict Mode remounts within one page load. */
-let splashHideTimer: number | null = null;
-
 function shouldForceSplash(): boolean {
   if (typeof window === "undefined") return false;
   try {
@@ -39,9 +36,13 @@ function markSplashSeen(): void {
   }
 }
 
-function removeBootSplash(): void {
+/**
+ * Hide the pre-React boot layer via CSS only.
+ * Never call .remove() on #gp-splash-boot — that node is rendered by layout.tsx
+ * and removing it outside React causes client-side exceptions on hydration.
+ */
+function hideBootSplash(): void {
   document.documentElement.classList.remove("gp-splash-boot");
-  document.getElementById("gp-splash-boot")?.remove();
 }
 
 function shouldShowSplash(): boolean {
@@ -56,7 +57,7 @@ export function AppSplash() {
 
   useEffect(() => {
     if (!shouldShowSplash()) {
-      removeBootSplash();
+      hideBootSplash();
       return;
     }
 
@@ -69,15 +70,14 @@ export function AppSplash() {
     }
 
     setVisible(true);
-    removeBootSplash();
+    hideBootSplash();
 
-    if (splashHideTimer !== null) return;
-
-    splashHideTimer = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setVisible(false);
       markSplashSeen();
-      splashHideTimer = null;
     }, TOTAL_MS);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   if (!visible) return null;
