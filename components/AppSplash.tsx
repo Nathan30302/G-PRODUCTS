@@ -1,17 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Logo } from "@/components/Logo";
+import { siteConfig } from "@/config/site";
 
-const SESSION_KEY = "gproducts-splash-seen-v2";
+const SESSION_KEY = "gproducts-splash-seen-v3";
 
-/** G-Products opening splash — official lockup on live brand motion (~5s). */
+/** Reference splash — 5s branded hold, then 0.6s fade into the shop. */
 const HOLD_MS = 5000;
 const FADE_MS = 600;
 const TOTAL_MS = HOLD_MS + FADE_MS;
-
-/** Survives React Strict Mode remounts within one page load. */
-let splashHideTimer: number | null = null;
 
 function shouldForceSplash(): boolean {
   if (typeof window === "undefined") return false;
@@ -39,9 +36,9 @@ function markSplashSeen(): void {
   }
 }
 
-function removeBootSplash(): void {
+/** Hide the pre-React boot layer via CSS only — never remove the DOM node (React owns it). */
+function hideBootSplash(): void {
   document.documentElement.classList.remove("gp-splash-boot");
-  document.getElementById("gp-splash-boot")?.remove();
 }
 
 function shouldShowSplash(): boolean {
@@ -56,7 +53,7 @@ export function AppSplash() {
 
   useEffect(() => {
     if (!shouldShowSplash()) {
-      removeBootSplash();
+      hideBootSplash();
       return;
     }
 
@@ -69,15 +66,14 @@ export function AppSplash() {
     }
 
     setVisible(true);
-    removeBootSplash();
+    hideBootSplash();
 
-    if (splashHideTimer !== null) return;
-
-    splashHideTimer = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setVisible(false);
       markSplashSeen();
-      splashHideTimer = null;
     }, TOTAL_MS);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   if (!visible) return null;
@@ -95,16 +91,27 @@ export function AppSplash() {
       }
     >
       <div className="app-splash-bg" aria-hidden />
-      <div className="app-splash-mesh" aria-hidden />
       <div className="app-splash-rays" aria-hidden />
-      <div className="app-splash-shine" aria-hidden />
-      <div className="app-splash-ring" aria-hidden />
-      <div className="app-splash-ring app-splash-ring-b" aria-hidden />
-      <div className="app-splash-ring app-splash-ring-c" aria-hidden />
+      <div className="app-splash-vignette" aria-hidden />
 
-      <div className="app-splash-logo-wrap">
-        <Logo variant="lockupNavy" size="splash" priority className="app-splash-lockup" />
+      <div className="app-splash-brand">
+        <div className="app-splash-mark-wrap">
+          <span className="app-splash-mark-glow" aria-hidden />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={siteConfig.logoMark}
+            alt=""
+            width={168}
+            height={168}
+            decoding="async"
+            className="app-splash-mark"
+          />
+        </div>
+        <p className="app-splash-name">G-PRODUCTS</p>
+        <p className="app-splash-tag">AND SERVICES</p>
       </div>
+
+      <p className="app-splash-footer">g-products.store</p>
     </div>
   );
 }

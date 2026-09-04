@@ -5,6 +5,7 @@
 export const brandColors = {
   slate: "#243F50",
   slateDark: "#1a2f3c",
+  slateEdge: "#0E1E26",
   yellow: "#E5F34F",
   yellowSoft: "#EDF76A",
   green: "#C8E03F",
