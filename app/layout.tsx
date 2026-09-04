@@ -88,15 +88,15 @@ export default function RootLayout({
       <body className="min-h-dvh bg-gp-bg font-sans text-gp-text antialiased">
         {/* Boot splash stays in React's tree — hide with CSS only, never .remove(). */}
         <div id="gp-splash-boot" className="gp-splash-boot" aria-hidden="true">
-          <div className="gp-splash-boot-bg" />
           <div className="gp-splash-boot-rays" />
+          <div className="gp-splash-boot-glow" />
           <div className="gp-splash-boot-logo">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={siteConfig.logoLockupNavy}
+              src={siteConfig.logoLockup}
               alt="G-Products and Services"
-              width={168}
-              height={168}
+              width={697}
+              height={586}
               decoding="sync"
               fetchPriority="high"
             />

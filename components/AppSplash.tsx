@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Logo } from "@/components/Logo";
+import { siteConfig } from "@/config/site";
 
 const SESSION_KEY = "gproducts-splash-seen-v2";
 
@@ -98,16 +98,19 @@ export function AppSplash() {
         } as React.CSSProperties
       }
     >
-      <div className="app-splash-bg" aria-hidden />
-      <div className="app-splash-mesh" aria-hidden />
       <div className="app-splash-rays" aria-hidden />
-      <div className="app-splash-shine" aria-hidden />
-      <div className="app-splash-ring" aria-hidden />
-      <div className="app-splash-ring app-splash-ring-b" aria-hidden />
-      <div className="app-splash-ring app-splash-ring-c" aria-hidden />
+      <div className="app-splash-glow" aria-hidden />
 
-      <div className="app-splash-logo-wrap">
-        <Logo variant="lockupNavy" size="splash" priority className="app-splash-lockup" />
+      <div className="app-splash-logo">
+        {/* Transparent lockup — no navy box behind the mark. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={siteConfig.logoLockup}
+          alt="G-Products and Services"
+          width={697}
+          height={586}
+          decoding="async"
+        />
       </div>
     </div>
   );
