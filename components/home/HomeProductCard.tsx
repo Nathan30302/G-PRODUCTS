@@ -46,7 +46,7 @@ export function HomeProductCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className={`snap-item flex ${widthClass} flex-col overflow-hidden rounded-2xl border border-gp-border/60 bg-white shadow-[0_1px_8px_rgba(26,35,33,0.06)] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(26,35,33,0.1)] ${
+      className={`snap-item flex ${widthClass} flex-col overflow-hidden rounded-2xl border border-gp-border/60 bg-white shadow-[0_1px_8px_rgba(26,35,33,0.06)] transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(26,35,33,0.12)] active:translate-y-0 active:scale-[0.985] ${
         isPlug ? "" : "shadow-card hover:shadow-card-hover"
       }`}
     >

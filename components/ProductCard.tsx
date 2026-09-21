@@ -94,7 +94,7 @@ export function ProductCard({
     : "(max-width: 640px) 46vw, 14rem";
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gp-border/80 bg-white shadow-sm transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0 active:scale-[0.995]">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gp-border/80 bg-white shadow-sm transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-card-hover active:translate-y-0 active:scale-[0.985]">
       <div
         className="media-well relative aspect-[4/5] overflow-hidden rounded-t-2xl"
         onTouchStart={onTouchStart}
@@ -142,6 +142,26 @@ export function ProductCard({
           <span className="pointer-events-none absolute left-2 top-2 z-[2] rounded-pill bg-brand px-2 py-0.5 text-[10px] font-bold text-ink-950">
             Deal
           </span>
+        ) : null}
+
+        {photos.length > 1 ? (
+          <div className="pointer-events-none absolute inset-x-0 bottom-2.5 z-[2] flex justify-center gap-1">
+            {photos.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Photo ${i + 1}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIndex(i);
+                }}
+                className={`pointer-events-auto h-1.5 rounded-full transition-all duration-200 ${
+                  i === index ? "w-4 bg-ink-850" : "w-1.5 bg-ink-850/25 hover:bg-ink-850/50"
+                }`}
+              />
+            ))}
+          </div>
         ) : null}
 
         {!soldOut ? (

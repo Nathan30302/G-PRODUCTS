@@ -81,6 +81,31 @@ export function ProductGallery({
     [count]
   );
 
+  useEffect(() => {
+    if (count < 2) return;
+    function onKey(e: KeyboardEvent) {
+      const t = e.target as HTMLElement | null;
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable)
+      ) {
+        return;
+      }
+      if (lightbox) return;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        go(1);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        go(-1);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [count, go, lightbox]);
+
   const jump = useCallback((i: number) => {
     setActive(Math.max(0, Math.min(count - 1, i)));
   }, [count]);
@@ -102,7 +127,7 @@ export function ProductGallery({
       <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2">
         <div
           ref={frameRef}
-          className="relative aspect-square w-full touch-pan-y overflow-hidden bg-[#f4f6f3]"
+          className="group relative aspect-square w-full touch-pan-y overflow-hidden bg-[#f4f6f3] sm:aspect-[5/4] sm:max-h-[min(32rem,70vh)]"
         >
           <motion.div
             className="relative z-[1] flex h-full cursor-grab active:cursor-grabbing"
@@ -116,7 +141,6 @@ export function ProductGallery({
               width ? { left: -width * (count - 1), right: 0 } : undefined
             }
             onDragEnd={onDragEnd}
-            onTap={() => setLightbox(true)}
           >
             {list.map((img, i) => (
               <div
@@ -139,14 +163,58 @@ export function ProductGallery({
           </motion.div>
 
           {count > 1 ? (
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-0.5 bg-gp-border">
-              <div
-                className="h-full bg-ink-700 transition-all duration-300"
-                style={{ width: `${((index + 1) / count) * 100}%` }}
+            <>
+              <NavBtn
+                side="left"
+                disabled={index === 0}
+                onClick={() => go(-1)}
+                alwaysShow
               />
-            </div>
+              <NavBtn
+                side="right"
+                disabled={index === count - 1}
+                onClick={() => go(1)}
+                alwaysShow
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-1 bg-gp-border/80">
+                <div
+                  className="h-full bg-brand transition-all duration-300 ease-out-expo"
+                  style={{ width: `${((index + 1) / count) * 100}%` }}
+                />
+              </div>
+              <span className="pointer-events-none absolute left-3 top-3 z-[2] hidden rounded-pill bg-ink-950/60 px-2.5 py-1 text-[10px] font-semibold tabular-nums text-white backdrop-blur-sm sm:inline">
+                {index + 1} / {count}
+              </span>
+            </>
           ) : null}
+
+          <button
+            type="button"
+            onClick={() => setLightbox(true)}
+            className="absolute bottom-4 right-3 z-[3] grid h-10 w-10 place-items-center rounded-full border border-ink-950/10 bg-ink-950/70 text-white shadow-lg backdrop-blur-md transition-all hover:scale-105 hover:bg-ink-950/85 active:scale-95"
+            aria-label="View full-size photo"
+          >
+            <Icon name="expand" className="h-4 w-4" />
+          </button>
         </div>
+
+        {count > 1 ? (
+          <div className="mx-auto flex max-w-3xl gap-2 overflow-x-auto px-4 py-3 no-scrollbar sm:justify-center sm:px-6">
+            {list.map((img, i) => (
+              <Thumb
+                key={`${img.url}-plug-${i}`}
+                ref={(el) => {
+                  thumbRefs.current[i] = el;
+                }}
+                img={img}
+                name={name}
+                active={i === index}
+                onSelect={() => jump(i)}
+                size="lg"
+              />
+            ))}
+          </div>
+        ) : null}
 
         <AnimatePresence>
           {lightbox ? (
@@ -175,7 +243,7 @@ export function ProductGallery({
       <div className={`flex gap-3 ${isPlug ? "" : "lg:gap-4"}`}>
         {/* Desktop vertical filmstrip */}
         {count > 1 && !isPlug ? (
-          <div className="hidden max-h-[min(100%,28rem)] w-[4.25rem] shrink-0 flex-col gap-2 overflow-y-auto py-0.5 no-scrollbar xl:flex">
+          <div className="hidden max-h-[min(100%,28rem)] w-[4.25rem] shrink-0 flex-col gap-2 overflow-y-auto py-0.5 no-scrollbar lg:flex">
             {list.map((img, i) => (
               <Thumb
                 key={`${img.url}-v-${i}`}
@@ -266,16 +334,18 @@ export function ProductGallery({
                       side="left"
                       disabled={index === 0}
                       onClick={() => go(-1)}
+                      alwaysShow
                     />
                     <NavBtn
                       side="right"
                       disabled={index === count - 1}
                       onClick={() => go(1)}
+                      alwaysShow
                     />
                   </>
                 ) : null}
 
-                <div className="pointer-events-none absolute inset-x-0 bottom-3 z-[2] flex justify-center gap-1.5 xl:hidden">
+                <div className="pointer-events-none absolute inset-x-0 bottom-3 z-[2] flex justify-center gap-1.5 lg:hidden">
                   {list.map((_, i) => (
                     <span
                       key={i}
@@ -288,7 +358,7 @@ export function ProductGallery({
                   ))}
                 </div>
 
-                <span className="pointer-events-none absolute left-3 bottom-3 z-[2] hidden rounded-pill bg-ink-950/55 px-2.5 py-1 text-[10px] font-semibold tabular-nums text-white/85 backdrop-blur-sm xl:inline">
+                <span className="pointer-events-none absolute left-3 bottom-3 z-[2] hidden rounded-pill bg-ink-950/55 px-2.5 py-1 text-[10px] font-semibold tabular-nums text-white/85 backdrop-blur-sm lg:inline">
                   {index + 1} / {count}
                 </span>
               </>
@@ -304,9 +374,9 @@ export function ProductGallery({
             </div>
           ) : null}
 
-          {/* Mobile / tablet horizontal filmstrip */}
+          {/* Filmstrip under gallery on phones; side strip on laptop */}
           {count > 1 && !isPlug ? (
-            <div className="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar xl:hidden">
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar lg:hidden">
               {list.map((img, i) => (
                 <Thumb
                   key={`${img.url}-h-${i}`}
@@ -342,11 +412,13 @@ export function ProductGallery({
 function NavBtn({
   side,
   disabled,
-  onClick
+  onClick,
+  alwaysShow = false
 }: {
   side: "left" | "right";
   disabled: boolean;
   onClick: () => void;
+  alwaysShow?: boolean;
 }) {
   return (
     <button
@@ -357,13 +429,17 @@ function NavBtn({
         e.stopPropagation();
         onClick();
       }}
-      className={`absolute top-1/2 z-[3] grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-ink-950/55 text-white shadow-lg backdrop-blur-md transition-all duration-300 disabled:opacity-20 lg:opacity-0 lg:group-hover:opacity-100 ${
-        side === "left" ? "left-2.5" : "right-2.5"
-      } opacity-100`}
+      className={`absolute top-1/2 z-[3] grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/25 bg-ink-950/70 text-white shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-105 hover:bg-ink-950/90 active:scale-95 disabled:pointer-events-none disabled:opacity-25 sm:h-12 sm:w-12 ${
+        side === "left" ? "left-2.5 sm:left-4" : "right-2.5 sm:right-4"
+      } ${
+        alwaysShow
+          ? "opacity-100"
+          : "opacity-100 lg:opacity-0 lg:group-hover:opacity-100 lg:group-focus-within:opacity-100"
+      }`}
     >
       <Icon
         name={side === "left" ? "chevron-left" : "chevron-right"}
-        className="h-5 w-5"
+        className="h-5 w-5 sm:h-6 sm:w-6"
       />
     </button>
   );

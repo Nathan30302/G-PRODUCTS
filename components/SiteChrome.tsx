@@ -54,6 +54,10 @@ export function SiteChrome({
 
   return (
     <div className="relative min-h-dvh overflow-x-hidden bg-gp-bg text-gp-text">
+      <div className="shop-ambient" aria-hidden>
+        <span className="shop-ambient__blob shop-ambient__blob--a" />
+        <span className="shop-ambient__blob shop-ambient__blob--b" />
+      </div>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-[max(1rem,var(--safe-top))] focus:z-[100] focus:rounded-pill focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
@@ -64,8 +68,9 @@ export function SiteChrome({
         <Navbar auth={auth} />
       </Suspense>
       <main
+        key={pathname}
         id="main-content"
-        className="min-h-[70vh] pb-[calc(var(--mobile-nav-offset)+0.75rem)] md:pb-0 page-enter"
+        className="relative z-[1] min-h-[70vh] animate-page-enter pb-[calc(var(--mobile-nav-offset)+0.75rem)] md:pb-0"
       >
         {children}
       </main>
