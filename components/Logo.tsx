@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { siteConfig } from "@/config/site";
 
-/** Full lockup aspect ratio from the official source file. */
+/** Transparent lockup PNG aspect (G + wordmark, no navy field). */
 const LOCKUP_ASPECT = 697 / 586;
 
 const markHeights = {
@@ -13,11 +13,11 @@ const markHeights = {
 } as const;
 
 const lockupHeights = {
-  sm: 44,
-  md: 52,
-  lg: 72,
-  xl: 112,
-  splash: 168
+  sm: 40,
+  md: 48,
+  lg: 88,
+  xl: 128,
+  splash: 200
 } as const;
 
 export type LogoVariant = "mark" | "lockup" | "lockupNavy";
@@ -30,14 +30,15 @@ const variantSrc: Record<LogoVariant, string> = {
 
 /**
  * Official G-Products logo — unmodified PNG assets only.
- * Use `mark` in compact chrome; `lockup` on light backgrounds; `lockupNavy` on splash/hero blocks.
+ * Default is the navy lockup so petrol, lime G, white G-PRODUCTS and
+ * yellow AND SERVICES all read on light chrome (not the G alone).
  */
 export function Logo({
-  variant = "mark",
+  variant = "lockupNavy",
   size = "md",
   className = "",
   priority = false,
-  /** @deprecated Kept for call-site compatibility. Use `variant="lockup"`. */
+  /** @deprecated Kept for call-site compatibility. Use `variant`. */
   withText,
   /** @deprecated No presentation-specific styling is applied. */
   presentation
@@ -83,11 +84,14 @@ export function Logo({
     lockupHeights[
       (size in lockupHeights ? size : "xl") as keyof typeof lockupHeights
     ];
-  const width = Math.round(height * LOCKUP_ASPECT);
+  const width =
+    variant === "lockupNavy" ? height : Math.round(height * LOCKUP_ASPECT);
 
   return (
     <span
-      className={`relative inline-flex shrink-0 items-center justify-center ${className}`}
+      className={`relative inline-flex shrink-0 items-center justify-center overflow-hidden ${
+        variant === "lockupNavy" ? "rounded-xl shadow-sm sm:rounded-2xl" : ""
+      } ${className}`}
       style={{ width, height }}
     >
       <Image
@@ -97,7 +101,7 @@ export function Logo({
         height={height}
         priority={priority}
         unoptimized
-        className="h-full w-full object-contain select-none"
+        className="h-full w-full object-cover select-none"
         draggable={false}
       />
     </span>

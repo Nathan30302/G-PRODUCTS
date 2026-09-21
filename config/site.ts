@@ -51,10 +51,10 @@ export const siteConfig = {
   ] as const,
   /** Sampled from the official logo file — native navy background. */
   logoNavy: "#243F50",
-  /** Full lockup (icon + G-PRODUCTS AND SERVICES) — transparent background. */
+  /** Transparent lockup for dark fields only (white wordmark). */
   logoLockup: "/brand/g-products-lockup-transparent.png",
   logoLockupSm: "/brand/g-products-lockup-transparent-sm.png",
-  /** Full lockup on native navy — splash / hero blocks. */
+  /** Official lockup on native navy — default in-app logo (all brand colours). */
   logoLockupNavy: "/brand/g-products-lockup-navy.png",
   /** G mark only — nav, favicon, compact placements. */
   logoMark: "/brand/g-products-mark-transparent.png",
