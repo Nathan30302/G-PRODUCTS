@@ -176,22 +176,24 @@ export function AccountHome({
         ) : (
           <ul className="mt-5 space-y-3">
             {orders.map((o) => (
-              <li
-                key={o.id}
-                className="gp-card flex flex-wrap items-center justify-between gap-3 !p-4 transition-all duration-300 hover:shadow-card-hover sm:!p-5"
-              >
-                <div className="min-w-0">
-                  <p className="font-semibold text-gp-text">{o.ref}</p>
-                  <p className="text-caption mt-1">
-                    {formatDateTime(o.createdAt)}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <p className="font-bold tabular-nums text-ink-700">
-                    {formatPrice(o.total)}
-                  </p>
-                  <ShopStatusPill status={o.status} />
-                </div>
+              <li key={o.id}>
+                <Link
+                  href={`/orders/track?ref=${encodeURIComponent(o.ref)}`}
+                  className="gp-card flex flex-wrap items-center justify-between gap-3 !p-4 transition-all duration-300 hover:shadow-card-hover sm:!p-5"
+                >
+                  <div className="min-w-0">
+                    <p className="font-semibold text-gp-text">{o.ref}</p>
+                    <p className="text-caption mt-1">
+                      {formatDateTime(o.createdAt)} · Same status the shop sees
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <p className="font-bold tabular-nums text-ink-700">
+                      {formatPrice(o.total)}
+                    </p>
+                    <ShopStatusPill status={o.status} kind="order" />
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>
@@ -241,11 +243,11 @@ export function AccountHome({
                           : ""}
                       </p>
                       <p className="text-caption mt-1">
-                        {formatDateTime(s.createdAt)}
+                        {formatDateTime(s.createdAt)} · Same status the shop sees
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <ShopStatusPill status={s.status} />
+                      <ShopStatusPill status={s.status} kind="service" />
                       <Icon
                         name="chevron-right"
                         className="h-4 w-4 text-gp-text-subtle"

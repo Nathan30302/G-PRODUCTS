@@ -9,6 +9,7 @@ import {
   DeskFilterBar,
   DeskOrderList
 } from "@/components/admin/desk";
+import { labelForOrderStatus } from "@/lib/commerce-hooks";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Orders" };
@@ -110,7 +111,7 @@ export default async function AdminOrders({
         active={status}
         options={FILTERS.map((value) => ({
           value,
-          label: value === "ALL" ? "All" : value,
+          label: value === "ALL" ? "All" : labelForOrderStatus(value).label,
           count: counts[value] ?? 0
         }))}
       />

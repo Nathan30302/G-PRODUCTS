@@ -13,6 +13,8 @@ import {
 import { ServiceFilesPanel } from "@/components/admin/ServiceFilesPanel";
 import { describeServiceFiles } from "@/lib/service-files";
 import { Icon } from "@/components/Icons";
+import { labelForServiceStatus } from "@/lib/commerce-hooks";
+import { customerWhatsAppLink } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Service request" };
@@ -25,15 +27,6 @@ const STATUSES = [
   "DELIVERED",
   "CANCELLED"
 ] as const;
-
-const STATUS_HINT: Record<string, string> = {
-  NEW: "Just received — review details & files",
-  CONFIRMED: "Paid / confirmed — start the job",
-  IN_PROGRESS: "Working on it (e.g. printing / cutting)",
-  READY: "Ready for pickup or Yango",
-  DELIVERED: "Collected / delivered",
-  CANCELLED: "Cancelled"
-};
 
 const typeLabel: Record<string, string> = {
   KEY_CUTTING: "Key Cutting",
@@ -61,14 +54,9 @@ const DETAIL_LABELS: Record<string, string> = {
   hasNrc: "Has NRC"
 };
 
-function waLink(phone: string, ref: string) {
-  let p = phone.replace(/[^0-9]/g, "");
-  if (p.startsWith("0")) p = "26" + p;
-  else if (p.startsWith("9") || p.startsWith("7")) p = "260" + p;
-  const text = encodeURIComponent(
-    `Hello, regarding your G-Products service ${ref}:`
-  );
-  return `https://wa.me/${p}?text=${text}`;
+function serviceMessage(ref: string, status: string) {
+  const seen = labelForServiceStatus(status);
+  return `Hello, this is G-Products about service ${ref}. Status: ${seen.label}.${seen.hint ? ` ${seen.hint}.` : ""}`;
 }
 
 function formatDetailValue(key: string, v: unknown): string {
@@ -147,7 +135,8 @@ export default async function ServiceDetailPage({
               ) : null}
             </div>
             <p className="mt-3 text-sm text-gp-text-subtle">
-              {STATUS_HINT[request.status] ?? ""}
+              {labelForServiceStatus(request.status).hint} The customer sees “
+              {labelForServiceStatus(request.status).label}” on their track page.
             </p>
           </div>
           <div className="text-left lg:text-right">
@@ -160,13 +149,16 @@ export default async function ServiceDetailPage({
                 : "—"}
             </p>
             <a
-              href={waLink(request.customerPhone, request.ref)}
+              href={customerWhatsAppLink(
+                request.customerPhone,
+                serviceMessage(request.ref, request.status)
+              )}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/20"
+              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-pill bg-[#25D366] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1ebe5d]"
             >
               <Icon name="whatsapp" className="h-4 w-4" />
-              WhatsApp customer
+              Message customer on WhatsApp
             </a>
           </div>
         </div>
@@ -220,7 +212,14 @@ export default async function ServiceDetailPage({
               </div>
               <div className="flex justify-between">
                 <dt className="text-gp-text-subtle">Phone</dt>
-                <dd className="text-gp-text">{request.customerPhone}</dd>
+                <dd className="text-right">
+                  <a
+                    href={`tel:${request.customerPhone}`}
+                    className="font-semibold text-ink-850 underline-offset-2 hover:underline"
+                  >
+                    {request.customerPhone}
+                  </a>
+                </dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-gp-text-subtle">Delivery</dt>
@@ -258,19 +257,28 @@ export default async function ServiceDetailPage({
           <DeskPanel>
             <DeskPanelHeader
               title="Update status"
-              subtitle="Move the job through your workflow"
+              subtitle="The customer sees these same words on their track page"
             />
             <form action={updateServiceStatus} className="space-y-3 px-5 py-4">
               <input type="hidden" name="id" value={request.id} />
+              <p className="text-xs leading-relaxed text-gp-text-muted">
+                Customer sees{" "}
+                <span className="font-semibold text-gp-text">
+                  {labelForServiceStatus(request.status).label}
+                </span>
+                {labelForServiceStatus(request.status).hint
+                  ? ` — ${labelForServiceStatus(request.status).hint}`
+                  : ""}
+                .
+              </p>
               <select
                 name="status"
                 defaultValue={request.status}
-                className="w-full rounded-xl border border-gp-border bg-gp-surface px-4 py-2.5 text-gp-text outline-none focus:border-brand"
+                className="w-full rounded-xl border border-gp-border bg-gp-surface px-4 py-3 text-sm text-gp-text outline-none focus:border-brand/70 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.28)]"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
-                    {s.replace(/_/g, " ")}
-                    {STATUS_HINT[s] ? ` — ${STATUS_HINT[s]}` : ""}
+                    {labelForServiceStatus(s).label}
                   </option>
                 ))}
               </select>

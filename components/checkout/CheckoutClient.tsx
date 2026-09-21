@@ -261,12 +261,18 @@ export function CheckoutClient({
           )}
 
           {(phase === "success" || phase === "manual") && (
-            <Link
-              href={`/orders/track?ref=${encodeURIComponent(orderRef)}`}
-              className="mt-4 block text-center text-sm font-semibold text-brand hover:underline"
-            >
-              Track this order
-            </Link>
+            <div className="mt-4 text-center">
+              <Link
+                href={`/orders/track?ref=${encodeURIComponent(orderRef)}`}
+                className="text-sm font-semibold text-brand hover:underline"
+              >
+                Track this order
+              </Link>
+              <p className="mt-1.5 text-xs text-white/45">
+                Save {orderRef}. The shop updates this same status — track it
+                with the last 4 digits of {form.phone || "your phone"}.
+              </p>
+            </div>
           )}
 
           {phase === "manual" && momo && (
@@ -296,8 +302,8 @@ export function CheckoutClient({
             <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/60">
               <p className="font-semibold text-white">What happens next</p>
               <ol className="mt-2 list-decimal space-y-1 pl-4">
-                <li>We confirm your payment</li>
-                <li>Order is prepared at our shop</li>
+                <li>The shop sees this order and confirms payment</li>
+                <li>They mark it preparing, then ready — you see the same words</li>
                 <li>
                   Pickup at {siteConfig.locations[0]?.name} or{" "}
                   {siteConfig.locations[1]?.name} — or Yango delivery. We update

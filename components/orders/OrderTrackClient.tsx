@@ -35,14 +35,18 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
   const [error, setError] = useState("");
   const [data, setData] = useState<TrackResult | null>(null);
 
-  async function runLookup(value: string, last4: string) {
+  async function runLookup(
+    value: string,
+    last4: string,
+    opts?: { quiet?: boolean }
+  ) {
     const clean = value.trim().toUpperCase();
     const digits = last4.replace(/\D/g, "").slice(-4);
     if (!clean) {
       setError("Enter your order reference.");
       return;
     }
-    if (digits.length !== 4) {
+    if (digits.length > 0 && digits.length !== 4) {
       setError("Enter the last 4 digits of your checkout phone number.");
       return;
     }
@@ -50,17 +54,21 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
     setError("");
     setData(null);
     try {
-      const qs = new URLSearchParams({ phoneLast4: digits });
+      const qs = new URLSearchParams();
+      if (digits.length === 4) qs.set("phoneLast4", digits);
+      const query = qs.toString();
       const res = await fetch(
-        `/api/orders/${encodeURIComponent(clean)}/track?${qs.toString()}`
+        `/api/orders/${encodeURIComponent(clean)}/track${query ? `?${query}` : ""}`
       );
       const json = await res.json();
       if (!res.ok) {
+        if (opts?.quiet && res.status === 403 && digits.length === 0) return;
         setError(json.error ?? "Order not found.");
         return;
       }
       setData(json);
     } catch {
+      if (opts?.quiet) return;
       setError("Could not look up that order. Try again.");
     } finally {
       setLoading(false);
@@ -68,11 +76,12 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
   }
 
   useEffect(() => {
-    if (initialRef.trim() && phoneLast4.replace(/\D/g, "").length === 4) {
-      void runLookup(initialRef, phoneLast4);
-    }
+    if (!initialRef.trim()) return;
+    void runLookup(initialRef, "", { quiet: true });
+    // Signed-in customers open their own order immediately.
+    // Guests still type the last 4 digits — no error until they submit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialRef, phoneLast4]);
+  }, [initialRef]);
 
   return (
     <div className="mx-auto max-w-lg">
@@ -88,7 +97,7 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
           onChange={(e) => setRef(e.target.value)}
           placeholder="e.g. GP-AB12CD"
           autoCapitalize="characters"
-          className="w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-sm text-gp-text shadow-sm outline-none transition-all placeholder:text-gp-text-subtle focus:border-ink-700/35 focus:shadow-[0_0_0_4px_rgba(35,55,70,0.08)]"
+          className="w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-sm text-gp-text shadow-sm outline-none transition-all placeholder:text-gp-text-subtle focus:border-brand/70 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.28)]"
         />
         <input
           value={phoneLast4}
@@ -99,7 +108,7 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
           autoComplete="off"
           maxLength={4}
           placeholder="Last 4 digits of checkout phone"
-          className="w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-center font-mono text-sm tracking-[0.35em] text-gp-text shadow-sm outline-none transition-all placeholder:font-sans placeholder:tracking-normal placeholder:text-gp-text-subtle focus:border-ink-700/35 focus:shadow-[0_0_0_4px_rgba(35,55,70,0.08)]"
+          className="w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-center font-mono text-sm tracking-[0.35em] text-gp-text shadow-sm outline-none transition-all placeholder:font-sans placeholder:tracking-normal placeholder:text-gp-text-subtle focus:border-brand/70 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.28)]"
         />
         <button
           type="submit"
@@ -152,12 +161,14 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
                 };
               })
             ).map((step) => (
-              <li key={step.key} className="flex items-center gap-3 text-sm">
+              <li key={step.key} className="flex items-start gap-3 text-sm">
                 <span
-                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold ${
-                    step.done || step.current
-                      ? "bg-brand text-ink-950"
-                      : "border border-gp-border text-gp-text-subtle"
+                  className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold ${
+                    step.current
+                      ? "bg-ink-850 text-white"
+                      : step.done
+                        ? "bg-brand text-ink-950"
+                        : "border border-gp-border text-gp-text-subtle"
                   }`}
                 >
                   {step.done && !step.current ? (
@@ -166,16 +177,23 @@ export function OrderTrackClient({ initialRef = "" }: { initialRef?: string }) {
                     "·"
                   )}
                 </span>
-                <span
-                  className={
-                    step.current
-                      ? "font-bold text-ink-850"
-                      : step.done
-                        ? "text-gp-text"
-                        : "text-gp-text-subtle"
-                  }
-                >
-                  {step.label}
+                <span className="min-w-0">
+                  <span
+                    className={`block ${
+                      step.current
+                        ? "font-bold text-ink-850"
+                        : step.done
+                          ? "text-gp-text"
+                          : "text-gp-text-subtle"
+                    }`}
+                  >
+                    {step.label}
+                  </span>
+                  {step.current ? (
+                    <span className="mt-0.5 block text-xs text-gp-text-muted">
+                      {labelForOrderStatus(step.key).hint}
+                    </span>
+                  ) : null}
                 </span>
               </li>
             ))}

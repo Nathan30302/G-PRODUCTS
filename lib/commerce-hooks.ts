@@ -38,6 +38,28 @@ export const orderStatusLabels = {
 
 export type OrderStatusKey = keyof typeof orderStatusLabels;
 
+/** Customer-facing labels for service jobs (maps Prisma service status). */
+export const serviceStatusLabels = {
+  NEW: { label: "Received", hint: "Just received — review details and files" },
+  CONFIRMED: { label: "Confirmed", hint: "Paid or confirmed — start the job" },
+  IN_PROGRESS: { label: "In progress", hint: "Working on it" },
+  READY: { label: "Ready", hint: "Ready for pickup or delivery" },
+  DELIVERED: { label: "Done", hint: "Collected or delivered" },
+  CANCELLED: { label: "Cancelled", hint: "This job was cancelled" }
+} as const;
+
+export type ServiceStatusKey = keyof typeof serviceStatusLabels;
+
+export function labelForServiceStatus(status: string): {
+  label: string;
+  hint: string;
+} {
+  if (status in serviceStatusLabels) {
+    return serviceStatusLabels[status as ServiceStatusKey];
+  }
+  return { label: status, hint: "" };
+}
+
 export function labelForOrderStatus(status: string): {
   label: string;
   hint: string;

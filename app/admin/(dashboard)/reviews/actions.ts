@@ -33,7 +33,9 @@ export async function toggleReviewPublished(
   revalidatePath("/product", "layout");
 
   return {
-    success: published ? "Review published." : "Review hidden from storefront."
+    success: published
+      ? "Live on the product page."
+      : "Hidden from the shop."
   };
 }
 

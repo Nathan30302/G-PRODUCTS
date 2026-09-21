@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
@@ -40,7 +40,12 @@ export function OrderStatusForm({
     updateOrderStatus,
     undefined
   );
-  const current = labelForOrderStatus(currentStatus);
+  const [selected, setSelected] = useState(currentStatus);
+  const preview = labelForOrderStatus(selected);
+
+  useEffect(() => {
+    setSelected(currentStatus);
+  }, [currentStatus]);
 
   useEffect(() => {
     if (state?.success) {
@@ -51,32 +56,33 @@ export function OrderStatusForm({
   return (
     <form action={action} className="mt-4 space-y-3">
       <input type="hidden" name="id" value={orderId} />
-      <p className="text-xs text-gp-text-subtle">
-        Current:{" "}
-        <span className="font-semibold text-gp-text-muted">{current.label}</span>
-        {current.hint ? ` — ${current.hint}` : ""}
+      <p className="text-xs leading-relaxed text-gp-text-muted">
+        Customers will see{" "}
+        <span className="font-semibold text-gp-text">{preview.label}</span>
+        {preview.hint ? ` — ${preview.hint}` : ""}. Saving updates their track page.
       </p>
       <select
         key={currentStatus}
         name="status"
         defaultValue={currentStatus}
-        className="w-full rounded-xl border border-ink-700 bg-gp-surface px-4 py-2.5 text-gp-text outline-none focus:border-brand"
+        onChange={(e) => setSelected(e.target.value)}
+        className="w-full rounded-xl border border-gp-border bg-gp-surface px-4 py-3 text-sm text-gp-text outline-none focus:border-brand/70 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.28)]"
       >
         {STATUSES.map((s) => (
           <option key={s} value={s}>
-            {orderStatusLabels[s].label} ({s})
+            {orderStatusLabels[s].label}
           </option>
         ))}
       </select>
 
       {state?.error ? (
-        <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
         </p>
       ) : null}
       {state?.success ? (
-        <p className="rounded-lg bg-accent/10 px-3 py-2 text-sm text-accent">
-          {state.success}
+        <p className="rounded-xl border border-accent/30 bg-accent/10 px-3 py-2 text-sm text-ink-850">
+          Saved. The customer’s track page now shows this status.
         </p>
       ) : null}
 

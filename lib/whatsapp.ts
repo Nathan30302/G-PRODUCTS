@@ -35,6 +35,25 @@ export function orderWhatsAppLink(
   return `https://wa.me/${siteConfig.whatsappNumber}?text=${text}`;
 }
 
+/** Zambia mobiles: 0977…, 977…, or 260977… all become a wa.me number. */
+export function normalizeWaPhone(phone: string): string {
+  let p = phone.replace(/[^0-9]/g, "");
+  if (p.startsWith("0")) p = "26" + p;
+  else if (
+    (p.startsWith("9") || p.startsWith("7")) &&
+    !p.startsWith("260")
+  ) {
+    p = "260" + p;
+  }
+  return p;
+}
+
+/** Opens a chat with the customer, message already written. */
+export function customerWhatsAppLink(phone: string, message: string): string {
+  const text = encodeURIComponent(message);
+  return `https://wa.me/${normalizeWaPhone(phone)}?text=${text}`;
+}
+
 export function serviceWhatsAppLink(lines: string[]): string {
   const text = encodeURIComponent(
     ["Hi G-Products, I'd like a service:", ...lines].join("\n")

@@ -35,7 +35,14 @@ export function ReviewModerationRow({ review }: { review: ReviewRow }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="font-semibold text-gp-text">{review.productName}</p>
+            <a
+              href={`/product/${review.productSlug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-gp-text underline-offset-2 hover:underline"
+            >
+              {review.productName}
+            </a>
             <span className="text-[10px] font-bold uppercase tracking-wide text-accent-ink">
               {review.rating}/5
             </span>
@@ -45,13 +52,13 @@ export function ReviewModerationRow({ review }: { review: ReviewRow }) {
               </span>
             ) : null}
             <span
-              className={`rounded-pill px-2 py-0.5 text-[10px] font-bold uppercase ${
+              className={`rounded-pill border px-2 py-0.5 text-[10px] font-bold ${
                 review.published
-                  ? "bg-accent/15 text-accent"
-                  : "bg-white/10 text-gp-text-subtle"
+                  ? "border-accent/30 bg-accent/10 text-ink-850"
+                  : "border-gp-border bg-gp-muted text-gp-text-muted"
               }`}
             >
-              {review.published ? "Live" : "Hidden"}
+              {review.published ? "On the shop" : "Hidden"}
             </span>
           </div>
           {review.title ? (
@@ -62,22 +69,21 @@ export function ReviewModerationRow({ review }: { review: ReviewRow }) {
           <p className="mt-1 text-sm leading-relaxed text-gp-text-muted">
             {review.body}
           </p>
-          <p className="mt-2 text-xs text-gp-text-subtle">
+            <p className="mt-2 text-xs text-gp-text-subtle">
             {review.authorName} ·{" "}
             {new Date(review.createdAt).toLocaleDateString("en-ZM", {
               day: "numeric",
               month: "short",
               year: "numeric"
-            })}{" "}
-            · /product/{review.productSlug}
+            })}
           </p>
           {toggleState?.error || deleteState?.error ? (
-            <p className="mt-2 text-xs text-red-300">
+            <p className="mt-2 text-xs text-red-700">
               {toggleState?.error ?? deleteState?.error}
             </p>
           ) : null}
           {toggleState?.success || deleteState?.success ? (
-            <p className="mt-2 text-xs text-accent">
+            <p className="mt-2 text-xs font-semibold text-ink-850">
               {toggleState?.success ?? deleteState?.success}
             </p>
           ) : null}
@@ -99,8 +105,8 @@ export function ReviewModerationRow({ review }: { review: ReviewRow }) {
               {togglePending
                 ? "…"
                 : review.published
-                  ? "Hide"
-                  : "Publish"}
+                  ? "Hide from shop"
+                  : "Show on shop"}
             </button>
           </form>
           <form action={deleteAction}>
@@ -108,7 +114,7 @@ export function ReviewModerationRow({ review }: { review: ReviewRow }) {
             <button
               type="submit"
               disabled={deletePending}
-              className="rounded-pill px-3 py-1.5 text-xs font-semibold text-red-400/80 transition-colors hover:text-red-300 disabled:opacity-50"
+              className="rounded-pill px-3 py-1.5 text-xs font-semibold text-red-700 transition-colors hover:bg-red-50 disabled:opacity-50"
             >
               {deletePending ? "…" : "Delete"}
             </button>

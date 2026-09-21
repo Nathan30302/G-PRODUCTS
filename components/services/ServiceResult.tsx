@@ -47,6 +47,9 @@ export function ServiceResult({
         </p>
       ) : null}
       <p className="mt-3 text-gp-text-muted">{message}</p>
+      <p className="mt-2 text-xs text-gp-text-subtle">
+        The shop sees {refCode} and updates this same status on your track page.
+      </p>
       {pending && (
         <div className="mt-5 flex justify-center">
           <span className="h-6 w-6 animate-spin rounded-full border-2 border-brand border-t-transparent" />

@@ -12,6 +12,7 @@ import {
 } from "@/components/admin/desk";
 import { parseServiceFileUrls } from "@/lib/service-files";
 import { Icon } from "@/components/Icons";
+import { labelForServiceStatus } from "@/lib/commerce-hooks";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Service requests" };
@@ -157,7 +158,8 @@ export default async function AdminServicesPage({
         active={status}
         options={FILTERS.map((value) => ({
           value,
-          label: value === "ALL" ? "All" : value.replace("_", " "),
+          label:
+            value === "ALL" ? "All" : labelForServiceStatus(value).label,
           count: counts[value] ?? 0
         }))}
       />
@@ -167,7 +169,7 @@ export default async function AdminServicesPage({
           <DeskEmpty
             title={
               status
-                ? `No ${status.toLowerCase().replace("_", " ")} requests`
+                ? `No ${labelForServiceStatus(status).label.toLowerCase()} requests`
                 : "No service requests yet"
             }
             action={

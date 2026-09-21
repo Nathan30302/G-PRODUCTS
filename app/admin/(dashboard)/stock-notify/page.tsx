@@ -7,9 +7,19 @@ import {
   DeskPanel,
   DeskEmpty
 } from "@/components/admin/desk";
+import { customerWhatsAppLink } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Stock alerts" };
+
+function contactHref(contact: string, productName: string, option?: string) {
+  if (contact.includes("@")) return `mailto:${contact}`;
+  const which = option ? `${productName} (${option})` : productName;
+  return customerWhatsAppLink(
+    contact,
+    `Hello, this is G-Products. ${which} is back in stock. You asked us to let you know.`
+  );
+}
 
 export default async function StockNotifyAdminPage() {
   const rows = await prisma.stockNotify.findMany({
@@ -104,11 +114,13 @@ export default async function StockNotifyAdminPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         <a
-                          href={
-                            r.contact.includes("@")
-                              ? `mailto:${r.contact}`
-                              : `https://wa.me/${r.contact.replace(/[^0-9]/g, "")}`
-                          }
+                          href={contactHref(
+                            r.contact,
+                            r.product.name,
+                            r.variantId
+                              ? variantName.get(r.variantId)
+                              : undefined
+                          )}
                           className="font-mono text-accent-ink hover:underline"
                           target="_blank"
                           rel="noopener noreferrer"
@@ -143,17 +155,22 @@ export default async function StockNotifyAdminPage() {
                       timeStyle: "short"
                     })}
                   </p>
+                  <p className="mt-3 font-mono text-sm text-gp-text">{r.contact}</p>
                   <a
-                    href={
+                    href={contactHref(
+                      r.contact,
+                      r.product.name,
+                      r.variantId ? variantName.get(r.variantId) : undefined
+                    )}
+                    className={`mt-2 inline-flex min-h-10 items-center rounded-pill px-3.5 py-2 text-sm font-bold text-white ${
                       r.contact.includes("@")
-                        ? `mailto:${r.contact}`
-                        : `https://wa.me/${r.contact.replace(/[^0-9]/g, "")}`
-                    }
-                    className="mt-3 inline-block font-mono text-sm text-accent-ink"
+                        ? "bg-ink-850"
+                        : "bg-[#25D366]"
+                    }`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {r.contact}
+                    {r.contact.includes("@") ? "Email" : "Tell them it's back"}
                   </a>
                 </div>
               ))}

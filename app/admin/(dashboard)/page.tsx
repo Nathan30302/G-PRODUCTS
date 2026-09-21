@@ -82,7 +82,7 @@ export default async function AdminDashboard() {
                 href="/admin/orders?status=PENDING"
                 className="inline-flex min-h-11 items-center justify-center rounded-pill border border-gp-border bg-gp-surface px-5 py-2.5 text-sm font-semibold text-gp-text hover:border-ink-700/25 hover:bg-gp-muted"
               >
-                Review pending
+                Orders waiting
               </Link>
             </div>
           </div>

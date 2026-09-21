@@ -43,40 +43,44 @@ export function NotifyMeForm({
   if (status === "ok") {
     return (
       <div className="rounded-2xl border border-accent/30 bg-accent/10 px-4 py-4">
-        <p className="text-sm font-semibold text-accent-ink">You&apos;re on the list</p>
-        <p className="mt-1 text-sm text-accent-ink/85">
-          We&apos;ll notify you
-          {variantName ? ` when ${variantName} is back` : " when it&apos;s back"}{" "}
-          in stock.
+        <p className="text-sm font-semibold text-ink-850">You&apos;re on the list</p>
+        <p className="mt-1 text-sm text-gp-text-muted">
+          The shop will WhatsApp or email you
+          {variantName ? ` when ${variantName} is back` : " when it's back"} in
+          stock.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-ink-900/50 p-4">
-      <p className="text-sm font-semibold text-white">Notify me when available</p>
-      <p className="mt-1 text-sm text-white/45">
-        This colour is out of stock. Leave your WhatsApp or email and we&apos;ll
-        reach out when it&apos;s back.
+    <div className="rounded-2xl border border-gp-border bg-gp-surface p-4 shadow-sm">
+      <p className="text-sm font-semibold text-gp-text">Notify me when available</p>
+      <p className="mt-1 text-sm text-gp-text-muted">
+        This option is out of stock. Leave your WhatsApp or email and the shop
+        will reach out when it&apos;s back.
       </p>
       <form onSubmit={submit} className="mt-4 space-y-3">
-      <input
-        value={contact}
-        onChange={(e) => setContact(e.target.value)}
-        required
-        placeholder="Phone or email"
-        className="w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand"
-      />
-      {error && <p className="text-sm text-red-400">{error}</p>}
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="w-full rounded-pill bg-white/[0.08] px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/15 transition-colors hover:bg-white/[0.12] disabled:opacity-60"
-      >
-        {status === "loading" ? "Saving..." : "Notify me"}
-      </button>
-    </form>
+        <input
+          value={contact}
+          onChange={(e) => setContact(e.target.value)}
+          required
+          placeholder="Phone or email"
+          className="w-full rounded-xl border border-gp-border bg-gp-surface px-4 py-3 text-sm text-gp-text outline-none placeholder:text-gp-text-subtle focus:border-brand/70 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.28)]"
+        />
+        {error ? (
+          <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
+        ) : null}
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="w-full min-h-11 rounded-pill bg-ink-850 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-ink-950 disabled:opacity-60"
+        >
+          {status === "loading" ? "Saving…" : "Notify me"}
+        </button>
+      </form>
     </div>
   );
 }

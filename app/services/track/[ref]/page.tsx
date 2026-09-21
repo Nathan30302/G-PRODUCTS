@@ -10,6 +10,10 @@ import { ShopStatusPill } from "@/components/shop/ui";
 import { getCustomerSession } from "@/lib/customer-auth";
 import { canViewService } from "@/lib/track-access";
 import { ServiceTrackVerify } from "@/components/services/ServiceTrackVerify";
+import {
+  labelForServiceStatus,
+  type ServiceStatusKey
+} from "@/lib/commerce-hooks";
 
 export const dynamic = "force-dynamic";
 
@@ -19,12 +23,12 @@ const typeLabel: Record<string, string> = {
   PRINTING: "Printing"
 };
 
-const FLOW: { key: string; label: string }[] = [
-  { key: "NEW", label: "Received" },
-  { key: "CONFIRMED", label: "Confirmed" },
-  { key: "IN_PROGRESS", label: "In progress" },
-  { key: "READY", label: "Ready" },
-  { key: "DELIVERED", label: "Done" }
+const FLOW: ServiceStatusKey[] = [
+  "NEW",
+  "CONFIRMED",
+  "IN_PROGRESS",
+  "READY",
+  "DELIVERED"
 ];
 
 export async function generateMetadata({
@@ -38,7 +42,7 @@ export async function generateMetadata({
 
 function statusIndex(status: string): number {
   if (status === "CANCELLED") return -1;
-  const i = FLOW.findIndex((f) => f.key === status);
+  const i = FLOW.indexOf(status as ServiceStatusKey);
   return i >= 0 ? i : 0;
 }
 
@@ -106,7 +110,7 @@ export default async function ServiceTrackPage({
               {formatDateTime(request.createdAt)}
             </p>
           </div>
-          <ShopStatusPill status={request.status} />
+          <ShopStatusPill status={request.status} kind="service" />
         </div>
       </header>
 
@@ -115,9 +119,10 @@ export default async function ServiceTrackPage({
           {FLOW.map((step, i) => {
             const done = idx > i;
             const active = idx === i;
+            const seen = labelForServiceStatus(step);
             return (
               <li
-                key={step.key}
+                key={step}
                 className={`rounded-xl border px-3 py-3 text-center ${
                   active
                     ? "border-brand/40 bg-brand/15"
@@ -142,8 +147,13 @@ export default async function ServiceTrackPage({
                     active || done ? "text-white" : "text-white/35"
                   }`}
                 >
-                  {step.label}
+                  {seen.label}
                 </p>
+                {active ? (
+                  <p className="mt-1 text-[11px] leading-snug text-white/55">
+                    {seen.hint}
+                  </p>
+                ) : null}
               </li>
             );
           })}

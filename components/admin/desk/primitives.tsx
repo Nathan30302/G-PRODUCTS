@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { ReactNode } from "react";
+import {
+  labelForOrderStatus,
+  labelForServiceStatus,
+  orderStatusLabels,
+  serviceStatusLabels
+} from "@/lib/commerce-hooks";
 
 export function DeskPageHeader({
   eyebrow,
@@ -232,10 +238,15 @@ export function StatusPill({
         : ORDER_STATUS_STYLE;
   const cls =
     map[status] ?? "border-gp-border bg-gp-muted text-gp-text-muted";
-  const label = status
-    .toLowerCase()
-    .replace(/_/g, " ")
-    .replace(/^\w/, (c) => c.toUpperCase());
+  const label =
+    kind === "order" && status in orderStatusLabels
+      ? labelForOrderStatus(status).label
+      : kind === "service" && status in serviceStatusLabels
+        ? labelForServiceStatus(status).label
+        : status
+            .toLowerCase()
+            .replace(/_/g, " ")
+            .replace(/^\w/, (c) => c.toUpperCase());
   return (
     <span
       className={`inline-flex rounded-pill border px-2.5 py-1 text-[11px] font-bold tracking-wide ${cls}`}

@@ -10,6 +10,7 @@ import {
   DeskSectionTitle,
   DeskEmpty
 } from "@/components/admin/desk";
+import { customerWhatsAppLink } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Customers" };
@@ -81,6 +82,17 @@ export default async function AdminCustomersPage() {
                   {c.name}
                 </p>
                 <p className="truncate text-xs text-gp-text-subtle">{c.phone}</p>
+                <a
+                  href={customerWhatsAppLink(
+                    c.phone,
+                    `Hello ${c.name}, this is G-Products. Thanks for shopping with us — how can we help?`
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex min-h-9 items-center rounded-pill bg-[#25D366] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#1ebe5d]"
+                >
+                  WhatsApp
+                </a>
                 <p className="mt-2 line-clamp-2 text-xs text-gp-text-muted">
                   {c.location}
                 </p>
@@ -126,7 +138,17 @@ export default async function AdminCustomersPage() {
                           {c.name}
                         </td>
                         <td className="px-5 py-3.5 text-gp-text-muted">
-                          {c.phone}
+                          <a
+                            href={customerWhatsAppLink(
+                              c.phone,
+                              `Hello ${c.name}, this is G-Products. How can we help?`
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-ink-850 underline-offset-2 hover:underline"
+                          >
+                            {c.phone}
+                          </a>
                           <span className="block text-xs text-gp-text-subtle">
                             {c.email}
                           </span>
@@ -157,9 +179,18 @@ export default async function AdminCustomersPage() {
                     className="rounded-2xl border border-gp-border/70 bg-gp-muted/50 p-4"
                   >
                     <p className="font-bold text-gp-text">{c.name}</p>
-                    <p className="text-xs text-gp-text-subtle">
-                      {c.phone} · {c.email}
-                    </p>
+                    <a
+                      href={customerWhatsAppLink(
+                        c.phone,
+                        `Hello ${c.name}, this is G-Products. How can we help?`
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-semibold text-ink-850 underline-offset-2 hover:underline"
+                    >
+                      {c.phone}
+                    </a>
+                    <p className="text-xs text-gp-text-subtle">{c.email}</p>
                     <p className="mt-2 text-xs text-gp-text-muted">
                       {c.defaultLocation ?? "No saved location"}
                     </p>

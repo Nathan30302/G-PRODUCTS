@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { formatPrice, formatDateTime } from "@/lib/format";
 import { OrderStatusForm } from "@/components/admin/OrderStatusForm";
+import { labelForOrderStatus } from "@/lib/commerce-hooks";
+import { customerWhatsAppLink } from "@/lib/whatsapp";
 import {
   DeskHero,
   DeskPanel,
@@ -15,14 +17,9 @@ export const metadata = { title: "Order" };
 
 const FLOW = ["PENDING", "PAID", "PREPARING", "READY", "DELIVERED"] as const;
 
-function waLink(phone: string, ref: string) {
-  let p = phone.replace(/[^0-9]/g, "");
-  if (p.startsWith("0")) p = "26" + p;
-  else if (p.startsWith("9") || p.startsWith("7")) p = "260" + p;
-  const text = encodeURIComponent(
-    `Hello, regarding your G-Products order ${ref}:`
-  );
-  return `https://wa.me/${p}?text=${text}`;
+function orderMessage(ref: string, status: string) {
+  const seen = labelForOrderStatus(status);
+  return `Hello, this is G-Products about order ${ref}. Status: ${seen.label}.${seen.hint ? ` ${seen.hint}.` : ""}`;
 }
 
 export default async function OrderDetail({
@@ -78,38 +75,50 @@ export default async function OrderDetail({
               {formatPrice(order.total)}
             </p>
             <a
-              href={waLink(order.customerPhone, order.ref)}
+              href={customerWhatsAppLink(
+                order.customerPhone,
+                orderMessage(order.ref, order.status)
+              )}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-pill border border-accent/40 bg-accent/10 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/20"
+              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-pill bg-[#25D366] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1ebe5d]"
             >
-              WhatsApp customer
+              Message customer on WhatsApp
             </a>
           </div>
         </div>
 
         {order.status !== "CANCELLED" ? (
-          <div className="mt-8 flex flex-wrap gap-2">
-            {FLOW.map((step, i) => {
-              const done = flowIndex >= 0 && i <= flowIndex;
-              const current = order.status === step;
-              return (
-                <div
-                  key={step}
-                  className={`rounded-pill border px-3 py-1.5 text-[11px] font-bold tracking-wide ${
-                    current
-                      ? "border-brand/50 bg-brand/15 text-accent-ink"
-                      : done
-                        ? "border-accent/30 bg-accent/10 text-accent"
-                        : "border-gp-border text-gp-text-subtle"
-                  }`}
-                >
-                  {step}
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
+          <>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {FLOW.map((step, i) => {
+                const done = flowIndex >= 0 && i <= flowIndex;
+                const current = order.status === step;
+                return (
+                  <div
+                    key={step}
+                    className={`rounded-pill border px-3 py-1.5 text-[11px] font-bold tracking-wide ${
+                      current
+                        ? "border-brand/50 bg-brand text-ink-950"
+                        : done
+                          ? "border-accent/30 bg-accent/15 text-ink-850"
+                          : "border-gp-border bg-gp-surface text-gp-text-subtle"
+                    }`}
+                  >
+                    {labelForOrderStatus(step).label}
+                  </div>
+                );
+              })}
+            </div>
+            <p className="mt-3 text-xs text-gp-text-subtle">
+              This is the same progress the customer sees when they track {order.ref}.
+            </p>
+          </>
+        ) : (
+          <p className="mt-6 text-sm text-gp-text-muted">
+            This order is cancelled. The customer sees that when they track it.
+          </p>
+        )}
       </DeskHero>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -149,7 +158,14 @@ export default async function OrderDetail({
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-gp-text-subtle">Phone</dt>
-                <dd className="text-right text-gp-text">{order.customerPhone}</dd>
+                <dd className="text-right">
+                  <a
+                    href={`tel:${order.customerPhone}`}
+                    className="font-semibold text-ink-850 underline-offset-2 hover:underline"
+                  >
+                    {order.customerPhone}
+                  </a>
+                </dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-gp-text-subtle">Address</dt>

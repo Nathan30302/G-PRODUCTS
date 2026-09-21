@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { Icon } from "@/components/Icons";
+import {
+  orderStatusLabels,
+  serviceStatusLabels,
+  type OrderStatusKey,
+  type ServiceStatusKey
+} from "@/lib/commerce-hooks";
 
 export function ShopSectionHeader({
   eyebrow,
@@ -79,14 +85,26 @@ const ORDER_STATUS: Record<string, string> = {
   FAILED: "border-red-200 bg-red-50 text-red-700"
 };
 
-export function ShopStatusPill({ status }: { status: string }) {
+export function ShopStatusPill({
+  status,
+  kind = "service"
+}: {
+  status: string;
+  kind?: "order" | "service";
+}) {
   const cls =
     ORDER_STATUS[status] ?? "border-gp-border bg-gp-muted text-gp-text-muted";
+  const label =
+    kind === "order" && status in orderStatusLabels
+      ? orderStatusLabels[status as OrderStatusKey].label
+      : kind === "service" && status in serviceStatusLabels
+        ? serviceStatusLabels[status as ServiceStatusKey].label
+        : status.replace(/_/g, " ");
   return (
     <span
-      className={`inline-flex rounded-pill border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] ${cls}`}
+      className={`inline-flex rounded-pill border px-2.5 py-1 text-[10px] font-bold tracking-[0.08em] ${cls}`}
     >
-      {status.replace(/_/g, " ")}
+      {label}
     </span>
   );
 }
