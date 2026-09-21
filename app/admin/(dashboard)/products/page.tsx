@@ -7,7 +7,21 @@ import { Product } from "@/lib/types";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Products" };
 
-export default async function AdminProducts() {
+export default async function AdminProducts({
+  searchParams
+}: {
+  searchParams: Promise<{ q?: string; stock?: string }>;
+}) {
+  const { q: rawQ = "", stock: rawStock = "all" } = await searchParams;
+  const q = rawQ.trim().toLowerCase();
+  const stock =
+    rawStock === "in" ||
+    rawStock === "low" ||
+    rawStock === "out" ||
+    rawStock === "attention"
+      ? rawStock
+      : "all";
+
   const categories = await prisma.category.findMany({
     orderBy: { sortOrder: "asc" },
     include: {
@@ -23,12 +37,51 @@ export default async function AdminProducts() {
   });
 
   const total = categories.reduce((n, c) => n + c.products.length, 0);
+
+  function unitsOf(p: { variants: { quantity: number }[] }) {
+    return p.variants.reduce((n, v) => n + v.quantity, 0);
+  }
+
+  function keep(p: {
+    name: string;
+    brand: string | null;
+    variants: { quantity: number }[];
+  }) {
+    if (q) {
+      const hay = `${p.name} ${p.brand ?? ""}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    const units = unitsOf(p);
+    if (stock === "in") return units > 5;
+    if (stock === "low") return units > 0 && units <= 5;
+    if (stock === "out") return units <= 0;
+    if (stock === "attention") return units <= 5;
+    return true;
+  }
+
+  const visible = categories
+    .map((c) => ({ ...c, products: c.products.filter(keep) }))
+    .filter((c) => c.products.length > 0);
+  const shown = visible.reduce((n, c) => n + c.products.length, 0);
   const inStock = categories.reduce(
-    (n, c) =>
-      n +
-      c.products.filter((p) => p.variants.some((v) => v.quantity > 0)).length,
+    (n, c) => n + c.products.filter((p) => unitsOf(p) > 0).length,
     0
   );
+
+  function filterHref(nextStock: string) {
+    const params = new URLSearchParams();
+    if (rawQ.trim()) params.set("q", rawQ.trim());
+    if (nextStock !== "all") params.set("stock", nextStock);
+    const s = params.toString();
+    return s ? `/admin/products?${s}` : "/admin/products";
+  }
+
+  const stockFilters = [
+    { id: "all", label: "All" },
+    { id: "in", label: "In stock" },
+    { id: "low", label: "Low stock" },
+    { id: "out", label: "Out of stock" }
+  ] as const;
 
   return (
     <div className="space-y-8">
@@ -45,8 +98,8 @@ export default async function AdminProducts() {
             </h1>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-gp-text-muted">
               {total} item{total === 1 ? "" : "s"} across{" "}
-              {categories.filter((c) => c.products.length > 0).length} categories
-              · tap any product to edit prices, colours, and photos.
+              {categories.filter((c) => c.products.length > 0).length} categories.
+              {shown !== total ? ` Showing ${shown}.` : " Tap a product to edit it."}
             </p>
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
               <span className="rounded-pill border border-gp-border bg-gp-muted/50 px-3 py-1.5 font-semibold text-gp-text-muted">
@@ -67,11 +120,50 @@ export default async function AdminProducts() {
         </div>
       </section>
 
-      {total > 0 && (
+      {total > 0 ? (
+        <form action="/admin/products" className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <input
+            name="q"
+            defaultValue={rawQ}
+            placeholder="Search by name or brand"
+            className="min-h-11 w-full rounded-2xl border border-gp-border bg-gp-surface px-4 text-sm text-gp-text outline-none placeholder:text-gp-text-subtle focus:border-brand/70 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.28)] sm:max-w-sm"
+          />
+          {stock !== "all" ? <input type="hidden" name="stock" value={stock} /> : null}
+          <button
+            type="submit"
+            className="min-h-11 rounded-pill bg-ink-850 px-5 text-sm font-bold text-white hover:bg-ink-950"
+          >
+            Search
+          </button>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {stockFilters.map((f) => {
+              const active = stock === f.id;
+              return (
+                <Link
+                  key={f.id}
+                  href={filterHref(f.id)}
+                  className={`shrink-0 rounded-pill border px-3.5 py-2 text-xs font-bold ${
+                    active
+                      ? "border-ink-850 bg-ink-850 text-white"
+                      : "border-gp-border bg-gp-surface text-gp-text-muted hover:text-gp-text"
+                  }`}
+                >
+                  {f.label}
+                </Link>
+              );
+            })}
+            {stock === "attention" ? (
+              <span className="shrink-0 rounded-pill border border-ink-850 bg-ink-850 px-3.5 py-2 text-xs font-bold text-white">
+                Needs restock
+              </span>
+            ) : null}
+          </div>
+        </form>
+      ) : null}
+
+      {total > 0 && shown > 0 && (
         <nav className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-          {categories
-            .filter((c) => c.products.length > 0)
-            .map((c) => (
+          {visible.map((c) => (
               <a
                 key={c.slug}
                 href={`#cat-${c.slug}`}
@@ -103,8 +195,21 @@ export default async function AdminProducts() {
             Add first product
           </Link>
         </div>
+      ) : shown === 0 ? (
+        <div className="rounded-[1.85rem] border border-dashed border-gp-border bg-gp-surface px-8 py-16 text-center">
+          <p className="text-lg font-bold text-gp-text">No products found</p>
+          <p className="mt-2 text-sm text-gp-text-subtle">
+            Try a different search or stock filter.
+          </p>
+          <Link
+            href="/admin/products"
+            className="mt-6 inline-flex rounded-pill bg-ink-850 px-6 py-3 text-sm font-bold text-white"
+          >
+            Clear filters
+          </Link>
+        </div>
       ) : (
-        categories.map((cat) => {
+        visible.map((cat) => {
           if (cat.products.length === 0) return null;
           return (
             <section key={cat.id} id={`cat-${cat.slug}`} className="scroll-mt-28">

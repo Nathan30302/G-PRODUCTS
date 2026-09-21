@@ -95,6 +95,7 @@ export function AdminProductCard({
         <h3 className="mt-0.5 line-clamp-2 text-sm font-bold leading-snug text-gp-text transition-colors group-hover:text-accent-ink sm:text-base">
           {product.name}
         </h3>
+        <p className="mt-1 text-xs text-gp-text-muted">{product.categoryName}</p>
 
         <div className="mt-3 flex items-baseline gap-2">
           <span className="text-xl font-black tracking-tight text-gp-text">

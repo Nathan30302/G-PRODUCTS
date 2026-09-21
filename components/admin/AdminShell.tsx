@@ -23,17 +23,17 @@ type NavGroup = {
 
 const navGroups: NavGroup[] = [
   {
-    label: "Home",
-    items: [{ href: "/admin", label: "Overview", hint: "Business pulse" }]
+    label: "Overview",
+    items: [{ href: "/admin", label: "Dashboard", hint: "What's happening today" }]
   },
   {
     label: "Catalogue",
     items: [
-      { href: "/admin/products", label: "Products", hint: "Catalogue & stock" },
+      { href: "/admin/products", label: "Products", hint: "Prices, stock, photos" },
       {
         href: "/admin/browse-tiles",
         label: "Browse tiles",
-        hint: "Shop category photos"
+        hint: "Tiles customers see on the shop"
       }
     ]
   },
@@ -43,24 +43,24 @@ const navGroups: NavGroup[] = [
       {
         href: "/admin/orders",
         label: "Orders",
-        hint: "Purchases",
+        hint: "New, preparing, ready",
         badgeKey: "orders"
       },
       {
         href: "/admin/customers",
         label: "Customers",
-        hint: "Shop users & buyers"
+        hint: "Buyers and accounts"
       },
-      { href: "/admin/reviews", label: "Reviews", hint: "Moderate feedback" }
+      { href: "/admin/reviews", label: "Reviews", hint: "Show or hide on the shop" }
     ]
   },
   {
-    label: "Ops",
+    label: "Operations",
     items: [
       {
         href: "/admin/stock-notify",
         label: "Stock alerts",
-        hint: "Waitlist",
+        hint: "Customers waiting on stock",
         badgeKey: "stock"
       },
       {
@@ -72,23 +72,26 @@ const navGroups: NavGroup[] = [
       {
         href: "/admin/service-pages",
         label: "Service pages",
-        hint: "Public content"
+        hint: "What the services page says"
       },
-      { href: "/admin/locations", label: "Locations", hint: "Shop photos" }
+      { href: "/admin/locations", label: "Locations", hint: "Shop photos and addresses" }
     ]
   },
   {
     label: "Team",
     items: [
-      { href: "/admin/shop-team", label: "Shop team", hint: "Names & roles" },
+      { href: "/admin/shop-team", label: "Shop team", hint: "Names shown to customers" },
       {
         href: "/admin/staff",
         label: "Staff",
-        hint: "Desk logins",
+        hint: "Who can sign in to this desk",
         ownerOnly: true
-      },
-      { href: "/admin/account", label: "Account", hint: "Password" }
+      }
     ]
+  },
+  {
+    label: "Account",
+    items: [{ href: "/admin/account", label: "Account", hint: "Password and sign-in" }]
   }
 ];
 
@@ -224,13 +227,15 @@ function AdminShellInner({
             </span>
           ) : null}
         </span>
-        <span
-          className={`mt-0.5 block text-[11px] leading-snug ${
-            active ? "text-white/75" : "text-gp-text-subtle group-hover:text-gp-text-muted"
-          }`}
-        >
-          {item.hint}
-        </span>
+        {dense ? null : (
+          <span
+            className={`mt-0.5 block text-[11px] leading-snug ${
+              active ? "text-white/75" : "text-gp-text-subtle group-hover:text-gp-text-muted"
+            }`}
+          >
+            {item.hint}
+          </span>
+        )}
       </Link>
     );
   }
@@ -242,7 +247,7 @@ function AdminShellInner({
     >
       <header className="sticky top-0 z-40 border-b border-gp-border bg-gp-surface/95 shadow-sm backdrop-blur-xl">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand to-transparent" />
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-[92rem] items-center justify-between gap-3 px-4 py-3.5 sm:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
@@ -311,9 +316,9 @@ function AdminShellInner({
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-7 px-4 py-6 sm:gap-8 sm:px-6 lg:flex-row lg:py-9">
-        <aside className="hidden lg:block lg:w-[17rem] lg:shrink-0">
-          <div className="sticky top-[5.75rem] rounded-[1.35rem] border border-gp-border/80 bg-gp-surface p-3 shadow-card">
+      <div className="mx-auto flex w-full max-w-[92rem] flex-col gap-8 px-4 py-7 sm:px-8 lg:flex-row lg:gap-10 lg:py-10">
+        <aside className="hidden lg:block lg:w-60 lg:shrink-0">
+          <div className="sticky top-[5.75rem] rounded-[1.35rem] border border-gp-border/80 bg-gp-surface p-3.5 shadow-card">
             <div className="mb-3 rounded-2xl border border-gp-border/70 bg-gp-muted/50 px-3.5 py-3">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
                 Signed in
@@ -327,13 +332,13 @@ function AdminShellInner({
                   : user.staffTitle?.trim() || "Staff access"}
               </p>
             </div>
-            <nav className="space-y-4">
+            <nav className="space-y-5">
               {groups.map((group) => (
                 <div key={group.label}>
                   <p className="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
                     {group.label}
                   </p>
-                  <div className="space-y-0.5">
+                  <div className="space-y-1">
                     {group.items.map((i) => (
                       <NavLink key={i.href} item={i} dense />
                     ))}

@@ -25,7 +25,7 @@ export default async function AdminBrowseTilesPage() {
       <DeskPageHeader
         eyebrow="Storefront"
         title="Browse tiles"
-        description="Category tiles on the shop page and homepage — upload background photos, set labels and links. Promo tiles appear taller."
+        description="These are the category and promo tiles customers see on the shop. Each card is a preview of the photo, label, and link."
       />
 
       <DeskPanel>
