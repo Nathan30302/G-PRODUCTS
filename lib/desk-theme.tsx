@@ -9,9 +9,21 @@ import {
   type ReactNode
 } from "react";
 
-export type DeskThemeMode = "light" | "dark" | "brand";
+/** Four desk looks — every mode keeps high-contrast text. */
+export type DeskThemeMode = "day" | "midnight" | "ink" | "studio";
 
 const STORAGE_KEY = "gp-desk-theme";
+
+const VALID: DeskThemeMode[] = ["day", "midnight", "ink", "studio"];
+
+function normalizeTheme(raw: string | null): DeskThemeMode {
+  if (!raw) return "day";
+  if (raw === "light") return "day";
+  if (raw === "dark") return "midnight";
+  if (raw === "brand") return "ink";
+  if (VALID.includes(raw as DeskThemeMode)) return raw as DeskThemeMode;
+  return "day";
+}
 
 type DeskThemeContextValue = {
   theme: DeskThemeMode;
@@ -21,14 +33,11 @@ type DeskThemeContextValue = {
 const DeskThemeContext = createContext<DeskThemeContextValue | null>(null);
 
 export function DeskThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<DeskThemeMode>("light");
+  const [theme, setThemeState] = useState<DeskThemeMode>("day");
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      const initial: DeskThemeMode =
-        stored === "dark" || stored === "brand" ? stored : "light";
-      setThemeState(initial);
+      setThemeState(normalizeTheme(localStorage.getItem(STORAGE_KEY)));
     } catch {
       /* private browsing */
     }

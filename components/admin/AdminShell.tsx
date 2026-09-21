@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { LogoutButton } from "@/components/LogoutButton";
+import { Icon } from "@/components/Icons";
 import { DeskThemeProvider, useDeskTheme } from "@/lib/desk-theme";
 import { DeskThemeSettings } from "@/components/admin/DeskThemeSettings";
 
 type NavItem = {
   href: string;
   label: string;
-  hint: string;
+  icon: string;
   ownerOnly?: boolean;
   badgeKey?: "orders" | "services" | "stock";
 };
@@ -24,17 +25,13 @@ type NavGroup = {
 const navGroups: NavGroup[] = [
   {
     label: "Overview",
-    items: [{ href: "/admin", label: "Dashboard", hint: "What's happening today" }]
+    items: [{ href: "/admin", label: "Dashboard", icon: "home" }]
   },
   {
     label: "Catalogue",
     items: [
-      { href: "/admin/products", label: "Products", hint: "Prices, stock, photos" },
-      {
-        href: "/admin/browse-tiles",
-        label: "Browse tiles",
-        hint: "Tiles customers see on the shop"
-      }
+      { href: "/admin/products", label: "Products", icon: "grid" },
+      { href: "/admin/browse-tiles", label: "Browse tiles", icon: "image" }
     ]
   },
   {
@@ -43,15 +40,11 @@ const navGroups: NavGroup[] = [
       {
         href: "/admin/orders",
         label: "Orders",
-        hint: "New, preparing, ready",
+        icon: "cart",
         badgeKey: "orders"
       },
-      {
-        href: "/admin/customers",
-        label: "Customers",
-        hint: "Buyers and accounts"
-      },
-      { href: "/admin/reviews", label: "Reviews", hint: "Show or hide on the shop" }
+      { href: "/admin/customers", label: "Customers", icon: "user" },
+      { href: "/admin/reviews", label: "Reviews", icon: "star" }
     ]
   },
   {
@@ -60,38 +53,38 @@ const navGroups: NavGroup[] = [
       {
         href: "/admin/stock-notify",
         label: "Stock alerts",
-        hint: "Customers waiting on stock",
+        icon: "bell",
         badgeKey: "stock"
       },
       {
         href: "/admin/services",
         label: "Service orders",
-        hint: "Print, keys, loans",
+        icon: "services",
         badgeKey: "services"
       },
       {
         href: "/admin/service-pages",
         label: "Service pages",
-        hint: "What the services page says"
+        icon: "file"
       },
-      { href: "/admin/locations", label: "Locations", hint: "Shop photos and addresses" }
+      { href: "/admin/locations", label: "Locations", icon: "map-pin" }
     ]
   },
   {
     label: "Team",
     items: [
-      { href: "/admin/shop-team", label: "Shop team", hint: "Names shown to customers" },
+      { href: "/admin/shop-team", label: "Shop team", icon: "sparkles" },
       {
         href: "/admin/staff",
         label: "Staff",
-        hint: "Who can sign in to this desk",
+        icon: "shield",
         ownerOnly: true
       }
     ]
   },
   {
     label: "Account",
-    items: [{ href: "/admin/account", label: "Account", hint: "Password and sign-in" }]
+    items: [{ href: "/admin/account", label: "Account", icon: "lock" }]
   }
 ];
 
@@ -189,52 +182,45 @@ function AdminShellInner({
     .slice(0, 2)
     .toUpperCase();
 
-  function NavLink({
-    item,
-    dense = false
-  }: {
-    item: NavItem;
-    dense?: boolean;
-  }) {
+  function NavButton({ item }: { item: NavItem }) {
     const active = isActive(item.href);
     const count = badgeFor(item.badgeKey);
     return (
       <Link
         href={item.href}
-        className={`group relative block rounded-2xl transition-all duration-200 ${
-          dense ? "px-3 py-2.5" : "px-4 py-3.5"
-        } ${
+        className={`group flex min-h-11 items-center gap-3 rounded-2xl border px-3 py-2.5 transition-all duration-200 ease-out-expo active:scale-[0.98] ${
           active
-            ? "bg-ink-850 text-white shadow-sm"
-            : "text-gp-text-muted hover:bg-gp-muted hover:text-gp-text"
+            ? "border-brand/50 bg-brand text-ink-950 shadow-brand-glow"
+            : "border-gp-border/80 bg-gp-bg/80 text-gp-text shadow-sm hover:-translate-y-0.5 hover:border-ink-700/20 hover:bg-gp-surface hover:shadow-card"
         }`}
       >
-        <span className="flex items-center justify-between gap-2">
-          <span
-            className={`block font-semibold tracking-tight ${
-              dense ? "text-[13px]" : "text-[15px]"
-            } ${active ? "font-bold text-white" : ""}`}
-          >
-            {item.label}
-          </span>
-          {count > 0 ? (
-            <span
-              className={`rounded-pill px-2 py-0.5 text-[10px] font-black tabular-nums ${
-                active ? "bg-brand text-ink-950" : "bg-brand/20 text-ink-850"
-              }`}
-            >
-              {count > 99 ? "99+" : count}
-            </span>
-          ) : null}
+        <span
+          className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-colors ${
+            active
+              ? "bg-ink-950/10 text-ink-950"
+              : "bg-gp-muted text-ink-700 group-hover:bg-brand/15"
+          }`}
+        >
+          <Icon name={item.icon} className="h-4 w-4" />
         </span>
-        {dense ? null : (
+        <span className="min-w-0 flex-1 text-left text-[13px] font-bold tracking-tight">
+          {item.label}
+        </span>
+        {count > 0 ? (
           <span
-            className={`mt-0.5 block text-[11px] leading-snug ${
-              active ? "text-white/75" : "text-gp-text-subtle group-hover:text-gp-text-muted"
+            className={`rounded-pill px-2 py-0.5 text-[10px] font-black tabular-nums ${
+              active ? "bg-ink-950 text-brand" : "bg-brand text-ink-950"
             }`}
           >
-            {item.hint}
+            {count > 99 ? "99+" : count}
           </span>
+        ) : (
+          <Icon
+            name="chevron-right"
+            className={`h-3.5 w-3.5 shrink-0 opacity-40 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:opacity-80 ${
+              active ? "text-ink-950" : "text-gp-text-subtle"
+            }`}
+          />
         )}
       </Link>
     );
@@ -245,14 +231,20 @@ function AdminShellInner({
       data-desk-theme={theme}
       className="relative min-h-screen overflow-x-hidden bg-gp-bg text-gp-text"
     >
-      <header className="sticky top-0 z-40 border-b border-gp-border bg-gp-surface/95 shadow-sm backdrop-blur-xl">
+      <div className="desk-ambient" aria-hidden>
+        <span className="desk-ambient__blob desk-ambient__blob--a" />
+        <span className="desk-ambient__blob desk-ambient__blob--b" />
+        <span className="desk-ambient__blob desk-ambient__blob--c" />
+      </div>
+
+      <header className="sticky top-0 z-40 border-b border-gp-border bg-gp-surface/90 shadow-sm backdrop-blur-xl">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand to-transparent" />
-        <div className="mx-auto flex max-w-[92rem] items-center justify-between gap-3 px-4 py-3.5 sm:px-8">
+        <div className="relative mx-auto flex max-w-[92rem] items-center justify-between gap-3 px-4 py-3.5 sm:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gp-border bg-gp-surface text-gp-text-muted transition-colors hover:border-ink-700/25 hover:text-ink-700 lg:hidden"
+              className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gp-border bg-gp-surface text-gp-text-muted transition-all hover:border-ink-700/25 hover:text-ink-700 active:scale-95 lg:hidden"
               aria-label="Open menu"
             >
               <svg
@@ -273,7 +265,7 @@ function AdminShellInner({
                 </span>
               ) : null}
             </button>
-            <Link href="/admin" className="shrink-0">
+            <Link href="/admin" className="shrink-0 transition-transform hover:scale-[1.03] active:scale-95">
               <Logo variant="mark" size="md" priority />
             </Link>
             <div className="hidden min-w-0 sm:block">
@@ -291,7 +283,7 @@ function AdminShellInner({
               {todayLabel()}
             </span>
             <div className="hidden items-center gap-2.5 rounded-2xl border border-gp-border bg-gp-surface py-1.5 pl-1.5 pr-3 md:flex">
-              <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-[11px] font-black text-ink-700">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/20 text-[11px] font-black text-ink-850">
                 {initials}
               </span>
               <span className="text-right">
@@ -307,7 +299,7 @@ function AdminShellInner({
             </div>
             <Link
               href="/"
-              className="hidden items-center gap-1.5 rounded-pill border border-gp-border bg-gp-surface px-3.5 py-2 text-xs font-bold text-ink-850 transition-colors hover:border-brand/50 hover:bg-brand/10 sm:inline-flex"
+              className="hidden items-center gap-1.5 rounded-pill border border-gp-border bg-gp-surface px-3.5 py-2 text-xs font-bold text-gp-text transition-all hover:border-brand/50 hover:bg-brand/15 hover:text-ink-850 sm:inline-flex"
             >
               Customer shop
             </Link>
@@ -316,10 +308,10 @@ function AdminShellInner({
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-[92rem] flex-col gap-8 px-4 py-7 sm:px-8 lg:flex-row lg:gap-10 lg:py-10">
-        <aside className="hidden lg:block lg:w-60 lg:shrink-0">
-          <div className="sticky top-[5.75rem] rounded-[1.35rem] border border-gp-border/80 bg-gp-surface p-3.5 shadow-card">
-            <div className="mb-3 rounded-2xl border border-gp-border/70 bg-gp-muted/50 px-3.5 py-3">
+      <div className="relative z-[1] mx-auto flex w-full max-w-[92rem] flex-col gap-8 px-4 py-7 sm:px-8 lg:flex-row lg:gap-10 lg:py-10">
+        <aside className="hidden lg:block lg:w-[15.5rem] lg:shrink-0">
+          <div className="sticky top-[5.75rem] rounded-[1.5rem] border border-gp-border/80 bg-gp-surface/95 p-3 shadow-card backdrop-blur-sm">
+            <div className="mb-3 rounded-2xl border border-gp-border/70 bg-gp-muted/60 px-3.5 py-3">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
                 Signed in
               </p>
@@ -332,15 +324,15 @@ function AdminShellInner({
                   : user.staffTitle?.trim() || "Staff access"}
               </p>
             </div>
-            <nav className="space-y-5">
+            <nav className="space-y-4">
               {groups.map((group) => (
                 <div key={group.label}>
-                  <p className="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
+                  <p className="mb-2 px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
                     {group.label}
                   </p>
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     {group.items.map((i) => (
-                      <NavLink key={i.href} item={i} dense />
+                      <NavButton key={i.href} item={i} />
                     ))}
                   </div>
                 </div>
@@ -352,14 +344,19 @@ function AdminShellInner({
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 animate-fade-up pb-14">{children}</main>
+        <main
+          key={pathname}
+          className="min-w-0 flex-1 animate-page-enter pb-14"
+        >
+          {children}
+        </main>
       </div>
 
       {menuOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-ink-850/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-ink-850/45 backdrop-blur-sm"
             aria-label="Close menu"
             onClick={() => setMenuOpen(false)}
           />
@@ -371,7 +368,7 @@ function AdminShellInner({
                   Provider menu
                 </p>
                 <p className="display mt-1 text-xl leading-tight text-gp-text">
-                  Where to next?
+                  Go somewhere
                 </p>
                 {attention > 0 ? (
                   <p className="mt-1.5 text-xs text-gp-text-muted">
@@ -390,7 +387,7 @@ function AdminShellInner({
             </div>
 
             <div className="mb-5 flex items-center gap-3 rounded-2xl border border-gp-border bg-gp-muted/50 p-3">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/15 text-xs font-black text-ink-700">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/20 text-xs font-black text-ink-850">
                 {initials}
               </span>
               <div className="min-w-0">
@@ -405,42 +402,16 @@ function AdminShellInner({
               </div>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-4">
               {groups.map((group) => (
                 <div key={group.label}>
                   <p className="mb-2 px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
                     {group.label}
                   </p>
                   <div className="grid gap-2">
-                    {group.items.map((i) => {
-                      const active = isActive(i.href);
-                      const count = badgeFor(i.badgeKey);
-                      return (
-                        <Link
-                          key={i.href}
-                          href={i.href}
-                          className={`rounded-2xl border px-4 py-3.5 transition-all ${
-                            active
-                              ? "border-ink-850/20 bg-ink-850/5 shadow-sm"
-                              : "border-gp-border bg-gp-surface"
-                          }`}
-                        >
-                          <span className="flex items-center justify-between gap-2">
-                            <span className="block text-[15px] font-bold text-gp-text">
-                              {i.label}
-                            </span>
-                            {count > 0 ? (
-                              <span className="rounded-pill bg-brand/20 px-2 py-0.5 text-[10px] font-black text-ink-850">
-                                {count}
-                              </span>
-                            ) : null}
-                          </span>
-                          <span className="mt-0.5 block text-sm text-gp-text-muted">
-                            {i.hint}
-                          </span>
-                        </Link>
-                      );
-                    })}
+                    {group.items.map((i) => (
+                      <NavButton key={i.href} item={i} />
+                    ))}
                   </div>
                 </div>
               ))}
@@ -449,17 +420,17 @@ function AdminShellInner({
             <div className="mt-5 space-y-4 border-t border-gp-border pt-4">
               <DeskThemeSettings compact />
               <div className="flex gap-2">
-              <Link
-                href="/"
-                className="flex-1 rounded-pill border border-gp-border py-3 text-center text-sm font-bold text-ink-850"
-              >
-                Customer shop
-              </Link>
-              <LogoutButton
-                variant="prominent"
-                label="Sign out"
-                className="flex-1 justify-center py-3"
-              />
+                <Link
+                  href="/"
+                  className="flex-1 rounded-pill border border-gp-border py-3 text-center text-sm font-bold text-gp-text"
+                >
+                  Customer shop
+                </Link>
+                <LogoutButton
+                  variant="prominent"
+                  label="Sign out"
+                  className="flex-1 justify-center py-3"
+                />
               </div>
             </div>
           </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useDeskTheme, type DeskThemeMode } from "@/lib/desk-theme";
-import { Icon } from "@/components/Icons";
 
 const options: {
   id: DeskThemeMode;
@@ -10,22 +9,28 @@ const options: {
   swatch: string;
 }[] = [
   {
-    id: "light",
-    label: "Light",
-    hint: "Clean white desk",
-    swatch: "bg-white ring-gp-border"
+    id: "day",
+    label: "Day",
+    hint: "Bright & clean",
+    swatch: "bg-[#f7f8f6] ring-1 ring-[#d8ddd9]"
   },
   {
-    id: "dark",
-    label: "Dark",
-    hint: "Easy on the eyes",
-    swatch: "bg-[#121a18] ring-gp-border"
+    id: "midnight",
+    label: "Midnight",
+    hint: "Soft dark green",
+    swatch: "bg-[#0f1614] ring-1 ring-[#3a4a45]"
   },
   {
-    id: "brand",
-    label: "G-Products",
-    hint: "Slate green brand",
-    swatch: "bg-[#233746] ring-brand/40"
+    id: "ink",
+    label: "Ink",
+    hint: "G-Products navy",
+    swatch: "bg-[#1a2834] ring-1 ring-[#E5F34F]/50"
+  },
+  {
+    id: "studio",
+    label: "Studio",
+    hint: "Warm stone desk",
+    swatch: "bg-[#ebe6dc] ring-1 ring-[#c9c0b0]"
   }
 ];
 
@@ -35,17 +40,12 @@ export function DeskThemeSettings({ compact = false }: { compact?: boolean }) {
   return (
     <section className={compact ? "" : "gp-card shadow-card"}>
       {!compact ? (
-        <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-xl bg-gp-muted text-ink-700 ring-1 ring-gp-border">
-            <Icon name="sparkles" className="h-5 w-5" />
-          </span>
-          <div>
-            <h2 className="display heading-section">Desk appearance</h2>
-            <p className="text-subtitle mt-1">
-              Choose light, dark, or G-Products green. Text stays readable in
-              every mode.
-            </p>
-          </div>
+        <div>
+          <h2 className="display heading-section">Desk appearance</h2>
+          <p className="text-subtitle mt-1">
+            Four looks for the provider desk. Text stays dark-on-light or
+            light-on-dark so every word stays easy to read.
+          </p>
         </div>
       ) : (
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gp-text-subtle">
@@ -54,33 +54,40 @@ export function DeskThemeSettings({ compact = false }: { compact?: boolean }) {
       )}
 
       <div
-        className={`grid grid-cols-3 gap-2 rounded-2xl border border-gp-border bg-gp-muted/60 p-1.5 ${
-          compact ? "mt-2" : "mt-5"
-        }`}
+        className={`grid grid-cols-2 gap-2 ${compact ? "mt-2" : "mt-5"}`}
       >
-        {options.map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            onClick={() => setTheme(opt.id)}
-            aria-pressed={theme === opt.id}
-            className={`rounded-xl px-2 py-3 text-center transition-all sm:px-3 ${
-              theme === opt.id
-                ? "bg-gp-surface text-gp-text shadow-card ring-1 ring-gp-border/80"
-                : "text-gp-text-muted hover:text-gp-text"
-            }`}
-          >
-            <span
-              className={`mx-auto mb-2 block h-7 w-7 rounded-full ring-1 ${opt.swatch}`}
-            />
-            <span className="block text-xs font-bold sm:text-sm">{opt.label}</span>
-            {!compact ? (
-              <span className="mt-0.5 block text-[10px] leading-snug text-gp-text-subtle">
-                {opt.hint}
+        {options.map((opt) => {
+          const active = theme === opt.id;
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => setTheme(opt.id)}
+              aria-pressed={active}
+              className={`rounded-2xl border px-2.5 py-3 text-left transition-all duration-200 ease-out-expo active:scale-[0.98] ${
+                active
+                  ? "border-brand/60 bg-brand/15 shadow-sm ring-1 ring-brand/30"
+                  : "border-gp-border bg-gp-muted/40 hover:border-ink-700/25 hover:bg-gp-muted"
+              }`}
+            >
+              <span
+                className={`mb-2 block h-8 w-full rounded-xl ${opt.swatch}`}
+              />
+              <span className="block text-xs font-bold text-gp-text sm:text-sm">
+                {opt.label}
               </span>
-            ) : null}
-          </button>
-        ))}
+              {!compact ? (
+                <span className="mt-0.5 block text-[10px] leading-snug text-gp-text-muted">
+                  {opt.hint}
+                </span>
+              ) : (
+                <span className="mt-0.5 block text-[10px] text-gp-text-subtle">
+                  {opt.hint}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     </section>
   );
