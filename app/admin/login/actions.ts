@@ -21,7 +21,7 @@ export async function loginAction(
 
   const user = await findDeskUserByIdentifier(identifier);
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
-    return { error: "Invalid email or password." };
+    return { error: "Your email or password is incorrect. Please try again." };
   }
 
   await createSession({

@@ -89,7 +89,7 @@ export function DeskStat({
 
   const inner = (
     <div
-      className={`relative overflow-hidden rounded-[1.25rem] border p-4 shadow-card shadow-lit transition-all duration-300 ease-out-expo sm:p-5 ${
+      className={`relative overflow-hidden rounded-[1.35rem] border p-5 shadow-card shadow-lit transition-all duration-300 ease-out-expo sm:p-6 ${
         href
           ? "hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0 active:scale-[0.99]"
           : ""
@@ -100,7 +100,7 @@ export function DeskStat({
       >
         {label}
       </p>
-      <p className="mt-2 text-xl font-black tabular-nums tracking-tight text-gp-text sm:text-2xl">
+      <p className="mt-3 text-2xl font-black tabular-nums tracking-tight text-gp-text sm:text-[1.75rem]">
         {value}
       </p>
       {hint ? (
@@ -121,7 +121,7 @@ export function DeskStat({
 
 export function DeskStatGrid({ children }: { children: ReactNode }) {
   return (
-    <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       {children}
     </div>
   );

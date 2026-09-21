@@ -100,7 +100,7 @@ export default async function AdminDashboard() {
   );
 
   return (
-    <div className="space-y-8 sm:space-y-10">
+    <div className="space-y-10 sm:space-y-12">
       <DeskHero>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
