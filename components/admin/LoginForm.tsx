@@ -2,7 +2,6 @@
 
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
-import Link from "next/link";
 import { loginAction, type LoginState } from "@/app/admin/login/actions";
 import { AuthScreenShell } from "@/components/profile/AuthScreenShell";
 import { AuthErrorBanner } from "@/components/auth/AuthErrorBanner";
@@ -30,14 +29,8 @@ export function LoginForm() {
     <AuthScreenShell
       tagline="Provider desk"
       footer={
-        <p className="auth-back">
-          <Link href="/profile" className="font-semibold text-ink-700 hover:underline">
-            ← Back to Profile
-          </Link>
-          <span className="mx-2 text-gp-text-subtle">·</span>
-          <Link href="/" className="font-medium text-gp-text-muted hover:text-ink-700">
-            Live shop
-          </Link>
+        <p className="auth-back text-center text-sm text-gp-text-subtle">
+          Owners and staff only · Separate from the customer shop
         </p>
       }
     >
@@ -45,19 +38,19 @@ export function LoginForm() {
         <div className="auth-card-accent" aria-hidden />
         <div className="auth-card-header">
           <h1 className="display text-[clamp(1.5rem,1.2rem+1.3vw,1.875rem)] font-extrabold text-gp-text">
-            Welcome back
+            Sign in to the desk
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-gp-text-muted">
-            Secure access for owners and staff — products, orders and services.
+            Products, orders, and services — for the G-Products team.
           </p>
         </div>
 
         <form action={formAction} className="auth-card-body space-y-4" noValidate>
           <label className="block">
-            <span className="auth-field-label">Email</span>
+            <span className="auth-field-label">Email or phone</span>
             <input
-              name="email"
-              type="email"
+              name="identifier"
+              type="text"
               autoComplete="username"
               autoCapitalize="none"
               autoCorrect="off"

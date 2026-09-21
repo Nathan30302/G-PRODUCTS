@@ -42,12 +42,15 @@ export function LogoutButton({
   className,
   label = "Sign out",
   pendingLabel = "Signing out…",
-  variant = "text"
+  variant = "text",
+  next = "/profile"
 }: {
   className?: string;
   label?: string;
   pendingLabel?: string;
   variant?: "text" | "icon" | "prominent";
+  /** Where to land after logout — desk uses /admin/login */
+  next?: "/profile" | "/admin/login";
 }) {
   const defaultClass =
     variant === "prominent"
@@ -56,6 +59,7 @@ export function LogoutButton({
 
   return (
     <form action="/api/auth/logout" method="post" className="contents">
+      <input type="hidden" name="next" value={next} />
       <LogoutSubmit
         className={className ?? defaultClass}
         label={label}

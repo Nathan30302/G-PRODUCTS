@@ -7,9 +7,13 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function logoutRedirect(request: Request): NextResponse {
+function logoutRedirect(request: Request, nextPath: string): NextResponse {
+  const safe =
+    nextPath === "/admin/login" || nextPath === "/profile"
+      ? nextPath
+      : "/profile";
   const res = NextResponse.redirect(
-    requestAbsoluteUrl(request, "/profile"),
+    requestAbsoluteUrl(request, safe),
     303
   );
   expireAllSessionCookieHeaders(res.headers);
@@ -19,5 +23,13 @@ function logoutRedirect(request: Request): NextResponse {
 
 /** Full-page form POST — Set-Cookie is applied on the redirect (Safari-safe). */
 export async function POST(request: Request) {
-  return logoutRedirect(request);
+  let nextPath = "/profile";
+  try {
+    const form = await request.formData();
+    const next = String(form.get("next") ?? "").trim();
+    if (next === "/admin/login" || next === "/profile") nextPath = next;
+  } catch {
+    /* no body */
+  }
+  return logoutRedirect(request, nextPath);
 }

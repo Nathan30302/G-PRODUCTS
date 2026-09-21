@@ -94,14 +94,6 @@ export type DeskBadges = {
   stock: number;
 };
 
-function todayLabel() {
-  return new Date().toLocaleDateString("en-ZM", {
-    weekday: "short",
-    day: "numeric",
-    month: "short"
-  });
-}
-
 export function AdminShell({
   user,
   badges = { orders: 0, services: 0, stock: 0 },
@@ -235,6 +227,14 @@ function AdminShellInner({
         <span className="desk-ambient__blob desk-ambient__blob--a" />
         <span className="desk-ambient__blob desk-ambient__blob--b" />
         <span className="desk-ambient__blob desk-ambient__blob--c" />
+        {theme === "ink" || theme === "studio" ? (
+          <>
+            <span className="desk-ambient__beam" />
+            <span className="desk-ambient__spark desk-ambient__spark--1" />
+            <span className="desk-ambient__spark desk-ambient__spark--2" />
+            <span className="desk-ambient__spark desk-ambient__spark--3" />
+          </>
+        ) : null}
       </div>
 
       <header className="sticky top-0 z-40 border-b border-gp-border bg-gp-surface/90 shadow-sm backdrop-blur-xl">
@@ -279,9 +279,6 @@ function AdminShellInner({
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <span className="hidden rounded-pill border border-gp-border bg-gp-muted px-3 py-1.5 text-[11px] font-semibold text-gp-text-muted sm:inline">
-              {todayLabel()}
-            </span>
             <div className="hidden items-center gap-2.5 rounded-2xl border border-gp-border bg-gp-surface py-1.5 pl-1.5 pr-3 md:flex">
               <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/20 text-[11px] font-black text-ink-850">
                 {initials}
@@ -297,13 +294,11 @@ function AdminShellInner({
                 </span>
               </span>
             </div>
-            <Link
-              href="/"
-              className="hidden items-center gap-1.5 rounded-pill border border-gp-border bg-gp-surface px-3.5 py-2 text-xs font-bold text-gp-text transition-all hover:border-brand/50 hover:bg-brand/15 hover:text-ink-850 sm:inline-flex"
-            >
-              Customer shop
-            </Link>
-            <LogoutButton variant="prominent" label="Sign out" />
+            <LogoutButton
+              variant="prominent"
+              label="Sign out"
+              next="/admin/login"
+            />
           </div>
         </div>
       </header>
@@ -419,19 +414,12 @@ function AdminShellInner({
 
             <div className="mt-5 space-y-4 border-t border-gp-border pt-4">
               <DeskThemeSettings compact />
-              <div className="flex gap-2">
-                <Link
-                  href="/"
-                  className="flex-1 rounded-pill border border-gp-border py-3 text-center text-sm font-bold text-gp-text"
-                >
-                  Customer shop
-                </Link>
-                <LogoutButton
-                  variant="prominent"
-                  label="Sign out"
-                  className="flex-1 justify-center py-3"
-                />
-              </div>
+              <LogoutButton
+                variant="prominent"
+                label="Sign out"
+                next="/admin/login"
+                className="w-full justify-center py-3"
+              />
             </div>
           </div>
         </div>

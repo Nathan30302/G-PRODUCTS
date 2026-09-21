@@ -22,15 +22,15 @@ const options: {
   },
   {
     id: "ink",
-    label: "Ink",
-    hint: "G-Products navy",
-    swatch: "bg-[#1a2834] ring-1 ring-[#E5F34F]/50"
+    label: "Ink Live",
+    hint: "Navy + moving light",
+    swatch: "bg-[#0d1822] ring-1 ring-[#E5F34F]/60"
   },
   {
     id: "studio",
-    label: "Studio",
-    hint: "Warm stone desk",
-    swatch: "bg-[#ebe6dc] ring-1 ring-[#c9c0b0]"
+    label: "Studio Live",
+    hint: "Warm light in motion",
+    swatch: "bg-[#e8e0d4] ring-1 ring-[#c8a45a]/50"
   }
 ];
 
@@ -43,8 +43,9 @@ export function DeskThemeSettings({ compact = false }: { compact?: boolean }) {
         <div>
           <h2 className="display heading-section">Desk appearance</h2>
           <p className="text-subtitle mt-1">
-            Four looks for the provider desk. Text stays dark-on-light or
-            light-on-dark so every word stays easy to read.
+            Four looks for the provider desk. Day and Midnight stay calm. Ink
+            Live and Studio Live add soft motion — text stays easy to read in
+            every mode.
           </p>
         </div>
       ) : (

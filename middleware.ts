@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
       const token = request.cookies.get(DESK_COOKIE)?.value;
       if (!(await hasValidDeskToken(token))) {
         const url = request.nextUrl.clone();
-        url.pathname = "/profile";
+        url.pathname = "/admin/login";
         url.search = "";
         return NextResponse.redirect(url);
       }

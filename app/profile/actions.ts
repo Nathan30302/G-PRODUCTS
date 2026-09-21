@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { prisma } from "@/lib/db";
 import {
-  createSession,
   destroySession,
   hashPassword,
   verifyPassword
@@ -34,21 +33,12 @@ export async function unifiedLoginAction(
       return { error: "Enter your phone or email, and your password." };
     }
 
-    // Provider desk + staff — email or phone
+    // Desk accounts sign in only at /admin/login — not on the shop profile.
     const deskUser = await findDeskUserByIdentifier(identifier);
     if (deskUser) {
-      if (await verifyPassword(password, deskUser.passwordHash)) {
-        await destroyCustomerSession().catch(() => undefined);
-        await createSession({
-          id: deskUser.id,
-          email: deskUser.email,
-          name: deskUser.name,
-          role: deskUser.role
-        });
-        redirect(siteConfig.apps.provider.home);
-      }
       return {
-        error: "Wrong password. Check your details and try again."
+        error:
+          "This is a Provider desk account. Sign in at the desk login page, not here."
       };
     }
 
@@ -127,7 +117,7 @@ export async function unifiedSignupAction(
       if (existingUser) {
         return {
           error:
-            "This email already has a desk login. Use Sign in instead."
+            "This email already has a Provider desk login. Sign in at the desk, not here."
         };
       }
     }
@@ -150,39 +140,11 @@ export async function unifiedSignupAction(
 
     const passwordHash = await hashPassword(password);
 
-    // Only ONE provider. Allowlisted email may claim it if none exists yet.
-    if (isProviderSignupEmail(email)) {
-      const ownerCount = await prisma.user.count({ where: { role: "OWNER" } });
-      if (ownerCount > 0) {
-        return {
-          error: "The provider account already exists. Use Sign in instead."
-        };
-      }
-
-      const user = await prisma.user.create({
-        data: {
-          name,
-          email,
-          phone,
-          passwordHash,
-          role: "OWNER"
-        }
-      });
-
-      await destroyCustomerSession().catch(() => undefined);
-      await createSession({
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role
-      });
-      redirect(siteConfig.apps.provider.home);
-    }
-
-    if (email.endsWith("@gproducts.zm")) {
+    // Desk accounts are not created from the shop. Owner is seeded; staff are added in the desk.
+    if (isProviderSignupEmail(email) || email.endsWith("@gproducts.zm")) {
       return {
         error:
-          "Desk staff can’t create their own account. Ask the owner to add you, then Sign in."
+          "Provider desk accounts are separate. Sign in at the desk login, or ask the owner to add you."
       };
     }
 

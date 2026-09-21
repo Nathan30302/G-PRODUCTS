@@ -1,7 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { verifyPassword, createSession } from "@/lib/auth";
+import { verifyPassword, createSession, destroySession } from "@/lib/auth";
+import { destroyCustomerSession } from "@/lib/customer-auth";
 import { findDeskUserByIdentifier } from "@/lib/user-lookup";
 
 export type LoginState = { error?: string };
@@ -24,6 +25,8 @@ export async function loginAction(
     return { error: "Your email or password is incorrect. Please try again." };
   }
 
+  await destroyCustomerSession().catch(() => undefined);
+  await destroySession().catch(() => undefined);
   await createSession({
     id: user.id,
     email: user.email,
