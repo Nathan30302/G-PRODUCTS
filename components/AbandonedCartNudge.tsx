@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 
@@ -9,11 +10,14 @@ const KEY = "gproducts_cart_nudge_v1";
 
 /** Gentle reminder if the cart still has items after a short idle period. */
 export function AbandonedCartNudge() {
+  const pathname = usePathname();
   const { items, total } = useCart();
   const [show, setShow] = useState(false);
+  const onDesk =
+    pathname?.startsWith("/admin") || pathname?.startsWith("/desk");
 
   useEffect(() => {
-    if (items.length === 0) {
+    if (onDesk || items.length === 0) {
       setShow(false);
       return;
     }
@@ -21,9 +25,9 @@ export function AbandonedCartNudge() {
     if (dismissed === "1") return;
     const t = setTimeout(() => setShow(true), 45_000);
     return () => clearTimeout(t);
-  }, [items.length]);
+  }, [items.length, onDesk]);
 
-  if (!show || items.length === 0) return null;
+  if (onDesk || !show || items.length === 0) return null;
 
   return (
     <div className="fixed bottom-[calc(var(--mobile-nav-offset)+0.75rem)] left-3 right-3 z-[60] mx-auto max-w-md rounded-2xl border border-brand/30 bg-ink-900/95 p-4 shadow-brand-glow backdrop-blur md:bottom-6 md:left-auto md:right-6">

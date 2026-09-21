@@ -7,29 +7,47 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function logoutRedirect(request: Request, nextPath: string): NextResponse {
-  const safe =
-    nextPath === "/admin/login" || nextPath === "/profile"
-      ? nextPath
-      : "/profile";
+const SAFE_NEXT = new Set([
+  "/profile",
+  "/desk",
+  "/desk/login",
+  "/admin/login"
+]);
+
+function safeNext(raw: string): string {
+  return SAFE_NEXT.has(raw) ? raw : "/profile";
+}
+
+async function readNext(request: Request): Promise<string> {
+  try {
+    const form = await request.formData();
+    return safeNext(String(form.get("next") ?? "").trim());
+  } catch {
+    return "/profile";
+  }
+}
+
+/**
+ * Full-page form POST — Set-Cookie on redirect (Safari-safe).
+ * JSON Accept — Set-Cookie on 200, then client hard-navigates (desk logout).
+ */
+export async function POST(request: Request) {
+  const nextPath = await readNext(request);
+  const wantsJson =
+    request.headers.get("accept")?.includes("application/json") ?? false;
+
+  if (wantsJson) {
+    const res = NextResponse.json({ ok: true, next: nextPath });
+    expireAllSessionCookieHeaders(res.headers);
+    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    return res;
+  }
+
   const res = NextResponse.redirect(
-    requestAbsoluteUrl(request, safe),
+    requestAbsoluteUrl(request, nextPath),
     303
   );
   expireAllSessionCookieHeaders(res.headers);
   res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
   return res;
-}
-
-/** Full-page form POST — Set-Cookie is applied on the redirect (Safari-safe). */
-export async function POST(request: Request) {
-  let nextPath = "/profile";
-  try {
-    const form = await request.formData();
-    const next = String(form.get("next") ?? "").trim();
-    if (next === "/admin/login" || next === "/profile") nextPath = next;
-  } catch {
-    /* no body */
-  }
-  return logoutRedirect(request, nextPath);
 }

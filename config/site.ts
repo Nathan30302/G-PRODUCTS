@@ -213,10 +213,14 @@ export const siteConfig = {
   /** In-app destinations after auth */
   apps: {
     customer: {
-      home: "/profile/account"
+      home: "/profile/account",
+      login: "/profile"
     },
     provider: {
-      home: "/admin"
+      home: "/admin",
+      /** Public desk homepage (landing) */
+      gate: "/desk",
+      login: "/desk/login"
     }
   }
 };

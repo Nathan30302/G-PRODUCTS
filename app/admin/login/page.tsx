@@ -1,12 +1,7 @@
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
-import { LoginForm } from "@/components/admin/LoginForm";
+import { siteConfig } from "@/config/site";
 
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Provider desk · Sign in" };
-
-export default async function LoginPage() {
-  const session = await getSession();
-  if (session) redirect("/admin");
-  return <LoginForm />;
+/** Legacy URL — desk sign-in lives at /desk/login */
+export default function LegacyAdminLoginPage() {
+  redirect(siteConfig.apps.provider.login);
 }

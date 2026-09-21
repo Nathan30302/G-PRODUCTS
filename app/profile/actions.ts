@@ -33,12 +33,12 @@ export async function unifiedLoginAction(
       return { error: "Enter your phone or email, and your password." };
     }
 
-    // Desk accounts sign in only at /admin/login — not on the shop profile.
+    // Desk accounts sign in only at /desk/login — not on the shop profile.
     const deskUser = await findDeskUserByIdentifier(identifier);
     if (deskUser) {
       return {
         error:
-          "This is a Provider desk account. Sign in at the desk login page, not here."
+          "This is a Provider desk account. Sign in at the desk (/desk), not here."
       };
     }
 

@@ -20,7 +20,8 @@ export function SiteChrome({
   auth?: ShopAuth;
 }) {
   const pathname = usePathname();
-  const isAdmin = pathname?.startsWith("/admin");
+  const isAdmin =
+    pathname?.startsWith("/admin") || pathname?.startsWith("/desk");
   const [auth, setAuth] = useState<ShopAuth>(initialAuth);
 
   useEffect(() => {

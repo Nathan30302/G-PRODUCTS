@@ -49,6 +49,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const identifier = String(body.identifier ?? "").trim();
     const password = String(body.password ?? "");
+    const scope = body.scope === "desk" ? "desk" : "customer";
 
     if (!identifier || !password) {
       return NextResponse.json(
@@ -68,12 +69,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const deskUser = await resolveDeskUser(identifier);
-    if (deskUser) {
-      if (!(await verifyPassword(password, deskUser.passwordHash))) {
+    if (scope === "desk") {
+      const deskUser = await resolveDeskUser(identifier);
+      if (!deskUser || !(await verifyPassword(password, deskUser.passwordHash))) {
         return NextResponse.json(
           {
-            error: "Wrong password. Check your details and try again."
+            error: "Your email or password is incorrect. Please try again."
           },
           { status: 401 }
         );
@@ -95,6 +96,18 @@ export async function POST(req: Request) {
       setSessionCookie(res.cookies, DESK_COOKIE, token, DESK_MAX_AGE);
       expireSessionCookieHeader(res.headers, CUSTOMER_COOKIE);
       return res;
+    }
+
+    // Customer shop sign-in — desk credentials are refused here.
+    const deskUser = await findDeskUserByIdentifier(identifier);
+    if (deskUser) {
+      return NextResponse.json(
+        {
+          error:
+            "This is a Provider desk account. Sign in at the desk, not the shop."
+        },
+        { status: 403 }
+      );
     }
 
     const customer = await findCustomerByIdentifier(identifier);

@@ -1133,6 +1133,111 @@ html {
     @apply relative z-[1] w-full max-w-[440px];
   }
 
+  /* Provider desk public gate (landing + login chrome) */
+  .desk-gate {
+    @apply relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-10 sm:px-6;
+    padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
+    padding-top: max(3rem, calc(env(safe-area-inset-top) + 1rem));
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -8%, rgba(229, 243, 79, 0.16), transparent 52%),
+      radial-gradient(ellipse 55% 45% at 0% 100%, rgba(35, 55, 70, 0.07), transparent 50%),
+      var(--gp-bg);
+  }
+
+  [data-theme="dark"] .desk-gate {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -8%, rgba(229, 243, 79, 0.09), transparent 52%),
+      radial-gradient(ellipse 55% 45% at 100% 90%, rgba(36, 63, 80, 0.4), transparent 50%),
+      var(--gp-bg);
+  }
+
+  .desk-gate-bg {
+    @apply pointer-events-none absolute inset-0;
+  }
+
+  .desk-gate-orb {
+    @apply absolute rounded-full blur-3xl;
+  }
+
+  .desk-gate-orb--a {
+    top: 4%;
+    left: -5rem;
+    width: 18rem;
+    height: 18rem;
+    background: rgba(229, 243, 79, 0.18);
+    animation: desk-gate-float 10s ease-in-out infinite;
+  }
+
+  .desk-gate-orb--b {
+    right: -4rem;
+    bottom: 6%;
+    width: 20rem;
+    height: 20rem;
+    background: rgba(35, 55, 70, 0.1);
+    animation: desk-gate-float 12s ease-in-out infinite reverse;
+  }
+
+  .desk-gate-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    background-image:
+      linear-gradient(rgba(35, 55, 70, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(35, 55, 70, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
+  }
+
+  @keyframes desk-gate-float {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-12px) scale(1.04);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .desk-gate-orb--a,
+    .desk-gate-orb--b {
+      animation: none !important;
+    }
+  }
+
+  .desk-gate-inner {
+    @apply relative z-[1] w-full max-w-lg;
+  }
+
+  .desk-gate-brand {
+    @apply mb-8 flex flex-col items-center text-center;
+  }
+
+  .desk-gate-hero {
+    @apply text-center sm:text-left;
+    animation: auth-panel-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .desk-gate-cta {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-pill bg-ink-850 px-7 text-sm font-bold text-white shadow-[0_12px_32px_-12px_rgba(35,55,70,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-800 hover:shadow-[0_16px_36px_-12px_rgba(35,55,70,0.5)] active:translate-y-0;
+  }
+
+  .desk-gate-points {
+    @apply mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-gp-text-subtle sm:justify-start;
+  }
+
+  .desk-gate-points li {
+    @apply inline-flex items-center gap-2;
+  }
+
+  .desk-gate-point-dot {
+    @apply h-1.5 w-1.5 rounded-full bg-brand;
+  }
+
+  .desk-gate-foot {
+    @apply mt-12 text-center text-sm text-gp-text-subtle sm:text-left;
+  }
+
   .auth-brand {
     @apply mb-7 flex flex-col items-center text-center;
   }

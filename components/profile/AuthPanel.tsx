@@ -65,7 +65,7 @@ export function AuthPanel({
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-gp-text-muted">
             {mode === "signin"
-              ? "Sign in with your phone or email — you'll stay signed in."
+              ? "Sign in with your phone or email to track orders and save your details."
               : "Three quick steps — you'll be signed in right after."}
           </p>
         </div>
