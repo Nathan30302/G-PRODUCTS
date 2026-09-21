@@ -147,7 +147,7 @@ export function ImageUploader({
           {urls.map((url, idx) => (
             <div
               key={`${url}-${idx}`}
-              className="group relative aspect-square overflow-hidden rounded-2xl border border-gp-border/70 bg-white shadow-inner"
+              className="group relative aspect-square overflow-hidden rounded-2xl border border-gp-border/70 bg-[#f4f6f3]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -160,12 +160,12 @@ export function ImageUploader({
                   Cover
                 </span>
               )}
-              <div className="absolute right-1.5 top-1.5 flex flex-col gap-1">
+              <div className="absolute right-1.5 top-1.5 flex flex-col items-end gap-1">
                 {idx > 0 && (
                   <button
                     type="button"
                     onClick={() => makeCover(idx)}
-                    className="rounded-pill bg-gp-surface/85 px-2 py-1 text-[10px] font-bold text-accent-ink"
+                    className="rounded-pill bg-white px-2.5 py-1.5 text-[10px] font-bold text-ink-850 shadow-sm ring-1 ring-gp-border"
                   >
                     Make cover
                   </button>
@@ -173,7 +173,7 @@ export function ImageUploader({
                 <button
                   type="button"
                   onClick={() => removeAt(idx)}
-                  className="rounded-pill bg-gp-surface/85 px-2.5 py-1 text-[10px] font-bold text-gp-text"
+                  className="rounded-pill bg-white px-2.5 py-1.5 text-[10px] font-bold text-red-700 shadow-sm ring-1 ring-red-200"
                 >
                   Remove
                 </button>
@@ -228,8 +228,8 @@ export function ImageUploader({
           <span className="text-sm font-semibold text-gp-text">
             {multiple ? "Add photos" : "Add photo"}
           </span>
-          <span className="text-xs text-gp-text-subtle">
-            From your phone · JPG, PNG or WebP (not HEIC)
+          <span className="max-w-xs text-xs leading-relaxed text-gp-text-subtle">
+            Tap to choose from your phone. JPG, PNG or WebP. The first photo is the cover customers see.
           </span>
         </button>
       )}
@@ -276,7 +276,7 @@ export function ImageUploader({
           </p>
           <div className="mt-3 max-w-[11rem]">
             <div className="overflow-hidden rounded-2xl border border-gp-border/70">
-              <div className="relative aspect-square bg-white">
+              <div className="relative aspect-square bg-[#f4f6f3]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={urls[0]}

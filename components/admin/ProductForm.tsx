@@ -212,7 +212,7 @@ export function ProductForm({
       </div>
 
       {categories.length === 0 ? (
-        <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           No categories found. Redeploy so the catalog can seed, then try again.
         </p>
       ) : null}
@@ -358,7 +358,7 @@ export function ProductForm({
         </Section>
 
         {state?.error ? (
-          <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {state.error}
           </p>
         ) : null}
@@ -391,12 +391,26 @@ export function ProductForm({
       {isEdit && canDelete && (
         <form
           action={deleteProduct}
-          className="mx-auto max-w-3xl border-t border-gp-border/70 pt-6"
+          className="mx-auto max-w-3xl rounded-[1.35rem] border border-red-200 bg-red-50/80 px-5 py-5"
+          onSubmit={(event) => {
+            const name = product?.name?.trim() || "this product";
+            if (
+              !window.confirm(
+                `Delete ${name}? It will leave the shop immediately. This cannot be undone.`
+              )
+            ) {
+              event.preventDefault();
+            }
+          }}
         >
           <input type="hidden" name="id" value={product!.id} />
+          <p className="text-sm font-semibold text-red-800">Remove from the shop</p>
+          <p className="mt-1 text-sm text-red-700/90">
+            Deletes the listing, photos, and stock. Customers will no longer see it.
+          </p>
           <button
             type="submit"
-            className="inline-flex items-center gap-2 rounded-pill border border-red-500/40 bg-red-500/10 px-5 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:bg-red-500/20"
+            className="mt-4 inline-flex items-center gap-2 rounded-pill border border-red-300 bg-white px-5 py-2.5 text-sm font-bold text-red-700 transition-colors hover:bg-red-100"
           >
             <Icon name="trash" className="h-4 w-4" />
             Delete product

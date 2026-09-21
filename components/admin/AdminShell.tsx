@@ -210,14 +210,14 @@ function AdminShellInner({
           <span
             className={`block font-semibold tracking-tight ${
               dense ? "text-[13px]" : "text-[15px]"
-            } ${active ? "font-bold" : ""}`}
+            } ${active ? "font-bold text-white" : ""}`}
           >
             {item.label}
           </span>
           {count > 0 ? (
             <span
               className={`rounded-pill px-2 py-0.5 text-[10px] font-black tabular-nums ${
-                active ? "bg-white/20 text-white" : "bg-brand/20 text-ink-850"
+                active ? "bg-brand text-ink-950" : "bg-brand/20 text-ink-850"
               }`}
             >
               {count > 99 ? "99+" : count}
@@ -226,7 +226,7 @@ function AdminShellInner({
         </span>
         <span
           className={`mt-0.5 block text-[11px] leading-snug ${
-            active ? "text-gp-text-muted" : "text-gp-text-subtle group-hover:text-gp-text-muted"
+            active ? "text-white/75" : "text-gp-text-subtle group-hover:text-gp-text-muted"
           }`}
         >
           {item.hint}
