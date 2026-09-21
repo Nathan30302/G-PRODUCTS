@@ -38,7 +38,7 @@ export default async function AdminShopTeamPage() {
             description="Add people who should appear on About — name and role only."
           />
         ) : (
-          <ul className="divide-y divide-white/[0.05]">
+          <ul className="divide-y divide-gp-border/60">
             {members.map((m) => (
               <ShopTeamMemberRow
                 key={m.id}
@@ -56,11 +56,11 @@ export default async function AdminShopTeamPage() {
       </DeskPanel>
 
       <DeskPanel className="max-w-2xl p-6 sm:p-8">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-accent-ink/80">
           Add
         </p>
-        <h2 className="mt-1 text-xl font-black text-white">New team member</h2>
-        <p className="mt-1.5 text-sm text-white/45">
+        <h2 className="mt-1 text-xl font-black text-gp-text">New team member</h2>
+        <p className="mt-1.5 text-sm text-gp-text-subtle">
           Name, title, and publish — no photo upload needed.
         </p>
         <div className="mt-5">

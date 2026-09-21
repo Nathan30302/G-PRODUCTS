@@ -138,6 +138,8 @@ html.gp-splash-boot .gp-splash-boot {
   --gp-primary-dark: #1a2834;
   --gp-brand-yellow: #e5f34f;
   --gp-brand-green: #c8e03f;
+  /* Brand green used as text — darkened so it stays legible on light fills. */
+  --gp-accent-text-rgb: 90 114 40;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -150,6 +152,7 @@ html.gp-splash-boot .gp-splash-boot {
 }
 
 [data-theme="dark"] {
+  --gp-accent-text-rgb: 200 224 63;
   color-scheme: dark;
   --gp-bg: #121a18;
   --gp-bg-rgb: 18 26 24;
@@ -171,6 +174,7 @@ html.gp-splash-boot .gp-splash-boot {
 
 /* Provider desk themes — scoped via data-desk-theme on html while in admin */
 [data-desk-theme="dark"] {
+  --gp-accent-text-rgb: 200 224 63;
   color-scheme: dark;
   --gp-bg: #121a18;
   --gp-bg-rgb: 18 26 24;
@@ -189,6 +193,7 @@ html.gp-splash-boot .gp-splash-boot {
 }
 
 [data-desk-theme="brand"] {
+  --gp-accent-text-rgb: 200 224 63;
   color-scheme: dark;
   --gp-bg: #1a2834;
   --gp-bg-rgb: 26 40 52;

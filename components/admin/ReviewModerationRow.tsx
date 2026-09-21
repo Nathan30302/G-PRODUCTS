@@ -35,8 +35,8 @@ export function ReviewModerationRow({ review }: { review: ReviewRow }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="font-semibold text-white">{review.productName}</p>
-            <span className="text-[10px] font-bold uppercase tracking-wide text-brand">
+            <p className="font-semibold text-gp-text">{review.productName}</p>
+            <span className="text-[10px] font-bold uppercase tracking-wide text-accent-ink">
               {review.rating}/5
             </span>
             {review.verifiedPurchase ? (
@@ -48,21 +48,21 @@ export function ReviewModerationRow({ review }: { review: ReviewRow }) {
               className={`rounded-pill px-2 py-0.5 text-[10px] font-bold uppercase ${
                 review.published
                   ? "bg-accent/15 text-accent"
-                  : "bg-white/10 text-white/45"
+                  : "bg-white/10 text-gp-text-subtle"
               }`}
             >
               {review.published ? "Live" : "Hidden"}
             </span>
           </div>
           {review.title ? (
-            <p className="mt-1 text-sm font-medium text-white/80">
+            <p className="mt-1 text-sm font-medium text-gp-text">
               {review.title}
             </p>
           ) : null}
-          <p className="mt-1 text-sm leading-relaxed text-white/55">
+          <p className="mt-1 text-sm leading-relaxed text-gp-text-muted">
             {review.body}
           </p>
-          <p className="mt-2 text-xs text-white/35">
+          <p className="mt-2 text-xs text-gp-text-subtle">
             {review.authorName} ·{" "}
             {new Date(review.createdAt).toLocaleDateString("en-ZM", {
               day: "numeric",
@@ -94,7 +94,7 @@ export function ReviewModerationRow({ review }: { review: ReviewRow }) {
             <button
               type="submit"
               disabled={togglePending}
-              className="rounded-pill border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-50"
+              className="rounded-pill border border-gp-border px-3 py-1.5 text-xs font-semibold text-gp-text-muted transition-colors hover:border-brand/40 hover:text-accent-ink disabled:opacity-50"
             >
               {togglePending
                 ? "…"

@@ -15,30 +15,30 @@ export function ShopTeamMemberForm() {
   return (
     <form action={action} className="space-y-4">
       <label className="block">
-        <span className="text-sm font-semibold text-white/70">Name</span>
+        <span className="text-sm font-semibold text-gp-text-muted">Name</span>
         <input
           name="name"
           required
-          className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-950 px-3 py-2.5 text-sm text-white outline-none focus:border-brand"
+          className="mt-1.5 w-full rounded-xl border border-gp-border bg-gp-surface px-3 py-2.5 text-sm text-gp-text outline-none focus:border-brand"
           placeholder="Gift Mbumwae"
         />
       </label>
       <label className="block">
-        <span className="text-sm font-semibold text-white/70">Title / role</span>
+        <span className="text-sm font-semibold text-gp-text-muted">Title / role</span>
         <input
           name="title"
           required
-          className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-950 px-3 py-2.5 text-sm text-white outline-none focus:border-brand"
+          className="mt-1.5 w-full rounded-xl border border-gp-border bg-gp-surface px-3 py-2.5 text-sm text-gp-text outline-none focus:border-brand"
           placeholder="Owner · Store lead"
         />
       </label>
       <label className="block">
-        <span className="text-sm font-semibold text-white/70">Sort order</span>
+        <span className="text-sm font-semibold text-gp-text-muted">Sort order</span>
         <input
           name="sortOrder"
           type="number"
           defaultValue={0}
-          className="mt-1.5 w-full rounded-xl border border-white/10 bg-ink-950 px-3 py-2.5 text-sm text-white outline-none focus:border-brand"
+          className="mt-1.5 w-full rounded-xl border border-gp-border bg-gp-surface px-3 py-2.5 text-sm text-gp-text outline-none focus:border-brand"
         />
       </label>
       {state?.error ? (

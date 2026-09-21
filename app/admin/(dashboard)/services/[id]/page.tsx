@@ -114,24 +114,24 @@ export default async function ServiceDetailPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-2 text-sm text-white/40">
-        <Link href="/admin/services" className="hover:text-white">
+      <div className="flex flex-wrap items-center gap-2 text-sm text-gp-text-subtle">
+        <Link href="/admin/services" className="hover:text-gp-text">
           Services
         </Link>
         <span>/</span>
-        <span className="font-mono text-white/70">{request.ref}</span>
+        <span className="font-mono text-gp-text-muted">{request.ref}</span>
       </div>
 
       <DeskHero>
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-accent-ink">
               Service request
             </p>
             <h1 className="display mt-2 text-3xl sm:text-4xl">
               {typeLabel[request.serviceType] ?? request.serviceType}
             </h1>
-            <p className="mt-2 font-mono text-sm text-white/55">
+            <p className="mt-2 font-mono text-sm text-gp-text-muted">
               {request.ref} · {formatDateTime(request.createdAt)}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -140,21 +140,21 @@ export default async function ServiceDetailPage({
                 <StatusPill status={request.paymentStatus} kind="payment" />
               ) : null}
               {files.length > 0 ? (
-                <span className="inline-flex items-center gap-1.5 rounded-pill border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-brand">
+                <span className="inline-flex items-center gap-1.5 rounded-pill border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-accent-ink">
                   <Icon name="file" className="h-3 w-3" />
                   {files.length} file{files.length === 1 ? "" : "s"}
                 </span>
               ) : null}
             </div>
-            <p className="mt-3 text-sm text-white/45">
+            <p className="mt-3 text-sm text-gp-text-subtle">
               {STATUS_HINT[request.status] ?? ""}
             </p>
           </div>
           <div className="text-left lg:text-right">
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gp-text-subtle">
               Amount
             </p>
-            <p className="mt-1 text-3xl font-black tabular-nums text-white">
+            <p className="mt-1 text-3xl font-black tabular-nums text-gp-text">
               {typeof request.amount === "number"
                 ? formatPrice(request.amount)
                 : "—"}
@@ -190,18 +190,18 @@ export default async function ServiceDetailPage({
             <dl className="space-y-3 px-5 py-4 text-sm">
               {Object.entries(details).map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4">
-                  <dt className="text-white/45">
+                  <dt className="text-gp-text-subtle">
                     {DETAIL_LABELS[k] ?? k.replace(/([A-Z])/g, " $1")}
                   </dt>
-                  <dd className="max-w-[65%] text-right text-white/85">
+                  <dd className="max-w-[65%] text-right text-gp-text">
                     {formatDetailValue(k, v)}
                   </dd>
                 </div>
               ))}
               {typeof request.amount === "number" && (
-                <div className="flex justify-between border-t border-white/[0.06] pt-3">
-                  <dt className="text-white/45">Amount</dt>
-                  <dd className="font-bold tabular-nums text-white">
+                <div className="flex justify-between border-t border-gp-border/70 pt-3">
+                  <dt className="text-gp-text-subtle">Amount</dt>
+                  <dd className="font-bold tabular-nums text-gp-text">
                     {formatPrice(request.amount)}
                   </dd>
                 </div>
@@ -213,18 +213,18 @@ export default async function ServiceDetailPage({
             <DeskPanelHeader title="Customer" />
             <dl className="space-y-3 px-5 py-4 text-sm">
               <div className="flex justify-between">
-                <dt className="text-white/45">Name</dt>
-                <dd className="font-semibold text-white/85">
+                <dt className="text-gp-text-subtle">Name</dt>
+                <dd className="font-semibold text-gp-text">
                   {request.customerName}
                 </dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-white/45">Phone</dt>
-                <dd className="text-white/85">{request.customerPhone}</dd>
+                <dt className="text-gp-text-subtle">Phone</dt>
+                <dd className="text-gp-text">{request.customerPhone}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-white/45">Delivery</dt>
-                <dd className="max-w-[60%] text-right text-white/85">
+                <dt className="text-gp-text-subtle">Delivery</dt>
+                <dd className="max-w-[60%] text-right text-gp-text">
                   {request.deliveryMethod === "YANGO"
                     ? `Yango — ${request.address ?? ""}`
                     : `Pickup — ${siteConfig.branch}`}
@@ -239,17 +239,17 @@ export default async function ServiceDetailPage({
             <DeskPanelHeader title="Payment" />
             <div className="space-y-3 px-5 py-4 text-sm">
               <div className="flex justify-between">
-                <span className="text-white/45">Method</span>
-                <span className="font-semibold text-white">
+                <span className="text-gp-text-subtle">Method</span>
+                <span className="font-semibold text-gp-text">
                   {request.paymentMethod?.toUpperCase() ?? "—"}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-white/45">Status</span>
+                <span className="text-gp-text-subtle">Status</span>
                 {request.paymentStatus ? (
                   <StatusPill status={request.paymentStatus} kind="payment" />
                 ) : (
-                  <span className="text-white/50">N/A</span>
+                  <span className="text-gp-text-muted">N/A</span>
                 )}
               </div>
             </div>
@@ -265,7 +265,7 @@ export default async function ServiceDetailPage({
               <select
                 name="status"
                 defaultValue={request.status}
-                className="w-full rounded-xl border border-white/10 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand"
+                className="w-full rounded-xl border border-gp-border bg-gp-surface px-4 py-2.5 text-gp-text outline-none focus:border-brand"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>

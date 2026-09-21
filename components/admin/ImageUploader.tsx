@@ -131,9 +131,9 @@ export function ImageUploader({
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
-        <label className="text-sm font-semibold text-white/70">{label}</label>
+        <label className="text-sm font-semibold text-gp-text-muted">{label}</label>
         {pending ? (
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand">
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent-ink">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" />
             Uploading…
           </span>
@@ -147,7 +147,7 @@ export function ImageUploader({
           {urls.map((url, idx) => (
             <div
               key={`${url}-${idx}`}
-              className="group relative aspect-square overflow-hidden rounded-2xl border border-white/[0.08] bg-white shadow-inner"
+              className="group relative aspect-square overflow-hidden rounded-2xl border border-gp-border/70 bg-white shadow-inner"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -165,7 +165,7 @@ export function ImageUploader({
                   <button
                     type="button"
                     onClick={() => makeCover(idx)}
-                    className="rounded-pill bg-ink-950/85 px-2 py-1 text-[10px] font-bold text-brand"
+                    className="rounded-pill bg-gp-surface/85 px-2 py-1 text-[10px] font-bold text-accent-ink"
                   >
                     Make cover
                   </button>
@@ -173,7 +173,7 @@ export function ImageUploader({
                 <button
                   type="button"
                   onClick={() => removeAt(idx)}
-                  className="rounded-pill bg-ink-950/85 px-2.5 py-1 text-[10px] font-bold text-white/90"
+                  className="rounded-pill bg-gp-surface/85 px-2.5 py-1 text-[10px] font-bold text-gp-text"
                 >
                   Remove
                 </button>
@@ -207,7 +207,7 @@ export function ImageUploader({
                     `${downloadPrefix}-${idx + 1}${url.match(/\.(png|webp|gif)/i)?.[0] ?? ".jpg"}`
                   )}
                   download
-                  className="absolute bottom-1.5 left-1.5 z-10 rounded-pill bg-ink-950/90 px-2.5 py-1.5 text-[10px] font-bold text-brand shadow-lg"
+                  className="absolute bottom-1.5 left-1.5 z-10 rounded-pill bg-gp-surface/90 px-2.5 py-1.5 text-[10px] font-bold text-accent-ink shadow-lg"
                 >
                   Download
                 </a>
@@ -220,15 +220,15 @@ export function ImageUploader({
           type="button"
           disabled={pending}
           onClick={() => inputRef.current?.click()}
-          className="mt-3 flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/15 bg-ink-950/50 px-4 py-8 text-center transition-colors hover:border-brand/40 hover:bg-brand/[0.04] disabled:opacity-50"
+          className="mt-3 flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gp-border bg-gp-surface px-4 py-8 text-center transition-colors hover:border-brand/40 hover:bg-brand/[0.04] disabled:opacity-50"
         >
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-2xl text-brand">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-2xl text-accent-ink">
             +
           </span>
-          <span className="text-sm font-semibold text-white/80">
+          <span className="text-sm font-semibold text-gp-text">
             {multiple ? "Add photos" : "Add photo"}
           </span>
-          <span className="text-xs text-white/35">
+          <span className="text-xs text-gp-text-subtle">
             From your phone · JPG, PNG or WebP (not HEIC)
           </span>
         </button>
@@ -240,7 +240,7 @@ export function ImageUploader({
             type="button"
             disabled={pending}
             onClick={() => inputRef.current?.click()}
-            className="rounded-pill border border-brand/40 bg-brand/10 px-4 py-2.5 text-sm font-bold text-brand transition-colors hover:bg-brand/20 disabled:opacity-50"
+            className="rounded-pill border border-brand/40 bg-brand/10 px-4 py-2.5 text-sm font-bold text-accent-ink transition-colors hover:bg-brand/20 disabled:opacity-50"
           >
             {multiple ? "Add more photos" : "Replace photo"}
           </button>
@@ -252,7 +252,7 @@ export function ImageUploader({
                 replaceAllRef.current = true;
                 inputRef.current?.click();
               }}
-              className="rounded-pill border border-white/15 px-4 py-2.5 text-sm font-semibold text-white/70 hover:text-white disabled:opacity-50"
+              className="rounded-pill border border-gp-border px-4 py-2.5 text-sm font-semibold text-gp-text-muted hover:text-gp-text disabled:opacity-50"
             >
               Replace all
             </button>
@@ -261,11 +261,11 @@ export function ImageUploader({
       )}
 
       {urls.length > 0 && (
-        <div className="mt-4 rounded-2xl border border-white/[0.07] bg-ink-950/40 p-3">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
+        <div className="mt-4 rounded-2xl border border-gp-border/70 bg-gp-surface p-3">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-gp-text-subtle">
             Shop preview
           </p>
-          <p className="mt-1 text-xs text-white/45">
+          <p className="mt-1 text-xs text-gp-text-subtle">
             {previewHint
               ? previewHint
               : folder === "services" || folder === "service-pages"
@@ -275,7 +275,7 @@ export function ImageUploader({
                   : "Cover photo is what customers see first. White background, full product in frame."}
           </p>
           <div className="mt-3 max-w-[11rem]">
-            <div className="overflow-hidden rounded-2xl border border-white/[0.06]">
+            <div className="overflow-hidden rounded-2xl border border-gp-border/70">
               <div className="relative aspect-square bg-white">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -284,9 +284,9 @@ export function ImageUploader({
                   className="h-full w-full object-contain p-2"
                 />
               </div>
-              <div className="bg-ink-900 px-2.5 py-2">
-                <p className="text-[11px] font-semibold text-white/80">Cover</p>
-                <p className="text-[10px] text-white/40">
+              <div className="bg-gp-surface px-2.5 py-2">
+                <p className="text-[11px] font-semibold text-gp-text">Cover</p>
+                <p className="text-[10px] text-gp-text-subtle">
                   Photo 1 of {urls.length}
                 </p>
               </div>

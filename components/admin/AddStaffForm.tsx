@@ -28,9 +28,9 @@ export function AddStaffForm() {
 
   return (
     <form action={action} className="space-y-4">
-      <p className="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-sm text-white/50">
-        Create their login here, then send them the <strong className="text-white/70">email</strong> and{" "}
-        <strong className="text-white/70">password</strong>. They sign in on Profile — they
+      <p className="rounded-2xl border border-gp-border/70 bg-gp-muted/50 px-4 py-3 text-sm text-gp-text-muted">
+        Create their login here, then send them the <strong className="text-gp-text-muted">email</strong> and{" "}
+        <strong className="text-gp-text-muted">password</strong>. They sign in on Profile — they
         can’t create their own desk account.
       </p>
 
@@ -64,7 +64,7 @@ export function AddStaffForm() {
             {checks.map((c) => (
               <li
                 key={c.id}
-                className={`text-[11px] ${c.ok ? "text-accent" : "text-white/30"}`}
+                className={`text-[11px] ${c.ok ? "text-accent" : "text-gp-text-subtle"}`}
               >
                 {c.ok ? "✓" : "·"} {c.label}
               </li>
@@ -90,7 +90,7 @@ export function AddStaffForm() {
             <option value="Services desk" />
             <option value="Stock & inventory" />
           </datalist>
-          <p className="mt-2 text-xs text-white/40">
+          <p className="mt-2 text-xs text-gp-text-subtle">
             Write what this person does — products, orders, services, etc. They
             sign in on Profile with the email and password above.
           </p>

@@ -51,16 +51,16 @@ export function OrderStatusForm({
   return (
     <form action={action} className="mt-4 space-y-3">
       <input type="hidden" name="id" value={orderId} />
-      <p className="text-xs text-white/45">
+      <p className="text-xs text-gp-text-subtle">
         Current:{" "}
-        <span className="font-semibold text-white/75">{current.label}</span>
+        <span className="font-semibold text-gp-text-muted">{current.label}</span>
         {current.hint ? ` — ${current.hint}` : ""}
       </p>
       <select
         key={currentStatus}
         name="status"
         defaultValue={currentStatus}
-        className="w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand"
+        className="w-full rounded-xl border border-ink-700 bg-gp-surface px-4 py-2.5 text-gp-text outline-none focus:border-brand"
       >
         {STATUSES.map((s) => (
           <option key={s} value={s}>

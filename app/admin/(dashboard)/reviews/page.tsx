@@ -40,7 +40,7 @@ export default async function AdminReviewsPage() {
             description="When customers leave a review on a product page, it will appear here for moderation."
           />
         ) : (
-          <ul className="divide-y divide-white/[0.05]">
+          <ul className="divide-y divide-gp-border/60">
             {reviews.map((r) => (
               <ReviewModerationRow
                 key={r.id}

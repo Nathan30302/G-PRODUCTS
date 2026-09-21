@@ -41,40 +41,40 @@ export default async function OrderDetail({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-2 text-sm text-white/40">
-        <Link href="/admin/orders" className="hover:text-white">
+      <div className="flex flex-wrap items-center gap-2 text-sm text-gp-text-subtle">
+        <Link href="/admin/orders" className="hover:text-gp-text">
           Orders
         </Link>
         <span>/</span>
-        <span className="font-mono text-white/70">{order.ref}</span>
+        <span className="font-mono text-gp-text-muted">{order.ref}</span>
       </div>
 
       <DeskHero>
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-accent-ink">
               Order
             </p>
             <h1 className="display mt-2 font-mono text-3xl sm:text-4xl">
               {order.ref}
             </h1>
-            <p className="mt-2 text-sm text-white/50">
+            <p className="mt-2 text-sm text-gp-text-muted">
               Placed {formatDateTime(order.createdAt)} ·{" "}
               {order.customerName}
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <StatusPill status={order.status} />
               <StatusPill status={order.paymentStatus} kind="payment" />
-              <span className="rounded-pill border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs font-semibold text-white/55">
+              <span className="rounded-pill border border-gp-border bg-gp-muted/50 px-2.5 py-1 text-xs font-semibold text-gp-text-muted">
                 {order.paymentMethod.toUpperCase()}
               </span>
             </div>
           </div>
           <div className="text-left lg:text-right">
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gp-text-subtle">
               Total
             </p>
-            <p className="mt-1 text-3xl font-black tabular-nums text-white">
+            <p className="mt-1 text-3xl font-black tabular-nums text-gp-text">
               {formatPrice(order.total)}
             </p>
             <a
@@ -98,10 +98,10 @@ export default async function OrderDetail({
                   key={step}
                   className={`rounded-pill border px-3 py-1.5 text-[11px] font-bold tracking-wide ${
                     current
-                      ? "border-brand/50 bg-brand/15 text-brand"
+                      ? "border-brand/50 bg-brand/15 text-accent-ink"
                       : done
                         ? "border-accent/30 bg-accent/10 text-accent"
-                        : "border-white/10 text-white/35"
+                        : "border-gp-border text-gp-text-subtle"
                   }`}
                 >
                   {step}
@@ -116,23 +116,23 @@ export default async function OrderDetail({
         <div className="space-y-6 lg:col-span-2">
           <DeskPanel>
             <DeskPanelHeader title="Items" />
-            <div className="divide-y divide-white/[0.05]">
+            <div className="divide-y divide-gp-border/60">
               {order.items.map((i) => (
                 <div
                   key={i.id}
                   className="flex items-center justify-between gap-3 px-5 py-3.5 text-sm"
                 >
-                  <span className="text-white/80">
+                  <span className="text-gp-text">
                     {i.name}{" "}
-                    <span className="text-white/40">×{i.qty}</span>
+                    <span className="text-gp-text-subtle">×{i.qty}</span>
                   </span>
-                  <span className="font-semibold tabular-nums text-white">
+                  <span className="font-semibold tabular-nums text-gp-text">
                     {formatPrice(i.price * i.qty)}
                   </span>
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-4 text-lg font-black text-white">
+            <div className="flex items-center justify-between border-t border-gp-border/70 px-5 py-4 text-lg font-black text-gp-text">
               <span>Total</span>
               <span className="tabular-nums">{formatPrice(order.total)}</span>
             </div>
@@ -142,18 +142,18 @@ export default async function OrderDetail({
             <DeskPanelHeader title="Customer" />
             <dl className="space-y-3 px-5 py-4 text-sm">
               <div className="flex justify-between gap-4">
-                <dt className="text-white/45">Name</dt>
-                <dd className="text-right font-semibold text-white/85">
+                <dt className="text-gp-text-subtle">Name</dt>
+                <dd className="text-right font-semibold text-gp-text">
                   {order.customerName}
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-white/45">Phone</dt>
-                <dd className="text-right text-white/85">{order.customerPhone}</dd>
+                <dt className="text-gp-text-subtle">Phone</dt>
+                <dd className="text-right text-gp-text">{order.customerPhone}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-white/45">Address</dt>
-                <dd className="max-w-[60%] text-right text-white/85">
+                <dt className="text-gp-text-subtle">Address</dt>
+                <dd className="max-w-[60%] text-right text-gp-text">
                   {order.address || "—"}
                 </dd>
               </div>
@@ -166,17 +166,17 @@ export default async function OrderDetail({
             <DeskPanelHeader title="Payment" />
             <div className="space-y-3 px-5 py-4 text-sm">
               <div className="flex justify-between">
-                <span className="text-white/45">Method</span>
-                <span className="font-semibold text-white">
+                <span className="text-gp-text-subtle">Method</span>
+                <span className="font-semibold text-gp-text">
                   {order.paymentMethod.toUpperCase()}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-white/45">Status</span>
+                <span className="text-gp-text-subtle">Status</span>
                 <StatusPill status={order.paymentStatus} kind="payment" />
               </div>
               {order.paymentRef ? (
-                <p className="break-all text-xs text-white/40">
+                <p className="break-all text-xs text-gp-text-subtle">
                   Ref: {order.paymentRef}
                 </p>
               ) : null}

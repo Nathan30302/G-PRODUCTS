@@ -39,11 +39,11 @@ export default async function AdminBrowseTilesPage() {
             description="Add tiles below — they appear as a vertical stack under search on Shop."
           />
         ) : (
-          <ul className="divide-y divide-white/[0.05]">
+          <ul className="divide-y divide-gp-border/60">
             {tiles.map((t) => (
               <li key={t.id} className="p-5 sm:p-6">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
-                  <div className="relative h-24 w-full shrink-0 overflow-hidden rounded-xl bg-ink-900 lg:h-28 lg:w-48">
+                  <div className="relative h-24 w-full shrink-0 overflow-hidden rounded-xl bg-gp-surface lg:h-28 lg:w-48">
                     {t.imageUrl ? (
                       <SafeImage
                         src={t.imageUrl}
@@ -53,22 +53,22 @@ export default async function AdminBrowseTilesPage() {
                         className="object-cover"
                       />
                     ) : (
-                      <span className="absolute inset-0 grid place-items-center text-xs text-white/40">
+                      <span className="absolute inset-0 grid place-items-center text-xs text-gp-text-subtle">
                         No photo
                       </span>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                      <p className="font-semibold text-white">
+                      <p className="font-semibold text-gp-text">
                         {t.label}
                         {t.isPromo ? (
-                          <span className="ml-2 rounded-pill bg-brand/20 px-2 py-0.5 text-[10px] font-bold uppercase text-brand">
+                          <span className="ml-2 rounded-pill bg-brand/20 px-2 py-0.5 text-[10px] font-bold uppercase text-accent-ink">
                             Promo
                           </span>
                         ) : null}
                         {!t.enabled ? (
-                          <span className="ml-2 text-xs text-white/40">(hidden)</span>
+                          <span className="ml-2 text-xs text-gp-text-subtle">(hidden)</span>
                         ) : null}
                       </p>
                       <BrowseTileDeleteButton id={t.id} />
@@ -93,11 +93,11 @@ export default async function AdminBrowseTilesPage() {
       </DeskPanel>
 
       <DeskPanel className="max-w-2xl p-6 sm:p-8">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-accent-ink/80">
           Add
         </p>
-        <h2 className="mt-1 text-xl font-black text-white">New browse tile</h2>
-        <p className="mt-1.5 text-sm text-white/45">
+        <h2 className="mt-1 text-xl font-black text-gp-text">New browse tile</h2>
+        <p className="mt-1.5 text-sm text-gp-text-subtle">
           Example promo: &ldquo;Hot Deals&rdquo; → /search?deals=1
         </p>
         <div className="mt-5">

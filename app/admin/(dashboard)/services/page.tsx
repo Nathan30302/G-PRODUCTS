@@ -138,8 +138,8 @@ export default async function AdminServicesPage({
               href={href}
               className={`rounded-pill border px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide transition-colors ${
                 active
-                  ? "border-brand/40 bg-brand/15 text-brand"
-                  : "border-white/10 text-white/50 hover:border-white/25 hover:text-white/80"
+                  ? "border-brand/40 bg-brand/15 text-accent-ink"
+                  : "border-gp-border text-gp-text-muted hover:border-ink-700/30 hover:text-gp-text"
               }`}
             >
               {opt.label}
@@ -185,7 +185,7 @@ export default async function AdminServicesPage({
           <>
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[800px] text-left text-sm">
-                <thead className="bg-white/[0.02] text-[11px] uppercase tracking-[0.14em] text-white/40">
+                <thead className="bg-gp-muted/50 text-[11px] uppercase tracking-[0.14em] text-gp-text-subtle">
                   <tr>
                     <th className="px-5 py-3.5 font-semibold">Ref</th>
                     <th className="px-5 py-3.5 font-semibold">Service</th>
@@ -203,39 +203,39 @@ export default async function AdminServicesPage({
                     return (
                       <tr
                         key={r.id}
-                        className="border-t border-white/[0.05] transition-colors hover:bg-white/[0.02]"
+                        className="border-t border-gp-border/70 transition-colors hover:bg-gp-muted/50"
                       >
-                        <td className="px-5 py-3.5 font-mono text-white/80">
+                        <td className="px-5 py-3.5 font-mono text-gp-text">
                           {r.ref}
                         </td>
-                        <td className="px-5 py-3.5 text-white/80">
+                        <td className="px-5 py-3.5 text-gp-text">
                           {typeLabel[r.serviceType] ?? r.serviceType}
-                          <span className="block text-xs text-white/40">
+                          <span className="block text-xs text-gp-text-subtle">
                             {formatDateTime(r.createdAt)}
                           </span>
                         </td>
-                        <td className="px-5 py-3.5 text-white/80">
+                        <td className="px-5 py-3.5 text-gp-text">
                           {r.customerName}
-                          <span className="block text-xs text-white/40">
+                          <span className="block text-xs text-gp-text-subtle">
                             {r.customerPhone}
                           </span>
                         </td>
                         <td className="px-5 py-3.5">
                           {n > 0 ? (
-                            <span className="inline-flex items-center gap-1 rounded-pill border border-brand/30 bg-brand/10 px-2 py-0.5 text-xs font-bold text-brand">
+                            <span className="inline-flex items-center gap-1 rounded-pill border border-brand/30 bg-brand/10 px-2 py-0.5 text-xs font-bold text-accent-ink">
                               <Icon name="file" className="h-3 w-3" />
                               {n}
                             </span>
                           ) : r.serviceType === "PRINTING" ? (
-                            <span className="text-xs text-white/30">None</span>
+                            <span className="text-xs text-gp-text-subtle">None</span>
                           ) : (
-                            <span className="text-xs text-white/25">—</span>
+                            <span className="text-xs text-gp-text-subtle">—</span>
                           )}
                         </td>
-                        <td className="px-5 py-3.5 text-white/60">
+                        <td className="px-5 py-3.5 text-gp-text-muted">
                           {r.deliveryMethod === "YANGO" ? "Yango" : "Pickup"}
                         </td>
-                        <td className="px-5 py-3.5 font-semibold text-white">
+                        <td className="px-5 py-3.5 font-semibold text-gp-text">
                           {typeof r.amount === "number"
                             ? formatPrice(r.amount)
                             : "—"}
@@ -246,7 +246,7 @@ export default async function AdminServicesPage({
                         <td className="px-5 py-3.5 text-right">
                           <Link
                             href={`/admin/services/${r.id}`}
-                            className="text-sm font-semibold text-brand hover:underline"
+                            className="text-sm font-semibold text-accent-ink hover:underline"
                           >
                             Open
                           </Link>
@@ -264,33 +264,33 @@ export default async function AdminServicesPage({
                   <Link
                     key={r.id}
                     href={`/admin/services/${r.id}`}
-                    className="block rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 transition-all hover:border-brand/35"
+                    className="block rounded-2xl border border-gp-border/70 bg-gp-muted/50 p-4 transition-all hover:border-brand/35"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="font-mono text-sm font-semibold text-white/90">
+                        <p className="font-mono text-sm font-semibold text-gp-text">
                           {r.ref}
                         </p>
-                        <p className="mt-1 text-sm text-white/75">
+                        <p className="mt-1 text-sm text-gp-text-muted">
                           {typeLabel[r.serviceType] ?? r.serviceType}
                         </p>
                       </div>
                       <StatusPill status={r.status} kind="service" />
                     </div>
-                    <div className="mt-3 flex items-end justify-between border-t border-white/[0.05] pt-3">
+                    <div className="mt-3 flex items-end justify-between border-t border-gp-border/70 pt-3">
                       <div>
-                        <p className="text-sm text-white/80">{r.customerName}</p>
-                        <p className="mt-0.5 flex items-center gap-2 text-xs text-white/40">
+                        <p className="text-sm text-gp-text">{r.customerName}</p>
+                        <p className="mt-0.5 flex items-center gap-2 text-xs text-gp-text-subtle">
                           {r.deliveryMethod === "YANGO" ? "Yango" : "Pickup"}
                           {n > 0 ? (
-                            <span className="inline-flex items-center gap-1 text-brand">
+                            <span className="inline-flex items-center gap-1 text-accent-ink">
                               <Icon name="file" className="h-3 w-3" />
                               {n} file{n === 1 ? "" : "s"}
                             </span>
                           ) : null}
                         </p>
                       </div>
-                      <p className="font-black tabular-nums text-white">
+                      <p className="font-black tabular-nums text-gp-text">
                         {typeof r.amount === "number"
                           ? formatPrice(r.amount)
                           : "—"}

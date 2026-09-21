@@ -73,18 +73,28 @@ export function DeskStat({
 }) {
   const tones: Record<DeskStatTone, string> = {
     default: "border-gp-border bg-gp-surface",
-    warn: "border-brand/35 bg-brand/10",
-    good: "border-accent/35 bg-accent/10",
-    brand: "border-ink-700/15 bg-gradient-to-br from-brand/15 to-accent/10"
+    warn: "border-brand/45 bg-brand/[0.14]",
+    good: "border-accent/40 bg-accent/[0.14]",
+    brand: "border-ink-700/20 bg-gradient-to-br from-brand/20 to-accent/[0.14]"
   };
+  // Tinted cards need a darker label than plain white ones or it washes out.
+  const labelTone =
+    tone === "default" ? "text-gp-text-subtle" : "text-gp-text-muted";
+
   const inner = (
     <div
-      className={`relative overflow-hidden rounded-[1.25rem] border p-4 shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:shadow-card-hover sm:p-5 ${tones[tone]}`}
+      className={`relative overflow-hidden rounded-[1.25rem] border p-4 shadow-card shadow-lit transition-all duration-300 ease-out-expo sm:p-5 ${
+        href
+          ? "hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0 active:scale-[0.99]"
+          : ""
+      } ${tones[tone]}`}
     >
-      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gp-text-subtle sm:text-[11px]">
+      <p
+        className={`text-[10px] font-semibold uppercase tracking-[0.16em] sm:text-[11px] ${labelTone}`}
+      >
         {label}
       </p>
-      <p className="mt-2 text-xl font-black tracking-tight text-gp-text sm:text-2xl">
+      <p className="mt-2 text-xl font-black tabular-nums tracking-tight text-gp-text sm:text-2xl">
         {value}
       </p>
       {hint ? (
@@ -92,7 +102,13 @@ export function DeskStat({
       ) : null}
     </div>
   );
-  return href ? <Link href={href}>{inner}</Link> : inner;
+  return href ? (
+    <Link href={href} className="block">
+      {inner}
+    </Link>
+  ) : (
+    inner
+  );
 }
 
 export function DeskStatGrid({ children }: { children: ReactNode }) {
@@ -113,7 +129,7 @@ export function DeskPanel({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[1.35rem] border border-gp-border/80 bg-gp-surface shadow-card ${className}`}
+      className={`relative overflow-hidden rounded-[1.35rem] border border-gp-border/70 bg-gp-surface shadow-card shadow-lit ${className}`}
     >
       {children}
     </div>
@@ -253,17 +269,17 @@ export function DeskFilterBar({
           <Link
             key={opt.value}
             href={href}
-            className={`shrink-0 rounded-pill border px-3.5 py-2 text-xs font-bold transition-all ${
+            className={`shrink-0 rounded-pill border px-3.5 py-2 text-xs font-bold transition-all duration-200 ease-out-expo active:scale-[0.97] ${
               isActive
-                ? "border-ink-850 bg-ink-850 text-white shadow-sm"
-                : "border-gp-border bg-white text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text"
+                ? "border-ink-850 bg-ink-850 text-white shadow-float"
+                : "border-gp-border bg-gp-surface text-gp-text-muted shadow-sm hover:-translate-y-px hover:border-ink-700/25 hover:text-gp-text hover:shadow-card"
             }`}
           >
             {opt.label}
             {typeof opt.count === "number" ? (
               <span
                 className={`ml-1.5 tabular-nums ${
-                  isActive ? "text-white/75" : "text-gp-text-subtle"
+                  isActive ? "text-gp-text-muted" : "text-gp-text-subtle"
                 }`}
               >
                 {opt.count}
@@ -285,10 +301,11 @@ export function DeskHero({
 }) {
   return (
     <section
-      className={`relative overflow-hidden rounded-[1.5rem] border border-gp-border/80 bg-white p-5 shadow-card sm:rounded-[1.65rem] sm:p-8 ${className}`}
+      className={`relative overflow-hidden rounded-[1.5rem] border border-gp-border/70 bg-gp-surface p-5 shadow-card shadow-lit sm:rounded-[1.65rem] sm:p-8 ${className}`}
     >
-      <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-brand/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-10 left-6 h-36 w-36 rounded-full bg-accent/15 blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/[0.07] via-transparent to-accent/[0.05]" />
+      <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-brand/25 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-10 left-6 h-36 w-36 rounded-full bg-accent/20 blur-3xl" />
       <div className="relative">{children}</div>
     </section>
   );

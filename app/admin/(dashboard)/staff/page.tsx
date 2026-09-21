@@ -33,7 +33,7 @@ export default async function StaffPage() {
         />
         <div className="overflow-x-auto">
           <table className="w-full min-w-[480px] text-left text-sm">
-            <thead className="bg-white/[0.02] text-[11px] uppercase tracking-[0.14em] text-white/40">
+            <thead className="bg-gp-muted/50 text-[11px] uppercase tracking-[0.14em] text-gp-text-subtle">
               <tr>
                 <th className="px-5 py-3.5 font-semibold">Name</th>
                 <th className="px-5 py-3.5 font-semibold">Email</th>
@@ -45,12 +45,12 @@ export default async function StaffPage() {
               {users.map((u) => (
                 <tr
                   key={u.id}
-                  className="border-t border-white/[0.05] transition-colors hover:bg-white/[0.02]"
+                  className="border-t border-gp-border/70 transition-colors hover:bg-gp-muted/50"
                 >
-                  <td className="px-5 py-3.5 font-semibold text-white">
+                  <td className="px-5 py-3.5 font-semibold text-gp-text">
                     {u.name}
                   </td>
-                  <td className="px-5 py-3.5 text-white/60">{u.email}</td>
+                  <td className="px-5 py-3.5 text-gp-text-muted">{u.email}</td>
                   <td className="px-5 py-3.5">
                     <StaffRoleCell
                       userId={u.id}
@@ -60,13 +60,13 @@ export default async function StaffPage() {
                   </td>
                   <td className="px-5 py-3.5 text-right">
                     {u.id === owner.id ? (
-                      <span className="text-xs text-white/30">You</span>
+                      <span className="text-xs text-gp-text-subtle">You</span>
                     ) : (
                       <form action={deleteStaff}>
                         <input type="hidden" name="id" value={u.id} />
                         <button
                           type="submit"
-                          className="text-sm text-white/50 transition-colors hover:text-red-400"
+                          className="text-sm text-gp-text-muted transition-colors hover:text-red-400"
                         >
                           Remove
                         </button>
@@ -81,11 +81,11 @@ export default async function StaffPage() {
       </DeskPanel>
 
       <DeskPanel className="max-w-2xl p-6 sm:p-8">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand/80">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-accent-ink/80">
           Invite
         </p>
-        <h2 className="mt-1 text-xl font-black text-white">Add a user</h2>
-        <p className="mt-2 text-sm text-white/50">
+        <h2 className="mt-1 text-xl font-black text-gp-text">Add a user</h2>
+        <p className="mt-2 text-sm text-gp-text-muted">
           Write each person&apos;s role when you add them. Staff can manage
           products and orders; owners can also manage staff and delete products.
         </p>

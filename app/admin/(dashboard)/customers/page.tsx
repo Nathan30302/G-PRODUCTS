@@ -53,7 +53,7 @@ export default async function AdminCustomersPage() {
           eyebrow="Leaderboard"
           title="Top buyers"
           action={
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-gp-text-subtle">
               Includes guest checkouts by phone
             </p>
           }
@@ -67,24 +67,24 @@ export default async function AdminCustomersPage() {
             data.topCustomers.map((c, idx) => (
               <div
                 key={`${c.phone}-${c.name}`}
-                className="rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 p-5 shadow-card transition-all hover:border-brand/30"
+                className="rounded-[1.35rem] border border-gp-border/70 bg-gp-surface p-5 shadow-card transition-all hover:border-brand/30"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-xs font-black text-brand">
+                  <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand/15 text-xs font-black text-accent-ink">
                     {idx + 1}
                   </span>
-                  <span className="text-sm font-bold tabular-nums text-brand">
+                  <span className="text-sm font-bold tabular-nums text-accent-ink">
                     {formatPrice(c.spent)}
                   </span>
                 </div>
-                <p className="mt-3 truncate text-base font-bold text-white">
+                <p className="mt-3 truncate text-base font-bold text-gp-text">
                   {c.name}
                 </p>
-                <p className="truncate text-xs text-white/40">{c.phone}</p>
-                <p className="mt-2 line-clamp-2 text-xs text-white/50">
+                <p className="truncate text-xs text-gp-text-subtle">{c.phone}</p>
+                <p className="mt-2 line-clamp-2 text-xs text-gp-text-muted">
                   {c.location}
                 </p>
-                <div className="mt-4 flex items-center justify-between border-t border-white/[0.06] pt-3 text-xs text-white/45">
+                <div className="mt-4 flex items-center justify-between border-t border-gp-border/70 pt-3 text-xs text-gp-text-subtle">
                   <span>
                     {c.orders} order{c.orders === 1 ? "" : "s"}
                   </span>
@@ -107,7 +107,7 @@ export default async function AdminCustomersPage() {
             <>
               <div className="hidden overflow-x-auto md:block">
                 <table className="w-full min-w-[720px] text-left text-sm">
-                  <thead className="bg-white/[0.02] text-[11px] uppercase tracking-[0.14em] text-white/40">
+                  <thead className="bg-gp-muted/50 text-[11px] uppercase tracking-[0.14em] text-gp-text-subtle">
                     <tr>
                       <th className="px-5 py-3.5 font-semibold">Name</th>
                       <th className="px-5 py-3.5 font-semibold">Contact</th>
@@ -120,29 +120,29 @@ export default async function AdminCustomersPage() {
                     {data.customers.map((c) => (
                       <tr
                         key={c.id}
-                        className="border-t border-white/[0.05] hover:bg-white/[0.02]"
+                        className="border-t border-gp-border/70 hover:bg-gp-muted/50"
                       >
-                        <td className="px-5 py-3.5 font-semibold text-white">
+                        <td className="px-5 py-3.5 font-semibold text-gp-text">
                           {c.name}
                         </td>
-                        <td className="px-5 py-3.5 text-white/70">
+                        <td className="px-5 py-3.5 text-gp-text-muted">
                           {c.phone}
-                          <span className="block text-xs text-white/40">
+                          <span className="block text-xs text-gp-text-subtle">
                             {c.email}
                           </span>
                         </td>
-                        <td className="max-w-[220px] px-5 py-3.5 text-white/55">
+                        <td className="max-w-[220px] px-5 py-3.5 text-gp-text-muted">
                           {c.locationLabel ? (
-                            <span className="block text-xs font-semibold text-brand/80">
+                            <span className="block text-xs font-semibold text-accent-ink/80">
                               {c.locationLabel}
                             </span>
                           ) : null}
                           {c.defaultLocation ?? "—"}
                         </td>
-                        <td className="px-5 py-3.5 text-white/80">
+                        <td className="px-5 py-3.5 text-gp-text">
                           {c.totalOrders}
                         </td>
-                        <td className="px-5 py-3.5 text-white/50">
+                        <td className="px-5 py-3.5 text-gp-text-muted">
                           {formatDate(c.createdAt)}
                         </td>
                       </tr>
@@ -154,16 +154,16 @@ export default async function AdminCustomersPage() {
                 {data.customers.map((c) => (
                   <div
                     key={c.id}
-                    className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4"
+                    className="rounded-2xl border border-gp-border/70 bg-gp-muted/50 p-4"
                   >
-                    <p className="font-bold text-white">{c.name}</p>
-                    <p className="text-xs text-white/45">
+                    <p className="font-bold text-gp-text">{c.name}</p>
+                    <p className="text-xs text-gp-text-subtle">
                       {c.phone} · {c.email}
                     </p>
-                    <p className="mt-2 text-xs text-white/50">
+                    <p className="mt-2 text-xs text-gp-text-muted">
                       {c.defaultLocation ?? "No saved location"}
                     </p>
-                    <div className="mt-3 flex justify-between text-xs text-white/40">
+                    <div className="mt-3 flex justify-between text-xs text-gp-text-subtle">
                       <span>{c.totalOrders} orders</span>
                       <span>{formatDate(c.createdAt)}</span>
                     </div>
@@ -182,7 +182,7 @@ export default async function AdminCustomersPage() {
           action={
             <Link
               href="/admin/staff"
-              className="text-sm font-semibold text-brand hover:underline"
+              className="text-sm font-semibold text-accent-ink hover:underline"
             >
               Manage staff
             </Link>
@@ -204,17 +204,17 @@ export default async function AdminCustomersPage() {
               }
             />
           ) : (
-            <ul className="divide-y divide-white/[0.05]">
+            <ul className="divide-y divide-gp-border/60">
               {data.staff.map((u) => (
                 <li
                   key={u.id}
                   className="flex items-center justify-between gap-3 px-5 py-3.5"
                 >
                   <div className="min-w-0">
-                    <p className="font-semibold text-white">{u.name}</p>
-                    <p className="truncate text-xs text-white/40">{u.email}</p>
+                    <p className="font-semibold text-gp-text">{u.name}</p>
+                    <p className="truncate text-xs text-gp-text-subtle">{u.email}</p>
                   </div>
-                  <div className="shrink-0 text-right text-xs text-white/45">
+                  <div className="shrink-0 text-right text-xs text-gp-text-subtle">
                     <p>{u.staffTitle?.trim() || "Staff"}</p>
                     <p>{formatDate(u.createdAt)}</p>
                   </div>

@@ -19,7 +19,7 @@ export default async function AdminServicePages() {
           <>
             Photos, descriptions and prices on /services. Incoming customer jobs
             live under{" "}
-            <Link href="/admin/services" className="text-brand hover:underline">
+            <Link href="/admin/services" className="text-accent-ink hover:underline">
               Service orders
             </Link>
             .
@@ -36,9 +36,9 @@ export default async function AdminServicePages() {
             <Link
               key={o.id}
               href={`/admin/service-pages/${o.id}`}
-              className="group overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-ink-900/50 shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-brand-glow"
+              className="group overflow-hidden rounded-[1.35rem] border border-gp-border/70 bg-gp-surface shadow-card transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-brand-glow"
             >
-              <div className="relative aspect-[16/10] bg-ink-800">
+              <div className="media-well relative aspect-[16/10]">
                 <SafeImage
                   src={cover || o.imageUrl}
                   alt={o.name}
@@ -48,7 +48,7 @@ export default async function AdminServicePages() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-transparent to-transparent" />
                 {!o.enabled && (
-                  <span className="absolute left-3 top-3 rounded-pill border border-white/20 bg-ink-950/70 px-2.5 py-1 text-xs font-semibold text-white/80 backdrop-blur">
+                  <span className="absolute left-3 top-3 rounded-pill border border-gp-border bg-gp-surface/70 px-2.5 py-1 text-xs font-semibold text-gp-text backdrop-blur">
                     Hidden
                   </span>
                 )}
@@ -57,8 +57,8 @@ export default async function AdminServicePages() {
                 </span>
               </div>
               <div className="p-4">
-                <p className="text-sm text-white/50">{o.tagline}</p>
-                <span className="mt-3 inline-block text-sm font-semibold text-brand">
+                <p className="text-sm text-gp-text-muted">{o.tagline}</p>
+                <span className="mt-3 inline-block text-sm font-semibold text-accent-ink">
                   Edit page →
                 </span>
               </div>

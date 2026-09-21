@@ -69,7 +69,7 @@ export default async function StockNotifyAdminPage() {
           <>
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[640px] text-left text-sm">
-                <thead className="bg-white/[0.02] text-[11px] uppercase tracking-[0.14em] text-white/40">
+                <thead className="bg-gp-muted/50 text-[11px] uppercase tracking-[0.14em] text-gp-text-subtle">
                   <tr>
                     <th className="px-5 py-3.5 font-semibold">When</th>
                     <th className="px-5 py-3.5 font-semibold">Product</th>
@@ -81,9 +81,9 @@ export default async function StockNotifyAdminPage() {
                   {rows.map((r) => (
                     <tr
                       key={r.id}
-                      className="border-t border-white/[0.05] transition-colors hover:bg-white/[0.02]"
+                      className="border-t border-gp-border/70 transition-colors hover:bg-gp-muted/50"
                     >
-                      <td className="whitespace-nowrap px-5 py-3.5 text-white/50">
+                      <td className="whitespace-nowrap px-5 py-3.5 text-gp-text-muted">
                         {r.createdAt.toLocaleString("en-ZM", {
                           dateStyle: "medium",
                           timeStyle: "short"
@@ -92,12 +92,12 @@ export default async function StockNotifyAdminPage() {
                       <td className="px-5 py-3.5">
                         <Link
                           href={`/admin/products/${r.product.id}`}
-                          className="font-medium text-white hover:text-brand"
+                          className="font-medium text-gp-text hover:text-accent-ink"
                         >
                           {r.product.name}
                         </Link>
                       </td>
-                      <td className="px-5 py-3.5 text-white/60">
+                      <td className="px-5 py-3.5 text-gp-text-muted">
                         {r.variantId
                           ? (variantName.get(r.variantId) ?? "—")
                           : "—"}
@@ -109,7 +109,7 @@ export default async function StockNotifyAdminPage() {
                               ? `mailto:${r.contact}`
                               : `https://wa.me/${r.contact.replace(/[^0-9]/g, "")}`
                           }
-                          className="font-mono text-brand hover:underline"
+                          className="font-mono text-accent-ink hover:underline"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -125,15 +125,15 @@ export default async function StockNotifyAdminPage() {
               {rows.map((r) => (
                 <div
                   key={r.id}
-                  className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4"
+                  className="rounded-2xl border border-gp-border/70 bg-gp-muted/50 p-4"
                 >
                   <Link
                     href={`/admin/products/${r.product.id}`}
-                    className="font-bold text-white hover:text-brand"
+                    className="font-bold text-gp-text hover:text-accent-ink"
                   >
                     {r.product.name}
                   </Link>
-                  <p className="mt-1 text-xs text-white/45">
+                  <p className="mt-1 text-xs text-gp-text-subtle">
                     {r.variantId
                       ? (variantName.get(r.variantId) ?? "Standard")
                       : "Standard"}{" "}
@@ -149,7 +149,7 @@ export default async function StockNotifyAdminPage() {
                         ? `mailto:${r.contact}`
                         : `https://wa.me/${r.contact.replace(/[^0-9]/g, "")}`
                     }
-                    className="mt-3 inline-block font-mono text-sm text-brand"
+                    className="mt-3 inline-block font-mono text-sm text-accent-ink"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

@@ -80,26 +80,26 @@ export default async function AdminDashboard() {
               </Link>
               <Link
                 href="/admin/orders?status=PENDING"
-                className="rounded-pill border border-white/15 bg-white/[0.03] px-5 py-2.5 text-sm font-semibold text-white/80 hover:border-brand/40 hover:text-white"
+                className="rounded-pill border border-gp-border bg-gp-muted/50 px-5 py-2.5 text-sm font-semibold text-gp-text hover:border-brand/40 hover:text-gp-text"
               >
                 Review pending
               </Link>
             </div>
           </div>
           <div className="grid w-full max-w-sm grid-cols-2 gap-2.5 sm:gap-3">
-            <div className="rounded-2xl border border-brand/30 bg-brand/[0.09] p-3.5 sm:p-4">
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-brand/80">
+            <div className="rounded-2xl border border-accent/40 bg-accent/[0.14] p-3.5 shadow-lit sm:p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-accent-ink">
                 Paid revenue
               </p>
-              <p className="mt-2 text-lg font-black tabular-nums text-white sm:text-xl">
+              <p className="mt-2 text-lg font-black tabular-nums text-gp-text sm:text-xl">
                 {formatPrice(revenue)}
               </p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3.5 sm:p-4">
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">
+            <div className="rounded-2xl border border-gp-border bg-gp-muted/60 p-3.5 shadow-lit sm:p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-gp-text-muted">
                 Pending queue
               </p>
-              <p className="mt-2 text-lg font-black tabular-nums text-white sm:text-xl">
+              <p className="mt-2 text-lg font-black tabular-nums text-gp-text sm:text-xl">
                 {pending}
               </p>
             </div>
@@ -147,7 +147,7 @@ export default async function AdminDashboard() {
             {analytics.topProducts.length === 0 ? (
               <DeskEmpty title="No sales data yet" />
             ) : (
-              <ul className="divide-y divide-white/[0.05]">
+              <ul className="divide-y divide-gp-border/60">
                 {analytics.topProducts.map((p) => {
                   const width = Math.round(
                     (p.revenue / maxProductRevenue) * 100
@@ -155,14 +155,14 @@ export default async function AdminDashboard() {
                   const row = (
                     <>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="truncate text-sm text-white/85 group-hover:text-brand">
+                        <span className="truncate text-sm text-gp-text group-hover:text-accent-ink">
                           {p.name}
                         </span>
-                        <span className="shrink-0 text-xs font-semibold text-white/45">
+                        <span className="shrink-0 text-xs font-semibold text-gp-text-subtle">
                           {p.qty} sold · {formatPrice(p.revenue)}
                         </span>
                       </div>
-                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-gp-muted/50">
                         <div
                           className="h-full rounded-full bg-gradient-to-r from-brand to-brand-soft"
                           style={{ width: `${Math.max(width, 6)}%` }}
@@ -175,7 +175,7 @@ export default async function AdminDashboard() {
                       {p.id ? (
                         <Link
                           href={`/admin/products/${p.id}`}
-                          className="group block rounded-xl transition-colors hover:bg-white/[0.02]"
+                          className="group block rounded-xl transition-colors hover:bg-gp-muted/50"
                         >
                           {row}
                         </Link>
@@ -196,7 +196,7 @@ export default async function AdminDashboard() {
               action={
                 <Link
                   href="/admin/customers"
-                  className="text-sm font-semibold text-brand hover:underline"
+                  className="text-sm font-semibold text-accent-ink hover:underline"
                 >
                   All
                 </Link>
@@ -205,17 +205,17 @@ export default async function AdminDashboard() {
             {analytics.topCustomers.length === 0 ? (
               <DeskEmpty title="No buyers yet" />
             ) : (
-              <ul className="divide-y divide-white/[0.05]">
+              <ul className="divide-y divide-gp-border/60">
                 {analytics.topCustomers.slice(0, 5).map((c) => (
                   <li
                     key={`${c.phone}-${c.name}`}
                     className="flex items-center justify-between gap-3 px-5 py-3.5"
                   >
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-white">
+                      <p className="truncate text-sm font-semibold text-gp-text">
                         {c.name}
                       </p>
-                      <p className="truncate text-xs text-white/40">
+                      <p className="truncate text-xs text-gp-text-subtle">
                         {c.location}
                         {c.lastOrder
                           ? ` · ${formatDateTime(c.lastOrder)}`
@@ -223,10 +223,10 @@ export default async function AdminDashboard() {
                       </p>
                     </div>
                     <div className="shrink-0 text-right">
-                      <p className="text-sm font-bold tabular-nums text-brand">
+                      <p className="text-sm font-bold tabular-nums text-accent-ink">
                         {formatPrice(c.spent)}
                       </p>
-                      <p className="text-xs text-white/40">
+                      <p className="text-xs text-gp-text-subtle">
                         {c.orders} order{c.orders === 1 ? "" : "s"}
                       </p>
                     </div>
@@ -260,7 +260,7 @@ export default async function AdminDashboard() {
           action={
             <Link
               href="/admin/orders"
-              className="text-sm font-semibold text-brand hover:underline"
+              className="text-sm font-semibold text-accent-ink hover:underline"
             >
               View all
             </Link>

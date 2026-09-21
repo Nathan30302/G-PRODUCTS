@@ -34,13 +34,13 @@ export function ShopTeamMemberRow({ member }: { member: Member }) {
 
   return (
     <li className="flex flex-wrap items-center gap-4 px-5 py-4 sm:px-6">
-      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-white/[0.08] bg-brand/10 text-xs font-black text-brand">
+      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-gp-border/70 bg-brand/10 text-xs font-black text-accent-ink">
         {initials}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="font-semibold text-white">{member.name}</p>
-        <p className="text-sm text-white/50">{member.title}</p>
-        <p className="mt-1 text-[11px] text-white/35">
+        <p className="font-semibold text-gp-text">{member.name}</p>
+        <p className="text-sm text-gp-text-muted">{member.title}</p>
+        <p className="mt-1 text-[11px] text-gp-text-subtle">
           Order {member.sortOrder} ·{" "}
           {member.published ? "Published" : "Hidden"}
         </p>
@@ -61,7 +61,7 @@ export function ShopTeamMemberRow({ member }: { member: Member }) {
           <button
             type="submit"
             disabled={togglePending}
-            className="rounded-pill border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/70 hover:border-brand/40 hover:text-brand disabled:opacity-50"
+            className="rounded-pill border border-gp-border px-3 py-1.5 text-xs font-semibold text-gp-text-muted hover:border-brand/40 hover:text-accent-ink disabled:opacity-50"
           >
             {member.published ? "Hide" : "Publish"}
           </button>

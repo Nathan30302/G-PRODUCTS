@@ -29,21 +29,21 @@ export function LocationPhotosForm({
       <input type="hidden" name="locationId" value={locationId} />
       <input type="hidden" name="photoUrls" value={urls.join("\n")} />
 
-      <div className="rounded-2xl border border-white/[0.06] bg-ink-950/35 px-4 py-3.5 sm:px-5">
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/35">
+      <div className="rounded-2xl border border-gp-border/70 bg-gp-surface/35 px-4 py-3.5 sm:px-5">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gp-text-subtle">
           Shop photos
         </p>
-        <p className="mt-1 text-sm leading-relaxed text-white/55">
+        <p className="mt-1 text-sm leading-relaxed text-gp-text-muted">
           Upload clear photos of{" "}
-          <span className="font-semibold text-white/80">{locationName}</span>.
+          <span className="font-semibold text-gp-text">{locationName}</span>.
           The first photo is the cover on the homepage locations band.
         </p>
         {count > 0 ? (
-          <p className="mt-2 text-xs font-semibold text-brand/90">
+          <p className="mt-2 text-xs font-semibold text-accent-ink/90">
             {count} photo{count === 1 ? "" : "s"} ready — save to publish.
           </p>
         ) : (
-          <p className="mt-2 text-xs text-white/40">
+          <p className="mt-2 text-xs text-gp-text-subtle">
             No photos yet — customers will see the location name only until you
             add some.
           </p>

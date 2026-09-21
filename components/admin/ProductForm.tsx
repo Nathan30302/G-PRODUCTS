@@ -40,9 +40,9 @@ type ProductFormData = {
 };
 
 const field =
-  "mt-1.5 w-full rounded-xl border border-white/10 bg-ink-950/80 px-4 py-3 text-white outline-none transition-all placeholder:text-white/25 focus:border-brand/50 focus:bg-ink-950 focus:ring-2 focus:ring-brand/15";
+  "mt-1.5 w-full rounded-xl border border-gp-border bg-gp-surface/80 px-4 py-3 text-gp-text outline-none transition-all placeholder:text-gp-text-subtle focus:border-brand/50 focus:bg-gp-surface focus:ring-2 focus:ring-brand/15";
 const label =
-  "text-xs font-semibold uppercase tracking-[0.12em] text-white/45";
+  "text-xs font-semibold uppercase tracking-[0.12em] text-gp-text-subtle";
 
 const STEPS = [
   { n: 1, label: "Basics" },
@@ -63,16 +63,16 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-[1.35rem] border border-white/[0.07] bg-gradient-to-b from-ink-900/60 to-ink-950/40 shadow-card">
-      <div className="border-b border-white/[0.06] px-5 py-4 sm:px-6">
+    <section className="overflow-hidden rounded-[1.35rem] border border-gp-border/70 bg-gp-surface shadow-card shadow-lit">
+      <div className="border-b border-gp-border/70 px-5 py-4 sm:px-6">
         <div className="flex items-center gap-3">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-brand/15 text-xs font-black text-brand">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-brand/15 text-xs font-black text-accent-ink">
             {step}
           </span>
           <div>
-            <h2 className="text-lg font-bold text-white">{title}</h2>
+            <h2 className="text-lg font-bold text-gp-text">{title}</h2>
             {subtitle && (
-              <p className="mt-0.5 text-sm text-white/45">{subtitle}</p>
+              <p className="mt-0.5 text-sm text-gp-text-subtle">{subtitle}</p>
             )}
           </div>
         </div>
@@ -139,11 +139,11 @@ export function ProductForm({
 
   return (
     <div className="space-y-6 pb-24 lg:pb-8">
-      <div className="relative overflow-hidden rounded-[1.85rem] border border-white/[0.07] bg-gradient-to-br from-ink-850 via-ink-900 to-ink-950 shadow-card">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand/10 blur-[90px]" />
+      <div className="relative overflow-hidden rounded-[1.85rem] border border-gp-border/70 bg-gp-surface shadow-card shadow-lit">
+        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand/25 blur-[90px]" />
         <div className="relative flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
           {isEdit && coverUrl && (
-            <div className="relative mx-auto h-24 w-24 shrink-0 overflow-hidden rounded-2xl ring-2 ring-white/10 sm:mx-0 sm:h-28 sm:w-28">
+            <div className="relative mx-auto h-24 w-24 shrink-0 overflow-hidden rounded-2xl ring-1 ring-gp-border sm:mx-0 sm:h-28 sm:w-28">
               <SafeImage
                 src={coverUrl}
                 alt={product?.name ?? "Product"}
@@ -154,18 +154,18 @@ export function ProductForm({
             </div>
           )}
           <div className="min-w-0 flex-1 text-center sm:text-left">
-            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-brand">
+            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-accent-ink">
               {isEdit ? "Editing" : "New listing"}
             </p>
             <h1 className="display mt-1 text-2xl sm:text-3xl">
               {isEdit ? product!.name : "Add product"}
             </h1>
             {isEdit && (
-              <p className="mt-2 text-lg font-black text-white/90">
+              <p className="mt-2 text-lg font-black text-gp-text">
                 {formatPrice(product!.price)}
               </p>
             )}
-            <p className="mt-2 text-sm text-white/50">
+            <p className="mt-2 text-sm text-gp-text-muted">
               {isEdit
                 ? "Update prices, colours, and photos — your changes go live after saving."
                 : "A clear flow: basics, category, colours with photos, then details. Photo 1 is the shop cover — reorder until it looks right."}
@@ -174,7 +174,7 @@ export function ProductForm({
           <div className="flex shrink-0 flex-wrap justify-center gap-2 sm:flex-col sm:items-end">
             <Link
               href="/admin/products"
-              className="inline-flex items-center gap-2 rounded-pill border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-semibold text-white/70 transition-colors hover:border-brand/30 hover:text-brand"
+              className="inline-flex items-center gap-2 rounded-pill border border-gp-border bg-gp-muted/50 px-4 py-2.5 text-sm font-semibold text-gp-text-muted transition-colors hover:border-brand/30 hover:text-accent-ink"
             >
               <Icon name="chevron-left" className="h-4 w-4" />
               All products
@@ -183,7 +183,7 @@ export function ProductForm({
               <Link
                 href={`/product/${product.slug}`}
                 target="_blank"
-                className="inline-flex items-center gap-2 rounded-pill border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-semibold text-white/70 transition-colors hover:border-accent/30 hover:text-accent"
+                className="inline-flex items-center gap-2 rounded-pill border border-gp-border bg-gp-muted/50 px-4 py-2.5 text-sm font-semibold text-gp-text-muted transition-colors hover:border-accent/30 hover:text-accent"
               >
                 <Icon name="external" className="h-4 w-4" />
                 View on shop
@@ -192,17 +192,17 @@ export function ProductForm({
           </div>
         </div>
 
-        <div className="border-t border-white/[0.06] px-4 py-3 sm:px-8">
+        <div className="border-t border-gp-border/70 px-4 py-3 sm:px-8">
           <div className="flex items-center justify-between gap-2">
             {STEPS.map((s) => (
               <div
                 key={s.n}
                 className="flex flex-1 flex-col items-center gap-1.5"
               >
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-brand/15 text-[11px] font-black text-brand ring-1 ring-brand/25">
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-brand/15 text-[11px] font-black text-accent-ink ring-1 ring-brand/25">
                   {s.n}
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-white/35">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-gp-text-subtle">
                   {s.label}
                 </span>
               </div>
@@ -322,7 +322,7 @@ export function ProductForm({
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] px-4 py-3.5 transition-colors has-[:checked]:border-brand/40 has-[:checked]:bg-brand/[0.08]">
+            <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-gp-border/70 bg-gp-muted/50 px-4 py-3.5 transition-colors has-[:checked]:border-brand/40 has-[:checked]:bg-brand/[0.08]">
               <input
                 type="checkbox"
                 name="featured"
@@ -330,15 +330,15 @@ export function ProductForm({
                 className="h-4 w-4 accent-[#E5F34F]"
               />
               <span>
-                <span className="block text-sm font-semibold text-white">
+                <span className="block text-sm font-semibold text-gp-text">
                   Featured
                 </span>
-                <span className="block text-xs text-white/40">
+                <span className="block text-xs text-gp-text-subtle">
                   Show on homepage
                 </span>
               </span>
             </label>
-            <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] px-4 py-3.5 transition-colors has-[:checked]:border-accent/40 has-[:checked]:bg-accent/[0.08]">
+            <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-gp-border/70 bg-gp-muted/50 px-4 py-3.5 transition-colors has-[:checked]:border-accent/40 has-[:checked]:bg-accent/[0.08]">
               <input
                 type="checkbox"
                 name="hotDeal"
@@ -346,10 +346,10 @@ export function ProductForm({
                 className="h-4 w-4 accent-[#C8E03F]"
               />
               <span>
-                <span className="block text-sm font-semibold text-white">
+                <span className="block text-sm font-semibold text-gp-text">
                   Hot deal
                 </span>
-                <span className="block text-xs text-white/40">
+                <span className="block text-xs text-gp-text-subtle">
                   Highlight as a special offer
                 </span>
               </span>
@@ -367,17 +367,17 @@ export function ProductForm({
           <SubmitButton isEdit={isEdit} />
           <Link
             href="/admin/products"
-            className="rounded-pill border border-white/10 px-6 py-3.5 text-sm font-semibold text-white/70 transition-colors hover:border-white/20 hover:text-white"
+            className="rounded-pill border border-gp-border px-6 py-3.5 text-sm font-semibold text-gp-text-muted transition-colors hover:border-ink-700/30 hover:text-gp-text"
           >
             Cancel
           </Link>
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.08] bg-ink-950/95 p-4 backdrop-blur-xl lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-gp-border/70 bg-gp-surface/95 p-4 backdrop-blur-xl lg:hidden">
           <div className="mx-auto flex max-w-3xl gap-2">
             <Link
               href="/admin/products"
-              className="rounded-pill border border-white/10 px-4 py-3 text-sm font-semibold text-white/70"
+              className="rounded-pill border border-gp-border px-4 py-3 text-sm font-semibold text-gp-text-muted"
             >
               Cancel
             </Link>
@@ -391,7 +391,7 @@ export function ProductForm({
       {isEdit && canDelete && (
         <form
           action={deleteProduct}
-          className="mx-auto max-w-3xl border-t border-white/[0.06] pt-6"
+          className="mx-auto max-w-3xl border-t border-gp-border/70 pt-6"
         >
           <input type="hidden" name="id" value={product!.id} />
           <button

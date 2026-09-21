@@ -10,8 +10,8 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Edit service" };
 
 const field =
-  "mt-1 w-full rounded-xl border border-ink-700 bg-ink-900 px-4 py-2.5 text-white outline-none focus:border-brand";
-const label = "text-sm text-white/60";
+  "mt-1 w-full rounded-xl border border-ink-700 bg-gp-surface px-4 py-2.5 text-gp-text outline-none focus:border-brand";
+const label = "text-sm text-gp-text-muted";
 
 export default async function EditServicePage({
   params
@@ -26,16 +26,16 @@ export default async function EditServicePage({
 
   return (
     <div>
-      <div className="mb-6 flex items-center gap-2 text-sm text-white/40">
-        <Link href="/admin/service-pages" className="hover:text-white">
+      <div className="mb-6 flex items-center gap-2 text-sm text-gp-text-subtle">
+        <Link href="/admin/service-pages" className="hover:text-gp-text">
           Service pages
         </Link>
         <span>/</span>
-        <span className="text-white/70">{offer.name}</span>
+        <span className="text-gp-text-muted">{offer.name}</span>
       </div>
 
-      <h1 className="text-2xl font-black text-white">Edit {offer.name}</h1>
-      <p className="mt-1 text-sm text-white/50">
+      <h1 className="text-2xl font-black text-gp-text">Edit {offer.name}</h1>
+      <p className="mt-1 text-sm text-gp-text-muted">
         Changes appear on the public services pages immediately.
       </p>
 
@@ -74,10 +74,10 @@ export default async function EditServicePage({
             downloadPrefix={offer.slug}
             initialUrls={initialPhotos}
           />
-          <p className="mt-2 text-xs text-white/40">
+          <p className="mt-2 text-xs text-gp-text-subtle">
             One cover photo is enough by default. Upload more if you want a
             swipe gallery. First photo is the cover — use{" "}
-            <span className="text-brand">Make cover</span> to change it.
+            <span className="text-accent-ink">Make cover</span> to change it.
           </p>
         </div>
         <div>
@@ -91,8 +91,8 @@ export default async function EditServicePage({
         </div>
 
         {offer.serviceType === "KEY_CUTTING" && (
-          <div className="grid gap-4 rounded-card border border-ink-800 bg-ink-900 p-4 sm:grid-cols-2">
-            <p className="sm:col-span-2 text-sm font-semibold text-white">
+          <div className="grid gap-4 rounded-card border border-ink-800 bg-gp-surface p-4 sm:grid-cols-2">
+            <p className="sm:col-span-2 text-sm font-semibold text-gp-text">
               Key cutting prices (ZMW)
             </p>
             <label className="block">
@@ -115,15 +115,15 @@ export default async function EditServicePage({
                 className={field}
               />
             </label>
-            <p className="sm:col-span-2 text-xs text-white/40">
+            <p className="sm:col-span-2 text-xs text-gp-text-subtle">
               Round-trip online orders charge this fee twice (to store + return).
             </p>
           </div>
         )}
 
         {offer.serviceType === "PRINTING" && (
-          <div className="grid gap-4 rounded-card border border-ink-800 bg-ink-900 p-4 sm:grid-cols-2">
-            <p className="sm:col-span-2 text-sm font-semibold text-white">
+          <div className="grid gap-4 rounded-card border border-ink-800 bg-gp-surface p-4 sm:grid-cols-2">
+            <p className="sm:col-span-2 text-sm font-semibold text-gp-text">
               Printing prices (ZMW per page)
             </p>
             <label className="block">
@@ -150,7 +150,7 @@ export default async function EditServicePage({
         )}
 
         {offer.serviceType === "G_LOANS" && (
-          <div className="rounded-card border border-ink-800 bg-ink-900 p-4">
+          <div className="rounded-card border border-ink-800 bg-gp-surface p-4">
             <label className="block">
               <span className={label}>Minimum loan (ZMW)</span>
               <input
@@ -184,7 +184,7 @@ export default async function EditServicePage({
           <input type="hidden" name="loanMin" value={settings.loanMin} />
         )}
 
-        <label className="flex items-center gap-2 text-sm text-white/70">
+        <label className="flex items-center gap-2 text-sm text-gp-text-muted">
           <input
             type="checkbox"
             name="enabled"
@@ -203,7 +203,7 @@ export default async function EditServicePage({
           </button>
           <Link
             href="/admin/service-pages"
-            className="rounded-pill border border-ink-700 px-6 py-2.5 text-sm font-semibold text-white/70"
+            className="rounded-pill border border-ink-700 px-6 py-2.5 text-sm font-semibold text-gp-text-muted"
           >
             Cancel
           </Link>

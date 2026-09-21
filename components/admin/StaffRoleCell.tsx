@@ -46,7 +46,7 @@ export function StaffRoleCell({
 
   if (role === "OWNER") {
     return (
-      <span className="rounded-pill border border-brand/30 bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">
+      <span className="rounded-pill border border-brand/30 bg-brand/10 px-2.5 py-1 text-xs font-semibold text-accent-ink">
         Owner
       </span>
     );
@@ -55,13 +55,13 @@ export function StaffRoleCell({
   if (!editing) {
     return (
       <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-pill border border-white/15 px-2.5 py-1 text-xs font-semibold text-white/65">
+        <span className="rounded-pill border border-gp-border px-2.5 py-1 text-xs font-semibold text-gp-text-muted">
           {staffTitle?.trim() || "Staff"}
         </span>
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="text-[11px] font-semibold text-brand hover:underline"
+          className="text-[11px] font-semibold text-accent-ink hover:underline"
         >
           Edit role
         </button>
@@ -76,7 +76,7 @@ export function StaffRoleCell({
         name="staffTitle"
         defaultValue={staffTitle ?? ""}
         placeholder="e.g. Orders & uploads"
-        className="w-full rounded-lg border border-white/10 bg-ink-900 px-2.5 py-1.5 text-xs text-white outline-none focus:border-brand"
+        className="w-full rounded-lg border border-gp-border bg-gp-surface px-2.5 py-1.5 text-xs text-gp-text outline-none focus:border-brand"
         required
         autoFocus
       />
@@ -85,7 +85,7 @@ export function StaffRoleCell({
         <button
           type="button"
           onClick={() => setEditing(false)}
-          className="text-[11px] text-white/40 hover:text-white"
+          className="text-[11px] text-gp-text-subtle hover:text-gp-text"
         >
           Cancel
         </button>

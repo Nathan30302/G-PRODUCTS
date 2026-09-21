@@ -58,11 +58,12 @@ const config: Config = {
           soft: "#D4E855",
           dark: "#A8C832",
           /**
-           * Readable brand green for text on light surfaces (5.2:1 on white).
-           * Sampled from the darkest greens in the logo mark — the lime
-           * DEFAULT is a fill/accent colour and only reaches ~1.8:1 as text.
+           * Brand green that stays readable as *text*.
+           * The lime DEFAULT only reaches ~1.8:1 on white, so this resolves to
+           * a darkened logo green (#5A7228, 5.2:1) on light surfaces and flips
+           * back to lime on the dark shop theme and dark/brand desk themes.
            */
-          ink: "#5A7228"
+          ink: "rgb(var(--gp-accent-text-rgb) / <alpha-value>)"
         },
         warm: {
           DEFAULT: "#e07a3a",

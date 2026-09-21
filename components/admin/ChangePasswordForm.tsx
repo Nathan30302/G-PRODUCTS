@@ -56,7 +56,7 @@ export function ChangePasswordForm() {
           {checks.map((c) => (
             <li
               key={c.id}
-              className={`text-[11px] ${c.ok ? "text-accent" : "text-white/30"}`}
+              className={`text-[11px] ${c.ok ? "text-accent" : "text-gp-text-subtle"}`}
             >
               {c.ok ? "✓" : "·"} {c.label}
             </li>

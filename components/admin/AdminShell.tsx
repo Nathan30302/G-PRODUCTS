@@ -226,7 +226,7 @@ function AdminShellInner({
         </span>
         <span
           className={`mt-0.5 block text-[11px] leading-snug ${
-            active ? "text-white/70" : "text-gp-text-subtle group-hover:text-gp-text-muted"
+            active ? "text-gp-text-muted" : "text-gp-text-subtle group-hover:text-gp-text-muted"
           }`}
         >
           {item.hint}

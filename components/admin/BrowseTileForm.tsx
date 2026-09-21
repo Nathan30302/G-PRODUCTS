@@ -72,9 +72,9 @@ export function BrowseTileForm({
             name="isPromo"
             value="1"
             defaultChecked={tile?.isPromo ?? false}
-            className="h-4 w-4 rounded border-white/20"
+            className="h-4 w-4 rounded border-gp-border"
           />
-          <span className="text-sm text-white/70">Promotional tile (taller)</span>
+          <span className="text-sm text-gp-text-muted">Promotional tile (taller)</span>
         </label>
         {tile ? (
           <label className="flex items-end gap-2 pb-3">
@@ -83,9 +83,9 @@ export function BrowseTileForm({
               name="enabled"
               value="1"
               defaultChecked={tile.enabled}
-              className="h-4 w-4 rounded border-white/20"
+              className="h-4 w-4 rounded border-gp-border"
             />
-            <span className="text-sm text-white/70">Visible on shop</span>
+            <span className="text-sm text-gp-text-muted">Visible on shop</span>
           </label>
         ) : null}
       </div>
