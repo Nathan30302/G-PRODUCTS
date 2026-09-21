@@ -99,6 +99,8 @@ export function DeskStat({
       </p>
       {hint ? (
         <p className="mt-1.5 text-xs leading-snug text-gp-text-muted">{hint}</p>
+      ) : href ? (
+        <p className="mt-1.5 text-[11px] font-semibold text-ink-700">Open</p>
       ) : null}
     </div>
   );
@@ -230,11 +232,15 @@ export function StatusPill({
         : ORDER_STATUS_STYLE;
   const cls =
     map[status] ?? "border-gp-border bg-gp-muted text-gp-text-muted";
+  const label = status
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/^\w/, (c) => c.toUpperCase());
   return (
     <span
-      className={`inline-flex rounded-pill border px-2.5 py-1 text-[11px] font-semibold tracking-wide ${cls}`}
+      className={`inline-flex rounded-pill border px-2.5 py-1 text-[11px] font-bold tracking-wide ${cls}`}
     >
-      {status}
+      {label}
     </span>
   );
 }
@@ -279,7 +285,7 @@ export function DeskFilterBar({
             {typeof opt.count === "number" ? (
               <span
                 className={`ml-1.5 tabular-nums ${
-                  isActive ? "text-gp-text-muted" : "text-gp-text-subtle"
+                  isActive ? "text-white/80" : "text-gp-text-subtle"
                 }`}
               >
                 {opt.count}
@@ -303,6 +309,7 @@ export function DeskHero({
     <section
       className={`relative overflow-hidden rounded-[1.5rem] border border-gp-border/70 bg-gp-surface p-5 shadow-card shadow-lit sm:rounded-[1.65rem] sm:p-8 ${className}`}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand to-transparent" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/[0.07] via-transparent to-accent/[0.05]" />
       <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-brand/25 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-10 left-6 h-36 w-36 rounded-full bg-accent/20 blur-3xl" />

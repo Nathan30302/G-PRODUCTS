@@ -19,14 +19,14 @@ export function DeskOrderCard({ order }: { order: DeskOrderSummary }) {
   return (
     <Link
       href={`/admin/orders/${order.id}`}
-      className="block rounded-[1.25rem] border border-gp-border bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-ink-700/20 hover:shadow-card-hover"
+      className="block rounded-[1.25rem] border border-gp-border/80 bg-gp-surface p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ink-700/25 hover:shadow-card-hover active:scale-[0.995]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-mono text-sm font-semibold text-gp-text">
             {order.ref}
           </p>
-          <p className="mt-1 truncate text-sm font-medium text-gp-text">
+          <p className="mt-1 truncate text-base font-bold text-gp-text">
             {order.customerName}
           </p>
           {order.customerPhone ? (
@@ -48,7 +48,7 @@ export function DeskOrderCard({ order }: { order: DeskOrderSummary }) {
             </p>
           ) : null}
         </div>
-        <p className="shrink-0 text-base font-black tabular-nums text-gp-text">
+        <p className="shrink-0 text-lg font-black tabular-nums text-gp-text">
           {formatPrice(order.total)}
         </p>
       </div>
@@ -128,7 +128,7 @@ export function DeskOrderTable({
               <td className="px-4 py-3.5 text-right sm:px-5">
                 <Link
                   href={`/admin/orders/${o.id}`}
-                  className="text-sm font-semibold text-ink-700 hover:underline"
+                  className="inline-flex rounded-pill bg-ink-850 px-3 py-1.5 text-xs font-bold text-white hover:bg-ink-950"
                 >
                   Open
                 </Link>

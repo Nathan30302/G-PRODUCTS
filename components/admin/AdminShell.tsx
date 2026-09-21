@@ -241,12 +241,13 @@ function AdminShellInner({
       className="relative min-h-screen overflow-x-hidden bg-gp-bg text-gp-text"
     >
       <header className="sticky top-0 z-40 border-b border-gp-border bg-gp-surface/95 shadow-sm backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand to-transparent" />
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-gp-border bg-gp-surface text-gp-text-muted transition-colors hover:border-ink-700/25 hover:text-ink-700 lg:hidden"
+              className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gp-border bg-gp-surface text-gp-text-muted transition-colors hover:border-ink-700/25 hover:text-ink-700 lg:hidden"
               aria-label="Open menu"
             >
               <svg
@@ -301,9 +302,9 @@ function AdminShellInner({
             </div>
             <Link
               href="/"
-              className="hidden rounded-pill border border-gp-border bg-gp-surface px-3.5 py-2 text-xs font-semibold text-ink-700 transition-colors hover:border-ink-700/25 hover:bg-gp-muted sm:inline-flex"
+              className="hidden items-center gap-1.5 rounded-pill border border-gp-border bg-gp-surface px-3.5 py-2 text-xs font-bold text-ink-850 transition-colors hover:border-brand/50 hover:bg-brand/10 sm:inline-flex"
             >
-              Live shop
+              Customer shop
             </Link>
             <LogoutButton variant="prominent" label="Sign out" />
           </div>
@@ -445,9 +446,9 @@ function AdminShellInner({
               <div className="flex gap-2">
               <Link
                 href="/"
-                className="flex-1 rounded-pill border border-gp-border py-3 text-center text-sm font-semibold text-ink-700"
+                className="flex-1 rounded-pill border border-gp-border py-3 text-center text-sm font-bold text-ink-850"
               >
-                Live shop
+                Customer shop
               </Link>
               <LogoutButton
                 variant="prominent"

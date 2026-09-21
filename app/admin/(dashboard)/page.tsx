@@ -74,13 +74,13 @@ export default async function AdminDashboard() {
             <div className="mt-5 flex flex-wrap gap-2 sm:mt-6">
               <Link
                 href="/admin/products/new"
-                className="rounded-pill bg-brand px-5 py-2.5 text-sm font-bold text-ink-950 shadow-brand-glow transition-all hover:bg-brand-soft"
+                className="inline-flex min-h-11 items-center justify-center rounded-pill bg-brand px-5 py-2.5 text-sm font-bold text-ink-950 shadow-brand-glow transition-all hover:-translate-y-0.5 hover:bg-brand-soft active:translate-y-0"
               >
                 + Add product
               </Link>
               <Link
                 href="/admin/orders?status=PENDING"
-                className="rounded-pill border border-gp-border bg-gp-muted/50 px-5 py-2.5 text-sm font-semibold text-gp-text hover:border-brand/40 hover:text-gp-text"
+                className="inline-flex min-h-11 items-center justify-center rounded-pill border border-gp-border bg-gp-surface px-5 py-2.5 text-sm font-semibold text-gp-text hover:border-ink-700/25 hover:bg-gp-muted"
               >
                 Review pending
               </Link>
