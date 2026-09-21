@@ -29,9 +29,9 @@ export function CategoryProductCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="flex h-full flex-col overflow-hidden rounded-2xl border border-gp-border/70 bg-white transition-shadow hover:shadow-[0_8px_24px_rgba(26,35,33,0.08)]"
+      className="flex h-full flex-col overflow-hidden rounded-2xl border border-gp-border/80 bg-white shadow-sm transition-shadow hover:shadow-[0_10px_28px_rgba(26,35,33,0.1)]"
     >
-      <div className="relative aspect-square bg-white px-2 pt-3">
+      <div className="relative aspect-square bg-[#f4f6f3] px-2 pt-3">
         {image ? (
           <SafeImage
             src={image}

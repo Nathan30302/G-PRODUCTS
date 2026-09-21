@@ -105,11 +105,11 @@ export function AddToCartButton({
       type="button"
       onClick={handleAdd}
       aria-label={`Add ${product.name} to cart`}
-      className={`flex w-full items-center justify-center gap-2 rounded-pill font-semibold transition-all duration-200 ease-out-expo active:scale-[0.97] ${
+      className={`flex w-full items-center justify-center gap-2 rounded-pill font-bold transition-all duration-200 ease-out-expo active:scale-[0.97] ${
         added
           ? "bg-accent text-white shadow-card"
-          : "bg-ink-700 text-white shadow-float hover:bg-ink-800"
-      } ${compact ? "px-4 py-2 text-sm" : "px-4 py-3"}`}
+          : "bg-ink-850 text-white shadow-float hover:bg-ink-950"
+      } ${compact ? "min-h-10 px-4 py-2 text-sm" : "min-h-12 px-4 py-3.5 text-[0.95rem]"}`}
     >
       {added ? (
         <>

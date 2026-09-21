@@ -26,7 +26,7 @@ export function AuthScreenShell({
 
       <div className="auth-screen-inner">
         <header className="auth-brand">
-          <Logo variant="lockupNavy" size="xl" priority />
+          <Logo size="xl" priority />
           <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gp-text-subtle">
             {tagline ?? siteConfig.tagline}
           </p>

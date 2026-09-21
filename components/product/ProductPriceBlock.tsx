@@ -35,7 +35,7 @@ export function ProductPriceBlock({
         {showFrom ? (
           <span className="text-sm font-medium text-gp-text-muted">From</span>
         ) : null}
-        <span className="text-[1.75rem] font-extrabold tabular-nums tracking-tight text-gp-text">
+        <span className="text-[2rem] font-extrabold tabular-nums leading-none tracking-tight text-gp-text sm:text-[2.35rem]">
           {formatPrice(displayPrice)}
         </span>
         {compareAt && !pricedOptions ? (

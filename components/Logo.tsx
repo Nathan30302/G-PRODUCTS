@@ -5,9 +5,9 @@ import { siteConfig } from "@/config/site";
 const LOCKUP_ASPECT = 697 / 586;
 
 const markHeights = {
-  sm: 32,
-  md: 40,
-  lg: 48,
+  sm: 36,
+  md: 48,
+  lg: 56,
   xl: 64,
   xxl: 96
 } as const;
@@ -56,15 +56,12 @@ export function Logo({
   const src = variantSrc[variant];
 
   if (variant === "mark") {
-    const px = markHeights[size as keyof typeof markHeights];
-    const mdBox = size === "md";
+    const px = markHeights[size as keyof typeof markHeights] ?? markHeights.md;
 
     return (
       <span
-        className={`relative inline-flex shrink-0 items-center justify-center ${
-          mdBox ? "h-10 w-10 sm:h-11 sm:w-11" : ""
-        } ${className}`}
-        style={mdBox ? undefined : { width: px, height: px }}
+        className={`relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#243F50] shadow-[0_8px_18px_rgba(36,63,80,0.28)] ring-2 ring-[#E5F34F]/70 ${className}`}
+        style={{ width: px, height: px }}
       >
         <Image
           src={src}
@@ -73,7 +70,7 @@ export function Logo({
           height={px}
           priority={priority}
           unoptimized
-          className="h-full w-full object-contain select-none"
+          className="h-[88%] w-[88%] object-contain select-none"
           draggable={false}
         />
       </span>

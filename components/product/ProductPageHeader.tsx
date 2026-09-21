@@ -60,7 +60,7 @@ export function ProductPageHeader({
           className="flex justify-center"
           aria-label="G-Products home"
         >
-          <Logo size="md" />
+          <Logo variant="mark" size="md" />
         </Link>
 
         <button

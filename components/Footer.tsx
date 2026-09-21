@@ -49,7 +49,7 @@ export function Footer() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
       <div className="container-g grid grid-cols-2 gap-8 py-12 sm:gap-10 sm:py-14 md:grid-cols-3 lg:grid-cols-12">
         <div className="col-span-2 md:col-span-3 lg:col-span-4">
-          <Logo variant="lockup" size="lg" className="block" />
+          <Logo size="lg" className="block" />
           <p className="mt-4 text-sm font-semibold text-ink-700">
             {siteConfig.tagline}
           </p>

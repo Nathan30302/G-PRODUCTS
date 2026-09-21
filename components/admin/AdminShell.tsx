@@ -268,7 +268,7 @@ function AdminShellInner({
               ) : null}
             </button>
             <Link href="/admin" className="shrink-0">
-              <Logo size="md" priority />
+              <Logo variant="mark" size="md" priority />
             </Link>
             <div className="hidden min-w-0 sm:block">
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-ink-700">

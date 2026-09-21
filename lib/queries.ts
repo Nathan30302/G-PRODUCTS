@@ -68,6 +68,7 @@ function toProduct(p: DbProductWithRelations): Product {
     stock,
     featured: p.featured,
     hotDeal: p.hotDeal,
+    createdAt: p.createdAt.toISOString(),
     variants
   };
 }

@@ -694,17 +694,11 @@ html {
   }
 
   /**
-   * Media well — the surface a product photo sits on.
-   * A flat grey block reads cheap; a top-lit gradient gives the product
-   * somewhere to sit. Follows the active theme via the rgb() vars.
+   * Studio surface behind product photos — soft grey so the item reads
+   * the way it does on a Plug-style card.
    */
   .media-well {
-    background-image: linear-gradient(
-      to bottom,
-      rgb(var(--gp-surface-rgb)) 0%,
-      rgb(var(--gp-muted-rgb)) 62%,
-      rgb(var(--gp-muted-rgb)) 100%
-    );
+    background-color: #f4f6f3;
   }
 
   .page-enter {
@@ -882,7 +876,7 @@ html {
   }
 
   .auth-input-wrap {
-    @apply flex items-stretch overflow-hidden rounded-2xl border border-gp-border bg-gp-surface transition-all duration-200 focus-within:border-ink-700/35 focus-within:shadow-[0_0_0_4px_rgba(35,55,70,0.08)];
+    @apply flex items-stretch overflow-hidden rounded-2xl border border-gp-border bg-gp-surface transition-all duration-200 focus-within:border-brand/70 focus-within:shadow-[0_0_0_4px_rgba(229,243,79,0.28)];
   }
 
   .auth-input-wrap-error {
@@ -1046,7 +1040,7 @@ html {
   }
 
   .auth-field {
-    @apply mt-2 w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-base font-normal text-gp-text outline-none transition-all placeholder:text-gp-text-subtle focus:border-ink-700/35 focus:shadow-[0_0_0_4px_rgba(35,55,70,0.08)];
+    @apply mt-2 w-full rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 text-base font-normal text-gp-text outline-none transition-all placeholder:text-gp-text-subtle focus:border-brand/70 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.28)];
   }
 
   .auth-perks {
@@ -1080,7 +1074,7 @@ html {
   }
 
   .shop-find-search {
-    @apply flex items-center gap-3 rounded-2xl border border-gp-border bg-gp-surface px-4 py-3.5 shadow-sm focus-within:border-ink-700/25 focus-within:shadow-[0_0_0_4px_rgba(35,55,70,0.06)];
+    @apply flex items-center gap-3 rounded-pill border border-gp-border bg-white px-4 py-3.5 shadow-sm focus-within:border-brand/70 focus-within:shadow-[0_0_0_4px_rgba(229,243,79,0.28)];
   }
 
   .shop-find-chip {

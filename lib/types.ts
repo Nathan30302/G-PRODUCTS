@@ -37,6 +37,8 @@ export type Product = {
   stock: StockStatus;
   featured?: boolean;
   hotDeal?: boolean;
+  /** ISO timestamp — used so Newest sort is stable. */
+  createdAt?: string;
   variants: ProductVariant[];
 };
 

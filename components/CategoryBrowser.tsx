@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Product } from "@/lib/types";
+import { Product, fromPrice } from "@/lib/types";
 import { CategoryPageHeader } from "@/components/category/CategoryPageHeader";
 import { CategoryProductCard } from "@/components/category/CategoryProductCard";
 import { ShopEmptyState } from "@/components/shop/ui";
@@ -64,37 +65,76 @@ function FilterPill({
   onToggle: () => void;
   children?: ReactNode;
 }) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [box, setBox] = useState<{ top: number; left: number; width: number } | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (!open) return;
+    function place() {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const width = Math.max(rect.width, 196);
+      const left = Math.min(rect.left, window.innerWidth - width - 12);
+      const menuHeight = 240;
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const top =
+        spaceBelow < menuHeight && rect.top > menuHeight
+          ? rect.top - menuHeight - 6
+          : rect.bottom + 6;
+      setBox({ top, left: Math.max(8, left), width });
+    }
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [open]);
+
   return (
     <div className="relative shrink-0">
       <button
+        ref={buttonRef}
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition-colors ${
+        className={`inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition-colors ${
           active
-            ? "border-ink-700/30 bg-ink-700/5 text-gp-text"
+            ? "border-[#243F50] bg-[#243F50] text-white shadow-sm ring-2 ring-[#E5F34F]/70"
             : "border-gp-border bg-white text-gp-text hover:border-gp-text-subtle"
         }`}
       >
-        <span className="max-w-[8rem] truncate">{displayValue ?? label}</span>
+        <span className="max-w-[9.5rem] truncate">{displayValue ?? label}</span>
         <Icon
           name="chevron-down"
-          className={`h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180" : ""} ${
+            active ? "text-[#E5F34F]" : ""
+          }`}
         />
       </button>
-      {open && children ? (
-        <>
-          <button
-            type="button"
-            className="fixed inset-0 z-40"
-            aria-label="Close menu"
-            onClick={onToggle}
-          />
-          <div className="absolute left-0 top-[calc(100%+0.35rem)] z-50 max-h-56 min-w-[11rem] overflow-y-auto rounded-xl border border-gp-border bg-white py-1 shadow-[0_12px_40px_rgba(26,35,33,0.12)]">
-            {children}
-          </div>
-        </>
-      ) : null}
+      {open && children && box
+        ? createPortal(
+            <>
+              <button
+                type="button"
+                className="fixed inset-0 z-[80] cursor-default bg-transparent"
+                aria-label="Close menu"
+                onClick={onToggle}
+              />
+              <div
+                className="fixed z-[90] max-h-64 overflow-y-auto rounded-xl border border-gp-border bg-white py-1 shadow-[0_16px_40px_rgba(26,35,33,0.16)]"
+                style={{ top: box.top, left: box.left, width: box.width }}
+                role="listbox"
+              >
+                {children}
+              </div>
+            </>,
+            document.body
+          )
+        : null}
     </div>
   );
 }
@@ -168,12 +208,20 @@ export function CategoryBrowser({
         (p) => (p.brand ?? "").toLowerCase() === series.toLowerCase()
       );
     }
-    if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
-    else if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
-    else if (sort === "best-sellers") {
+    if (sort === "price-asc") list.sort((a, b) => fromPrice(a) - fromPrice(b) || a.name.localeCompare(b.name));
+    else if (sort === "price-desc") list.sort((a, b) => fromPrice(b) - fromPrice(a) || a.name.localeCompare(b.name));
+    else if (sort === "newest") {
+      list.sort(
+        (a, b) =>
+          (b.createdAt ?? "").localeCompare(a.createdAt ?? "") ||
+          a.name.localeCompare(b.name)
+      );
+    } else if (sort === "best-sellers") {
       list.sort((a, b) => {
         const score = (p: Product) =>
-          (p.featured ? 2 : 0) + (p.hotDeal ? 1 : 0);
+          (p.featured ? 4 : 0) +
+          (p.hotDeal ? 2 : 0) +
+          (p.stock === "sold_out" ? 0 : 1);
         return score(b) - score(a) || a.name.localeCompare(b.name);
       });
     }

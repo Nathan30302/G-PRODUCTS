@@ -83,14 +83,14 @@ export function MobileBuyBar({ product }: { product: Product }) {
         ) : !canQuickAdd ? (
           <Link
             href="#buy"
-            className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950"
+            className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-ink-850 px-4 py-3 text-sm font-bold text-white shadow-float"
           >
             {chooseLabel}
           </Link>
         ) : (
           <button
             onClick={handleAdd}
-            className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-brand px-4 py-3 text-sm font-bold text-ink-950 transition-all active:scale-[0.98]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-pill bg-ink-850 px-4 py-3 text-sm font-bold text-white shadow-float transition-all active:scale-[0.98] hover:bg-ink-950"
           >
             <Icon name="cart" className="h-4 w-4" />
             Add To Cart

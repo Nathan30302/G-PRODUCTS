@@ -7,7 +7,7 @@ import { Category, Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { Icon } from "@/components/Icons";
 import { ShopEmptyState } from "@/components/shop/ui";
-import { filterCatalog, type SortMode, type StockFilter } from "@/lib/search";
+import { filterCatalog, sortModeLabels, type SortMode, type StockFilter } from "@/lib/search";
 
 export function SearchClient({
   products,
@@ -83,7 +83,7 @@ export function SearchClient({
           </div>
         </header>
 
-        <div className="mt-8 gp-card">
+        <div className="mt-5 rounded-2xl border border-gp-border/80 bg-white p-3.5 sm:p-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-gp-text-subtle">
               Stock
@@ -112,24 +112,19 @@ export function SearchClient({
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-gp-text-subtle">
               Sort
             </span>
-            {(
-              [
-                ["match", "Best match"],
-                ["price-asc", "Price ↑"],
-                ["price-desc", "Price ↓"]
-              ] as const
-            ).map(([id, label]) => (
+            {(Object.keys(sortModeLabels) as SortMode[]).map((id) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => setSort(id)}
-                className={`rounded-pill px-3 py-1.5 text-xs font-semibold transition-all ${
+                aria-pressed={sort === id}
+                className={`min-h-9 rounded-pill px-3.5 py-2 text-xs font-semibold transition-all ${
                   sort === id
-                    ? "bg-ink-700 text-white shadow-sm"
+                    ? "bg-[#243F50] text-white shadow-sm ring-2 ring-[#E5F34F]/80"
                     : "border border-gp-border bg-gp-muted text-gp-text-muted hover:border-ink-700/25 hover:text-gp-text"
                 }`}
               >
-                {label}
+                {sortModeLabels[id]}
               </button>
             ))}
           </div>
@@ -194,6 +189,8 @@ export function SearchClient({
                   </span>
                 </>
               ) : null}
+              {" "}
+              · sorted by {sortModeLabels[sort].toLowerCase()}
             </p>
             {searching ? (
               <p className="mt-1 text-xs text-gp-text-subtle">

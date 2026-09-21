@@ -102,7 +102,7 @@ export function ProductGallery({
       <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2">
         <div
           ref={frameRef}
-          className="relative aspect-square w-full touch-pan-y overflow-hidden bg-white"
+          className="relative aspect-square w-full touch-pan-y overflow-hidden bg-[#f4f6f3]"
         >
           <motion.div
             className="relative z-[1] flex h-full cursor-grab active:cursor-grabbing"
@@ -121,7 +121,7 @@ export function ProductGallery({
             {list.map((img, i) => (
               <div
                 key={`${img.url}-${i}`}
-                className="relative h-full shrink-0 bg-white"
+                className="relative h-full shrink-0 bg-[#f4f6f3]"
                 style={{ width: width || "100%" }}
               >
                 <SafeImage

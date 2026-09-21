@@ -50,12 +50,12 @@ export function ProductPurchasePanel({
     <>
       <div className="px-4 sm:px-0">
         {onSale ? (
-          <span className="inline-block rounded-md bg-brand px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink-950">
+          <span className="inline-flex rounded-pill bg-brand px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-ink-950">
             Sale
           </span>
         ) : null}
 
-        <h1 className="mt-2 text-xl font-bold leading-snug text-gp-text">
+        <h1 className="mt-2 text-[1.35rem] font-extrabold leading-snug tracking-tight text-gp-text sm:text-2xl">
           {product.name}
         </h1>
 
