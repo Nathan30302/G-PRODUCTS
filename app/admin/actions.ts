@@ -9,5 +9,5 @@ export async function logoutAction(): Promise<void> {
     destroySession().catch(() => undefined),
     destroyCustomerSession().catch(() => undefined)
   ]);
-  redirect("/desk");
+  redirect("/guard/provider");
 }

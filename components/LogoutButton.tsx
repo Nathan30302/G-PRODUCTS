@@ -4,10 +4,9 @@ import { useState } from "react";
 import { Icon } from "@/components/Icons";
 
 const SAFE_NEXT = new Set([
-  "/profile",
-  "/desk",
-  "/desk/login",
-  "/admin/login"
+  "/guard/customer",
+  "/guard/provider",
+  "/profile"
 ]);
 
 export function LogoutButton({
@@ -15,17 +14,16 @@ export function LogoutButton({
   label = "Sign out",
   pendingLabel = "Signing out…",
   variant = "text",
-  next = "/profile"
+  next = "/guard/customer"
 }: {
   className?: string;
   label?: string;
   pendingLabel?: string;
   variant?: "text" | "icon" | "prominent";
-  /** Where to land after logout — desk uses /desk */
-  next?: "/profile" | "/desk" | "/desk/login" | "/admin/login";
+  next?: "/guard/customer" | "/guard/provider" | "/profile";
 }) {
   const [pending, setPending] = useState(false);
-  const dest = SAFE_NEXT.has(next) ? next : "/profile";
+  const dest = SAFE_NEXT.has(next) ? next : "/guard/customer";
   const text = pending ? pendingLabel : label;
 
   const defaultClass =

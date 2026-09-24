@@ -7,15 +7,10 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const SAFE_NEXT = new Set([
-  "/profile",
-  "/desk",
-  "/desk/login",
-  "/admin/login"
-]);
+const SAFE_NEXT = new Set(["/guard/customer", "/guard/provider", "/profile"]);
 
 function safeNext(raw: string): string {
-  return SAFE_NEXT.has(raw) ? raw : "/profile";
+  return SAFE_NEXT.has(raw) ? raw : "/guard/customer";
 }
 
 async function readNext(request: Request): Promise<string> {
@@ -23,7 +18,7 @@ async function readNext(request: Request): Promise<string> {
     const form = await request.formData();
     return safeNext(String(form.get("next") ?? "").trim());
   } catch {
-    return "/profile";
+    return "/guard/customer";
   }
 }
 

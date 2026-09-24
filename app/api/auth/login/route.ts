@@ -49,7 +49,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const identifier = String(body.identifier ?? "").trim();
     const password = String(body.password ?? "");
-    const scope = body.scope === "desk" ? "desk" : "customer";
+    const scope =
+      body.scope === "desk" || body.scope === "admin" ? body.scope : "customer";
 
     if (!identifier || !password) {
       return NextResponse.json(
@@ -69,8 +70,21 @@ export async function POST(req: Request) {
       );
     }
 
-    if (scope === "desk") {
+    if (scope === "desk" || scope === "admin") {
       const deskUser = await resolveDeskUser(identifier);
+      const customerHit = deskUser
+        ? null
+        : await findCustomerByIdentifier(identifier);
+      if (customerHit) {
+        return NextResponse.json(
+          {
+            error:
+              "This is a customer account. Sign in on the shop, not here."
+          },
+          { status: 403 }
+        );
+      }
+
       if (!deskUser || !(await verifyPassword(password, deskUser.passwordHash))) {
         return NextResponse.json(
           {
@@ -90,7 +104,10 @@ export async function POST(req: Request) {
       const res = NextResponse.json({
         ok: true,
         kind: "desk",
-        redirectTo: siteConfig.apps.provider.home,
+        redirectTo:
+          scope === "admin"
+            ? siteConfig.apps.admin.home
+            : siteConfig.apps.provider.home,
         name: deskUser.name
       });
       setSessionCookie(res.cookies, DESK_COOKIE, token, DESK_MAX_AGE);
@@ -104,7 +121,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           error:
-            "This is a Provider desk account. Sign in at the desk, not the shop."
+            "This is a provider desk account. Sign in on the provider desk, not the shop."
         },
         { status: 403 }
       );

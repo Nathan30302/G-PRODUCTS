@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function LegacyLoginRedirect() {
-  redirect("/profile");
+  redirect("/guard/customer");
 }

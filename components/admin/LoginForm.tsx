@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { AuthScreenShell } from "@/components/profile/AuthScreenShell";
 import { AuthErrorBanner } from "@/components/auth/AuthErrorBanner";
 import { AuthSubmitButton } from "@/components/auth/AuthSubmitButton";
 import { AuthSuccessOverlay } from "@/components/auth/AuthSuccessOverlay";
-import { Icon } from "@/components/Icons";
 import { hapticTap } from "@/lib/haptics";
 import { siteConfig } from "@/config/site";
 
@@ -38,7 +36,11 @@ export function LoginForm() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         cache: "no-store",
-        body: JSON.stringify({ identifier, password, scope: "desk" })
+        body: JSON.stringify({
+          identifier,
+          password,
+          scope: "admin"
+        })
       });
       const data = (await res.json()) as {
         error?: string;
@@ -55,7 +57,7 @@ export function LoginForm() {
       hapticTap("success");
       window.setTimeout(() => {
         window.location.assign(
-          data.redirectTo ?? siteConfig.apps.provider.home
+          data.redirectTo ?? siteConfig.apps.admin.home
         );
       }, 420);
     } catch {
@@ -67,19 +69,11 @@ export function LoginForm() {
 
   return (
     <AuthScreenShell
+      tone="admin"
       tagline="Provider desk"
-      footer={
-        <p className="auth-back flex flex-col items-center gap-3 text-center text-sm text-gp-text-subtle">
-          <Link
-            href={siteConfig.apps.provider.gate}
-            className="inline-flex items-center gap-1.5 font-semibold text-ink-700 hover:text-ink-850"
-          >
-            <Icon name="chevron-left" className="h-3.5 w-3.5" />
-            Back to desk home
-          </Link>
-          <span>Owners and staff only · Separate from the customer shop</span>
-        </p>
-      }
+      headline="Run the shop"
+      points={["Orders and stock", "Catalogue", "Your team"]}
+      footer={<p className="auth-back">Provider desk only.</p>}
     >
       <div className="auth-card-wrap relative">
         {success ? <AuthSuccessOverlay message={success} /> : null}
@@ -88,10 +82,10 @@ export function LoginForm() {
           <div className="auth-card-accent" aria-hidden />
           <div className="auth-card-header">
             <h1 className="display text-[clamp(1.5rem,1.2rem+1.3vw,1.875rem)] font-extrabold text-gp-text">
-              Sign in to the desk
+              Provider desk
             </h1>
             <p className="mt-2 text-sm leading-relaxed text-gp-text-muted">
-              Products, orders, and services — for the G-Products team.
+              For Gift and the team members he adds. Shoppers use the customer sign-in.
             </p>
           </div>
 
@@ -139,7 +133,7 @@ export function LoginForm() {
             <AuthSubmitButton
               pending={pending}
               pendingLabel="Signing you in…"
-              label="Enter the desk"
+              label="Sign in"
             />
           </form>
         </div>

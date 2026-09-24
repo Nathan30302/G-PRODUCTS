@@ -38,7 +38,7 @@ export async function unifiedLoginAction(
     if (deskUser) {
       return {
         error:
-          "This is a Provider desk account. Sign in at the desk (/desk), not here."
+          "This is a provider desk account. Sign in on the provider desk, not here."
       };
     }
 

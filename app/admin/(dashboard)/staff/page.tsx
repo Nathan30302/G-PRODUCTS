@@ -23,7 +23,7 @@ export default async function StaffPage() {
       <DeskPageHeader
         eyebrow="Team access"
         title="Staff"
-        description="Add teammates with an email + password, then share those details. They sign in on Profile — they can't create desk accounts themselves."
+        description="Add teammates with an email + password, then share those details. They sign in at the provider desk — they can't create desk accounts themselves."
       />
 
       <DeskPanel>

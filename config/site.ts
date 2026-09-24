@@ -214,13 +214,16 @@ export const siteConfig = {
   apps: {
     customer: {
       home: "/profile/account",
-      login: "/profile"
+      login: "/guard/customer"
     },
     provider: {
       home: "/admin",
-      /** Public desk homepage (landing) */
-      gate: "/desk",
-      login: "/desk/login"
+      gate: "/guard/provider",
+      login: "/guard/provider"
+    },
+    admin: {
+      home: "/admin",
+      login: "/guard/provider"
     }
   }
 };

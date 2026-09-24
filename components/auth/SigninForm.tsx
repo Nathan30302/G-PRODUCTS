@@ -61,7 +61,11 @@ export function SigninForm({
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         cache: "no-store",
-        body: JSON.stringify({ identifier: id, password })
+        body: JSON.stringify({
+          identifier: id,
+          password,
+          scope: "customer"
+        })
       });
       const data = (await res.json()) as {
         error?: string;

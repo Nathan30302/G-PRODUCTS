@@ -21,7 +21,10 @@ export function SiteChrome({
 }) {
   const pathname = usePathname();
   const isAdmin =
-    pathname?.startsWith("/admin") || pathname?.startsWith("/desk");
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/desk") ||
+    pathname?.startsWith("/guard/provider") ||
+    pathname?.startsWith("/guard/admin");
   const [auth, setAuth] = useState<ShopAuth>(initialAuth);
 
   useEffect(() => {
@@ -41,7 +44,8 @@ export function SiteChrome({
 
   if (isAdmin) return <>{children}</>;
 
-  const isAuthGate = pathname === "/profile";
+  const isAuthGate =
+    pathname === "/guard/customer" || pathname === "/profile";
 
   if (isAuthGate) {
     return (

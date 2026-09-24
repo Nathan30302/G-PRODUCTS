@@ -43,9 +43,10 @@ export function AuthPanel({
 
   function switchMode(next: Mode) {
     setMode(next);
-    router.replace(next === "signup" ? "/profile?mode=signup" : "/profile", {
-      scroll: false
-    });
+    router.replace(
+      next === "signup" ? "/guard/customer?mode=signup" : "/guard/customer",
+      { scroll: false }
+    );
   }
 
   function handleSuccess(redirectTo: string, message: string) {

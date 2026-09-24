@@ -30,14 +30,19 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Gate the desk before rendering. A redirect inside the dashboard layout is
+  // Gate the dashboard before rendering. A redirect inside the layout is
   // not enough: layout and page render in parallel, so the page still streamed
   // orders, revenue and customer counts to signed-out visitors.
-  // Public desk entry: /desk + /desk/login. Legacy /admin/login → /desk/login.
+  // Two doors only: /guard/customer and /guard/provider.
   const { pathname } = request.nextUrl;
-  if (pathname === "/admin/login") {
+  if (
+    pathname === "/admin/login" ||
+    pathname === "/guard/admin" ||
+    pathname === "/desk" ||
+    pathname === "/desk/login"
+  ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/desk/login";
+    url.pathname = "/guard/provider";
     url.search = "";
     return NextResponse.redirect(url);
   }
@@ -45,7 +50,7 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get(DESK_COOKIE)?.value;
     if (!(await hasValidDeskToken(token))) {
       const url = request.nextUrl.clone();
-      url.pathname = "/desk/login";
+      url.pathname = "/guard/provider";
       url.search = "";
       return NextResponse.redirect(url);
     }

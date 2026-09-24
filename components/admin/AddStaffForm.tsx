@@ -30,8 +30,9 @@ export function AddStaffForm() {
     <form action={action} className="space-y-4">
       <p className="rounded-2xl border border-gp-border/70 bg-gp-muted/50 px-4 py-3 text-sm text-gp-text-muted">
         Create their login here, then send them the <strong className="text-gp-text-muted">email</strong> and{" "}
-        <strong className="text-gp-text-muted">password</strong>. They sign in on Profile — they
-        can’t create their own desk account.
+        <strong className="text-gp-text-muted">password</strong>. They sign in at{" "}
+        <strong className="text-gp-text-muted">/guard/provider</strong> — they can’t create their own desk
+        account.
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -92,7 +93,7 @@ export function AddStaffForm() {
           </datalist>
           <p className="mt-2 text-xs text-gp-text-subtle">
             Write what this person does — products, orders, services, etc. They
-            sign in on Profile with the email and password above.
+            sign in at /guard/provider with the email and password above.
           </p>
         </label>
       </div>
@@ -104,7 +105,7 @@ export function AddStaffForm() {
       )}
       {state?.success && (
         <p className="rounded-lg bg-accent/10 px-3 py-2 text-sm text-accent">
-          {state.success} Share the email + password so they can Sign in on Profile.
+          {state.success} Share the email + password so they can sign in at /guard/provider.
         </p>
       )}
 

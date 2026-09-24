@@ -297,7 +297,7 @@ function AdminShellInner({
             <LogoutButton
               variant="prominent"
               label="Sign out"
-              next="/desk"
+              next="/guard/provider"
             />
           </div>
         </div>
@@ -417,7 +417,7 @@ function AdminShellInner({
               <LogoutButton
                 variant="prominent"
                 label="Sign out"
-                next="/desk"
+                next="/guard/provider"
                 className="w-full justify-center py-3"
               />
             </div>
