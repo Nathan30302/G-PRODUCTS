@@ -16,7 +16,7 @@ import {
   ServiceSubmitButton
 } from "@/components/services/service-ui";
 
-const STEPS = ["Details", "Collateral", "NRC", "Send"];
+const STEPS = ["Details", "Collateral", "NRC", "Visit"];
 
 export function GLoansForm({ settings }: { settings: ServiceSettings }) {
   const LOAN_MIN = settings.loanMin;
@@ -93,7 +93,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         ref: data.ref,
         message:
           data.message ??
-          "Loan request received. We'll review and contact you on WhatsApp.",
+          "Request received. We review your documents, you come in to sign, then you collect the cash once we approve.",
         files: typeof data.files === "number" ? data.files : nrcFiles.length
       });
     } catch {
@@ -105,7 +105,7 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
   if (done) {
     return (
       <ServiceResult
-        title="Loan request sent"
+        title="Loan request received"
         refCode={done.ref}
         message={done.message}
         total={amount}
@@ -132,7 +132,8 @@ export function GLoansForm({ settings }: { settings: ServiceSettings }) {
         <p className="text-sm font-semibold text-gp-text">What you need</p>
         <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-gp-text-muted">
           <li>• Collateral worth more than the loan amount</li>
-          <li>• Clear photo / scan of your original NRC</li>
+          <li>• Clear photo of your original NRC — we review it on the desk</li>
+          <li>• Come in person to sign. Once approved, collect the cash at the shop</li>
           <li>• Minimum {formatPrice(LOAN_MIN)}</li>
         </ul>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">

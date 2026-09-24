@@ -11,6 +11,7 @@ import {
   StatusPill
 } from "@/components/admin/desk";
 import { parseServiceFileUrls } from "@/lib/service-files";
+import { expireOldServiceFiles } from "@/lib/expire-service-files";
 import { Icon } from "@/components/Icons";
 import { labelForServiceStatus } from "@/lib/commerce-hooks";
 
@@ -42,6 +43,7 @@ export default async function AdminServicesPage({
 }: {
   searchParams: Promise<{ status?: string; type?: string }>;
 }) {
+  await expireOldServiceFiles().catch(() => undefined);
   const { status: rawStatus, type: rawType } = await searchParams;
   const status =
     rawStatus && FILTERS.includes(rawStatus as (typeof FILTERS)[number])

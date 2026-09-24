@@ -130,8 +130,8 @@ export function PrintingForm({ settings }: { settings: ServiceSettings }) {
       setFileCount(typeof data.files === "number" ? data.files : files.length);
       setMessage(
         data.mode === "manual"
-          ? "Print order received. Your files are with our printing team — pay with Mobile Money and we'll prepare your job for pickup or Yango."
-          : "Approve the payment on your phone. Once paid, we'll process your uploaded files."
+          ? "Print order received. Pay our Get Cash number. We confirm the payment, download your files, and print. Files stay on the desk for 12 hours, then they are removed. Your request history stays."
+          : "Approve the payment on your phone. Once paid, we'll print your files."
       );
       if (data.mode === "live" && data.paymentStatus === "PENDING") {
         setPhase("pending");

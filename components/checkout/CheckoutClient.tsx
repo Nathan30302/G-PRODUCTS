@@ -229,7 +229,7 @@ export function CheckoutClient({
             {phase === "pending" &&
               `Check your phone and enter your ${providerLabel} PIN to approve the payment. This page updates automatically.`}
             {phase === "manual" &&
-              `Thank you, ${form.name || "friend"}. Send ${providerLabel} to the number below, then confirm on WhatsApp so we can prepare your order.`}
+              `Thank you, ${form.name || "friend"}. Pay ${providerLabel} to our Get Cash number below. We confirm the payment on this order, then we prepare it.`}
           </p>
 
           {snapshot && (
@@ -279,11 +279,11 @@ export function CheckoutClient({
             <div className="mt-4 rounded-xl border border-brand/30 bg-brand/10 p-4 text-sm">
               <p className="font-semibold text-brand">Pay with {momo.label}</p>
               <p className="mt-2 text-white/80">
-                Send{" "}
+                Pay{" "}
                 <strong className="text-white">
                   {snapshot ? formatPrice(snapshot.total) : "the total"}
                 </strong>{" "}
-                to:
+                to this Get Cash number:
               </p>
               <p className="mt-2 font-mono text-lg font-bold tracking-wide text-white">
                 {momo.number}
@@ -302,7 +302,7 @@ export function CheckoutClient({
             <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/60">
               <p className="font-semibold text-white">What happens next</p>
               <ol className="mt-2 list-decimal space-y-1 pl-4">
-                <li>The shop sees this order and confirms payment</li>
+                <li>You pay us. We confirm the cash on this order before we prepare it</li>
                 <li>They mark it preparing, then ready — you see the same words</li>
                 <li>
                   Pickup at {siteConfig.locations[0]?.name} or{" "}

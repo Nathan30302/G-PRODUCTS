@@ -6,6 +6,8 @@ import { prisma } from "@/lib/db";
 import { initiatePayment, type PaymentProvider } from "@/lib/payments";
 import { DEFAULT_SETTINGS, parseSettings } from "@/lib/services";
 import { ensureUploadsDir, publicUploadUrl } from "@/lib/uploads";
+import { displayFilenameFromUrl } from "@/lib/service-files";
+import { filesKeptUntil } from "@/lib/expire-service-files";
 
 export const runtime = "nodejs";
 
@@ -109,7 +111,9 @@ export async function POST(req: Request) {
             amount,
             weeks,
             collateral: details.collateral ?? "",
-            hasNrc: Boolean(details.hasNrc) || fileUrls.length > 0
+            hasNrc: Boolean(details.hasNrc) || fileUrls.length > 0,
+            fileNames: fileUrls.map((url) => displayFilenameFromUrl(url)),
+            filesKeptUntil: filesKeptUntil()
           }),
           fileUrls: JSON.stringify(fileUrls),
           amount,
@@ -121,7 +125,7 @@ export async function POST(req: Request) {
         ref: request.ref,
         mode: "request",
         message:
-          "Loan request received with your NRC. We'll review and contact you on WhatsApp.",
+          "Request received. We review your NRC and collateral, then you come in to sign. Once approved, collect the cash at the shop.",
         files: fileUrls.length
       });
     }
@@ -344,7 +348,9 @@ export async function POST(req: Request) {
             unitPrice: unit,
             pages,
             copies,
-            notes: details.notes ?? ""
+            notes: details.notes ?? "",
+            fileNames: fileUrls.map((url) => displayFilenameFromUrl(url)),
+            filesKeptUntil: filesKeptUntil()
           }),
           fileUrls: JSON.stringify(fileUrls),
           amount: total,

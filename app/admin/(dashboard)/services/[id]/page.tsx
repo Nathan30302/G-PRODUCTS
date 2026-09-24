@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { formatPrice, formatDateTime } from "@/lib/format";
-import { updateServiceStatus } from "@/app/admin/(dashboard)/services/actions";
 import { siteConfig } from "@/config/site";
 import {
   DeskHero,
@@ -11,22 +10,15 @@ import {
   StatusPill
 } from "@/components/admin/desk";
 import { ServiceFilesPanel } from "@/components/admin/ServiceFilesPanel";
+import { ServiceStatusForm } from "@/components/admin/ServiceStatusForm";
 import { describeServiceFiles } from "@/lib/service-files";
+import { expireOldServiceFiles } from "@/lib/expire-service-files";
 import { Icon } from "@/components/Icons";
 import { labelForServiceStatus } from "@/lib/commerce-hooks";
 import { customerWhatsAppLink } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Service request" };
-
-const STATUSES = [
-  "NEW",
-  "CONFIRMED",
-  "IN_PROGRESS",
-  "READY",
-  "DELIVERED",
-  "CANCELLED"
-] as const;
 
 const typeLabel: Record<string, string> = {
   KEY_CUTTING: "Key Cutting",
@@ -51,7 +43,8 @@ const DETAIL_LABELS: Record<string, string> = {
   weeks: "Weeks",
   rate: "Rate %",
   collateral: "Collateral",
-  hasNrc: "Has NRC"
+  hasNrc: "Has NRC",
+  fileNames: "Files received"
 };
 
 function serviceMessage(ref: string, status: string) {
@@ -60,6 +53,7 @@ function serviceMessage(ref: string, status: string) {
 }
 
 function formatDetailValue(key: string, v: unknown): string {
+  if (Array.isArray(v)) return v.map(String).join(", ");
   if (typeof v === "boolean") return v ? "Yes" : "No";
   if (
     typeof v === "number" &&
@@ -85,6 +79,7 @@ export default async function ServiceDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  await expireOldServiceFiles().catch(() => undefined);
   const request = await prisma.serviceRequest.findUnique({ where: { id } });
   if (!request) notFound();
 
@@ -166,13 +161,30 @@ export default async function ServiceDetailPage({
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
+          {request.serviceType === "G_LOANS" ? (
+            <DeskPanel>
+              <DeskPanelHeader
+                title="How this loan moves"
+                subtitle="Review, sign in person, then they collect cash"
+              />
+              <ol className="list-decimal space-y-2 px-5 py-4 pl-9 text-sm text-gp-text-muted">
+                <li>Download the NRC and read the collateral.</li>
+                <li>Message them on WhatsApp and book the visit.</li>
+                <li>They sign in person. Mark the request confirmed, then in progress.</li>
+                <li>When approved, mark it ready. They come and collect the cash.</li>
+              </ol>
+            </DeskPanel>
+          ) : null}
+
           {showFiles ? (
             <ServiceFilesPanel
               files={files}
               emptyHint={
-                isPrinting
-                  ? "No print files on this job. Customer may need to re-upload from Services → Printing."
-                  : undefined
+                details.filesCleared
+                  ? "The files were removed after 12 hours so they don’t fill the disk. The request history is still here. Ask them to upload again if you still need the document."
+                  : isPrinting
+                    ? "No print files on this job. Customer may need to re-upload from Services → Printing."
+                    : undefined
               }
             />
           ) : null}
@@ -180,7 +192,9 @@ export default async function ServiceDetailPage({
           <DeskPanel>
             <DeskPanelHeader title="Request details" />
             <dl className="space-y-3 px-5 py-4 text-sm">
-              {Object.entries(details).map(([k, v]) => (
+              {Object.entries(details)
+                .filter((entry) => entry[0] !== "filesKeptUntil" && entry[0] !== "filesCleared")
+                .map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4">
                   <dt className="text-gp-text-subtle">
                     {DETAIL_LABELS[k] ?? k.replace(/([A-Z])/g, " $1")}
@@ -259,36 +273,10 @@ export default async function ServiceDetailPage({
               title="Update status"
               subtitle="The customer sees these same words on their track page"
             />
-            <form action={updateServiceStatus} className="space-y-3 px-5 py-4">
-              <input type="hidden" name="id" value={request.id} />
-              <p className="text-xs leading-relaxed text-gp-text-muted">
-                Customer sees{" "}
-                <span className="font-semibold text-gp-text">
-                  {labelForServiceStatus(request.status).label}
-                </span>
-                {labelForServiceStatus(request.status).hint
-                  ? ` — ${labelForServiceStatus(request.status).hint}`
-                  : ""}
-                .
-              </p>
-              <select
-                name="status"
-                defaultValue={request.status}
-                className="w-full rounded-xl border border-gp-border bg-gp-surface px-4 py-3 text-sm text-gp-text outline-none focus:border-brand/70 focus:shadow-[0_0_0_4px_rgba(229,243,79,0.28)]"
-              >
-                {STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {labelForServiceStatus(s).label}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="w-full rounded-pill bg-brand px-4 py-2.5 text-sm font-bold text-ink-950 hover:bg-brand-soft"
-              >
-                Save status
-              </button>
-            </form>
+            <ServiceStatusForm
+              requestId={request.id}
+              currentStatus={request.status}
+            />
           </DeskPanel>
         </div>
       </div>

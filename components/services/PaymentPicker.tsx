@@ -32,7 +32,12 @@ export function PaymentPicker({
 }) {
   return (
     <div>
-      <p className="text-sm font-semibold text-gp-text">Pay with Mobile Money</p>
+      <p className="text-sm font-semibold text-gp-text">Get cash — pay us on Mobile Money</p>
+      <p className="mt-1 text-xs leading-relaxed text-gp-text-muted">
+        These numbers receive the payment. We confirm it on the order, then we
+        prepare the job. There is no phone PIN prompt until the payment
+        gateway is connected.
+      </p>
       <div className="mt-3 grid gap-3 sm:grid-cols-3">
         {options.map((opt) => (
           <button
