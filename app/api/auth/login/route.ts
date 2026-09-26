@@ -121,9 +121,9 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           error:
-            "This is a provider desk account. Sign in on the provider desk, not the shop."
+            "No account matched that phone or email. Use Create account if you have not signed up yet."
         },
-        { status: 403 }
+        { status: 404 }
       );
     }
 

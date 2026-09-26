@@ -97,7 +97,7 @@ export async function POST(req: Request) {
     if (existingUser) {
       return NextResponse.json(
         {
-          error: "This email already has a desk login. Use Sign in instead."
+          error: "An account with that email already exists. Sign in instead."
         },
         { status: 409 }
       );
@@ -134,7 +134,7 @@ export async function POST(req: Request) {
       if (ownerCount > 0) {
         return NextResponse.json(
           {
-            error: "The provider account already exists. Sign in instead."
+            error: "An account with that email already exists. Sign in instead."
           },
           { status: 409 }
         );
@@ -172,7 +172,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           error:
-            "Desk staff can’t create their own account. Ask the owner to add you."
+            "This email can't be used to create a shop account."
         },
         { status: 403 }
       );
@@ -231,10 +231,12 @@ export async function POST(req: Request) {
         { status: 409 }
       );
     }
-    const message =
-      err instanceof Error ? err.message : "Could not create the account.";
+    // Never expose stack traces / Prisma internals to the browser.
     return NextResponse.json(
-      { error: `Could not create the account. ${message}` },
+      {
+        error:
+          "Could not create the account right now. Please try again in a moment."
+      },
       { status: 500 }
     );
   }

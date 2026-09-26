@@ -22,7 +22,7 @@ export function ServiceFilesPanel({
         title="Uploaded documents"
         subtitle={
           files.length > 0
-            ? `${files.length} file${files.length === 1 ? "" : "s"} · download now · removed after 12 hours`
+            ? `${files.length} file${files.length === 1 ? "" : "s"} · valid for 12 hours, then removed to free storage`
             : "No files attached to this request"
         }
       />

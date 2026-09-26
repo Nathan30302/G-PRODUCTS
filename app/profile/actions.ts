@@ -38,7 +38,7 @@ export async function unifiedLoginAction(
     if (deskUser) {
       return {
         error:
-          "This is a provider desk account. Sign in on the provider desk, not here."
+          "No account matched that phone or email. Use Create account if you have not signed up yet."
       };
     }
 
@@ -117,7 +117,7 @@ export async function unifiedSignupAction(
       if (existingUser) {
         return {
           error:
-            "This email already has a Provider desk login. Sign in at the desk, not here."
+            "An account with that email already exists."
         };
       }
     }
@@ -144,7 +144,7 @@ export async function unifiedSignupAction(
     if (isProviderSignupEmail(email) || email.endsWith("@gproducts.zm")) {
       return {
         error:
-          "Provider desk accounts are separate. Sign in at the desk login, or ask the owner to add you."
+          "This email can't be used to create a shop account."
       };
     }
 

@@ -43,7 +43,7 @@ export function ServiceResult({
       {typeof fileCount === "number" && fileCount > 0 ? (
         <p className="mt-2 inline-flex items-center gap-1.5 rounded-pill border border-brand/25 bg-brand/10 px-3 py-1 text-xs font-semibold text-ink-800">
           <Icon name="file" className="h-3.5 w-3.5" />
-          {fileCount} file{fileCount === 1 ? "" : "s"} sent to the desk · kept 12 hours
+          {fileCount} file{fileCount === 1 ? "" : "s"} sent
         </p>
       ) : null}
       <p className="mt-3 text-gp-text-muted">{message}</p>
