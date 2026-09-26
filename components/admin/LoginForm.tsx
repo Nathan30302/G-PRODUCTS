@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { AuthScreenShell } from "@/components/profile/AuthScreenShell";
 import { AuthErrorBanner } from "@/components/auth/AuthErrorBanner";
 import { AuthSubmitButton } from "@/components/auth/AuthSubmitButton";
 import { AuthSuccessOverlay } from "@/components/auth/AuthSuccessOverlay";
+import { Icon } from "@/components/Icons";
 import { hapticTap } from "@/lib/haptics";
 import { siteConfig } from "@/config/site";
 
@@ -73,7 +75,17 @@ export function LoginForm() {
       tagline="Provider desk"
       headline="Run the shop"
       points={["Orders and stock", "Catalogue", "Your team"]}
-      footer={<p className="auth-back">Provider desk only.</p>}
+      footer={
+        <p className="auth-back">
+          <Link
+            href={siteConfig.apps.provider.gate}
+            className="inline-flex items-center gap-1.5 font-semibold text-ink-700 hover:text-ink-850"
+          >
+            <Icon name="chevron-left" className="h-3.5 w-3.5" />
+            Back to the desk
+          </Link>
+        </p>
+      }
     >
       <div className="auth-card-wrap relative">
         {success ? <AuthSuccessOverlay message={success} /> : null}

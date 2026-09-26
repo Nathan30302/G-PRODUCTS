@@ -1149,6 +1149,142 @@ html {
     mask-image: radial-gradient(ellipse 75% 65% at 50% 40%, black, transparent);
   }
 
+  .desk-home {
+    @apply relative min-h-dvh text-gp-text;
+    background:
+      radial-gradient(ellipse 55% 40% at 0% 0%, rgba(229, 243, 79, 0.22), transparent 60%),
+      radial-gradient(ellipse 40% 35% at 100% 8%, rgba(35, 55, 70, 0.08), transparent 55%),
+      var(--gp-bg);
+  }
+
+  .desk-home-bg {
+    @apply pointer-events-none absolute inset-0 overflow-hidden;
+  }
+
+  .desk-home-glow {
+    @apply absolute rounded-full blur-3xl;
+  }
+
+  .desk-home-glow--a {
+    top: -8rem;
+    right: -6rem;
+    height: 24rem;
+    width: 24rem;
+    background: rgba(229, 243, 79, 0.16);
+  }
+
+  .desk-home-glow--b {
+    bottom: 10%;
+    left: -8rem;
+    height: 18rem;
+    width: 18rem;
+    background: rgba(35, 55, 70, 0.08);
+  }
+
+  .desk-home-nav {
+    @apply relative z-[2] mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-8;
+  }
+
+  .desk-home-nav-btn {
+    @apply inline-flex min-h-11 items-center rounded-pill border border-ink-850/15 bg-gp-surface px-4 text-sm font-bold text-ink-850 shadow-sm;
+  }
+
+  .desk-home-main {
+    @apply relative z-[1] mx-auto w-full max-w-6xl px-4 pb-16 sm:px-8;
+  }
+
+  .desk-home-hero {
+    @apply grid items-center gap-8 pt-4 sm:pt-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12 lg:pt-10;
+  }
+
+  .desk-home-kicker {
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-gp-text-subtle;
+  }
+
+  .desk-home-title {
+    @apply mt-4 max-w-xl text-[clamp(2.15rem,1.2rem+3.2vw,4.4rem)] font-extrabold leading-[1.02] tracking-tight;
+  }
+
+  .desk-home-lead {
+    @apply mt-4 max-w-lg text-base leading-relaxed text-gp-text-muted sm:text-lg;
+  }
+
+  .desk-home-actions {
+    @apply mt-7 flex flex-col items-start gap-3;
+  }
+
+  .desk-home-cta {
+    @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-pill bg-ink-850 px-6 text-sm font-bold text-white shadow-[0_16px_40px_-18px_rgba(35,55,70,0.55)] sm:w-auto sm:px-7;
+  }
+
+  .desk-home-note {
+    @apply max-w-sm text-sm leading-relaxed text-gp-text-subtle;
+  }
+
+  .desk-home-board {
+    @apply rounded-[1.6rem] border border-gp-border/80 bg-gp-surface/95 p-5 shadow-[0_24px_60px_-32px_rgba(35,55,70,0.45)] sm:p-6;
+  }
+
+  .desk-home-board-label {
+    @apply text-[11px] font-bold uppercase tracking-[0.2em] text-gp-text-subtle;
+  }
+
+  .desk-home-board ul {
+    @apply mt-4 space-y-3;
+  }
+
+  .desk-home-board li {
+    @apply flex items-center justify-between gap-3 rounded-2xl bg-gp-muted/70 px-4 py-3.5;
+  }
+
+  .desk-home-board strong {
+    @apply block text-sm font-bold text-gp-text;
+  }
+
+  .desk-home-board em {
+    @apply mt-0.5 block text-xs not-italic text-gp-text-subtle;
+  }
+
+  .desk-home-board b {
+    @apply shrink-0 text-sm font-bold text-ink-850;
+  }
+
+  .desk-home-work {
+    @apply mt-12 grid gap-3 sm:mt-16 sm:grid-cols-2 sm:gap-4;
+  }
+
+  .desk-home-work article {
+    @apply rounded-[1.35rem] border border-gp-border/70 bg-gp-surface/80 p-5;
+  }
+
+  .desk-home-work article span {
+    @apply grid h-10 w-10 place-items-center rounded-2xl bg-brand/25 text-ink-850;
+  }
+
+  .desk-home-work h2 {
+    @apply mt-4 text-lg font-bold;
+  }
+
+  .desk-home-work p {
+    @apply mt-2 text-sm leading-relaxed text-gp-text-muted;
+  }
+
+  .desk-home-close {
+    @apply mt-12 flex flex-col gap-5 rounded-[1.6rem] bg-ink-850 px-5 py-7 text-white sm:mt-16 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-8;
+  }
+
+  .desk-home-close h2 {
+    @apply text-2xl font-extrabold tracking-tight sm:text-3xl;
+  }
+
+  .desk-home-close p {
+    @apply mt-2 text-sm text-white/70;
+  }
+
+  .desk-home-close .desk-home-cta {
+    @apply bg-brand text-ink-950 shadow-none;
+  }
+
   .auth-screen--admin {
     background:
       radial-gradient(ellipse 80% 50% at 12% 0%, rgba(35, 55, 70, 0.08), transparent 55%),

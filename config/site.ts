@@ -219,11 +219,11 @@ export const siteConfig = {
     provider: {
       home: "/admin",
       gate: "/guard/provider",
-      login: "/guard/provider"
+      login: "/guard/provider/login"
     },
     admin: {
       home: "/admin",
-      login: "/guard/provider"
+      login: "/guard/provider/login"
     }
   }
 };

@@ -60,7 +60,7 @@ export async function getSession(): Promise<SessionUser | null> {
 
 export async function requireUser(): Promise<SessionUser> {
   const user = await getSession();
-  if (!user) redirect("/guard/provider");
+  if (!user) redirect("/guard/provider/login");
   return user;
 }
 

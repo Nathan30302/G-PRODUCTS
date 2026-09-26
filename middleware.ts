@@ -35,14 +35,18 @@ export async function middleware(request: NextRequest) {
   // orders, revenue and customer counts to signed-out visitors.
   // Two doors only: /guard/customer and /guard/provider.
   const { pathname } = request.nextUrl;
+  if (pathname === "/desk" || pathname === "/guard/admin") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/guard/provider";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
   if (
     pathname === "/admin/login" ||
-    pathname === "/guard/admin" ||
-    pathname === "/desk" ||
     pathname === "/desk/login"
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/guard/provider";
+    url.pathname = "/guard/provider/login";
     url.search = "";
     return NextResponse.redirect(url);
   }
@@ -50,7 +54,7 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get(DESK_COOKIE)?.value;
     if (!(await hasValidDeskToken(token))) {
       const url = request.nextUrl.clone();
-      url.pathname = "/guard/provider";
+      url.pathname = "/guard/provider/login";
       url.search = "";
       return NextResponse.redirect(url);
     }
