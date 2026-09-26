@@ -15,22 +15,22 @@ const options: {
     swatch: "bg-[#f7f8f6] ring-1 ring-[#d8ddd9]"
   },
   {
-    id: "midnight",
-    label: "Midnight",
-    hint: "Soft dark green",
-    swatch: "bg-[#0f1614] ring-1 ring-[#3a4a45]"
+    id: "glow",
+    label: "Glow",
+    hint: "Bright lime, in motion",
+    swatch: "bg-[#f4f9c8] ring-1 ring-[#E5F34F]"
   },
   {
-    id: "ink",
-    label: "Ink Live",
-    hint: "Navy + moving light",
-    swatch: "bg-[#0d1822] ring-1 ring-[#E5F34F]/60"
+    id: "fresh",
+    label: "Fresh",
+    hint: "Bright air, in motion",
+    swatch: "bg-[#f3f8fb] ring-1 ring-[#b7d4e8]"
   },
   {
     id: "studio",
-    label: "Studio Live",
-    hint: "Warm light in motion",
-    swatch: "bg-[#e8e0d4] ring-1 ring-[#c8a45a]/50"
+    label: "Studio",
+    hint: "Warm and bright",
+    swatch: "bg-[#fff8ee] ring-1 ring-[#f0d7a8]"
   }
 ];
 
@@ -43,9 +43,7 @@ export function DeskThemeSettings({ compact = false }: { compact?: boolean }) {
         <div>
           <h2 className="display heading-section">Desk appearance</h2>
           <p className="text-subtitle mt-1">
-            Four looks for the provider desk. Day and Midnight stay calm. Ink
-            Live and Studio Live add soft motion — text stays easy to read in
-            every mode.
+            Four bright looks. Glow and Fresh move. Words and photos stay easy to read in every one.
           </p>
         </div>
       ) : (

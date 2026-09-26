@@ -16,8 +16,7 @@ export function ThemeSettings() {
           <div>
             <h2 className="display heading-section">Appearance</h2>
             <p className="text-subtitle mt-1">
-              Switch between light and dark. Text and buttons stay readable in
-              both modes.
+              Light stays calm. Bloom is bright and moving. Words and photos stay easy to read.
             </p>
           </div>
         </div>
@@ -38,15 +37,15 @@ export function ThemeSettings() {
         </button>
         <button
           type="button"
-          onClick={() => setTheme("dark")}
-          aria-pressed={theme === "dark"}
+          onClick={() => setTheme("bloom")}
+          aria-pressed={theme === "bloom"}
           className={`rounded-xl px-4 py-3 text-sm font-bold transition-all ${
-            theme === "dark"
-              ? "bg-gp-muted text-gp-text shadow-card ring-1 ring-gp-border/80"
+            theme === "bloom"
+              ? "bg-brand/30 text-ink-950 shadow-card ring-1 ring-brand/50"
               : "text-gp-text-muted hover:text-gp-text"
           }`}
         >
-          Dark
+          Bloom
         </button>
       </div>
     </section>

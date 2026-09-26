@@ -9,7 +9,7 @@ import {
   type ReactNode
 } from "react";
 
-export type ThemeMode = "light" | "dark";
+export type ThemeMode = "light" | "bloom";
 
 const STORAGE_KEY = "gp-theme";
 
@@ -25,7 +25,7 @@ function applyTheme(theme: ThemeMode) {
   document.documentElement.setAttribute("data-theme", theme);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
-    meta.setAttribute("content", theme === "dark" ? "#121a18" : "#FFFFFF");
+    meta.setAttribute("content", theme === "bloom" ? "#f7fbe8" : "#FFFFFF");
   }
 }
 
@@ -35,9 +35,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      const initial: ThemeMode = stored === "dark" ? "dark" : "light";
+      const initial: ThemeMode =
+        stored === "bloom" || stored === "dark" ? "bloom" : "light";
       setThemeState(initial);
       applyTheme(initial);
+      if (stored === "dark") localStorage.setItem(STORAGE_KEY, "bloom");
     } catch {
       applyTheme("light");
     }
@@ -54,7 +56,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setTheme(theme === "bloom" ? "light" : "bloom");
   }, [setTheme, theme]);
 
   return (

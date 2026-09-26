@@ -227,7 +227,7 @@ function AdminShellInner({
         <span className="desk-ambient__blob desk-ambient__blob--a" />
         <span className="desk-ambient__blob desk-ambient__blob--b" />
         <span className="desk-ambient__blob desk-ambient__blob--c" />
-        {theme === "ink" || theme === "studio" ? (
+        {theme === "glow" || theme === "fresh" || theme === "studio" ? (
           <>
             <span className="desk-ambient__beam" />
             <span className="desk-ambient__spark desk-ambient__spark--1" />
