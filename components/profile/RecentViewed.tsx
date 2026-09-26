@@ -16,7 +16,7 @@ type ServiceRow = {
   ref: string;
   serviceType: string;
   status: string;
-  createdAt: Date;
+  createdAt: Date | string;
 };
 
 export function RecentViewed({ services }: { services: ServiceRow[] }) {
