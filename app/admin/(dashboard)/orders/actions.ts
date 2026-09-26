@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { onOrderPaymentSuccess } from "@/lib/rewards";
+import {
+  restoreReferrerDiscountIfCancelled,
+  unlockReferrerDiscount
+} from "@/lib/referral-offer";
 
 const STATUSES = [
   "PENDING",
@@ -54,6 +58,16 @@ export async function updateOrderStatus(
   if (status === "PAID" || status === "DELIVERED") {
     await onOrderPaymentSuccess(id).catch((err) =>
       console.warn("[admin/orders] rewards:", err)
+    );
+  }
+  if (status === "DELIVERED") {
+    await unlockReferrerDiscount(id).catch((err) =>
+      console.warn("[admin/orders] referral:", err)
+    );
+  }
+  if (status === "CANCELLED") {
+    await restoreReferrerDiscountIfCancelled(id).catch((err) =>
+      console.warn("[admin/orders] referral restore:", err)
     );
   }
 

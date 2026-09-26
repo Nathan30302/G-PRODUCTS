@@ -15,7 +15,7 @@ function SaveButton() {
       disabled={pending}
       className="btn-brand mt-2 px-5 py-2.5 text-sm disabled:opacity-60"
     >
-      {pending ? "Saving…" : "Save location"}
+      {pending ? "Saving…" : "Update location"}
     </button>
   );
 }
@@ -35,7 +35,7 @@ export function LocationForm({
   return (
     <form action={action} className="mt-4 space-y-4">
       <label className="block">
-        <span className="field-label">Location label</span>
+        <span className="field-label">Location name</span>
         <input
           name="locationLabel"
           defaultValue={locationLabel}
@@ -48,7 +48,7 @@ export function LocationForm({
       </label>
 
       <label className="block">
-        <span className="field-label">Delivery address / room</span>
+        <span className="field-label">Direct location</span>
         <textarea
           name="defaultLocation"
           defaultValue={defaultLocation}
@@ -60,14 +60,14 @@ export function LocationForm({
       </label>
 
       {state?.error ? (
-        <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {state.error}
         </p>
       ) : null}
 
       {state?.ok ? (
-        <p className="rounded-2xl border border-accent/25 bg-accent/10 px-4 py-3 text-sm text-accent">
-          Saved — checkout will use this address automatically.
+        <p className="rounded-2xl border border-brand/40 bg-brand/15 px-4 py-3 text-sm font-medium text-ink-900">
+          Location updated. Checkout will use this spot.
         </p>
       ) : null}
 

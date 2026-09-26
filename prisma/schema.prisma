@@ -58,6 +58,10 @@ model Customer {
   /// Saved delivery spot, e.g. "Kalingalinga Block A Room 12" or home address
   defaultLocation String?
   locationLabel   String?
+  /// Customer asked to hear about new offers
+  offersOptIn     Boolean  @default(false)
+  /// Percent off the next shop order (referral reward). 0 = none waiting.
+  pendingDiscountPercent Int @default(0)
   /// G-Rewards points (1 point ≈ K1 spent when paid)
   rewardPoints    Int      @default(0)
   /// Unique share code for referrals (e.g. GP-A1B2C3)
@@ -225,6 +229,22 @@ model ServiceOffer {
   settings    String   @default("{}")
   updatedAt   DateTime @updatedAt
   createdAt   DateTime @default(now())
+}
+
+/// Return, exchange, warranty, or gift claim from the shopper profile
+model AftercareClaim {
+  id         String   @id @default(cuid())
+  ref        String   @unique
+  /// return | exchange | warranty | gift
+  kind       String
+  orderRef   String
+  contact    String
+  customerId String?
+  status     String   @default("NEW")
+  createdAt  DateTime @default(now())
+
+  @@index([orderRef])
+  @@index([createdAt])
 }
 
 /// Genuine customer product reviews (optional after purchase or general feedback)

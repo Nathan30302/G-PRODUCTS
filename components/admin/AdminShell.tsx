@@ -44,6 +44,7 @@ const navGroups: NavGroup[] = [
         badgeKey: "orders"
       },
       { href: "/admin/customers", label: "Customers", icon: "user" },
+      { href: "/admin/aftercare", label: "Returns", icon: "refresh" },
       { href: "/admin/reviews", label: "Reviews", icon: "star" }
     ]
   },

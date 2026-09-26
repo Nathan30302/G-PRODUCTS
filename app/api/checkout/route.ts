@@ -4,6 +4,10 @@ import { initiatePayment, type PaymentProvider } from "@/lib/payments";
 import { getCustomerSession } from "@/lib/customer-auth";
 import { normalizePhone, phoneVariants } from "@/lib/phone";
 import { applyPromoCode } from "@/lib/promo-codes";
+import {
+  consumeReferrerDiscount,
+  quoteReferralDiscount
+} from "@/lib/referral-offer";
 
 type IncomingItem = {
   productId?: string;
@@ -76,7 +80,7 @@ export async function POST(req: Request) {
     discount = promo.discountZmw;
     promoNote = `Promo ${promo.code}: −K${discount} (${promo.label})`;
   }
-  const total = Math.max(0, subtotal - discount);
+  let total = Math.max(0, subtotal - discount);
 
   const session = await getCustomerSession();
   let customerId: string | null = session?.id ?? null;
@@ -89,6 +93,15 @@ export async function POST(req: Request) {
       });
       customerId = match?.id ?? null;
     }
+  }
+
+  const referral = await quoteReferralDiscount(customerId, subtotal);
+  let consumePending = false;
+  if (referral.discount > discount) {
+    discount = referral.discount;
+    promoNote = referral.note;
+    consumePending = referral.consumePending;
+    total = Math.max(0, subtotal - discount);
   }
 
   const ref = newRef();
@@ -115,6 +128,10 @@ export async function POST(req: Request) {
     orderRef: ref,
     description: `G-Products order ${ref}`
   });
+
+  if (consumePending && customerId) {
+    await consumeReferrerDiscount(customerId);
+  }
 
   const notes = [promoNote, payment.message].filter(Boolean).join(" · ") || null;
 
