@@ -5,16 +5,6 @@ import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
 import type { ReactNode } from "react";
 
-const shopPhotos = [
-  "/products/catalog/jbl-headphones-1.jpg",
-  "/products/catalog/airpods-pro-2-type-c-1.jpg",
-  "/products/catalog/calus-s69-speaker-1.jpg",
-  "/products/catalog/extension-6-way-5m-1.jpg",
-  "/products/catalog/flash-disk-32gb-1.jpg",
-  "/products/catalog/hard-drive-500gb-1.jpg",
-  "/products/catalog/casio-scientific-calculator-1.jpg"
-];
-
 /** Full-screen sign-in chrome. Customer and admin never share a door. */
 export function AuthScreenShell({
   children,
@@ -38,13 +28,13 @@ export function AuthScreenShell({
       <div className="auth-screen auth-screen--customer">
         <div className="auth-customer-layout">
           <aside className="auth-gallery" aria-label="G-Products">
-            {shopPhotos.map((src) => (
-              // eslint-disable-next-line @next/next/no-img-element -- real catalogue photos
-              <img key={src} src={src} alt="" />
-            ))}
-            <div className="auth-gallery-mark">
-              <Logo variant="lockupNavy" size="lg" priority />
-            </div>
+            <Logo variant="lockupNavy" size="lg" priority />
+            {/* eslint-disable-next-line @next/next/no-img-element -- composed shop still life */}
+            <img
+              className="auth-still"
+              src="/brand/signin-still.jpg"
+              alt="Headphones, earbuds, a calculator and a speaker from G-Products"
+            />
           </aside>
           <div className="auth-customer-form">
             {children}

@@ -83,7 +83,7 @@ export default async function ProviderLandingPage() {
 
       <main className="desk-home-main">
         <section className="desk-stage">
-          <DeskPhotoBackdrop photos={deskPhotos} startIndex={lusakaWeekday()} />
+          <DeskPhotoBackdrop photo={deskPhotos[lusakaWeekday()]} />
 
           <div className="desk-stage-copy">
             <p className="desk-stage-kicker">
