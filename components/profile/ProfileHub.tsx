@@ -456,6 +456,16 @@ export function ProfileHub({
         ))}
       </Card>
 
+      <div className="mt-6">
+        <Card>
+          <LogoutButton
+            variant="prominent"
+            label="Log out"
+            className="flex w-full items-center gap-3 px-4 py-3.5 text-left text-[15px] font-semibold text-red-700 transition-colors hover:bg-red-50 active:bg-red-50"
+          />
+        </Card>
+      </div>
+
       {chat}
     </div>
   );
