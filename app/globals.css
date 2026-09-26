@@ -1150,11 +1150,11 @@ html {
   }
 
   .desk-home {
-    @apply relative min-h-dvh text-gp-text;
+    @apply relative min-h-dvh overflow-x-hidden text-white;
     background:
-      radial-gradient(ellipse 55% 40% at 0% 0%, rgba(229, 243, 79, 0.22), transparent 60%),
-      radial-gradient(ellipse 40% 35% at 100% 8%, rgba(35, 55, 70, 0.08), transparent 55%),
-      var(--gp-bg);
+      radial-gradient(ellipse 80% 50% at 10% -10%, rgba(229, 243, 79, 0.18), transparent 55%),
+      radial-gradient(ellipse 50% 40% at 100% 0%, rgba(36, 63, 80, 0.55), transparent 50%),
+      linear-gradient(180deg, #101820 0%, #172430 48%, #101820 100%);
   }
 
   .desk-home-bg {
@@ -1166,19 +1166,83 @@ html {
   }
 
   .desk-home-glow--a {
-    top: -8rem;
-    right: -6rem;
-    height: 24rem;
-    width: 24rem;
-    background: rgba(229, 243, 79, 0.16);
+    top: -10rem;
+    right: -8rem;
+    height: 28rem;
+    width: 28rem;
+    background: rgba(229, 243, 79, 0.22);
+    animation: desk-home-float 14s ease-in-out infinite;
   }
 
   .desk-home-glow--b {
-    bottom: 10%;
-    left: -8rem;
-    height: 18rem;
-    width: 18rem;
-    background: rgba(35, 55, 70, 0.08);
+    bottom: -4rem;
+    left: -10rem;
+    height: 22rem;
+    width: 22rem;
+    background: rgba(90, 140, 170, 0.28);
+    animation: desk-home-float 18s ease-in-out infinite reverse;
+  }
+
+  .desk-home-mesh {
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
+    animation: desk-home-mesh 28s linear infinite;
+  }
+
+  @keyframes desk-home-float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(18px, -22px, 0) scale(1.08);
+    }
+  }
+
+  @keyframes desk-home-mesh {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 72px 72px;
+    }
+  }
+
+  @keyframes desk-home-rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes desk-home-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(229, 243, 79, 0.55);
+    }
+    70% {
+      box-shadow: 0 0 0 8px rgba(229, 243, 79, 0);
+    }
+  }
+
+  @keyframes desk-home-shine {
+    0% {
+      transform: translateX(-120%);
+    }
+    55%,
+    100% {
+      transform: translateX(120%);
+    }
   }
 
   .desk-home-nav {
@@ -1186,7 +1250,7 @@ html {
   }
 
   .desk-home-nav-btn {
-    @apply inline-flex min-h-11 items-center rounded-pill border border-ink-850/15 bg-gp-surface px-4 text-sm font-bold text-ink-850 shadow-sm;
+    @apply inline-flex min-h-11 items-center rounded-pill border border-white/15 bg-white/10 px-4 text-sm font-bold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/20;
   }
 
   .desk-home-main {
@@ -1198,35 +1262,71 @@ html {
   }
 
   .desk-home-kicker {
-    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-gp-text-subtle;
+    @apply inline-flex items-center gap-2 rounded-pill border border-white/10 bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80;
+    animation: desk-home-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .desk-home-live {
+    @apply h-2 w-2 rounded-full bg-brand;
+    animation: desk-home-pulse 1.8s ease-out infinite;
   }
 
   .desk-home-title {
-    @apply mt-4 max-w-xl text-[clamp(2.15rem,1.2rem+3.2vw,4.4rem)] font-extrabold leading-[1.02] tracking-tight;
+    @apply mt-5 max-w-xl text-[clamp(2.35rem,1.3rem+3.4vw,4.6rem)] font-extrabold leading-[1.02] tracking-tight text-white;
+    animation: desk-home-rise 0.8s 0.08s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .desk-home-title em {
+    @apply not-italic text-brand;
   }
 
   .desk-home-lead {
-    @apply mt-4 max-w-lg text-base leading-relaxed text-gp-text-muted sm:text-lg;
+    @apply mt-4 max-w-lg text-base leading-relaxed text-white/70 sm:text-lg;
+    animation: desk-home-rise 0.8s 0.16s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .desk-home-actions {
-    @apply mt-7 flex flex-col items-start gap-3;
+    @apply mt-7 flex flex-col items-stretch gap-3 sm:items-start;
+    animation: desk-home-rise 0.8s 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .desk-home-cta {
-    @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-pill bg-ink-850 px-6 text-sm font-bold text-white shadow-[0_16px_40px_-18px_rgba(35,55,70,0.55)] sm:w-auto sm:px-7;
+    @apply relative inline-flex min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-pill bg-brand px-6 text-sm font-extrabold text-ink-950 shadow-[0_16px_40px_-16px_rgba(229,243,79,0.65)] transition-transform duration-200 hover:-translate-y-0.5 sm:w-auto sm:px-7;
+  }
+
+  .desk-home-cta::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.45), transparent 80%);
+    animation: desk-home-shine 3.4s ease-in-out infinite;
+  }
+
+  .desk-home-cta > * {
+    position: relative;
+    z-index: 1;
   }
 
   .desk-home-note {
-    @apply max-w-sm text-sm leading-relaxed text-gp-text-subtle;
+    @apply max-w-sm text-sm leading-relaxed text-white/50;
   }
 
   .desk-home-board {
-    @apply rounded-[1.6rem] border border-gp-border/80 bg-gp-surface/95 p-5 shadow-[0_24px_60px_-32px_rgba(35,55,70,0.45)] sm:p-6;
+    @apply relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.06] p-5 shadow-[0_30px_80px_-36px_rgba(0,0,0,0.65)] backdrop-blur-xl sm:p-6;
+    animation: desk-home-rise 0.9s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .desk-home-board::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, rgba(229, 243, 79, 0.7), transparent);
   }
 
   .desk-home-board-label {
-    @apply text-[11px] font-bold uppercase tracking-[0.2em] text-gp-text-subtle;
+    @apply text-[11px] font-bold uppercase tracking-[0.2em] text-white/50;
   }
 
   .desk-home-board ul {
@@ -1234,19 +1334,30 @@ html {
   }
 
   .desk-home-board li {
-    @apply flex items-center justify-between gap-3 rounded-2xl bg-gp-muted/70 px-4 py-3.5;
+    @apply flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5;
+    animation: desk-home-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .desk-home-board li:nth-child(1) {
+    animation-delay: 0.35s;
+  }
+  .desk-home-board li:nth-child(2) {
+    animation-delay: 0.48s;
+  }
+  .desk-home-board li:nth-child(3) {
+    animation-delay: 0.61s;
   }
 
   .desk-home-board strong {
-    @apply block text-sm font-bold text-gp-text;
+    @apply block text-sm font-bold text-white;
   }
 
   .desk-home-board em {
-    @apply mt-0.5 block text-xs not-italic text-gp-text-subtle;
+    @apply mt-0.5 block text-xs not-italic text-white/45;
   }
 
   .desk-home-board b {
-    @apply shrink-0 text-sm font-bold text-ink-850;
+    @apply shrink-0 text-sm font-bold text-brand;
   }
 
   .desk-home-work {
@@ -1254,19 +1365,30 @@ html {
   }
 
   .desk-home-work article {
-    @apply rounded-[1.35rem] border border-gp-border/70 bg-gp-surface/80 p-5;
+    @apply rounded-[1.4rem] border border-white/10 bg-white/[0.05] p-5 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:border-brand/40 hover:bg-white/[0.08];
+    animation: desk-home-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .desk-home-work article:nth-child(2) {
+    animation-delay: 0.08s;
+  }
+  .desk-home-work article:nth-child(3) {
+    animation-delay: 0.16s;
+  }
+  .desk-home-work article:nth-child(4) {
+    animation-delay: 0.24s;
   }
 
   .desk-home-work article span {
-    @apply grid h-10 w-10 place-items-center rounded-2xl bg-brand/25 text-ink-850;
+    @apply grid h-11 w-11 place-items-center rounded-2xl bg-brand text-ink-950;
   }
 
   .desk-home-work h2 {
-    @apply mt-4 text-lg font-bold;
+    @apply mt-4 text-lg font-bold text-white;
   }
 
   .desk-home-work p {
-    @apply mt-2 text-sm leading-relaxed text-gp-text-muted;
+    @apply mt-2 text-sm leading-relaxed text-white/60;
   }
 
   .desk-home-close {
@@ -1282,7 +1404,24 @@ html {
   }
 
   .desk-home-close .desk-home-cta {
-    @apply bg-brand text-ink-950 shadow-none;
+    @apply bg-brand text-ink-950;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .desk-home-glow--a,
+    .desk-home-glow--b,
+    .desk-home-mesh,
+    .desk-home-live,
+    .desk-home-cta::after,
+    .desk-home-kicker,
+    .desk-home-title,
+    .desk-home-lead,
+    .desk-home-actions,
+    .desk-home-board,
+    .desk-home-board li,
+    .desk-home-work article {
+      animation: none !important;
+    }
   }
 
   .auth-screen--admin {

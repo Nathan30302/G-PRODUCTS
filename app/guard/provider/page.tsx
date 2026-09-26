@@ -52,10 +52,11 @@ export default async function ProviderLandingPage() {
       <div className="desk-home-bg" aria-hidden>
         <span className="desk-home-glow desk-home-glow--a" />
         <span className="desk-home-glow desk-home-glow--b" />
+        <span className="desk-home-mesh" />
       </div>
 
       <header className="desk-home-nav">
-        <Logo size="md" priority />
+        <Logo variant="lockup" size="md" priority />
         <Link href={siteConfig.apps.provider.login} className="desk-home-nav-btn">
           Sign in
         </Link>
@@ -64,9 +65,12 @@ export default async function ProviderLandingPage() {
       <main className="desk-home-main">
         <section className="desk-home-hero">
           <div>
-            <p className="desk-home-kicker">G-Products · Provider desk</p>
+            <p className="desk-home-kicker">
+              <span className="desk-home-live" aria-hidden />
+              Provider desk · live
+            </p>
             <h1 className="display desk-home-title">
-              Run the shop from one private desk.
+              Run the shop from one <em>private desk.</em>
             </h1>
             <p className="desk-home-lead">
               Products, payments, printing, and loans. Gift adds the team.
