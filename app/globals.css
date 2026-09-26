@@ -1150,78 +1150,206 @@ html {
   }
 
   .desk-home {
-    @apply relative min-h-dvh overflow-x-hidden text-white;
+    @apply relative min-h-dvh overflow-x-hidden text-ink-850;
     background:
-      radial-gradient(ellipse 80% 50% at 10% -10%, rgba(229, 243, 79, 0.18), transparent 55%),
-      radial-gradient(ellipse 50% 40% at 100% 0%, rgba(36, 63, 80, 0.55), transparent 50%),
-      linear-gradient(180deg, #101820 0%, #172430 48%, #101820 100%);
+      radial-gradient(ellipse 70% 40% at 100% 0%, rgba(229, 243, 79, 0.35), transparent 55%),
+      #f6f3ec;
   }
 
-  .desk-home-bg {
+  .desk-home-nav {
+    @apply relative z-[2] mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6;
+  }
+
+  .desk-home-nav-btn {
+    @apply inline-flex min-h-11 items-center rounded-pill bg-ink-850 px-4 text-sm font-bold text-white transition-transform duration-200 hover:-translate-y-0.5;
+  }
+
+  .desk-home-main {
+    @apply relative z-[1] mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6;
+  }
+
+  .desk-stage {
+    @apply relative grid items-center gap-8 overflow-hidden rounded-[1.75rem] bg-[#243F50] px-5 py-8 text-white sm:px-8 sm:py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:px-12 lg:py-14;
+    box-shadow: 0 30px 70px -36px rgba(36, 63, 80, 0.55);
+  }
+
+  .desk-stage-bg {
     @apply pointer-events-none absolute inset-0 overflow-hidden;
   }
 
-  .desk-home-glow {
+  .desk-stage-orb {
     @apply absolute rounded-full blur-3xl;
   }
 
-  .desk-home-glow--a {
-    top: -10rem;
-    right: -8rem;
-    height: 28rem;
-    width: 28rem;
-    background: rgba(229, 243, 79, 0.22);
-    animation: desk-home-float 14s ease-in-out infinite;
+  .desk-stage-orb--a {
+    top: -6rem;
+    right: -4rem;
+    height: 16rem;
+    width: 16rem;
+    background: rgba(229, 243, 79, 0.28);
+    animation: desk-home-float 12s ease-in-out infinite;
   }
 
-  .desk-home-glow--b {
-    bottom: -4rem;
-    left: -10rem;
-    height: 22rem;
-    width: 22rem;
-    background: rgba(90, 140, 170, 0.28);
-    animation: desk-home-float 18s ease-in-out infinite reverse;
+  .desk-stage-orb--b {
+    bottom: -5rem;
+    left: 20%;
+    height: 12rem;
+    width: 12rem;
+    background: rgba(255, 255, 255, 0.08);
+    animation: desk-home-float 16s ease-in-out infinite reverse;
   }
 
-  .desk-home-mesh {
-    position: absolute;
-    inset: 0;
-    opacity: 0.35;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 72px 72px;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
-    animation: desk-home-mesh 28s linear infinite;
+  .desk-stage-copy,
+  .desk-window {
+    @apply relative z-[1];
+  }
+
+  .desk-stage-kicker {
+    @apply inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-brand;
+  }
+
+  .desk-stage-live {
+    @apply h-2 w-2 rounded-full bg-brand;
+    animation: desk-home-pulse 1.8s ease-out infinite;
+  }
+
+  .desk-stage-title {
+    @apply mt-4 text-[clamp(2.4rem,1.4rem+3vw,4.5rem)] font-extrabold leading-[0.98] tracking-tight text-white;
+  }
+
+  .desk-stage-lead {
+    @apply mt-4 max-w-md text-base leading-relaxed text-white/75 sm:text-lg;
+  }
+
+  .desk-stage-actions {
+    @apply mt-7;
+  }
+
+  .desk-stage-actions p {
+    @apply mt-3 max-w-xs text-sm leading-relaxed text-white/55;
+  }
+
+  .desk-stage-cta {
+    @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-pill bg-brand px-6 text-sm font-extrabold text-ink-950 shadow-[0_14px_30px_-16px_rgba(229,243,79,0.9)] transition-transform duration-200 hover:-translate-y-0.5 sm:w-auto;
+  }
+
+  .desk-window {
+    @apply rounded-[1.35rem] border border-white/10 bg-white/[0.07] p-4 backdrop-blur-md sm:p-5;
+  }
+
+  .desk-window-bar {
+    @apply mb-4 flex items-center gap-3 text-xs;
+  }
+
+  .desk-window-dots {
+    @apply flex gap-1.5;
+  }
+
+  .desk-window-dots i {
+    @apply h-2 w-2 rounded-full bg-white/25;
+  }
+
+  .desk-window-dots i:first-child {
+    @apply bg-brand;
+  }
+
+  .desk-window-bar strong {
+    @apply font-semibold text-white/90;
+  }
+
+  .desk-window-bar em {
+    @apply ml-auto text-[11px] font-bold uppercase tracking-[0.16em] text-brand not-italic;
+  }
+
+  .desk-window li + li {
+    @apply mt-3;
+  }
+
+  .desk-window li {
+    @apply rounded-2xl bg-black/15 px-3.5 py-3;
+  }
+
+  .desk-window li strong {
+    @apply block text-sm font-bold text-white;
+  }
+
+  .desk-window li span {
+    @apply mt-0.5 block text-xs text-white/55;
+  }
+
+  .desk-meter {
+    @apply mt-3 h-1.5 overflow-hidden rounded-full bg-white/10;
+  }
+
+  .desk-meter b {
+    display: block;
+    height: 100%;
+    width: var(--desk-fill);
+    border-radius: 999px;
+    background: linear-gradient(90deg, #e5f34f, #fff6a8);
+    transform-origin: left center;
+    animation: desk-meter 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .desk-window li:nth-child(2) .desk-meter b {
+    animation-delay: 0.15s;
+  }
+
+  .desk-window li:nth-child(3) .desk-meter b {
+    animation-delay: 0.3s;
+  }
+
+  .desk-steps {
+    @apply mt-8 sm:mt-10;
+  }
+
+  .desk-steps-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-850/50;
+  }
+
+  .desk-steps ol {
+    @apply mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .desk-steps li {
+    @apply rounded-[1.25rem] border border-ink-850/10 bg-white p-5 shadow-[0_16px_40px_-28px_rgba(36,63,80,0.45)];
+  }
+
+  .desk-steps-n {
+    @apply text-[11px] font-bold tracking-[0.18em] text-ink-850/40;
+  }
+
+  .desk-steps-icon {
+    @apply mt-4 grid h-10 w-10 place-items-center rounded-2xl bg-brand text-ink-950;
+  }
+
+  .desk-steps h2 {
+    @apply mt-4 text-lg font-bold;
+  }
+
+  .desk-steps p {
+    @apply mt-2 text-sm leading-relaxed text-ink-850/70;
+  }
+
+  .desk-close {
+    @apply mt-8 flex flex-col gap-5 rounded-[1.5rem] bg-[#243F50] px-5 py-7 text-white sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:px-8;
+  }
+
+  .desk-close h2 {
+    @apply text-3xl font-extrabold tracking-tight text-white;
+  }
+
+  .desk-close p {
+    @apply mt-2 text-sm text-white/65;
   }
 
   @keyframes desk-home-float {
     0%,
     100% {
-      transform: translate3d(0, 0, 0) scale(1);
+      transform: translate3d(0, 0, 0);
     }
     50% {
-      transform: translate3d(18px, -22px, 0) scale(1.08);
-    }
-  }
-
-  @keyframes desk-home-mesh {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 72px 72px;
-    }
-  }
-
-  @keyframes desk-home-rise {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+      transform: translate3d(12px, -16px, 0);
     }
   }
 
@@ -1235,191 +1363,20 @@ html {
     }
   }
 
-  @keyframes desk-home-shine {
-    0% {
-      transform: translateX(-120%);
+  @keyframes desk-meter {
+    from {
+      transform: scaleX(0.15);
     }
-    55%,
-    100% {
-      transform: translateX(120%);
+    to {
+      transform: scaleX(1);
     }
-  }
-
-  .desk-home-nav {
-    @apply relative z-[2] mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-8;
-  }
-
-  .desk-home-nav-btn {
-    @apply inline-flex min-h-11 items-center rounded-pill border border-white/15 bg-white/10 px-4 text-sm font-bold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/20;
-  }
-
-  .desk-home-main {
-    @apply relative z-[1] mx-auto w-full max-w-6xl px-4 pb-16 sm:px-8;
-  }
-
-  .desk-home-hero {
-    @apply grid items-center gap-8 pt-4 sm:pt-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12 lg:pt-10;
-  }
-
-  .desk-home-kicker {
-    @apply inline-flex items-center gap-2 rounded-pill border border-white/10 bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80;
-    animation: desk-home-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .desk-home-live {
-    @apply h-2 w-2 rounded-full bg-brand;
-    animation: desk-home-pulse 1.8s ease-out infinite;
-  }
-
-  .desk-home-title {
-    @apply mt-5 max-w-xl text-[clamp(2.35rem,1.3rem+3.4vw,4.6rem)] font-extrabold leading-[1.02] tracking-tight text-white;
-    animation: desk-home-rise 0.8s 0.08s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .desk-home-title em {
-    @apply not-italic text-brand;
-  }
-
-  .desk-home-lead {
-    @apply mt-4 max-w-lg text-base leading-relaxed text-white/70 sm:text-lg;
-    animation: desk-home-rise 0.8s 0.16s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .desk-home-actions {
-    @apply mt-7 flex flex-col items-stretch gap-3 sm:items-start;
-    animation: desk-home-rise 0.8s 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .desk-home-cta {
-    @apply relative inline-flex min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-pill bg-brand px-6 text-sm font-extrabold text-ink-950 shadow-[0_16px_40px_-16px_rgba(229,243,79,0.65)] transition-transform duration-200 hover:-translate-y-0.5 sm:w-auto sm:px-7;
-  }
-
-  .desk-home-cta::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.45), transparent 80%);
-    animation: desk-home-shine 3.4s ease-in-out infinite;
-  }
-
-  .desk-home-cta > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  .desk-home-note {
-    @apply max-w-sm text-sm leading-relaxed text-white/50;
-  }
-
-  .desk-home-board {
-    @apply relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.06] p-5 shadow-[0_30px_80px_-36px_rgba(0,0,0,0.65)] backdrop-blur-xl sm:p-6;
-    animation: desk-home-rise 0.9s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .desk-home-board::before {
-    content: "";
-    position: absolute;
-    inset: 0 auto auto 0;
-    height: 1px;
-    width: 100%;
-    background: linear-gradient(90deg, transparent, rgba(229, 243, 79, 0.7), transparent);
-  }
-
-  .desk-home-board-label {
-    @apply text-[11px] font-bold uppercase tracking-[0.2em] text-white/50;
-  }
-
-  .desk-home-board ul {
-    @apply mt-4 space-y-3;
-  }
-
-  .desk-home-board li {
-    @apply flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5;
-    animation: desk-home-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .desk-home-board li:nth-child(1) {
-    animation-delay: 0.35s;
-  }
-  .desk-home-board li:nth-child(2) {
-    animation-delay: 0.48s;
-  }
-  .desk-home-board li:nth-child(3) {
-    animation-delay: 0.61s;
-  }
-
-  .desk-home-board strong {
-    @apply block text-sm font-bold text-white;
-  }
-
-  .desk-home-board em {
-    @apply mt-0.5 block text-xs not-italic text-white/45;
-  }
-
-  .desk-home-board b {
-    @apply shrink-0 text-sm font-bold text-brand;
-  }
-
-  .desk-home-work {
-    @apply mt-12 grid gap-3 sm:mt-16 sm:grid-cols-2 sm:gap-4;
-  }
-
-  .desk-home-work article {
-    @apply rounded-[1.4rem] border border-white/10 bg-white/[0.05] p-5 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:border-brand/40 hover:bg-white/[0.08];
-    animation: desk-home-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .desk-home-work article:nth-child(2) {
-    animation-delay: 0.08s;
-  }
-  .desk-home-work article:nth-child(3) {
-    animation-delay: 0.16s;
-  }
-  .desk-home-work article:nth-child(4) {
-    animation-delay: 0.24s;
-  }
-
-  .desk-home-work article span {
-    @apply grid h-11 w-11 place-items-center rounded-2xl bg-brand text-ink-950;
-  }
-
-  .desk-home-work h2 {
-    @apply mt-4 text-lg font-bold text-white;
-  }
-
-  .desk-home-work p {
-    @apply mt-2 text-sm leading-relaxed text-white/60;
-  }
-
-  .desk-home-close {
-    @apply mt-12 flex flex-col gap-5 rounded-[1.6rem] bg-ink-850 px-5 py-7 text-white sm:mt-16 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-8;
-  }
-
-  .desk-home-close h2 {
-    @apply text-2xl font-extrabold tracking-tight sm:text-3xl;
-  }
-
-  .desk-home-close p {
-    @apply mt-2 text-sm text-white/70;
-  }
-
-  .desk-home-close .desk-home-cta {
-    @apply bg-brand text-ink-950;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .desk-home-glow--a,
-    .desk-home-glow--b,
-    .desk-home-mesh,
-    .desk-home-live,
-    .desk-home-cta::after,
-    .desk-home-kicker,
-    .desk-home-title,
-    .desk-home-lead,
-    .desk-home-actions,
-    .desk-home-board,
-    .desk-home-board li,
-    .desk-home-work article {
+    .desk-stage-orb--a,
+    .desk-stage-orb--b,
+    .desk-stage-live,
+    .desk-meter b {
       animation: none !important;
     }
   }

@@ -14,33 +14,37 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false }
 };
 
-const work = [
-  {
-    icon: "grid" as const,
-    title: "Catalogue",
-    body: "Photograph the product, set the price, and put it on the shop the same day."
-  },
-  {
-    icon: "wallet" as const,
-    title: "Get cash",
-    body: "A customer pays your number. You confirm it on the order, then you prepare it."
-  },
-  {
-    icon: "printer" as const,
-    title: "Printing",
-    body: "Their file lands here. Download it, print it, and the copy clears itself later."
-  },
-  {
-    icon: "shield" as const,
-    title: "G-Loans",
-    body: "Read the NRC, book the visit, approve, and they collect the cash in person."
-  }
+const lanes = [
+  { label: "Orders", detail: "Confirm the cash, then prepare", width: "78%" },
+  { label: "Printing", detail: "Download and print today", width: "54%" },
+  { label: "G-Loans", detail: "Book the visit, then pay out", width: "36%" }
 ];
 
-const board = [
-  { label: "New orders", value: "Confirm cash", hint: "Then prepare" },
-  { label: "Print queue", value: "Download", hint: "Files stay 12 hours" },
-  { label: "Loans", value: "Book a visit", hint: "They collect cash" }
+const steps = [
+  {
+    n: "01",
+    icon: "grid" as const,
+    title: "Catalogue",
+    body: "A real photo, a clear price, and the product is on the shop."
+  },
+  {
+    n: "02",
+    icon: "wallet" as const,
+    title: "Get cash",
+    body: "They pay your number. You confirm it here before anything moves."
+  },
+  {
+    n: "03",
+    icon: "printer" as const,
+    title: "Printing",
+    body: "The file is waiting. Download it, print it, and it clears itself."
+  },
+  {
+    n: "04",
+    icon: "shield" as const,
+    title: "G-Loans",
+    body: "Read the NRC, meet them, approve, and they collect the cash."
+  }
 ];
 
 export default async function ProviderLandingPage() {
@@ -49,79 +53,92 @@ export default async function ProviderLandingPage() {
 
   return (
     <div className="desk-home">
-      <div className="desk-home-bg" aria-hidden>
-        <span className="desk-home-glow desk-home-glow--a" />
-        <span className="desk-home-glow desk-home-glow--b" />
-        <span className="desk-home-mesh" />
-      </div>
-
       <header className="desk-home-nav">
-        <Logo variant="lockup" size="md" priority />
+        <Logo variant="lockupNavy" size="md" priority />
         <Link href={siteConfig.apps.provider.login} className="desk-home-nav-btn">
           Sign in
         </Link>
       </header>
 
       <main className="desk-home-main">
-        <section className="desk-home-hero">
-          <div>
-            <p className="desk-home-kicker">
-              <span className="desk-home-live" aria-hidden />
-              Provider desk · live
+        <section className="desk-stage">
+          <div className="desk-stage-bg" aria-hidden>
+            <span className="desk-stage-orb desk-stage-orb--a" />
+            <span className="desk-stage-orb desk-stage-orb--b" />
+          </div>
+
+          <div className="desk-stage-copy">
+            <p className="desk-stage-kicker">
+              <span className="desk-stage-live" aria-hidden />
+              Provider desk
             </p>
-            <h1 className="display desk-home-title">
-              Run the shop from one <em>private desk.</em>
+            <h1 className="display desk-stage-title">
+              The shop,
+              <br />
+              held in one desk.
             </h1>
-            <p className="desk-home-lead">
-              Products, payments, printing, and loans. Gift adds the team.
-              Everyone else signs in here — the customer shop is a different door.
+            <p className="desk-stage-lead">
+              Orders, stock, printing, and loans. Gift adds the team. Sign in
+              is the only way through this door.
             </p>
-            <div className="desk-home-actions">
-              <Link href={siteConfig.apps.provider.login} className="desk-home-cta">
+            <div className="desk-stage-actions">
+              <Link href={siteConfig.apps.provider.login} className="desk-stage-cta">
                 Sign in
                 <Icon name="arrow-right" className="h-4 w-4" />
               </Link>
-              <p className="desk-home-note">
-                New teammate? The owner creates your login, then you sign in.
-              </p>
+              <p>New teammate? The owner creates your login first.</p>
             </div>
           </div>
 
-          <aside className="desk-home-board" aria-label="What the desk holds">
-            <p className="desk-home-board-label">Today on the desk</p>
+          <aside className="desk-window" aria-label="A look at the desk">
+            <div className="desk-window-bar">
+              <span className="desk-window-dots" aria-hidden>
+                <i />
+                <i />
+                <i />
+              </span>
+              <strong>Today</strong>
+              <em>Live</em>
+            </div>
             <ul>
-              {board.map((row) => (
-                <li key={row.label}>
-                  <span>
-                    <strong>{row.label}</strong>
-                    <em>{row.hint}</em>
-                  </span>
-                  <b>{row.value}</b>
+              {lanes.map((lane) => (
+                <li key={lane.label}>
+                  <div>
+                    <strong>{lane.label}</strong>
+                    <span>{lane.detail}</span>
+                  </div>
+                  <div className="desk-meter" aria-hidden>
+                    <b style={{ ["--desk-fill" as string]: lane.width }} />
+                  </div>
                 </li>
               ))}
             </ul>
           </aside>
         </section>
 
-        <section className="desk-home-work" aria-label="What you can do">
-          {work.map((item) => (
-            <article key={item.title}>
-              <span aria-hidden>
-                <Icon name={item.icon} className="h-5 w-5" />
-              </span>
-              <h2>{item.title}</h2>
-              <p>{item.body}</p>
-            </article>
-          ))}
+        <section className="desk-steps" aria-label="What the desk is for">
+          <p className="desk-steps-label">What you run from here</p>
+          <ol>
+            {steps.map((step) => (
+              <li key={step.n}>
+                <span className="desk-steps-n">{step.n}</span>
+                <span className="desk-steps-icon" aria-hidden>
+                  <Icon name={step.icon} className="h-5 w-5" />
+                </span>
+                <h2>{step.title}</h2>
+                <p>{step.body}</p>
+              </li>
+            ))}
+          </ol>
         </section>
 
-        <section className="desk-home-close">
+        <section className="desk-close">
           <div>
-            <h2 className="display">Ready when you are.</h2>
-            <p>Sign in to open orders, stock, printing, and the team.</p>
+            <h2 className="display">Open the desk.</h2>
+            <p>Orders, stock, printing, and the people you added.</p>
           </div>
-          <Link href={siteConfig.apps.provider.login} className="desk-home-cta">
-            Sign in to the desk
+          <Link href={siteConfig.apps.provider.login} className="desk-stage-cta">
+            Sign in
             <Icon name="arrow-right" className="h-4 w-4" />
           </Link>
         </section>
