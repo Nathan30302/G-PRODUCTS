@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { Icon } from "@/components/Icons";
+import { DeskPhotoBackdrop } from "@/components/guard/DeskPhotoBackdrop";
 import { getSession } from "@/lib/auth";
 import { siteConfig } from "@/config/site";
 
@@ -13,6 +14,26 @@ export const metadata: Metadata = {
   description: "The private desk for running G-Products.",
   robots: { index: false, follow: false }
 };
+
+/** One real catalogue photo for each day, Sunday through Saturday. */
+const deskPhotos = [
+  "/products/catalog/jbl-headphones-1.jpg",
+  "/products/catalog/calus-s69-speaker-1.jpg",
+  "/products/catalog/airpods-pro-2-type-c-1.jpg",
+  "/products/catalog/extension-6-way-5m-1.jpg",
+  "/products/catalog/flash-disk-32gb-1.jpg",
+  "/products/catalog/hard-drive-500gb-1.jpg",
+  "/products/catalog/casio-scientific-calculator-1.jpg"
+];
+
+function lusakaWeekday() {
+  const name = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Africa/Lusaka",
+    weekday: "short"
+  }).format(new Date());
+  const index = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(name);
+  return index < 0 ? 0 : index;
+}
 
 const lanes = [
   { label: "Orders", detail: "Confirm the cash, then prepare", width: "78%" },
@@ -62,10 +83,7 @@ export default async function ProviderLandingPage() {
 
       <main className="desk-home-main">
         <section className="desk-stage">
-          <div className="desk-stage-bg" aria-hidden>
-            <span className="desk-stage-orb desk-stage-orb--a" />
-            <span className="desk-stage-orb desk-stage-orb--b" />
-          </div>
+          <DeskPhotoBackdrop photos={deskPhotos} startIndex={lusakaWeekday()} />
 
           <div className="desk-stage-copy">
             <p className="desk-stage-kicker">
